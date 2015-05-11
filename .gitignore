@@ -1,0 +1,13 @@
+node_modules/
+bower_components/
+bin/
+obj/
+.vs/
+MetaMap.csproj
+MetaMap.csproj.user
+MetaMap.sln
+MetaMap.v12.suo
+Properties/AssemblyInfo.cs
+Web.Debug.config
+Web.Release.config
+Web.config

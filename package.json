@@ -1,0 +1,133 @@
+{
+  "main": "dist/MetaMap.js",
+  "name": "metamap",
+  "title": "MetaMap",
+  "version": "0.0.1",
+  "author": {
+    "email": "christopher@cabreraresearch.org",
+    "name": "Christopher Froehlich"
+  },
+  "bugs": {
+    "url": "https://github.com/CabreraResearch/MetaMap"
+  },
+  "dependencies": {
+    "bluebird": "^2.9.25",
+    "bootstrap": "^3.3.4",
+    "bootstrap-hover-dropdown": "^2.1.3",
+    "core-js": "^0.9.7",
+    "firebase": "^2.2.4",
+    "jquery": "^2.1.4",
+    "jquery-slimscroll": "^1.3.3",
+    "lodash": "^3.8.0",
+    "raygun4js": "^1.18.3"
+  },
+  "description": "",
+  "browserify": {
+    "transform": [
+      "browserify-shim"
+    ]
+  },
+  "engines": {
+    "node": "0.10.x",
+    "npm": "2.5.x"
+  },
+  "homepage": "http://www.metamap.io",
+  "keywords": [ ],
+  "licenses": [
+    {
+      "type": "All rights reserved, Copyright(c) 2014",
+      "url": ""
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CabreraResearch/MetaMap.git"
+  },
+  "scripts": { },
+  "browserify-shim": {
+    "bootstrap-switch": {
+      "depends": [
+        "bootstrap:$"
+      ]
+    },
+    "jquery-slimscroll": {
+      "depends": [
+        "jquery:$"
+      ]
+    },
+    "jquery-ui": {
+      "depends": [
+        "jquery:$"
+      ]
+    },
+    "jquery.uniform.less": {
+      "depends": [
+        "jquery:$"
+      ]
+    }
+  },
+  "browser": {
+    "bootstrap-switch": "./bower_components/bootstrap-switch/dist/js/bootstrap-switch.min.js",
+    "jquery.uniform.less": "./bower_components/jquery.uniform.less/jquery.uniform.min.js",
+    "jquery-ui": "./bower_components/jquery-ui/jquery-ui.min.js"
+  },
+  "devDependencies": {
+    "body-parser": "1.12.0",
+    "browser-sync": "^2.7.1",
+    "browserify": "9.0.3",
+    "browserify-css": "^0.6.1",
+    "browserify-shim": "3.8.3",
+    "chai": "^2.3.0",
+    "coffee-script": "1.9.1",
+    "coffeeify": "1.0.0",
+    "cookie-parser": "1.3.4",
+    "errorhandler": "1.3.4",
+    "express": "4.11.2",
+    "extend": "2.0.0",
+    "fs-extra": "0.16.3",
+    "glob": "4.4.0",
+    "gulp": "3.8.11",
+    "gulp-autoprefixer": "2.1.0",
+    "gulp-bower-files": "0.2.7",
+    "gulp-bump": "0.1.13",
+    "gulp-cache": "0.2.6",
+    "gulp-changed": "1.1.1",
+    "gulp-coffee": "2.3.1",
+    "gulp-coffeelint": "0.4.0",
+    "gulp-concat": "2.5.1",
+    "gulp-debug": "2.0.0",
+    "gulp-header": "1.2.2",
+    "gulp-if": "1.2.5",
+    "gulp-inject": "1.2.0",
+    "gulp-less": "3.0.0",
+    "gulp-livereload": "3.7.0",
+    "gulp-load-plugins": "0.8.0",
+    "gulp-manifest": "0.0.6",
+    "gulp-minify-css": "0.4.6",
+    "gulp-mocha-phantomjs": "^0.6.1",
+    "gulp-notify": "2.2.0",
+    "gulp-rename": "1.2.0",
+    "gulp-replace": "0.5.3",
+    "gulp-sourcemaps": "1.3.0",
+    "gulp-stripbom": "1.0.4",
+    "gulp-uglify": "1.1.0",
+    "gulp-util": "3.0.3",
+    "gulp-watch": "4.1.1",
+    "http-proxy": "1.8.1",
+    "main-bower-files": "2.5.0",
+    "minifyify": "6.2.2",
+    "mkdirp": "0.5.0",
+    "mocha": "^2.2.4",
+    "morgan": "1.5.1",
+    "parcelify": "^1.1.1",
+    "pretty-hrtime": "1.0.0",
+    "request": "2.53.0",
+    "serve-static": "1.9.1",
+    "tiny-lr": "0.1.5",
+    "tough-cookie": "0.12.1",
+    "uglifyify": "3.0.1",
+    "vinyl-source-stream": "1.0.0",
+    "watchify": "2.4.0",
+    "wiredep": "2.2.2"
+  }
+}

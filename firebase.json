@@ -3,7 +3,17 @@
   "public": ".",
   "ignore": [
     "firebase.json",
+    "bower.json",
+    "package.json",
+    ".gitignore",
+    "Gulpfile.js",
+    "README.md",
     "**/.*",
-    "**/node_modules/**"
+    "**/node_modules/**",
+    "bin/**",
+    "obj/**",
+    ".vs/**",
+    "*.config",
+    "*.tmpl"
   ]
 }
