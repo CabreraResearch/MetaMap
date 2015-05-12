@@ -1,4 +1,4 @@
-<mm-footer>
+<page-footer>
     <div class="page-footer">
         <div class="page-footer-inner">
             2015 &copy; Cabrera Research Lab
@@ -8,4 +8,4 @@
         </div>
     </div>
 
-</mm-footer>
+</page-footer>
