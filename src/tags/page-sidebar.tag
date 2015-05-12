@@ -55,7 +55,112 @@
                 }
             ]
         }, {
-
+            icon: 'icon-Smain',
+            color: '95c83d',
+            title: 'System Layout',
+            hasMenu: true,
+            menu: [{
+                icon: 'icon-Sleft',
+                title: 'Left'
+            }, {
+                icon: 'icon-Sright',
+                title: 'Right'
+            }, {
+                icon: 'icon-Sstack',
+                title: 'Stack'
+            }, {
+                icon: 'icon-Sfreehand',
+                title: 'Freehand'
+            }
+            ]
+        }, {
+            icon: 'fa fa-share-alt-square',
+            color: '4bbdc2',
+            title: 'Relationship Layout',
+            hasMenu: true,
+            menu: [{
+                icon: 'fa fa-minus',
+                title: 'None'
+            }, {
+                icon: 'fa fa-long-arrow-left',
+                title: 'Left'
+            }, {
+                icon: 'fa fa-long-arrow-right',
+                title: 'Right'
+            }, {
+                icon: 'fa fa-arrows-h',
+                title: 'Bi-directional'
+            }
+            ]
+        }, {
+            icon: 'icon-Pmain',
+            color: 'faaa35',
+            title: 'Perspectives Layout',
+            hasMenu: true,
+            menu: [{
+                icon: 'fa fa-eye',
+                title: 'P-editor'
+            }, {
+                icon: 'icon-Plines',
+                title: 'Left'
+            }, {
+                icon: 'fa fa-long-arrow-right',
+                title: 'Lines'
+            }, {
+                icon: 'icon-Pspotlight',
+                title: 'Spotlight'
+            }, {
+                icon: 'icon-Pboth',
+                title: 'Both'
+            }
+            ]
+        }, {
+            icon: 'fa fa-picture-o',
+            color: '',
+            title: 'Insert Attachments',
+            hasMenu: false,
+            menu: []
+        }, {
+            icon: 'fa fa-wrench',
+            color: '',
+            title: 'Tools',
+            hasMenu: true,
+            menu: [{
+                icon: 'fa fa-question-circle',
+                title: 'ThinkQuery'
+            }, {
+                icon: 'fa fa-comments',
+                title: 'Comments'
+            }, {
+                icon: 'fa fa-desktop',
+                title: 'Presenter'
+            }, {
+                icon: 'fa fa-magic',
+                title: 'Course Builder'
+            }, {
+                icon: 'icon-jig',
+                title: 'Jig Creator'
+            }, {
+                icon: 'fa fa-tags',
+                title: 'K-12'
+            }
+            ]
+        }, {
+            icon: 'fa fa-flask',
+            color: '',
+            title: 'Analytics',
+            hasMenu: true,
+            menu: [{
+                icon: 'fa fa-square',
+                title: 'Thing'
+            }, {
+                icon: 'fa fa-share-alt-square',
+                title: 'Relationship'
+            }, {
+                icon: 'fa fa-bar-chart-o',
+                title: 'Map'
+            }
+            ]
         }];
 
     </script>
