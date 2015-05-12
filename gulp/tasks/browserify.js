@@ -24,15 +24,17 @@
   pkg = require('../../package.json');
 
   uglify = require('uglifyify');
+    
+  var riotify = require('riotify');
 
-  transforms = [];
+  transforms = [riotify];
 
   config = {
     dev: {
-      entries: './src/coffee/entrypoint.coffee',
+      entries: './src/entry.js',
       "export": {
-        glob: './src/coffee/**/*.coffee',
-        cwd: './src/coffee'
+        glob: './src/tags/**/*.tag',
+        cwd: './src/tag'
       },
       filename: 'MetaMap.js',
       dest: './dist',
@@ -41,10 +43,10 @@
       fullPaths: true
     },
     release: {
-      entries: './src/coffee/entrypoint.coffee',
+      entries: './src/entry.js',
       "export": {
-        glob: './src/coffee/**/*.coffee',
-        cwd: './src/coffee'
+        glob: './src/tags/**/*.tag',
+        cwd: './src/tags'
       },
       filename: 'MetaMap.min.js',
       transforms: transforms,
@@ -53,12 +55,12 @@
       fullPaths: false
     },
     test: {
-      entries: ['./src/coffee/entrypoint.coffee', './test/entrypoint.coffee'],
+      entries: ['./src/entry.js', './test/entry.js'],
       dest: './test',
       filename: 'test.js',
       external: {
-        glob: './src/coffee/**/*.coffee',
-        cwd: './src/coffee'
+        glob: './src/tags/**/*.tag',
+        cwd: './src/tags'
       },
       transforms: transforms,
       debug: true,
@@ -66,53 +68,60 @@
     }
   };
 
-  runbrowserify = function(name) {
-    var bundle, bundleCfg, bundleLogger, bundleMethod, bundler, cfg, module, transform, _i, _len, _ref;
-    bundleLogger = new Logger(name);
-    cfg = config[name];
-    bundleMethod = (global.isWatching ? watchify : browserify);
-    bundleCfg = {
-      entries: cfg.entries,
-      fullPaths: false,
-      extensions: ['.coffee'],
-      debug: true,
-      bundleExternal: false
+    runbrowserify = function(name) {
+        var bundle, bundleCfg, bundleLogger, bundleMethod, bundler, cfg, module, transform, _i, _len, _ref;
+        bundleLogger = new Logger(name);
+        cfg = config[name];
+        bundleMethod = (global.isWatching ? watchify : browserify);
+        bundleCfg = {
+            entries: cfg.entries,
+            fullPaths: false,
+            extensions: ['.tag'],
+            debug: true,
+            bundleExternal: false
+        };
+        bundler = bundleMethod(bundleCfg);
+        //_ref = cfg.transforms;
+        //for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        //    transform = _ref[_i];
+        //    switch (transform) {
+        //    case 'uglifyify':
+        //        bundler.transform({
+        //            global: true
+        //        }, transform);
+        //        break;
+        //    case 'minifyify':
+        //        bundler.plugin(transform, {
+        //            output: cfg.dest + '/' + cfg.filename
+        //        });
+        //        break;
+        //    default:
+        //        bundler.transform(riotify);
+        //    }
+        //}
+
+        for (module in pkg['dependencies']) {
+            bundler.external(module);
+        }
+        for (module in pkg['browser']) {
+            bundler.external(module);
+        }
+        bundle = function() {
+            bundleLogger.start();
+            return bundler.bundle()
+                .on('error', handleErrors)
+                .pipe(source(cfg.filename))
+                .pipe(gulp.dest(cfg.dest))
+                .pipe(notify.message('Finished bundling ' + name))
+                .on('end', function() {
+                    return bundleLogger.end();
+                });
+        };
+        if (global.isWatching) {
+            bundler.on('update', bundle);
+        }
+        return bundle();
     };
-    bundler = bundleMethod(bundleCfg);
-    _ref = cfg.transforms;
-    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-      transform = _ref[_i];
-      switch (transform) {
-        case 'uglifyify':
-          bundler.transform({
-            global: true
-          }, transform);
-          break;
-        case 'minifyify':
-          bundler.plugin(transform, {
-            output: cfg.dest + '/' + cfg.filename
-          });
-          break;
-        default:
-          bundler.transform(transform);
-      }
-    }
-    bundler.exclude('WNdb');
-    bundler.exclude('lapack');
-    for (module in pkg['browser']) {
-      bundler.external(module);
-    }
-    bundle = function() {
-      bundleLogger.start();
-      return bundler.bundle().on('error', handleErrors).pipe(source(cfg.filename)).pipe(gulp.dest(cfg.dest)).pipe(notify.message('Finished bundling ' + name)).on('end', function() {
-        return bundleLogger.end();
-      });
-    };
-    if (global.isWatching) {
-      bundler.on('update', bundle);
-    }
-    return bundle();
-  };
 
   gulp.task('browserify', ['browserify-dev', 'browserify-test', 'browserify-release']);
 
@@ -125,7 +134,7 @@
   });
 
   gulp.task('browserify-test', ['browserify-dev'], function() {
-    return runbrowserify('test');
+    //return runbrowserify('test');
   });
 
 }).call(this);

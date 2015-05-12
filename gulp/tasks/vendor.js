@@ -41,8 +41,10 @@
       bundleLogger = new Logger('vendor-browserify');
       bundler = browserify();
 
-      _ref = pkg['dependencies'];
-      for (module in _ref) {
+      for (module in pkg['dependencies']) {
+          bundler.require(module);
+      }
+      for (module in pkg['browser']) {
           bundler.require(module);
       }
 

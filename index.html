@@ -31,6 +31,10 @@
     <link rel="stylesheet" href="bower_components/jquery.uniform.less/themes/default/css/uniform.default.min.css" />
     <link rel="stylesheet" href="bower_components/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.css" />
     <!-- endbower -->
+
+    <!-- inject:css -->
+
+    <!-- endinject -->
     
 
 </head>
@@ -49,7 +53,7 @@
     <!--[if IE]>
         <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
-    
+    <todo />
     <!-- BEGIN HEADER -->
     <div id="header-top" class="page-header navbar navbar-fixed-top">
 	    <!-- BEGIN HEADER INNER -->
@@ -539,13 +543,7 @@
     </div>
     <!-- END CONTAINER -->
     <!-- BEGIN FOOTER -->
-    <div class="page-footer">
-	    <div class="page-footer-inner">
-		    2015 &copy; Cabrera Research Lab</div>
-	    <div class="scroll-to-top">
-		    <i class="icon-arrow-up"></i>
-	    </div>
-    </div>
+    <mm-footer></mm-footer>
     <!-- END FOOTER -->
     <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
     <!-- BEGIN CORE PLUGINS -->
@@ -560,14 +558,25 @@
     <script>
     
     this.$ = this.jQuery = require('jquery');
+    this._ = require('lodash');
+    this.riot = require('riot');
     require('bootstrap');
     require('bootstrap-hover-dropdown');
     //require('jquery-slimscroll');
 
     </script>
 
-    <!-- bower:js -->
+    <!-- inject:js -->
+
     <!-- endbower -->
+
+    <!-- inject:tag -->
+
+    <script src="src/../src/tags/footer.tag" type="riot/tag"></script>
+
+    <script src="src/../src/tags/todo.tag" type="riot/tag"></script>
+
+    <!-- endinject -->
 
     <!-- END PAGE LEVEL SCRIPTS -->
     <script>
@@ -579,7 +588,7 @@
         Index.init(); // init index page
      Tasks.initDashboardWidget(); // init tash dashboard widget
     });
-    
+        
     </script>
     <script type="text/javascript">
     (function() {

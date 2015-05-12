@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
 
@@ -30,6 +30,10 @@
     <!-- bower:css -->
 
     <!-- endbower -->
+
+    <!-- inject:css -->
+
+    <!-- endinject -->
     
 
 </head>
@@ -48,7 +52,7 @@
     <!--[if IE]>
         <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
-    
+    <todo />
     <!-- BEGIN HEADER -->
     <div id="header-top" class="page-header navbar navbar-fixed-top">
 	    <!-- BEGIN HEADER INNER -->
@@ -538,13 +542,7 @@
     </div>
     <!-- END CONTAINER -->
     <!-- BEGIN FOOTER -->
-    <div class="page-footer">
-	    <div class="page-footer-inner">
-		    2015 &copy; Cabrera Research Lab</div>
-	    <div class="scroll-to-top">
-		    <i class="icon-arrow-up"></i>
-	    </div>
-    </div>
+    <mm-footer></mm-footer>
     <!-- END FOOTER -->
     <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
     <!-- BEGIN CORE PLUGINS -->
@@ -559,15 +557,21 @@
     <script>
     
     this.$ = this.jQuery = require('jquery');
+    this._ = require('lodash');
+    this.riot = require('riot');
     require('bootstrap');
     require('bootstrap-hover-dropdown');
     //require('jquery-slimscroll');
 
     </script>
 
-    <!-- bower:js -->
+    <!-- inject:js -->
 
     <!-- endbower -->
+
+    <!-- inject:tag -->
+
+    <!-- endinject -->
 
     <!-- END PAGE LEVEL SCRIPTS -->
     <script>
@@ -579,7 +583,7 @@
         Index.init(); // init index page
      Tasks.initDashboardWidget(); // init tash dashboard widget
     });
-    
+        
     </script>
     <script type="text/javascript">
     (function() {
