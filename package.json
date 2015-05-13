@@ -17,7 +17,12 @@
   "browserify": {
     "transform": [
       "browserify-shim",
-      "riotify",
+      [
+        "riotify",
+        {
+          "type": "es6"
+        }
+      ],
       "babelify"
     ]
   },
@@ -78,6 +83,7 @@
   },
   "browser": {},
   "devDependencies": {
+    "babel": "^5.3.2",
     "babelify": "^6.1.0",
     "browser-sync": "^2.7.1",
     "browserify": "10.1.3",

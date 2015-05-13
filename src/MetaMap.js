@@ -7,3 +7,5 @@ class MetaMap {
     }
 
 }
+
+module.exports = MetaMap;
