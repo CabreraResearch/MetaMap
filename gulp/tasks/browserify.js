@@ -32,7 +32,7 @@
   config = {
     dev: {
       entries: './src/entry.js',
-      "export": {
+      export: {
         glob: './src/tags/**/*.tag',
         cwd: './src/tag'
       },
@@ -44,7 +44,7 @@
     },
     release: {
       entries: './src/entry.js',
-      "export": {
+      export: {
         glob: './src/tags/**/*.tag',
         cwd: './src/tags'
       },
@@ -78,7 +78,8 @@
             fullPaths: false,
             extensions: ['.tag'],
             debug: true,
-            bundleExternal: false
+            bundleExternal: false,
+            standalone: 'MetaMap'
         };
         bundler = bundleMethod(bundleCfg);
         //_ref = cfg.transforms;

@@ -1,4 +1,5 @@
-﻿//require('./js/integrations/auth0');
+﻿
+require('./js/integrations/auth0');
 require('./js/integrations/googleanalytics');
 require('./js/integrations/newrelic');
 require('./js/integrations/raygun');
@@ -13,4 +14,9 @@ require('./tags/page-logo.tag');
 require('./tags/page-search.tag');
 require('./tags/page-sidebar.tag');
 require('./tags/page-topmenu.tag');
+require('./tags/page-body.tag');
 riot.mount('*');
+
+var mm = require('./MetaMap');
+
+module.exports = new mm();

@@ -7,22 +7,19 @@
 
     login(username, password) {
         var authResponse;
-        authResponse = postLogin({
-            username: username,
-            password: password
-        });
+        authResponse = null;
         return authResponse;
     }
 
     getSession() {
         var promise;
-        promise = app.api.getCurrentUser();
+        promise = null;
         return promise;
     }
 
     logout() {
         var logoutReq;
-        logoutReq = getLogout();
+        logoutReq = null;//getLogout();
         return logoutReq;
     }
 }
