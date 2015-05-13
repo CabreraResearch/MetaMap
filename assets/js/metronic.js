@@ -3,8 +3,6 @@ Core script to handle the entire theme and core functions
 **/
 var Metronic = function() {
 
-    require('jquery-slimscroll');
-
     // IE mode
     var isRTL = false;
     var isIE8 = false;

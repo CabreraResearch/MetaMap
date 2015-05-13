@@ -1,8 +1,5 @@
 ﻿
-var Raygun, rayGun;
-Raygun = require('raygun4js');
-
-rayGun = function (config) {
+var rayGun = function (config) {
     var apiKey;
     if (config == null) {
         config = {};

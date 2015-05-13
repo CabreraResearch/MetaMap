@@ -1,4 +1,5 @@
 <page-header>
+
     <div id="header-top" class="page-header navbar navbar-fixed-top">
 
         <div id="header-content" class="page-header-inner">

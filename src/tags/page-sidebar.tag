@@ -11,18 +11,16 @@
             <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
             <!-- DOC: Set data-keep-expand="true" to keep the submenues expanded -->
             <!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
-            <ul class="page-sidebar-menu " data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
+            <ul class="page-sidebar-menu " data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200" onclick={ parent.once }>
 
-                <!-- Distinctions -->
-
-                <li each={ data }>
+                <li each={ data }  onclick={ parent.once }>
                     <a if={ icon } href="javascript:;">
                         <i class={ icon } style="color:#{ color };"></i>
                         <span class="title">{ title }</span>
                         <span class="arrow "></span>
                     </a>
-                    <ul if={hasMenu} class="sub-menu">
-                        <li each={menu}>
+                    <ul if={ menu.length } class="sub-menu">
+                        <li each={ menu }>
                             <a href="javascript:;">
                                 <i class={ icon }></i>
                                 <span class="title">{ title }</span>
@@ -32,7 +30,7 @@
                 </li>
 
             </ul>
-            <!-- END SIDEBAR MENU -->
+
         </div>
     </div>
 
@@ -162,6 +160,10 @@
             }
             ]
         }];
+
+        once() {
+            _.once(window.Layout.init);
+        }
 
     </script>
 </page-sidebar>
