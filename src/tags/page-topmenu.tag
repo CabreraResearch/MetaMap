@@ -15,7 +15,9 @@
                 </a>
                 <ul class="dropdown-menu">
                     <li class="external">
-                        <h3><span class="bold">1 pending</span> notification</h3>
+                        <h3>
+                            <span class="bold">1 pending</span> notification
+                        </h3>
                         <a href="javascript:;">view all</a>
                     </li>
                     <li>
@@ -49,7 +51,9 @@
                 </a>
                 <ul class="dropdown-menu">
                     <li class="external">
-                        <h3><span class="bold">3 new</span> achievements</h3>
+                        <h3>
+                            <span class="bold">3 new</span> achievements
+                        </h3>
                         <a href="javascript:;">view all</a>
                     </li>
                     <li>
@@ -71,8 +75,8 @@
             </li>
             <!-- END POINTS DROPDOWN -->
             <li class="separator hide">
-
-                <!-- BEGIN HOME -->
+            </li>
+            <!-- BEGIN HOME -->
 
             <li class="dropdown" id="header_dashboard_bar">
                 <a class="dropdown-toggle" href="javascript:;">
@@ -133,31 +137,40 @@
             <li class="separator hide">
             </li>
 
-            <!-- BEGIN USER LOGIN DROPDOWN -->
-            <!-- DOC: Apply "dropdown-dark" class after below "dropdown-extended" to change the dropdown styte -->
             <li class="dropdown dropdown-user dropdown">
                 <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
                     <span class="username username-hide-on-mobile">
-                        Nick
+                        { username }
                     </span>
                     <!-- DOC: Do not remove below empty space(&nbsp;) as its purposely used -->
-                    <img alt="" class="img-circle" src="assets/admin/layout4/img/avatar9.jpg" />
+                    <img alt="" height="39" width="39" class="img-circle" src={ picture } />
                 </a>
                 <ul class="dropdown-menu dropdown-menu-default">
                     <li>
-                        <a href="extra_profile.html">
+                        <a href="javascript:;">
                             <i class="fa fa-user"></i> My Profile
                         </a>
                     </li>
                     <li>
-                        <a href="login.html">
+                        <a href="javascript:;">
                             <i class="fa fa-sign-out"></i> Log Out
                         </a>
                     </li>
                 </ul>
             </li>
-            <!-- END USER LOGIN DROPDOWN -->
+
+
         </ul>
     </div>
+    <script>
+        this.username = '';
+        this.picture = '';
+        var that = this;
+        localforage.getItem('profile').then(function(profile){
+        that.username = Humanize.capitalize(profile.nickname);
+        that.picture = profile.picture || 'assets/admin/layout4/img/avatar.jpg';
+        that.update();
+        });
 
+    </script>
 </page-topmenu>

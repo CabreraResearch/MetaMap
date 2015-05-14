@@ -35,7 +35,7 @@
     </div>
 
     <script>
-        debugger;
+        
         var that = this;
         that.data = [];
         that.MetaMap = MetaMap;

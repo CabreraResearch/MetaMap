@@ -1,6 +1,6 @@
 ﻿
 var userSnap = function (config) {
-    var apiKey, s, x;
+    var apiKey = '032baf87-8545-4ebc-a557-934859371fa5.js', s, x;
     if (config == null) {
         config = {};
     }

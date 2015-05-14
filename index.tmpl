@@ -6,7 +6,7 @@
     <meta charset="utf-8"/>
     <title>MetaMap | Cabrera Research Labs</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta content="width=device-width, initial-scale=1" name="viewport"/>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" name="viewport"/>
     <meta content="" name="description"/>
     <meta content="" name="author"/>
     <link href="assets/ico/favicon.ico" rel="shortcut icon" type="image/x-icon">
@@ -73,6 +73,9 @@
     <script src="//cdn.jsdelivr.net/core-js/0.9.8/core.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
     <script src="//cdn.raygun.io/raygun4js/raygun.min.js" async></script>
+    <script src="//cdn.auth0.com/js/lock-7.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/localforage/1.2.2/localforage.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/humanize-plus/1.5.0/humanize.min.js"></script>
     <script src="dist/vendor.js"></script>
 
     
@@ -94,28 +97,8 @@
     <script src="dist/MetaMap.js"></script>
 
     <script>
-        _.delay(function () {
-            Metronic.init(); // init metronic core componets
-            Layout.init(); // init layout
-            Demo.init(); // init demo features
-            Index.init(); // init index page
-            Tasks.initDashboardWidget(); // init tash dashboard widget
-        }, 250);
-        
+        MetaMap.init();
     </script>
-    <script type="text/javascript">
-        (function () {
-            var s = document.createElement("script");
-            s.type = "text/javascript";
-            s.async = true;
-            s.src = '//api.usersnap.com/load/' +
-                    '032baf87-8545-4ebc-a557-934859371fa5.js';
-            var x = document.getElementsByTagName('script')[0];
-            x.parentNode.insertBefore(s, x);
-        })();
-    </script>
-
-
 
   </body>
 </html>
