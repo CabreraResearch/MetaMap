@@ -2,6 +2,9 @@
 
     constructor() {
         this.lock = new Auth0Lock('wsOnart23yViIShqT4wfJ18w2vt2cl32', 'metamap.auth0.com');
+        this.lock.on('loading ready', (...e) => {
+            
+        });
     }
 
     login() {
@@ -13,6 +16,8 @@
                     fulfill(profile);
                 } else {
                     that.lock.show({
+                        closable: false,
+                        loginAfterSignup: true,
                         authParams: {
                             scope: 'openid offline_access'
                         }
@@ -69,7 +74,7 @@
     logout() {
         localforage.removeItem('id_token');
         localforage.removeItem('refresh_token');
-        this.lock.logout();
+        window.location.reload();
     }
 }
 module.exports = Auth0;

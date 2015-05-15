@@ -137,40 +137,50 @@
             <li class="separator hide">
             </li>
 
-            <li class="dropdown dropdown-user dropdown">
+            <li onclick={ parent.once } class="dropdown dropdown-user dropdown">
                 <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
                     <span class="username username-hide-on-mobile">
                         { username }
                     </span>
                     <!-- DOC: Do not remove below empty space(&nbsp;) as its purposely used -->
-                    <img alt="" height="39" width="39" class="img-circle" src={ picture } />
+                    <img alt="" height="39" width="39" class="img-circle" src="{ picture }" />
                 </a>
-                <ul class="dropdown-menu dropdown-menu-default">
+                <ul onclick="{ parent.log }" class="dropdown-menu dropdown-menu-default">
                     <li>
                         <a href="javascript:;">
                             <i class="fa fa-user"></i> My Profile
                         </a>
                     </li>
-                    <li>
-                        <a href="javascript:;">
-                            <i class="fa fa-sign-out"></i> Log Out
+                    <li onclick="{ parent.log }" onmouseenter="{ parent.log }">
+                        <a href="javascript:;" onclick="{ parent.log }">
+                            <i class="fa fa-sign-out" onclick="{ parent.log }"></i> Log Out
                         </a>
                     </li>
                 </ul>
             </li>
-
-
         </ul>
     </div>
     <script>
         this.username = '';
         this.picture = '';
+
+
+        this.once = function() {
+        console.log('foo');
+        }
+
         var that = this;
         localforage.getItem('profile').then(function(profile){
-        that.username = Humanize.capitalize(profile.nickname);
+        that.username = profile.nickname;
         that.picture = profile.picture || 'assets/admin/layout4/img/avatar.jpg';
         that.update();
         });
+
+        this.logout = function() {
+        debugger;
+        MetaMap.Auth0.logout();
+        }
+
 
     </script>
 </page-topmenu>

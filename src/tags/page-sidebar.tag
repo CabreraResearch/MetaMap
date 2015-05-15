@@ -13,7 +13,7 @@
             <!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
             <ul class="page-sidebar-menu " data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
 
-                <li each={ data }  onclick={ parent.once }>
+                <li each={ data }>
                     <a if={ icon } href="javascript:;">
                         <i class={ icon } style="color:#{ color };"></i>
                         <span class="title">{ title }</span>
@@ -35,7 +35,7 @@
     </div>
 
     <script>
-        
+       
         var that = this;
         that.data = [];
         that.MetaMap = MetaMap;

@@ -15,7 +15,6 @@ require('./tags/page-search.tag');
 require('./tags/page-sidebar.tag');
 require('./tags/page-topmenu.tag');
 require('./tags/page-body.tag');
-require('./tags/topmenu/menu-user.tag');
 
 var mm = require('./MetaMap');
 

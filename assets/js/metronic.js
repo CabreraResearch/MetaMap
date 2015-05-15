@@ -407,7 +407,7 @@ var Metronic = function() {
           Hold dropdown on click  
         */
         $('body').on('click', '.dropdown-menu.hold-on-click', function(e) {
-            e.stopPropagation();
+            //e.stopPropagation();
         });
     };
 
