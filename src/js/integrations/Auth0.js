@@ -45,7 +45,7 @@
                 if (err) {
                     reject(err);
                 } else {
-                    fulfill(profile);
+                    fulfill(profile, id_token);
                 }
             });
         }

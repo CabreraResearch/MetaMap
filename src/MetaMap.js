@@ -20,7 +20,13 @@ class MetaMap {
                 Index.init(); // init index page
                 Tasks.initDashboardWidget(); // init tash dashboard widget
             }, 250);
+            this.MetaFire.init();
         });
+    }
+
+    logout() {
+        this.MetaFire.logout();
+        this.Auth0.logout();
     }
 }
 
