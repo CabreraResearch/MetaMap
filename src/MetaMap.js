@@ -1,4 +1,4 @@
-﻿var MetaFire = require('./js/integrations/firebase');
+var MetaFire = require('./js/integrations/firebase');
 var Auth0 = require('./js/integrations/auth0');
 var usersnap = require('./js/integrations/usersnap');
 

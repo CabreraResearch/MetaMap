@@ -1,4 +1,4 @@
-﻿class MetaFire {
+class MetaFire {
 
     constructor () {
         this.fb = new Firebase("https://popping-fire-897.firebaseio.com");

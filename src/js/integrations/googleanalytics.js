@@ -1,4 +1,4 @@
-﻿
+
 var googleAnalytics = function (config) {
     var apiKey, e, r;
     if (config == null) {

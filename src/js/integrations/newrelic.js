@@ -1,4 +1,4 @@
-﻿
+
 var newRelic = function (config) {
     var appId, licenseKey;
     if (config == null) {

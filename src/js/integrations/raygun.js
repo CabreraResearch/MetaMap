@@ -1,4 +1,4 @@
-﻿
+
 var rayGun = function (config) {
     var apiKey;
     if (config == null) {

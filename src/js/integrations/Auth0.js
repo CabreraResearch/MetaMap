@@ -1,4 +1,4 @@
-﻿class Auth0 {
+class Auth0 {
 
     constructor() {
         this.lock = new Auth0Lock('wsOnart23yViIShqT4wfJ18w2vt2cl32', 'metamap.auth0.com');
@@ -45,6 +45,8 @@
                 if (err) {
                     reject(err);
                 } else {
+                    localforage.setItem('id_token', id_token);
+                    localforage.setItem('profile', profile);
                     fulfill(profile, id_token);
                 }
             });
