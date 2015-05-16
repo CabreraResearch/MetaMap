@@ -1,6 +1,6 @@
 // functions for creating and manipulating the map (i.e. Diagram)
 
-SandbankEditor.Map = function ($scope, $http, $resource, $timeout, $modal, $log) {
+SandbankEditor.Map = function($scope, $http, $resource, $timeout, $modal, $log) {
 
     var self = this;
 
@@ -45,44 +45,44 @@ SandbankEditor.Map = function ($scope, $http, $resource, $timeout, $modal, $log)
         ];
     }
 
-    this.getAnalytics = function () {
+    this.getAnalytics = function() {
         return _analytics;
     };
-    this.getAttachments = function () {
+    this.getAttachments = function() {
         return _attachments;
     };
-    this.getAutosave = function () {
+    this.getAutosave = function() {
         return _autosave;
     };
-    this.getGenerator = function () {
+    this.getGenerator = function() {
         return _generator;
     };
     // this.getHistory = function () { return _history; };
-    this.getLayouts = function () {
+    this.getLayouts = function() {
         return _layouts;
     };
-    this.getPerspectives = function () {
+    this.getPerspectives = function() {
         return _perspectives;
     };
-    this.getPresenter = function () {
+    this.getPresenter = function() {
         return _presenter;
     };
-    this.getStandards = function () {
+    this.getStandards = function() {
         return _standards;
     };
-    this.getTemplates = function () {
+    this.getTemplates = function() {
         return _templates;
     };
-    this.getTests = function () {
+    this.getTests = function() {
         return _tests;
     };
-    this.getUi = function () {
+    this.getUi = function() {
         return _ui;
     };
 
     // -------------- map init ------------------
 
-    this.init = function () {
+    this.init = function() {
 
         // initialize components
         _analytics = new SandbankEditor.Analytics($scope, $http, self);
@@ -99,7 +99,7 @@ SandbankEditor.Map = function ($scope, $http, $resource, $timeout, $modal, $log)
         _ui = new SandbankEditor.UI($scope, $timeout, $http, $resource, $modal, $log, self);
 
         // call init for each component, if defined
-        _.each(getComponents(), function (component) {
+        _.each(getComponents(), function(component) {
             if (component && component.init)
                 component.init();
         });
@@ -121,16 +121,17 @@ SandbankEditor.Map = function ($scope, $http, $resource, $timeout, $modal, $log)
         _templates.addExportFooter();
 
         // watch for tab changes
+        // TODO: restore non-Angular version of this
         //$scope.$watch('currentTab', function(newValue, oldValue) {
         //    self.currentTabChanged(newValue, oldValue);
         //});
     };
 
     // this is called by a $scope.$watch in init()
-    this.currentTabChanged = function (newValue, oldValue) {
+    this.currentTabChanged = function(newValue, oldValue) {
         // console.log('currentTabChanged, newValue: ' + newValue + ', oldValue: ' + oldValue);
         // notify any interested components
-        _.each(getComponents(), function (component) {
+        _.each(getComponents(), function(component) {
             if (component && component.currentTabChanged) {
                 component.currentTabChanged(newValue, oldValue);
             }
@@ -139,7 +140,7 @@ SandbankEditor.Map = function ($scope, $http, $resource, $timeout, $modal, $log)
         //$scope.safeApply();
     };
 
-    this.getDiagram = function () {
+    this.getDiagram = function() {
         return _diagram;
     };
 
@@ -151,12 +152,12 @@ SandbankEditor.Map = function ($scope, $http, $resource, $timeout, $modal, $log)
         // select text when activating editor; 
         // use shift-enter to create new lines, enter to finish editing (NB: editor has multiline=true)
         var textTool = _diagram.toolManager.textEditingTool;
-        textTool.doActivate = function () {
+        textTool.doActivate = function() {
             go.TextEditingTool.prototype.doActivate.call(textTool);
             if (textTool.defaultTextEditor !== null) {
                 textTool.defaultTextEditor.select();
 
-                textTool.defaultTextEditor.addEventListener("keydown", function (e) {
+                textTool.defaultTextEditor.addEventListener("keydown", function(e) {
                     if (e.which == 13 && !e.shiftKey) {
                         go.TextEditingTool.prototype.acceptText.call(textTool, go.TextEditingTool.LostFocus);
                     }
@@ -165,7 +166,7 @@ SandbankEditor.Map = function ($scope, $http, $resource, $timeout, $modal, $log)
         };
 
         // handle delete key on Mac (default behavior only uses fn-Delete to delete from canvas)
-        _diagram.commandHandler.doKeyDown = function () {
+        _diagram.commandHandler.doKeyDown = function() {
             var e = _diagram.lastInput;
             var cmd = _diagram.commandHandler;
             if (e.event.which === 8) {
@@ -221,13 +222,13 @@ SandbankEditor.Map = function ($scope, $http, $resource, $timeout, $modal, $log)
             "LinkRelinked",
             "ViewportBoundsChanged"
         ];
-        _.each(diagramEvents, function (eventName) {
-            _diagram.addDiagramListener(eventName, function (e) {
+        _.each(diagramEvents, function(eventName) {
+            _diagram.addDiagramListener(eventName, function(e) {
                 broadcastDiagramEvent(eventName, e);
             });
         });
 
-        _diagram.addDiagramListener("BackgroundContextClicked", function (e) {
+        _diagram.addDiagramListener("BackgroundContextClicked", function(e) {
             // TODO: turn off in production
             //console.log('diagram model:' + _diagram.model.toJson());
         });
@@ -237,14 +238,14 @@ SandbankEditor.Map = function ($scope, $http, $resource, $timeout, $modal, $log)
     // to any components that may be interested, including this one.
     function broadcastDiagramEvent(eventName, e) {
         self.handleDiagramEvent(eventName, e);
-        _.each(getComponents(), function (component) {
+        _.each(getComponents(), function(component) {
             if (component && component.handleDiagramEvent)
                 component.handleDiagramEvent(eventName, e);
         });
-        //$scope.safeApply();
+        $scope.safeApply();
     }
 
-    this.handleDiagramEvent = function (eventName, e) {
+    this.handleDiagramEvent = function(eventName, e) {
         //console.log('handleDiagramEvent: ' + eventName);
         if (eventName == 'ChangedSelection') {
             changedSelection(e);
@@ -298,7 +299,7 @@ SandbankEditor.Map = function ($scope, $http, $resource, $timeout, $modal, $log)
             _diagram.model.setDataProperty(link.data, 'category', 'P');
             _diagram.model.commitTransaction("change link category");
         }
-            // prevent links from R to P
+        // prevent links from R to P
         else if (link.fromPortId == 'R') {
             _diagram.model.startTransaction("change link toPort");
             _diagram.model.setDataProperty(link.data, 'toPort', 'R');
@@ -366,7 +367,7 @@ SandbankEditor.Map = function ($scope, $http, $resource, $timeout, $modal, $log)
 
     // computes the bounds of all groups in the diagram - this includes all ideas/things, 
     // and excludes nodes, including slides, the slide blocker, and the export footer
-    this.computeMapBounds = function () {
+    this.computeMapBounds = function() {
         var groups = new go.List(go.Group);
         var nodes = _diagram.nodes;
         while (nodes.next()) {
@@ -380,7 +381,7 @@ SandbankEditor.Map = function ($scope, $http, $resource, $timeout, $modal, $log)
     // ------------ what is currently selected? ----------------
 
     // returns true if all selected items are things (i.e. Groups), including r-things
-    this.thingsSelected = function () {
+    this.thingsSelected = function() {
         if (_diagram == null || _diagram.selection.count < 1)
             return false;
 
@@ -394,12 +395,12 @@ SandbankEditor.Map = function ($scope, $http, $resource, $timeout, $modal, $log)
     };
 
     // returns true if exactly one thing (Group) is selected
-    this.thingSelected = function () {
+    this.thingSelected = function() {
         return _diagram !== null && _diagram.selection.count == 1 && _diagram.selection.first() instanceof go.Group;
     };
 
     // if a single group is selected, returns it, otherwise returns null
-    this.getUniqueThingSelected = function () {
+    this.getUniqueThingSelected = function() {
         if (_diagram !== null && _diagram.selection.count == 1 && _diagram.selection.first() instanceof go.Group) {
             return _diagram.selection.first();
         } else {
@@ -407,7 +408,7 @@ SandbankEditor.Map = function ($scope, $http, $resource, $timeout, $modal, $log)
         }
     };
 
-    this.thingsSelectedAreMembersOf = function (group) {
+    this.thingsSelectedAreMembersOf = function(group) {
         if (_diagram === null || _diagram.selection.count < 1)
             return false;
 
@@ -420,7 +421,7 @@ SandbankEditor.Map = function ($scope, $http, $resource, $timeout, $modal, $log)
         return true;
     };
 
-    this.thingsSelectedAreDescendantsOf = function (group) {
+    this.thingsSelectedAreDescendantsOf = function(group) {
         if (_diagram === null || _diagram.selection.count < 1)
             return false;
 
@@ -434,7 +435,7 @@ SandbankEditor.Map = function ($scope, $http, $resource, $timeout, $modal, $log)
         return true;
     };
 
-    this.thingsSelectedIncludeSlide = function () {
+    this.thingsSelectedIncludeSlide = function() {
         if (_diagram === null || _diagram.selection.count < 1)
             return false;
 
@@ -449,7 +450,7 @@ SandbankEditor.Map = function ($scope, $http, $resource, $timeout, $modal, $log)
     };
 
     // returns true if all selected items are relationships (i.e. Links)
-    this.relationshipsSelected = function () {
+    this.relationshipsSelected = function() {
         if (_diagram === null || _diagram.selection.count < 1)
             return false;
 
@@ -463,21 +464,18 @@ SandbankEditor.Map = function ($scope, $http, $resource, $timeout, $modal, $log)
     };
 
     // returns true if exactly one relationship (Link) is selected
-    this.relationshipSelected = function () {
+    this.relationshipSelected = function() {
         return _diagram !== null && _diagram.selection.count == 1 && _diagram.selection.first() instanceof go.Link;
     };
 
     // ------------ load and initialize model -------------
 
-    this.load = function () {
+    this.load = function() {
         var url = $scope.mapUrl + '.json';
         if ($scope.sandbox) {
             url = $scope.mapUrl + '.json?sandbox=1';
         }
-        //$http.get(url).then(
-        //    function(response) { // success
-        //        if (response.status === 200) {
-        //console.log('map.load, response.data.map.data: ' + response.data.map.data);
+        //TODO: restore non-Angular http-get for map data
         var data = { "map": { "metadata": { "sandbox": false, "id": 5547, "name": "Untitled Map", "url": "/maps/5547", "canEdit": true, "updatedAt": "2015-05-15T12:29:40.721-04:00", "updatedBy": null, "updatedByName": null, "userTags": [] }, "data": { "class": "go.GraphLinksModel", "nodeIsLinkLabelProperty": "isLinkLabel", "linkLabelKeysProperty": "labelKeys", "linkFromPortIdProperty": "fromPort", "linkToPortIdProperty": "toPort", "nodeDataArray": [{ "key": 1, "text": "New Idea", "isGroup": true, "loc": "0 0", "layout": "left", "sExpanded": true, "pExpanded": true }], "linkDataArray": [] }, "stateData": null, "editorOptions": null, "analytics": {}, "versions": [] } };
         _diagram.model = go.Model.fromJson(data);
         _ui.setStateData(data.map.stateData);
@@ -489,7 +487,7 @@ SandbankEditor.Map = function ($scope, $http, $resource, $timeout, $modal, $log)
         _diagram.model.addChangedListener(_autosave.modelChanged);
         _autosave.saveOnModelChanged = true;
         _diagram.isReadOnly = !$scope.canEdit;
-        //$scope.updateEditStatus($scope.canEdit ? $scope.LAST_UPDATED : $scope.READ_ONLY);
+        $scope.updateEditStatus($scope.canEdit ? $scope.LAST_UPDATED : $scope.READ_ONLY);
         _ui.resetZoom();
         self.loadMapExtraData(data.map);
 
@@ -497,19 +495,13 @@ SandbankEditor.Map = function ($scope, $http, $resource, $timeout, $modal, $log)
         if ($scope.thinkquery || !_diagram.model.nodeDataArray.length) {
             _ui.openTab(_ui.TAB_ID_GENERATOR);
         }
-            // if we have slides, play presentation
+        // if we have slides, play presentation
         else if (!$scope.canEdit && _presenter.getSlideNodeDatas().length) {
             _presenter.playSlide(1);
         }
-        //}
-        //    },
-        //    function(reason) { // error
-        //        alert('Could not load MetaMap');
-        //    }
-        //);
-    };
+    }
 
-    this.loadForSandbox = function () {
+    this.loadForSandbox = function() {
         _diagram.model = go.Model.fromJson($scope.mapData);
         _ui.setStateData(''); // important! (otherwise corner highlighting breaks)
         _diagram.updateAllTargetBindings();
@@ -521,7 +513,7 @@ SandbankEditor.Map = function ($scope, $http, $resource, $timeout, $modal, $log)
         if ($scope.thinkquery) {
             _ui.openTab(_ui.TAB_ID_GENERATOR);
         }
-            // if we have slides, play presentation
+        // if we have slides, play presentation
         else if (_presenter.getSlideNodeDatas().length) {
             _presenter.playSlide(1);
         }
@@ -529,9 +521,9 @@ SandbankEditor.Map = function ($scope, $http, $resource, $timeout, $modal, $log)
     };
 
     // fix any structural problems in the model before displaying it
-    this.checkModel = function () {
+    this.checkModel = function() {
         // change "isLinkLabel" property to category:"LinkLabel" (change as of goJS 1.3)
-        _.each(_diagram.model.nodeDataArray, function (nodeData, index, list) {
+        _.each(_diagram.model.nodeDataArray, function(nodeData, index, list) {
             if (nodeData.isLinkLabel) {
                 delete nodeData.isLinkLabel;
                 nodeData.category = "LinkLabel";
@@ -540,9 +532,9 @@ SandbankEditor.Map = function ($scope, $http, $resource, $timeout, $modal, $log)
 
         // check for the link label (r-thing) for a link being the same as the from or to node 
         // - this can cause infinite recursion in thinks like layout.getScale
-        _.each(_diagram.model.linkDataArray, function (linkData, index, list) {
+        _.each(_diagram.model.linkDataArray, function(linkData, index, list) {
             var badLabelKeys = [];
-            _.each(linkData.labelKeys, function (key, index2, list2) {
+            _.each(linkData.labelKeys, function(key, index2, list2) {
                 if (key == linkData.from || key == linkData.to) {
                     console.log('labelKey same as from or to of link: ' + key);
                     badLabelKeys.push(key);
@@ -558,20 +550,20 @@ SandbankEditor.Map = function ($scope, $http, $resource, $timeout, $modal, $log)
     // we also need to be able to update them here after an autosave
 
     // TODO: is this still all needed with the newer userProfile stuff?
-    this.loadMapExtraData = function (mapData) {
-        //$scope.safeApply(function() {
-        //    //console.log('map.loadMapExtraData, mapData: ' + mapData);
-        //    $scope.mapUserTags = mapData.metadata.userTags; // TODO: is this used anywhere?
+    this.loadMapExtraData = function(mapData) {
+        $scope.safeApply(function() {
+            //console.log('map.loadMapExtraData, mapData: ' + mapData);
+            $scope.mapUserTags = mapData.metadata.userTags; // TODO: is this used anywhere?
 
-        //    //$scope.map.getHistory().versionList = mapData.versions;
-        //    $scope.map.getAnalytics().mapAnalytics = mapData.analytics;
-        //});
+            //$scope.map.getHistory().versionList = mapData.versions;
+            $scope.map.getAnalytics().mapAnalytics = mapData.analytics;
+        });
     };
 
     // loads model data for an individual version and displays it
     // NB: this also disables autosave; load() must be called to re-enable it
-    this.loadVersion = function (id) {
-        $http.get('/map_versions/' + id).then(function (response) {
+    this.loadVersion = function(id) {
+        $http.get('/map_versions/' + id).then(function(response) {
             if (response.status === 200) {
                 try {
                     //console.log('loaded map version with ID: ' + id);
@@ -592,7 +584,7 @@ SandbankEditor.Map = function ($scope, $http, $resource, $timeout, $modal, $log)
     // set whether editing capability is temporarily suspended -
     // this is distinct from the global $scope.canEdit setting,
     // which if false prevents editing at all times
-    this.setEditingBlocked = function (val) {
+    this.setEditingBlocked = function(val) {
         if ($scope.canEdit) {
             _diagram.isReadOnly = val;
         }
@@ -611,7 +603,7 @@ SandbankEditor.Map = function ($scope, $http, $resource, $timeout, $modal, $log)
         };
     }
 
-    this.createSister = function (thing) {
+    this.createSister = function(thing) {
         if (!$scope.canEdit) {
             return null;
         }
@@ -632,7 +624,7 @@ SandbankEditor.Map = function ($scope, $http, $resource, $timeout, $modal, $log)
         return newSister;
     };
 
-    this.createRToSister = function (thing) {
+    this.createRToSister = function(thing) {
         if (!$scope.canEdit) {
             return null;
         }
@@ -666,7 +658,7 @@ SandbankEditor.Map = function ($scope, $http, $resource, $timeout, $modal, $log)
         return newSister;
     };
 
-    this.createChild = function (thing, name, x, y) {
+    this.createChild = function(thing, name, x, y) {
         if (!$scope.canEdit) {
             return null;
         }
@@ -687,7 +679,7 @@ SandbankEditor.Map = function ($scope, $http, $resource, $timeout, $modal, $log)
         return child;
     };
 
-    this.createRThing = function (link, name) {
+    this.createRThing = function(link, name) {
         if (!$scope.canEdit) {
             return null;
         }
@@ -718,7 +710,7 @@ SandbankEditor.Map = function ($scope, $http, $resource, $timeout, $modal, $log)
 
     // ---------- creating things with specified names/locations - for use by generator and tests ------------
 
-    this.createThing = function (x, y, name, layout) {
+    this.createThing = function(x, y, name, layout) {
         group = _diagram.toolManager.clickCreatingTool.insertPart(new go.Point(x, y));
         _diagram.model.setDataProperty(group.data, 'text', name);
         if (layout) {
@@ -727,13 +719,13 @@ SandbankEditor.Map = function ($scope, $http, $resource, $timeout, $modal, $log)
         return group;
     };
 
-    this.createRLinkWithRThing = function (thing1, thing2, name) {
+    this.createRLinkWithRThing = function(thing1, thing2, name) {
         var link = self.createRLink(thing1, thing2);
         return self.createRThing(link, name);
     };
 
     // returns the linkData object for the new link
-    this.createRLink = function (thing1, thing2) {
+    this.createRLink = function(thing1, thing2) {
         _diagram.model.startTransaction('add link');
         var data = {
             type: 'noArrows',
@@ -748,7 +740,7 @@ SandbankEditor.Map = function ($scope, $http, $resource, $timeout, $modal, $log)
     };
 
     // returns the linkData object for the new link
-    this.createPLink = function (thing1, thing2) {
+    this.createPLink = function(thing1, thing2) {
         _diagram.model.startTransaction('add link');
         var data = {
             type: 'noArrows',
@@ -780,7 +772,7 @@ SandbankEditor.Map = function ($scope, $http, $resource, $timeout, $modal, $log)
     }
 
     // drag to S
-    this.addSelectedThingsAsChildrenOf = function (group) {
+    this.addSelectedThingsAsChildrenOf = function(group) {
         var newMembers = getSelectedGroups();
 
         // check existing members so we can calculate layout
@@ -796,7 +788,7 @@ SandbankEditor.Map = function ($scope, $http, $resource, $timeout, $modal, $log)
     };
 
     // drag to D
-    this.addSelectedThingsAsSistersOf = function (group) {
+    this.addSelectedThingsAsSistersOf = function(group) {
         var oldMembers = getSelectedGroups();
 
         // if dragging to top level, move dragged things so they don't overlap the former parent
@@ -813,7 +805,7 @@ SandbankEditor.Map = function ($scope, $http, $resource, $timeout, $modal, $log)
             }
             _layouts.layoutOldMembersOutsideOf(oldMembers, group, oldMembersBounds, oldMembersLevel);
         }
-            // if not dragging to top level, place dragged things after former parent in outline
+        // if not dragging to top level, place dragged things after former parent in outline
         else {
             var it2 = oldMembers.iterator;
             while (it2.next()) {
@@ -827,7 +819,7 @@ SandbankEditor.Map = function ($scope, $http, $resource, $timeout, $modal, $log)
 
 
     // for dragging parts within a system - side is LEFT or RIGHT (i.e. above or below, resp. in inventory layout)
-    this.addSelectedThingAsOrderedSisterOf = function (group, side) {
+    this.addSelectedThingAsOrderedSisterOf = function(group, side) {
         //console.log('addSelectedThingAsOrderedSisterOf, side: ' + side);
         var thing = self.getUniqueThingSelected();
         if (!thing) {
@@ -839,7 +831,7 @@ SandbankEditor.Map = function ($scope, $http, $resource, $timeout, $modal, $log)
     // moves the first thing (sibling) to be after the second thing (group)
     // in the part ordering - they are assumed to be siblings
     // side is LEFT or RIGHT
-    this.moveSiblingNextTo = function (sibling, group, side) {
+    this.moveSiblingNextTo = function(sibling, group, side) {
         var parent = group.containingGroup;
         console.log('moveSiblingNextTo, sibling: ' + sibling + ', group: ' + group + ', parent: ' + parent + ', sibling.containingGroup: ' + sibling.containingGroup);
 
@@ -868,7 +860,7 @@ SandbankEditor.Map = function ($scope, $http, $resource, $timeout, $modal, $log)
                         _diagram.model.setDataProperty(sibling.data, 'order', order++);
                     }
                 }
-                    // don't re-add the moved thing, it was added above
+                // don't re-add the moved thing, it was added above
                 else if (member != sibling) {
                     memberOrder.add(member);
                     _diagram.model.setDataProperty(member.data, 'order', order++);
@@ -891,19 +883,19 @@ SandbankEditor.Map = function ($scope, $http, $resource, $timeout, $modal, $log)
         }
     };
 
-    this.addThingAsRThing = function (thing, link) {
+    this.addThingAsRThing = function(thing, link) {
         thing.labeledLink = link;
         thing.updateTargetBindings();
     };
 
     // D corner handler (single click)
-    this.toggleDFlag = function (thing) {
+    this.toggleDFlag = function(thing) {
         _diagram.model.setDataProperty(thing.data, 'dflag', !thing.data.dflag);
         thing.updateTargetBindings();
     };
 
     // S corner handler (single click)
-    this.toggleSExpansion = function (thing) {
+    this.toggleSExpansion = function(thing) {
         var isExpanded = !(thing.data && !thing.data.sExpanded); // expand by default if property not present
         _diagram.model.setDataProperty(thing.data, 'sExpanded', !isExpanded);
         thing.updateTargetBindings();
@@ -911,37 +903,37 @@ SandbankEditor.Map = function ($scope, $http, $resource, $timeout, $modal, $log)
     };
 
     // P corner handler (single click)
-    this.togglePExpansion = function (thing) {
+    this.togglePExpansion = function(thing) {
         _diagram.model.setDataProperty(thing.data, 'pExpanded', !self.pIsExpanded(thing));
         thing.updateTargetBindings();
         _ui.showCornerTip(thing, "P");
     };
 
-    this.pIsExpanded = function (group) {
+    this.pIsExpanded = function(group) {
         return group.data && group.data.pExpanded === true;
     };
 
     // ---------------------- undo/redo --------------------
 
-    this.canUndo = function () {
+    this.canUndo = function() {
         return _diagram.commandHandler.canUndo();
     };
 
-    this.undo = function () {
+    this.undo = function() {
         _diagram.commandHandler.undo();
         _diagram.layoutDiagram(true);
     };
 
-    this.canRedo = function () {
+    this.canRedo = function() {
         return _diagram.commandHandler.canRedo();
     };
 
-    this.redo = function () {
+    this.redo = function() {
         _diagram.commandHandler.redo();
         _diagram.layoutDiagram(true);
     };
 
-    this.refresh = function () {
+    this.refresh = function() {
         _diagram.updateAllTargetBindings();
         _diagram.layoutDiagram(true);
     };
@@ -950,7 +942,7 @@ SandbankEditor.Map = function ($scope, $http, $resource, $timeout, $modal, $log)
 
     // check for a rect with NaN X/Y/W/H coords, so we can do stuff with it such as unionRect
     // (NaN,NaN,0,0) => (0,0,0,0)
-    this.safeRect = function (rect) {
+    this.safeRect = function(rect) {
         if (isNaN(rect.x)) {
             rect.x = 0;
         }
@@ -968,11 +960,11 @@ SandbankEditor.Map = function ($scope, $http, $resource, $timeout, $modal, $log)
 
     // ------------------- debug map model ----------------------
 
-    this.loadModel = function () {
+    this.loadModel = function() {
         $('#map-model-debug').val(_diagram.model.toJson());
     };
 
-    this.saveModel = function () {
+    this.saveModel = function() {
         _diagram.model = go.Model.fromJson($('#map-model-debug').val());
         _diagram.updateAllTargetBindings();
         _diagram.model.addChangedListener(_autosave.modelChanged);

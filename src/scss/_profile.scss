@@ -1,0 +1,208 @@
+
+/* ----- account ------- */
+
+#user-account {
+  
+  .account-type { margin-bottom:20px; }
+  .plan { border-top: solid 1px $grayLight; padding:10px 0; }
+  .course { border-top: solid 1px $grayLight; padding:10px 0; }
+  .plan-name { font-weight:bold; }
+  .plan-status { clear:both; }
+  .plan-actions, .course-actions { margin-top:10px; }
+
+  #subscriptions { border-bottom: solid 1px $grayLight; margin-bottom:20px; }
+  #courses { border-bottom: solid 1px $grayLight; margin-bottom:20px; max-height:300px; overflow-y:scroll; }
+
+  dl { margin:0; }
+  dt { padding:0; width:100px; font-weight:normal; font-style:italic; text-align:right; }
+  dd { padding:0; margin-left:110px; text-align:left; }
+  
+  .subscribe-button {
+    width:100px;
+    padding: 2px 8px;
+    color: #fff;
+    background-color: #47a447;
+    background-image:none;
+    border-color: #398439;
+    text-shadow:none !important;
+  }
+
+  .cancel-subscription-button {
+    width:100px;
+    padding: 2px 8px;
+    color: #fff;
+    background-color: $errorRed;
+    background-image:none;
+    border-color: #398439;
+    text-shadow:none !important;
+  }
+}
+
+/* ----- profile ------- */
+
+
+.profile-row { @include clearfix; margin-bottom:10px; }
+.fframe { @include fframe; margin-bottom:10px; }
+
+div.admin-tag-list {@include clearfix;}
+
+div#user-profile {
+
+  padding:18px 20px;
+  background-color:whitesmoke;
+
+  label { font-weight:normal; }
+
+  #profile-form {
+    label { display:block; }
+  }
+
+  .row-fluid {
+    /*border-top: solid 1px $grayLight;*/
+    padding-top:20px;
+    margin-top:20px;
+  }
+  .row-fluid.no-border {
+    border-top:none;
+  }
+  .row-fluid .row-fluid {
+    border-top:none;
+    padding-top:0;
+    margin-top:0;
+  }
+  .span3, .span4, .span12 , .row > div.span {
+    padding:20px;
+    @include fframe;
+  }
+  .span12.separator { 
+    height:1px;
+    min-height:1px;
+  }
+  .row-fluid.heading {
+    border-bottom:none;
+  }
+  input[type=text],
+  input[type=email],
+  input[type=password] {
+    padding:4px 6px;
+  }
+
+  .person-list {
+    clear:both;
+    .person {
+      float:left;
+      margin-right:5px;
+    }
+  }
+
+
+  /* ----- people ------- */
+
+  .person-list {
+    float:left;
+    margin-bottom:20px; 
+  }
+
+  .metamap-blurb {
+    margin:10px 0 20px 0;
+  }
+  .existing-badges-header {}
+  .new-badges-header {}
+  .existing-badges .badge-list { margin-top:10px; }
+
+  .stat-number { display:inline; font-weight:bold; }
+
+  .password-error { color:red; }
+}
+
+#profile-edit-status {
+  position: absolute;
+  top: 10px;
+  left: 270px;
+  width: 200px;
+  height:50px;
+  color:#666;
+  font-size:14px;
+  z-index: 1200;
+}
+
+#about-me {
+  width: 240px;
+  height:80px;
+}
+
+#avatar-img { margin-bottom:10px; }
+input#avatar-upload {
+  line-height:16px;
+  margin:10px 0 0 20px
+}
+
+.flow-checks {
+  label {
+    width: 250px;
+    float:left;
+  }
+}
+
+#user-profile .account-button {
+  padding: 2px 8px;
+  margin:10px 10px 0 0;
+  color: #fff;
+  background-color: #47a447;
+  background-image:none;
+  border-color: #398439;
+  text-shadow:none;
+}
+
+#user-profile .invite-button {
+  
+  display: block;
+  width:100px;
+  margin-top: 10px;
+  padding: 4px 12px;
+  color: #fff;
+  background-color: #47a447;
+  background-image:none;
+  border-color: #398439;
+  text-shadow:none;
+}
+
+/* --- avatars --- */
+
+sb-user-avatar {
+  img {
+    height:60px;
+    width:60px;
+  }
+}
+
+/******************************** MEDIA QUERIES ****************/
+
+@media (min-width:768px) {
+  .profile-row { 
+    h3 { font-size:24px; }
+  }
+
+}
+
+@media (min-width:1024px) {
+  #user-account {
+    .column-single { padding-right:20px; }
+  }
+  .profile-row {
+    > div { float:left; }
+    div.fframe { margin-left:1%; margin-bottom:0px;
+      &:nth-child(odd) { margin-left:0px; }
+    }
+      > div.column-double {
+      width:69%;
+    }
+
+    > div.column-single { width:30%; }
+  }
+  .fframe {
+    div.column-single { width:50%; float:left; box-sizing:border-box;}
+  }
+
+
+}

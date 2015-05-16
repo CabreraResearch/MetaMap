@@ -705,14 +705,16 @@ window.UserCtrl = function($rootScope, $scope, $http, $modal, $upload) {
     // avoid '$apply already in progress' error (source: https://coderwall.com/p/ngisma)
     $scope.safeApply = function(fn) {
         //console.log('safeApply on scope: ' + $scope);
-        var phase = this.$root.$$phase;
-        if (phase == '$apply' || phase == '$digest') {
+
+        // TODO? restore non-Angular version of this method
+        //var phase = this.$root.$$phase;
+        //if (phase == '$apply' || phase == '$digest') {
             if (fn && (typeof(fn) === 'function')) {
                 fn();
             }
-        } else {
-            this.$apply(fn);
-        }
+        //} else {
+        //    this.$apply(fn);
+        //}
     };
 
     // source: http://ctrlq.org/code/19616-detect-touch-screen-javascript

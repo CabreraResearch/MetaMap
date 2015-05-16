@@ -1,0 +1,304 @@
+/*
+ * Main css for webfamily
+ */
+
+@import 'variables';
+@import 'shared';
+@import 'bootstrap';
+@import 'alertify.bootstrap';
+
+// Override - general classes
+//body { padding-top: 55px; }
+h3 { margin-top: 10px; }
+h5, h6 { line-height: 1.3; }
+p { line-height: 1.5; }
+.main-container { padding: 15px; min-height: 575px; }
+
+header { padding-bottom: 1px; border-bottom: solid 1px #ccc; }
+
+.form-group select { font-size:120%; }
+
+// basic frame for content
+.fframe { border-radius: 8px; background-color: white; } //box-shadow: 0px 1px 1px $body-border; --> Used for theme with $body-bg: #f5f5f5
+
+// fframe layout
+.divider { margin-top: 5px; }
+.section { margin-top: 20px; }
+
+// fframe colors
+.red { background-color: #f2634c; color: white;}
+.green { background-color: #96c93d; color: white;}
+.blue { background-color: #4cbfc2; color: white;}
+.orange { background-color: #fbaa35; color: white;}
+.black { background-color: #aaaaaa; color: white;}
+.grey { background-color: #f5f5f5; }
+.white { background-color: white; }
+
+// content fit inside fframe
+.full-fit { padding: 1px; }
+.fit { padding: 20px; }  
+.text-fit { padding: 5px 35px; }
+.text-fit-col { padding: 20px 35px; margin: 2px; }
+.text-fit-item { padding: 1px; margin: 4px 2px -36px 2px; }
+.db-text-fit-col { padding: 10px; margin: 2px; }
+.fit-col { padding: 20px; margin: 2px; }
+
+// misc classes
+.padbottom { padding-bottom:  10px; }
+.padtop { padding-top:  10px;}
+.smaller-font { font-size:80%; }
+.center { text-align: center; }
+.right { text-align: right; }
+.img-center { display: block; margin: auto; }
+.img-full { border-radius: 12px; }
+.img-circle { border-style: solid; border-width: 2px; }
+.leader-editor { margin: 15px 0 0 -30px; }
+
+// Autosizing iframes for videos - youtube and vimeo: /* 16:9 */ 
+.videoWrapper { position: relative; padding-bottom: 56.25%; padding-top: 25px; height: 0; }
+.videoWrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+
+// Override - Buttons
+.btn-nav { margin: 15px; }
+.btn-primary { border: 1px $brand-primary solid; background-color: $brand-primary; }
+.btn-primary:hover { background-color: lighten($brand-primary, 10%); border-color: lighten($brand-primary, 10%); }
+.btn-li { margin: -5px 0 0 15px; padding: 5px 10px; font-size: 12px; line-height: 1.5; border-radius: 3px; }
+.btn-pricing-set { margin: 10px 0 5px 0; }
+
+
+// Footer
+.footer { margin-top: 40px; padding: 12px 0; border-top: 1px $body-border solid; background: white; font-size: 80%; }
+.footer-support { padding: 0 6px; }
+.footer-social { padding: 0 2px; }
+.footer-image { margin-top: -3px }
+
+
+// User Dashboard
+.dashboard-nav-main { padding: 40px 0; }
+.dashboard-nav-editor { margin-top: -50px; }
+.dashboard-avatar { border-radius: 6px; margin-right: 10px; }
+
+.course-summary {
+  clear:both;
+  padding:2px 0;
+
+  .course-code { display:inline; font-style:italic; color: $gray; }
+
+  sb-buy-course-button {
+    float:right;
+  }
+}
+
+// Count me in page
+.cmi-count { color: $brand-primary; margin-top: 7px; }
+.cmi-button-set { margin-top: 83px }
+
+
+// News on Home page
+.item-news { border: 1px solid $body-border; padding: 4px 10px 4px 0; }
+.icon-news { background-color: $body-border; padding: 5px 20px; border-top-left-radius: 7px; border-bottom-left-radius: 7px; margin-right: 20px; font-weight: bold; }
+
+
+// Navigation Tabs
+.nav-pills > li > a { border-radius: 2px; padding: 1px 10px; color: $button-color; }
+.nav-pills > li > a:hover { color: $brand-primary; background-color: white; }
+.nav-pills > li + li { margin-left: 6px; }
+.nav-pills > li.active > a, .nav-pills > li.active > a:hover, .nav-pills > li.active > a:focus { color: $brand-primary; background-color: white; }
+
+.nav-markets > li > a { color: $navbar-default-brand-color; padding: 0; }
+.nav-markets > li > a:hover { font-weight: bold; }
+.nav-markets > li.active > a, .nav-markets > li.active > a:hover { font-weight: bold; }
+
+.nav li a:hover { 
+  background-color: transparent !important; 
+}
+
+.tab-editor { margin:10px -40px 0 0; }
+.market-item { 
+  background-color: $body-border; 
+  padding: 10px;
+  position: relative;
+  bottom: 39px; 
+  border-bottom-right-radius: 8px;
+  border-bottom-left-radius: 8px; 
+}
+
+
+// Sliders on Home pages
+.carousel { margin:0 -15px 20px -15px; }
+.carousel-inner { padding: 0 17px 2px 17px; }
+.carousel-inner h3, 
+.carousel-inner h5 { text-align:left; }
+.carousel-control { width: 85%; opacity: 1; top: initial;   bottom: -22px; }
+.carousel-control.right { background-image: none; text-align: center; }
+.carousel-control.left { background-image: none; text-align: center; }
+.carousel-indicators { bottom: -35px; }
+.carousel-indicators > .active { background: #666666; }
+.carousel-indicators > li { border: 1px solid #666666; border-radius: 3px; }
+
+.slider-editor { margin: 10px -25px 0 0; }
+.slider-form-set { margin-top: 25px; }
+.slider-new-editor { margin-top: -35px; }
+.slider-index-editor { margin: 20px -35px 0 0; }
+
+
+// Course page
+.lesson-step { list-style-type: none; padding: 0; }
+.lesson-step > li { margin: 3px 0; padding: 5px 20px; border: 1px $body-bg solid; border-radius: 12px; }
+.lesson-step > li:hover { background-color: $body-bg; }
+.lesson-expander { margin-left: -20px; cursor: pointer; }
+.lesson-mover { margin:-40px 0 0 -60px; }
+.lesson-editor { margin:-30px -10px 0 0; }
+.step-mover { margin: 10px 0 0 -40px; }
+
+.icon-complete { color: #96c93d; margin: 16px 20px 16px 0}
+.icon-incomplete { color: $body-border; margin: 16px 20px 16px 0}
+
+.supress-a, .supress-a:hover { color: #333333; text-decoration: none; }
+.nav-supress-a, .nav-supress-a:hover { color: white; text-decoration: none; }
+
+
+// Feedback Rating on Step pages
+.rate { padding: 0 20px; }
+.rate:hover { color:#96c93d; }
+.rated { color:#96c93d; }
+
+.rating-form-set { margin-top:-10px; }
+
+.btn-rating { border: 0; background-color: transparent; }
+.btn-rating:active { box-shadow: 0; }
+.rating-button-set { 
+  padding-top: 8px; 
+  form {
+    width:75px;
+    text-align:center;
+  }
+  .rating-label { font-size:12px; }
+
+}
+
+
+// Solutions
+.solution-editor { margin-right: -35px; }
+.solution-editor-leader { margin: 20px -35px; }
+.solution-index-editor { margin-top: -22px; }
+
+
+// Blogs
+.blog-index-editor { margin: -35px -65px 0 0; }
+.blog-tag-list { width: 420px; }
+.icon-add-tag { margin: 10px 0 0 5px; font-size: medium; }
+.btn-li-tag { margin: 1px 0 1px 5px;  padding: 3px 7px; font-size: 11px; line-height: 1.5; border-radius: 3px; }
+.btn-li-tag-nav { margin: 0px 0 3px 20px; padding: 3px 7px; font-size: 11px; line-height: 1.5; border-radius: 3px; }
+
+// Validation
+form .help-inline { color: $error; }
+
+// Nation profile
+#nation-profile-form {
+  fieldset { margin-top: 30px; }
+  legend { font-size:120%; }
+  p { margin: 5px 20px; }
+  .control-group.organization_name, .control-group.organization_vision { 
+    display: inline; 
+    .controls { display:inline; }
+  }
+  input#organization_vision { text-align:right; width:50px; }
+  #culture-checks {
+    list-style: none;
+    margin: 10px 0 10px 30px;
+    padding:0;
+    li { margin: 5px 0;}
+    label { font-weight: normal; }
+  }
+  .culture-preview { 
+    max-height:120px; 
+    overflow:scroll; 
+    margin-bottom:10px;
+    h3 {font-size: 120%; }
+    a.btn { display:none; }
+  }
+}
+
+// step comments
+.step-comments {
+  clear:both;
+  background:#fff;
+  width:50%;
+
+  .step-comment-count {
+    background:whitesmoke;
+    /*border-bottom:solid 1px #ddd;*/
+    padding:5px 10px;
+    margin: 0px 0px 5px 0px;
+    position:relative;
+    button { margin-top:-3px; }
+  }
+
+  .comment { 
+    position:relative;
+    @include clearfix;
+    border-bottom:dotted 1px #ccc;
+    padding:5px 0px;
+    &:last-child { border-bottom:none; padding-bottom:0px; }
+    .comment-author { font-weight:bold; display:inline; padding-right: 5px; }
+    .comment-text { display:inline; }
+    .comment-time { font-size:90%; color:#888; padding-left:25px; }
+
+    sb-user-avatar {
+      float:none;
+      display:inline;
+      margin:0 5px 0 0;
+      img {  
+        height:40px;
+        width:40px;
+      }
+    }
+
+    .dropdown-caret {
+      background:url(/assets/arrow-down-small.png) no-repeat center center !important;
+      width:10px;
+      height:10px;
+      position:absolute;
+      top:10px;
+      right:0;
+      bottom:5px;
+      font-size: 80%;
+      color:#ccc;
+      button { font-weight:bold; cursor:pointer; }
+    }
+    .dropdown-menu {
+      right:0;
+      left:auto;
+      top:22px;
+      li { padding: 0 10px; }
+      button { background-color: #fff; }
+    }
+  }
+
+}
+
+// count me in
+
+#count-me-in-tabs {
+  .count-me-in-tab {
+    float:left;
+    width:30%;
+    min-height:100px; 
+    margin: 20px 0 0 20px;
+
+    h5 { margin-left:20px; }
+
+    &:first-child {
+      width:80%;
+      float:none;
+      margin:20px auto;
+    }
+
+    .tab-editor, .solution-editor {
+      margin: 10px 10px 0 0; 
+    }
+  }
+
+}
+

@@ -1,0 +1,152 @@
+
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:300,700);
+
+$body-bg:                     #ffffff; //#f5f5f5;
+$body-border:                 #e5e5e5;
+$button-color:                #b5b5b5;
+$font-family-sans-serif:      'Open sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+$navbar-height:               60px;
+$navbar-default-bg:           white;
+$navbar-default-brand-color:  #424242;
+$brand-primary:               #4cbfc2;
+$error:                       red;
+
+$darkgrey:#939598;
+
+$gray: #999999;
+$grayMedium: #b5b5b5;
+$grayLight: #dddddd;
+$grayExtraLight: #f5f5f5;
+$mapBackground: #fdfdfd;
+
+$feedBlue: #0A7CD3;
+$feedBlueLighter: #43a1e9;
+
+$helpYellow: rgb(252, 252, 207);
+$errorRed: #dd1144;
+
+$button-disabled-color:#e6e6e6;
+
+$red:#f2624c;
+$green:#96c93d;
+$orange:#fbaa36;
+$blue:#4cbfc2;
+
+$orangetext:#e89012;
+$greentext:#76ad16;
+$redtext:#ea482f;
+$bluetext:#2bb1b5;
+
+$redbackground:#ffab95;
+$greenbackground:#ccf18b;
+$bluebackground:#9df1f3;
+$orangebackground:#ffd18f;
+
+$body-border:#e5e5e5;
+
+// DSRP colors - also referenced in templates.js
+// corners: D top left red, S bottom left green, R bottom right blue, P top right orange
+
+$colorD: $red;
+$colorS: $green;
+$colorR: $blue;
+$colorP: $orange;
+
+$colorDText: $redtext;
+$colorSText: $greentext;
+$colorRText: $bluetext;
+$colorPText: $orangetext;
+
+$colorDBackground: $redbackground;
+$colorSBackground: $greenbackground;
+$colorRBackground: $bluebackground;
+$colorPBackground: $orangebackground;
+
+
+.colorD { color: $colorD; }
+.colorS { color: $colorS; }
+.colorR { color: $colorR; }
+.colorP { color: $colorP; }
+
+.colorDText { color: $colorDText; }
+.colorSText { color: $colorSText; }
+.colorRText { color: $colorRText; }
+.colorPText { color: $colorPText; }
+
+.colorDBackground { background-color: $colorDBackground; }
+.colorSBackground { background-color: $colorSBackground; }
+.colorRBackground { background-color: $colorRBackground; }
+.colorPBackground { background-color: $colorPBackground; }
+
+
+/*  Theme Variables  */
+
+//$canvas-color: #2F2F2F;
+//$canvas-font-color: #f9f9f9;
+//$primary-color: #3693cf;
+//$primary-font-color: #fff;
+
+$canvas-color: #fff;     //Can change this variable color
+$canvas-font-color: #999;   //Can change this variable color
+$primary-color: #3693cf;    //Can change this variable color
+$primary-font-color: #fff;  //Can change this variable color
+
+$top-bar-color: #000;
+
+/*  Optional Variables  Ex- Success, Error, Info, Warning  */
+
+$goGreen: #74b749;        //Can change this variable color
+$lemonYellow: #ffb400;    //Can change this variable color
+$nagpurOrange: #ed6d49;   //Can change this variable color
+$jetBlue: #0daed3;        //Can change this variable color
+$rubyRed: #f63131;        //Can change this variable color
+
+$slideSorterPlaceholderColor: #e0fbff;
+
+
+/*  Default Black and White Colors  */
+
+$white: #fff;               //White Color - Should not change
+$black: #000;               //Black Color - Should not change
+
+
+@mixin clearfix {
+  &:after {
+    clear: both;
+    content: ".";
+    display: block;
+    height: 0;
+    visibility: hidden;
+  }
+}
+
+@mixin linear-gradient($top-color:#cccccc, $bottom-color:#666666 ) {
+  background: $bottom-color;
+  background:-moz-linear-gradient(top, $top-color 0%, $bottom-color 100%); /* firefox */
+  background:-webkit-gradient(linear, left top, left bottom, color-stop(0%,$top-color), color-stop(100%,$bottom-color)); /* webkit */
+  background: linear-gradient(top, $top-color, $bottom-color); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( GradientType=0, startColorstr=#{$top-color}, endColorstr=#{$bottom-color}); /* ie */
+  /*-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='$top-color', EndColorStr='$bottom-color')";*/
+  /*height: 1%;For IE7*/
+}
+
+@mixin black-button {
+  background:#333; 
+  color:#fff; 
+  border-radius:3px;
+  padding:5px 12px;
+  &:hover { background-color:#999!important; }
+}
+
+@mixin canvas-block {
+  background:#f6f6f6;
+  border:solid 1px #ccc;
+}
+
+@mixin fframe {
+  border-radius: 12px;
+  background-color: white;
+  box-shadow: 0px 1px 2px $body-border;
+  padding:20px 35px;
+  box-sizing:border-box;
+}

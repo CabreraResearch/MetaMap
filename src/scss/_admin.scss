@@ -1,0 +1,371 @@
+
+/* --- admin pages --- */
+
+#users_table {
+  a.dropdown-toggle { width: 20px; }
+  ul.dropdown-menu li a { color: #000; }
+  ul.dropdown-menu li a.btn { background:transparent; }
+}
+
+.sub-nav {
+  background-color: #e0e0e0;
+
+  h1 {
+    font-size: 20px;
+    /*color: white;*/
+    padding: 0;
+    margin: 0 40px 0 20px;
+    float: left;
+  }
+
+  .btn-group {
+    display: block;
+  }
+  ul {
+    list-style: none;
+    li {
+      display:inline-block;
+      margin:2px 10px;
+    }
+  }
+
+}
+
+.right-sidebar {
+  form {
+    input[type=text], input[type=number], input[type=email], input[type=url] {
+      width: 160px;
+      &.input-xxlarge {
+        width: 530px;
+      }
+    }
+    select {
+      width: 200px;
+    }
+
+    .widget {
+      padding: 10px;
+      background: darken($white, 3%);
+      @include transition(All, 0.5s, ease);
+      border: 1px solid darken($white, 15%);
+      margin-bottom: 4px;
+      .widget-header {
+        @include linear-gradient(#fdfdfd, #eaeaea);
+        border-bottom: 1px solid #e0dede;
+        height: 24px;
+        line-height: 24px;
+        padding: 10px;
+        margin: -10px -10px 10px;
+        .title {
+          color: lighten($black, 20%);
+          float: left;
+          font-weight: bold;
+          font-size: 16px;
+        }
+      }
+      .form-actions {
+        margin: 10px -10px -10px;
+      }
+    }
+
+  }
+}
+
+.clear {
+  clear: both;
+}
+
+form {
+  margin-bottom: 0;
+  .inline-inputs {
+    label.checkbox {
+      display: inline-block;
+    }
+  }
+}
+
+.form-actions {
+  input, button, a {
+    margin-right: 12px;
+  }
+}
+
+.form-horizontal {
+  h3 {
+    margin-left: 180px;
+    margin-top: 40px;
+  }
+}
+
+div.filters {
+  float: right;
+  input[type=text], select {
+    width: 180px;
+  }
+}
+
+div.nested-form {
+  & + div.input {
+    margin-left: 180px;
+    margin-bottom: 20px;
+  }
+}
+
+div.nested-form-item {
+  clear: both;
+  padding-bottom: 40px;
+  &.removed {
+    background: #fbabab;
+  }
+  input[type=text] {
+    width: 230px;
+  }
+}
+
+#date-form {
+  display: inline-block;
+  margin-left: 16px;
+  img {
+    cursor: pointer;
+  }
+  #date {
+    position: absolute;
+    visibility: hidden;
+  }
+}
+
+.box {
+  h3 {
+    margin-top: 0;
+    line-height: normal;
+    font-size: 125%;
+    text-transform: uppercase;
+    color: rgba(34, 25, 25, 0.75);
+  }
+
+}
+
+dl {
+  dt {
+    float: left;
+    width: 150px;
+    clear: both;
+    padding: 4px 0;
+    font-weight: bold;
+  }
+  dd {
+    margin-left: 150px;
+    padding: 4px 0;
+  }
+}
+
+textarea {
+  height: 100px;
+  width: 400px;
+}
+
+div.inline-inputs {
+  span, select, input[type=text] {
+    vertical-align: top;
+  }
+}
+
+div.nested-form {
+  label {
+    float: none;
+    margin-right: 12px;
+    margin-left: 12px;
+    &:first-child {
+      margin-left: 0px;
+    }
+  }
+  select {
+    width: auto;
+  }
+  span.uneditable-input {
+    width: auto;
+    display: inline;
+  }
+  input.btn {
+    margin-left: 20px;
+  }
+}
+
+div.rate {
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #b7b7b7;
+}
+
+#edit-modal {
+  label {
+    font-weight: bold;
+  }
+}
+
+hr + h3 {
+  margin-left: 180px;
+}
+
+body.dashboard {
+  .span5, .span6 {
+    margin-top: 30px;
+  }
+}
+
+#setup-tabs {
+  .tab-pane {
+    font-size: 16px;
+  }
+}
+
+.dropdown-menu.bootstrap-timepicker,
+.dropdown-menu.datepicker {
+  background: #fff;
+}
+
+hr.soften {
+  height: 1px;
+  margin: 70px 0;
+  background-image: -webkit-linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, .1), rgba(0, 0, 0, 0));
+  background-image: -moz-linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, .1), rgba(0, 0, 0, 0));
+  background-image: -ms-linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, .1), rgba(0, 0, 0, 0));
+  background-image: -o-linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, .1), rgba(0, 0, 0, 0));
+  border: 0;
+  clear: both;
+}
+
+.form-horizontal {
+  .nav-tabs {
+    margin-bottom: 0;
+  }
+}
+
+#loading-indicator {
+  position: fixed;
+  z-index: 200;
+  top: 0px;
+  left: 0px;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+
+  #spinner {
+    position: fixed;
+    width: 50px;
+    height: 50px;
+    left: 50%;
+    top: 50%;
+    margin-left: -25px;
+    margin-top: -25px;
+    opacity: 0.8;
+    border-radius: 6px;
+    background: black url("/assets/ajax-loader.gif") center center no-repeat;
+  }
+}
+
+
+.container-fluid {
+  padding:0;
+}
+
+#app-container {
+
+  #view-container {
+    position: absolute;
+    top: 40px;
+    bottom: 45px;
+    width: 100%;
+  }
+  #dashboard {
+    margin-top: 20px;
+  }
+  #dashboard .sidebar .well {
+    padding: 8px 0;
+    margin-top: 15px;
+  }
+
+  ul.nav-tabs {
+    padding-bottom: 0;
+    margin-bottom: 0;
+  }
+  .tab-pane {
+    padding: 10px 0;
+  }
+  .tab-pane .alert {
+    margin-bottom: 0;
+  }
+
+}
+
+/* icons for table sorting */
+.column-sort-indicator {
+  display:inline-block;
+  margin: 0 10px;
+
+  &.asc {
+    width: 0; 
+    height: 0; 
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid black;
+    padding-top:3px;
+  }
+  &.desc {
+    width: 0; 
+    height: 0; 
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 5px solid black;
+  }
+}
+
+
+
+.dashboard-wrapper.admin {
+  background: $mapBackground;
+  margin: 0 20px; 
+
+  form { margin: 0 30px; }
+  label { font-weight:normal; }
+  .form-actions { text-align:right; }
+
+  .control-group {
+    clear:both;
+  }
+
+  .control-group.boolean {
+    label, input { float:left; margin: 0 5px; }
+  }
+
+  table {
+    td,th { font-size:14px; }
+    a.btn, input.btn { font-size:12px; padding:2px; @include black-button; 
+      &:hover { background-color:#999; }
+    }
+    a.btn { float:left; }
+  }
+  .left-sidebar .widget { background:#fff;}
+  .right-sidebar {
+    top:10px;
+    .btn-success { font-size:16px; }
+    .wrapper:first-child {
+      padding:0px;
+      a {
+        padding:8px 0px;
+        @include black-button;
+        &:hover { background-color:#999; }
+      }
+    }
+    
+    .form-actions {
+      a, input { 
+        padding:4px 10px; @include black-button;
+        &:hover { background-color:#999; } 
+      
+      }
+    }
+  }
+}
+.right-sidebar form .widget .widget-header { background:#f5f5f5; }

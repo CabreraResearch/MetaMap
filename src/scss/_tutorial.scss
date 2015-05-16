@@ -1,0 +1,188 @@
+#tutorial {
+  display: none;
+
+  // full-screen modal backdrop:
+
+  .cover {
+    position: fixed;
+    z-index:101;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.8);
+    display: none;
+  }
+
+  &.covered .cover {
+    display: block;
+  }
+
+  // button visibility:
+
+  .start-btn, .skip-btn, .done-btn { display:none; }
+
+  &.begin {
+    // last card of the first section
+    .btn { display: none; }
+    .next-btn, .prev-btn { display:none !important; }
+    .start-btn, .skip-btn { display:inline-block; }
+  }
+
+  &.end {
+    #tutorial-box { /*width:650px; margin-left:-325px;*/}
+    // last card in the last section
+    .btn { display:none; }
+    .next-btn, .tutorial-progress { display:none !important; }
+    .done-btn { display:block; }
+  }
+}
+
+// intro and end screen (modal) layout:
+
+#tutorial-box {
+  position: absolute;
+  left: 50%;
+  bottom: 130px;
+  z-index:1000;
+  width: 900px;
+  margin-left: -450px;
+
+  .cover {
+    position: absolute;
+  }
+
+  .tutorial {
+    text-align:center;
+    background: #FFF;
+    padding: 20px;
+    /*overflow: auto;
+    max-height: 405px;*/
+    @include clearfix;
+    @include box-shadow(0px, 0px, 10px, rgba(0, 0, 0, 0.3));
+  }
+}
+
+// guide (interactive / non-modal) layout:
+
+#tutorial.guide #tutorial-box {
+  left: 40%;
+  top: 100px;
+  /*bottom:130px;*/
+  width: 300px;
+  margin-left: -40%;
+
+  .tutorial {
+    box-shadow: 0px 0px 5px rgba(50, 50, 50, 0.25);
+    padding-right:180px;
+    height:1000px;
+  }
+}
+
+.tutorial-controls {
+  clear:both;
+  display:inline-block;
+  margin-top:0;  
+  .btn { @include black-button; padding:5px 10px; display:inline-block; float:left; margin:0px 5px; }
+}
+.tutorial-progress { clear:both; padding-top:10px; font-weight:bold; font-size:14px;}
+
+.tutorial-card {
+  @include clearfix;
+  text-align:left;
+  &.welcome { text-align:center; padding-top:110px; background:url(/assets/logo-95.png) no-repeat center 10px; }
+}
+
+.tutorial-logo:before {  float:left; width:32px; height:32px; content:" "; display:block; background:url(/assets/icon-info-tutorial.png) no-repeat left center; margin-right:10px; background-size:32px 32px; }
+.tutorial {
+  h1 { margin-bottom:30px; }
+  .graphic-frame {
+    float:left;
+    margin-left:20px;
+    &:first-child { margin:0px; }
+    &.D {
+      width:150px;
+      .frame-top { background:url(/assets/tutorial-graphic-D.png) no-repeat left top; }
+      p { color:$red; }
+    }
+    &.S {
+      width:180px;
+      .frame-top { background:url(/assets/tutorial-graphic-S.png) no-repeat left top;}
+      p { color:$green; }
+    }
+    &.R {
+      width:190px;
+      .frame-top { background:url(/assets/tutorial-graphic-R.png) no-repeat left top; width:188px; }
+      p { color:$blue; }
+    }
+    &.P {
+      width:220px;
+      
+      .frame-top { width:219px; }
+      p { color:$orange; }
+    }
+  }
+  .frame-top { margin:0px auto; background:url(/assets/tutorial-graphic-P.png) no-repeat left top; width:79px; height:170px; margin-bottom:10px; }
+  p { text-align:center;  }
+
+/*
+  .step-all {
+    background:url(/assets/icon-tutorial.png) no-repeat left top;
+  }
+  .step-S {
+    background:url(/assets/icon-tutorial-S.png) no-repeat left top;
+  }
+  .step-D {
+    background:url(/assets/icon-tutorial-D.png) no-repeat left top;
+  }
+  .step-R {
+    background:url(/assets/icon-tutorial-R.png) no-repeat left top;
+  }
+  .step-P {
+    background:url(/assets/icon-tutorial-P.png) no-repeat left top;
+  }
+  */
+  .tutorial-outro {
+    h1 { background:url(/assets/icon-tutorial-outro-32.png) no-repeat left center;}
+    p { text-align:left; }
+  }
+}   
+
+.guide {
+  .tutorial-card {
+    padding-left:24px;
+    h2 { font-weight:bold; font-size:15px; margin:0 0 10px 0; }
+    h3 { font-weight:bold; font-size:13px; margin:0 0 10px 0; }
+    p { font-size:12px; }
+  }
+  .tutorial {
+    p  { text-align:left; }
+    .tutorial-section { position:absolute; top: 100px; right:20px; bottom:20px; }
+    .tutorial-controls { clear:none; position:absolute; top:20px; right:20px; }
+  }
+}
+
+.end {
+  .tutorial-card {
+   > * { padding-left:44px; }
+  }
+}
+
+@media (max-width:768px) {
+  .tutorial .graphic-frame { width:50%!important; margin-left:0px; }
+}
+
+@media ( max-width:1000px ) {
+  #tutorial.guide #tutorial-box {
+    width: 300px;
+    margin-left: -40%;
+  }
+  #tutorial #tutorial-box { 
+    margin:auto; 
+    height:70%; 
+    width: 95%; 
+    left:0px; 
+    right:0px; 
+    top:200px; 
+    bottom:0px; }
+}
