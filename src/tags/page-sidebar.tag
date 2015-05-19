@@ -13,7 +13,7 @@
             <!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
             <ul class="page-sidebar-menu " data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
 
-                <li each={ data }>
+                <li onclick="{ parent.click }" each={ data }>
                     <a if={ icon } href="javascript:;">
                         <i class={ icon } style="color:#{ color };"></i>
                         <span class="title">{ title }</span>
@@ -35,6 +35,8 @@
     </div>
 
     <script>
+       
+       this.click = function() {console.log('foo')}
        
         var that = this;
         that.data = [];

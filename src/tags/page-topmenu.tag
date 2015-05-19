@@ -137,7 +137,7 @@
             <li class="separator hide">
             </li>
 
-            <li onclick={ parent.once } class="dropdown dropdown-user dropdown">
+            <li class="dropdown dropdown-user dropdown">
                 <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
                     <span class="username username-hide-on-mobile">
                         { username }
@@ -145,15 +145,15 @@
                     <!-- DOC: Do not remove below empty space(&nbsp;) as its purposely used -->
                     <img alt="" height="39" width="39" class="img-circle" src="{ picture }" />
                 </a>
-                <ul onclick="{ parent.log }" class="dropdown-menu dropdown-menu-default">
+                <ul class="dropdown-menu dropdown-menu-default">
                     <li>
                         <a href="javascript:;">
                             <i class="fa fa-user"></i> My Profile
                         </a>
                     </li>
-                    <li onclick="{ parent.log }" onmouseenter="{ parent.log }">
-                        <a href="javascript:;" onclick="{ parent.log }">
-                            <i class="fa fa-sign-out" onclick="{ parent.log }"></i> Log Out
+                    <li onclick="{ logout }">
+                        <a href="javascript:;">
+                            <i class="fa fa-sign-out"></i> Log Out
                         </a>
                     </li>
                 </ul>
@@ -164,21 +164,15 @@
         this.username = '';
         this.picture = '';
 
-
-        this.once = function() {
-        console.log('foo');
-        }
-
         var that = this;
         localforage.getItem('profile').then(function(profile){
-        that.username = profile.nickname;
-        that.picture = profile.picture || 'assets/admin/layout4/img/avatar.jpg';
-        that.update();
+            that.username = profile.nickname;
+            that.picture = profile.picture || 'assets/admin/layout4/img/avatar.jpg';
+            that.update();
         });
 
         this.logout = function() {
-        debugger;
-        MetaMap.Auth0.logout();
+            MetaMap.Auth0.logout();
         }
 
 

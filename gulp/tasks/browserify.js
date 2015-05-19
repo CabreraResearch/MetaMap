@@ -15,16 +15,8 @@
 
   source = require('vinyl-source-stream');
 
-  glob = require('glob');
-
-  debug = require('gulp-debug');
-
-  basename = require('path').basename;
-
   pkg = require('../../package.json');
 
-  uglify = require('uglifyify');
-    
   var riotify = require('riotify');
 
   transforms = [riotify];

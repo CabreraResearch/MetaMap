@@ -192,12 +192,12 @@ window.MapEditorCtrl = function($rootScope, $scope, $http, $resource, $timeout, 
 
             if (!$scope.sandbox) {
                 // overview diagram
-                var overview = go.GraphObject.make(go.Overview, "overview-diagram", {
-                    observed: $scope.map.getDiagram(),
-                    contentAlignment: go.Spot.Center
-                });
-                var outline = overview.box.elements.first();
-                outline.stroke = "#333";
+                //var overview = go.GraphObject.make(go.Overview, "overview-diagram", {
+                //    observed: $scope.map.getDiagram(),
+                //    contentAlignment: go.Spot.Center
+                //});
+                //var outline = overview.box.elements.first();
+                //outline.stroke = "#333";
             }
 
             if ($scope.mapUrl) {
