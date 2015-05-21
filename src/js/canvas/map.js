@@ -154,7 +154,7 @@ SandbankEditor.Map = function($scope) {
         var textTool = _diagram.toolManager.textEditingTool;
         textTool.doActivate = function() {
             go.TextEditingTool.prototype.doActivate.call(textTool);
-            if (textTool.defaultTextEditor !== null) {
+            if (textTool.defaultTextEditor) {
                 textTool.defaultTextEditor.select();
 
                 textTool.defaultTextEditor.addEventListener("keydown", function(e) {
@@ -312,7 +312,7 @@ SandbankEditor.Map = function($scope) {
     // since P port is on top of R port, so we reset both ports to R if the category is not P.
     function linkRelinked(e) {
         var link = e.subject;
-        if (link.data.category === undefined || link.data.category !== 'P') {
+        if (!link.data.category || link.data.category !== 'P') {
             _diagram.model.setDataProperty(link.data, 'fromPort', 'R');
             _diagram.model.setDataProperty(link.data, 'toPort', 'R');
         }
@@ -382,7 +382,7 @@ SandbankEditor.Map = function($scope) {
 
     // returns true if all selected items are things (i.e. Groups), including r-things
     this.thingsSelected = function() {
-        if (_diagram == null || _diagram.selection.count < 1)
+        if (!_diagram || _diagram.selection.count < 1)
             return false;
 
         var it = _diagram.selection.iterator;
@@ -396,12 +396,12 @@ SandbankEditor.Map = function($scope) {
 
     // returns true if exactly one thing (Group) is selected
     this.thingSelected = function() {
-        return _diagram !== null && _diagram.selection.count == 1 && _diagram.selection.first() instanceof go.Group;
+        return _diagram  && _diagram.selection.count == 1 && _diagram.selection.first() instanceof go.Group;
     };
 
     // if a single group is selected, returns it, otherwise returns null
     this.getUniqueThingSelected = function() {
-        if (_diagram !== null && _diagram.selection.count == 1 && _diagram.selection.first() instanceof go.Group) {
+        if (_diagram  && _diagram.selection.count == 1 && _diagram.selection.first() instanceof go.Group) {
             return _diagram.selection.first();
         } else {
             return null;
@@ -409,7 +409,7 @@ SandbankEditor.Map = function($scope) {
     };
 
     this.thingsSelectedAreMembersOf = function(group) {
-        if (_diagram === null || _diagram.selection.count < 1)
+        if (!_diagram || _diagram.selection.count < 1)
             return false;
 
         var it = _diagram.selection.iterator;
@@ -422,7 +422,7 @@ SandbankEditor.Map = function($scope) {
     };
 
     this.thingsSelectedAreDescendantsOf = function(group) {
-        if (_diagram === null || _diagram.selection.count < 1)
+        if (!_diagram || _diagram.selection.count < 1)
             return false;
 
         var it = _diagram.selection.iterator;
@@ -436,7 +436,7 @@ SandbankEditor.Map = function($scope) {
     };
 
     this.thingsSelectedIncludeSlide = function() {
-        if (_diagram === null || _diagram.selection.count < 1)
+        if (!_diagram || _diagram.selection.count < 1)
             return false;
 
         var it = _diagram.selection.iterator;
@@ -451,7 +451,7 @@ SandbankEditor.Map = function($scope) {
 
     // returns true if all selected items are relationships (i.e. Links)
     this.relationshipsSelected = function() {
-        if (_diagram === null || _diagram.selection.count < 1)
+        if (!_diagram || _diagram.selection.count < 1)
             return false;
 
         var it = _diagram.selection.iterator;
@@ -465,7 +465,7 @@ SandbankEditor.Map = function($scope) {
 
     // returns true if exactly one relationship (Link) is selected
     this.relationshipSelected = function() {
-        return _diagram !== null && _diagram.selection.count == 1 && _diagram.selection.first() instanceof go.Link;
+        return _diagram  && _diagram.selection.count == 1 && _diagram.selection.first() instanceof go.Link;
     };
 
     // ------------ load and initialize model -------------

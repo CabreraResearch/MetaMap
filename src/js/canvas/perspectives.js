@@ -38,15 +38,15 @@ SandbankEditor.Perspectives = function($scope, map) {
     // ---------- P/D Editor state
 
     this.isInPOrDEditorMode = function() {
-        return map.getUi().state.perspectivePointKey !== null || map.getUi().state.distinctionThingKey !== null;
+        return map.getUi().state.perspectivePointKey || map.getUi().state.distinctionThingKey;
     };
 
     this.isInPEditorMode = function() {
-        return map.getUi().state.perspectivePointKey !== null;
+        return map.getUi().state.perspectivePointKey;
     };
 
     this.isInDEditorMode = function() {
-        return map.getUi().state.distinctionThingKey !== null;
+        return map.getUi().state.distinctionThingKey ;
     };
 
     this.isPEditorPoint = function(group) {

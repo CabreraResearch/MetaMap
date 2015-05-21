@@ -955,7 +955,7 @@ SandbankEditor.Layouts = function($scope, map) {
     // -------------- link tests ---------------
 
     this.isRLink = function(link) {
-        return link instanceof go.Link && link.data && link.data.category === undefined && link.fromNode && link.toNode;
+        return link instanceof go.Link && link.data && !link.data.category && link.fromNode && link.toNode;
     };
 
     this.isDLink = function(link) {

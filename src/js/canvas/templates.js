@@ -149,7 +149,7 @@ SandbankEditor.Templates = function($scope, map) {
             return (group == map.getUi().mouseOverGroup) || // show corners on mouseover
                 ($scope.isTouchDevice() && group.isSelected) ||
                 (canDragSelectionToBecomeSistersOf(group, false) && // drag to D (make it sisters)
-                    (map.getUi().dragTargetPosition === null ||
+                    (!map.getUi().dragTargetPosition ||
                         cannotDragSelectionToBecomeOrderedSisterOf(group))); // not showing drag above/below indicators
         }
     }
@@ -163,7 +163,7 @@ SandbankEditor.Templates = function($scope, map) {
             return (group == map.getUi().mouseOverGroup) || // show corners on mouseover
                 ($scope.isTouchDevice() && group.isSelected) ||
                 (canDragSelectionToBecomeChildrenOf(group, false) && // drag to S (make it children)
-                    (map.getUi().dragTargetPosition === null ||
+                    (!map.getUi().dragTargetPosition ||
                         cannotDragSelectionToBecomeOrderedSisterOf(group))); // not showing drag above/below indicators
         }
     }
@@ -249,7 +249,7 @@ SandbankEditor.Templates = function($scope, map) {
     // side is map.LEFT or map.RIGHT
     function handleGroupMouseDrop(event, dropTarget, side) {
         //console.log('dragAboveTarget.mouseDrop, target: ' + dropTarget + ', part: ' + dropTarget .part + ', show: ' + show);
-        if (side !== null && canDragSelectionToBecomeOrderedSisterOf(dropTarget.part, side, true)) {
+        if (side  && canDragSelectionToBecomeOrderedSisterOf(dropTarget.part, side, true)) {
             map.addSelectedThingAsOrderedSisterOf(dropTarget.part, side);
         } else if (canDragSelectionToBecomeSistersOf(dropTarget.part, true)) {
             map.addSelectedThingsAsSistersOf(dropTarget.part);
@@ -446,7 +446,7 @@ SandbankEditor.Templates = function($scope, map) {
     function attachmentPaperClip() {
         return mk(go.Shape,
             new go.Binding('visible', '', function(obj) {
-                return obj.data.attachments !== null && obj.data.attachments !== undefined && obj.data.attachments.length > 0;
+                return obj.data.attachments  && obj.data.attachments !== undefined && obj.data.attachments.length > 0;
             }).ofObject(),
             new go.Binding('geometry', '', function(obj) {
                 return go.Geometry.parse(paperclipSvgPath, true);
