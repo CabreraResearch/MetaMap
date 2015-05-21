@@ -2,7 +2,7 @@
 
 window.SandbankJoinNation = {};
 
-SandbankJoinNation = function($scope, $http, $modal) {
+SandbankJoinNation = function($scope) {
 
     this.openModal = function(orgId, orgName) {
         var modalInstance = $modal.open({
@@ -61,5 +61,4 @@ SandbankJoinNation = function($scope, $http, $modal) {
         };
     };
 
-    joinModalCtrl.$inject = ['$scope', '$modalInstance', 'orgId', 'orgName'];
 };

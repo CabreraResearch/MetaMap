@@ -1,8 +1,22 @@
-window.Sandbank = {};
+class User {
+    constructor(profile) {
+        this.profile = new Proxy(profile, {
+            get: function(target, property) {
+                if (property in target) {
+                    return target[property];
+                } else {
+                    return '';
+                }
+            }
+        });
+        this.params = URI(window.location).query(true);
+    }
+}
 
-// the topmost controller for the app
+module.exports = User;
 
-window.UserCtrl = function($rootScope, $scope, $http, $modal, $upload) {
+
+window.UserCtrl = function($scope) {
 
     // query string params
     $scope.params = URI(window.location).query(true);
@@ -394,7 +408,7 @@ window.UserCtrl = function($rootScope, $scope, $http, $modal, $upload) {
     // depending which page we're on - mapId gets overridden in editor.js if we're editing a map
 
     try {
-        $scope.ccsTagging = new SandbankCcsTagging($scope, $http, $modal);
+        $scope.ccsTagging = new SandbankCcsTagging($scope);
         $scope.ccsTagging.mapId = null;
     } catch (e) {}
 
@@ -471,7 +485,7 @@ window.UserCtrl = function($rootScope, $scope, $http, $modal, $upload) {
 
     // --------- user's org memberships -----------
 
-    $scope.joinNation = new SandbankJoinNation($scope, $http, $modal);
+    $scope.joinNation = new SandbankJoinNation($scope);
 
     function getMembershipForOrg(id) {
         return _.findWhere($scope.userProfile.memberships, {
@@ -724,5 +738,3 @@ window.UserCtrl = function($rootScope, $scope, $http, $modal, $upload) {
 
     init();
 };
-
-window.UserCtrl.$inject = ['$rootScope', '$scope', '$http', '$modal', '$upload'];

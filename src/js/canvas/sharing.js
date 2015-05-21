@@ -2,7 +2,7 @@
 
 window.SandbankSharing = {};
 
-SandbankSharing = function($scope, $http, $resource, $modal, $log) {
+SandbankSharing = function($scope) {
 
     this.openModal = function(mapIds, onUpdate) {
         var modalInstance = $modal.open({
@@ -297,6 +297,4 @@ SandbankSharing = function($scope, $http, $resource, $modal, $log) {
             $modalInstance.dismiss('cancel');
         };
     };
-
-    sharingModalCtrl.$inject = ['$scope', '$modalInstance', 'userId', 'userProfile', 'mapIds', 'onUpdate'];
 };

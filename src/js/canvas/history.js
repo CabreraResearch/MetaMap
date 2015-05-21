@@ -1,6 +1,6 @@
 // functions handling history display
 
-SandbankEditor.History = function($scope, $http, map) {
+SandbankEditor.History = function($scope, map) {
 
     var self = this;
 

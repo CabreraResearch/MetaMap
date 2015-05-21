@@ -1,4 +1,4 @@
-SandbankEditor.UI = function($scope, $timeout, $http, $resource, $modal, $log, map) {
+SandbankEditor.UI = function($scope, map) {
 
     var self = this;
 
@@ -65,7 +65,7 @@ SandbankEditor.UI = function($scope, $timeout, $http, $resource, $modal, $log, m
 
     // options modal
 
-    $scope.editorOptions = new SandbankEditorOptions($scope, $http, $resource, $modal, $log);
+    $scope.editorOptions = new SandbankEditorOptions($scope);
 
     this.editOptions = function() {
         $scope.editorOptions.openModal(
@@ -432,7 +432,7 @@ SandbankEditor.UI = function($scope, $timeout, $http, $resource, $modal, $log, m
 
     // ------------ edit map UserTags ---------------
 
-    $scope.tagging = new SandbankTagging($scope, $http, $resource, $modal, $log);
+    $scope.tagging = new SandbankTagging($scope);
 
     this.editUserTags = function() {
         $scope.tagging.openModal(
@@ -446,7 +446,7 @@ SandbankEditor.UI = function($scope, $timeout, $http, $resource, $modal, $log, m
 
     // ------------ edit map sharing ---------------
 
-    $scope.sharing = new SandbankSharing($scope, $http, $resource, $modal, $log);
+    $scope.sharing = new SandbankSharing($scope);
 
     this.editMapShares = function() {
         $scope.sharing.openModal(

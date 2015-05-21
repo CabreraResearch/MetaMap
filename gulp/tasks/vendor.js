@@ -47,6 +47,9 @@
       for (module in pkg['browser']) {
           bundler.require(module);
       }
+      for (module in pkg['optionalDependencies']) {
+          bundler.require(module);
+      }
 
       bundleLogger.start();
       //bundler.transform();

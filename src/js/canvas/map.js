@@ -1,6 +1,6 @@
 // functions for creating and manipulating the map (i.e. Diagram)
 
-SandbankEditor.Map = function($scope, $http, $resource, $timeout, $modal, $log) {
+SandbankEditor.Map = function($scope) {
 
     var self = this;
 
@@ -85,18 +85,18 @@ SandbankEditor.Map = function($scope, $http, $resource, $timeout, $modal, $log) 
     this.init = function() {
 
         // initialize components
-        _analytics = new SandbankEditor.Analytics($scope, $http, self);
-        _attachments = new SandbankEditor.Attachments($scope, $http, $resource, self);
-        _autosave = new SandbankEditor.Autosave($scope, $http, self);
+        _analytics = new SandbankEditor.Analytics($scope, self);
+        _attachments = new SandbankEditor.Attachments($scope, self);
+        _autosave = new SandbankEditor.Autosave($scope, self);
         _generator = new SandbankEditor.Generator($scope, self);
-        // _history = new SandbankEditor.History($scope, $http, self);
+        // _history = new SandbankEditor.History($scope, self);
         _layouts = new SandbankEditor.Layouts($scope, self);
         _perspectives = new SandbankEditor.Perspectives($scope, self);
         _presenter = new SandbankEditor.Presenter($scope, self);
         _standards = new SandbankEditor.Standards($scope, self);
         _templates = new SandbankEditor.Templates($scope, self);
         _tests = new SandbankEditor.Tests($scope, self);
-        _ui = new SandbankEditor.UI($scope, $timeout, $http, $resource, $modal, $log, self);
+        _ui = new SandbankEditor.UI($scope, self);
 
         // call init for each component, if defined
         _.each(getComponents(), function(component) {

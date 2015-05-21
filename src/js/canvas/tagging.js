@@ -6,7 +6,7 @@
 
 window.SandbankTagging = {};
 
-SandbankTagging = function($scope, $http, $resource, $modal, $log) {
+SandbankTagging = function($scope) {
 
     this.openModal = function (mapIds, showDescription, onUpdate) {
         var modalInstance = $modal.open({
@@ -148,6 +148,4 @@ SandbankTagging = function($scope, $http, $resource, $modal, $log) {
             $modalInstance.dismiss('cancel');
         };
     };
-
-    tagsModalCtrl.$inject = ['$scope', '$modalInstance', 'mapIds', 'showDescription', 'onUpdate'];
 };

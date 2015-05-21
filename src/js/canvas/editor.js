@@ -2,9 +2,9 @@
 
 window.SandbankEditor = {};
 
-window.MapEditorCtrl = function($rootScope, $scope, $http, $resource, $timeout, $modal, $log) {
+window.MapEditorCtrl = function($scope) {
 
-    $scope.map = new SandbankEditor.Map($scope, $http, $resource, $timeout, $modal, $log);
+    $scope.map = new SandbankEditor.Map($scope);
 
     // window.mapData is set in _form view
     var metadata = window.mapData.map.metadata;
@@ -150,8 +150,6 @@ window.MapEditorCtrl = function($rootScope, $scope, $http, $resource, $timeout, 
         };
     };
 
-    sandboxSaveModalCtrl.$inject = ['$scope', '$modalInstance', 'outerScope', 'map', 'userProfile'];
-
     // ------------- edit status message for header bar ------------------
 
     $scope.editStatus = '';
@@ -284,5 +282,3 @@ window.MapEditorCtrl = function($rootScope, $scope, $http, $resource, $timeout, 
 
     init();
 };
-
-window.MapEditorCtrl.$inject = ['$rootScope', '$scope', '$http', '$resource', '$timeout', '$modal', '$log'];

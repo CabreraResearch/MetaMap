@@ -1,6 +1,6 @@
 // controller for course lesson steps
 
-window.StepCommentsCtrl = function($scope, $http) {
+window.StepCommentsCtrl = function($scope) {
 
     $scope.stepID = window.stepID; // set in views/steps/show
 
@@ -65,5 +65,3 @@ window.StepCommentsCtrl = function($scope, $http) {
             });
     };
 };
-
-window.StepCommentsCtrl.$inject = ['$scope', '$http'];

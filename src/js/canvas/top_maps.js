@@ -1,6 +1,6 @@
 // controller for list of top maps
 
-window.TopMapsCtrl = function($scope, $http, $resource, $modal, $log) {
+window.TopMapsCtrl = function($scope) {
 
     $scope.topMaps = [];
     $scope.users = [];
@@ -38,5 +38,3 @@ window.TopMapsCtrl = function($scope, $http, $resource, $modal, $log) {
     };
 
 };
-
-window.TopMapsCtrl.$inject = ['$scope', '$http', '$resource', '$modal', '$log'];

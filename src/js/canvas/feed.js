@@ -1,6 +1,6 @@
 // controller for public maps
 
-window.MapsFeedCtrl = function($scope, $http, $resource, $modal, $log) {
+window.MapsFeedCtrl = function($scope) {
 
     $scope.showAdvancedSearch = true;
     $scope.loadingFeed = false;
@@ -222,5 +222,3 @@ window.MapsFeedCtrl = function($scope, $http, $resource, $modal, $log) {
     };
 
 };
-
-window.MapsFeedCtrl.$inject = ['$scope', '$http', '$resource', '$modal', '$log'];

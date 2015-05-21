@@ -26,5 +26,3 @@ function CollapseCtrl($scope) {
             $scope.expandedElts = [elt];
     };
 }
-
-CollapseCtrl.$inject = ['$scope'];

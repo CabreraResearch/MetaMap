@@ -2,7 +2,7 @@
 
 window.SandbankCcsTagging = {};
 
-SandbankCcsTagging = function($scope, $http, $modal) {
+SandbankCcsTagging = function($scope) {
 
     var self = this;
 
@@ -195,6 +195,4 @@ SandbankCcsTagging = function($scope, $http, $modal) {
         };
 
     };
-
-    ccsTagsModalCtrl.$inject = ['$scope', '$modalInstance', 'link', 'onUpdate'];
 };

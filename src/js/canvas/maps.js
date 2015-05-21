@@ -1,6 +1,6 @@
 // controller for user's maps/dashboard
 
-window.MapsCtrl = function($scope, $http, $resource, $modal, $log) {
+window.MapsCtrl = function($scope) {
 
     $scope.searchText = '';
 
@@ -16,9 +16,9 @@ window.MapsCtrl = function($scope, $http, $resource, $modal, $log) {
     $scope.views = [];
     $scope.users = [];
 
-    $scope.tagging = new SandbankTagging($scope, $http, $resource, $modal, $log);
-    $scope.adminTagging = new SandbankAdminTagging($scope, $http, $resource, $modal, $log);
-    $scope.sharing = new SandbankSharing($scope, $http, $resource, $modal, $log);
+    $scope.tagging = new SandbankTagging($scope);
+    $scope.adminTagging = new SandbankAdminTagging($scope);
+    $scope.sharing = new SandbankSharing($scope);
 
     $scope.openTaggingModal = function() {
         $scope.tagging.openModal(
@@ -204,5 +204,3 @@ window.MapsCtrl = function($scope, $http, $resource, $modal, $log) {
             });
     }
 };
-
-window.MapsCtrl.$inject = ['$scope', '$http', '$resource', '$modal', '$log'];

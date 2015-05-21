@@ -1,6 +1,6 @@
 // functions for org profile
 
-var OrganizationCtrl = function($scope, $http, $interpolate) {
+var OrganizationCtrl = function($scope, $interpolate) {
 
     // these are set in views/organization/edit:
     // window.org
@@ -103,5 +103,3 @@ var OrganizationCtrl = function($scope, $http, $interpolate) {
     // }
 
 };
-
-OrganizationCtrl.$inject = ['$scope', '$http'];

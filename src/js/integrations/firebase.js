@@ -1,3 +1,5 @@
+let Firebase = require('firebase');
+
 class MetaFire {
 
     constructor () {

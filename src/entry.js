@@ -1,4 +1,17 @@
-﻿
+require('babel/polyfill');
+require('harmony-reflect');
+window._ = require('lodash');
+window.Promise = require('bluebird');
+require('core-js');
+window.$ = window.jQuery = require('jquery');
+require('jquery-ui');
+require('bootstrap');
+window.Firebase = require('firebase');
+window.Humanize = require('humanize-plus');
+window.moment = require('moment');
+window.URI = require('URIjs');
+window.localforage = require('localforage');
+
 require('./js/integrations/auth0');
 require('./js/integrations/googleanalytics');
 require('./js/integrations/newrelic');

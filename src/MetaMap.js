@@ -26,11 +26,6 @@ class MetaMap {
                 window._userCtrl = UserCtrl(x, x, '', '')
                 window._mapEditorCtrl = MapEditorCtrl(x, x, '', '');
 
-                var canvas = document.getElementsByTagName('canvas')[0];
-                canvas.height = '150px';
-                canvas.style.height = '150px';
-                canvas.style.position = null;
-
             }, 250);
             this.MetaFire.init();
         });

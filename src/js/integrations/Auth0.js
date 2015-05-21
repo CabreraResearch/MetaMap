@@ -1,3 +1,5 @@
+let Auth0Lock = require('auth0-lock');
+
 class Auth0 {
 
     constructor() {

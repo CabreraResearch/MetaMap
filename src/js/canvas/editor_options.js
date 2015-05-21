@@ -1,6 +1,6 @@
 window.SandbankEditorOptions = {};
 
-SandbankEditorOptions = function($scope, $http, $resource, $modal, $log) {
+SandbankEditorOptions = function($scope) {
 
     this.openModal = function(options, onSaveDefaults, onUpdate) {
         var modalInstance = $modal.open({
@@ -47,6 +47,4 @@ SandbankEditorOptions = function($scope, $http, $resource, $modal, $log) {
             $modalInstance.dismiss('cancel');
         };
     };
-
-    optionsModalCtrl.$inject = ['$scope', '$modalInstance', 'options', 'onSaveDefaults', 'onUpdate'];
 };

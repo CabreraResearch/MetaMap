@@ -1,8 +1,14 @@
 // functions handling editor autosave function
 
-SandbankEditor.Autosave = function($scope, $http, map) {
+SandbankEditor.Autosave = function($scope, map) {
 
     var self = this;
+
+    var $http = {
+        put: () => {
+            return new Promise((fulfill, reject) => {});
+        }
+    };
 
     var changeTypes = [];
 
