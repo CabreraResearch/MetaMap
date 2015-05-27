@@ -1,21 +1,3 @@
-class User {
-    constructor(profile) {
-        this.profile = new Proxy(profile, {
-            get: function(target, property) {
-                if (property in target) {
-                    return target[property];
-                } else {
-                    return '';
-                }
-            }
-        });
-        this.params = URI(window.location).query(true);
-    }
-}
-
-module.exports = User;
-
-
 window.UserCtrl = function($scope) {
 
     // query string params

@@ -1,8 +1,7 @@
 <page-topmenu>
     <div class="top-menu">
         <ul class="nav navbar-nav pull-right">
-            <li class="separator hide">
-            </li>
+            <li class="separator hide"></li>
 
             <!-- BEGIN NOTIFICATION DROPDOWN -->
 
@@ -37,8 +36,7 @@
                     </li>
                 </ul>
             </li>
-            <li class="separator hide">
-            </li>
+            <li class="separator hide"></li>
 
             <!-- BEGIN POINTS DROPDOWN -->
 
@@ -74,8 +72,7 @@
                 </ul>
             </li>
             <!-- END POINTS DROPDOWN -->
-            <li class="separator hide">
-            </li>
+            <li class="separator hide"></li>
             <!-- BEGIN HOME -->
 
             <li class="dropdown" id="header_dashboard_bar">
@@ -83,8 +80,7 @@
                     <i class="fa fa-home"></i>
                 </a>
             </li>
-            <li class="separator hide">
-            </li>
+            <li class="separator hide"></li>
 
             <!-- BEGIN HELP DROPDOWN -->
             <li class="dropdown dropdown-extended dropdown-notification dropdown" id="header_help_bar">
@@ -112,8 +108,8 @@
                                     <span class="title">Support</span>
                                 </a>
                             </li>
-                            <li>
-                                <a href="javascript:;" onclick="UserSnap.openReportWindow();">
+                            <li onclick="UserSnap.openReportWindow();">
+                                <a href="javascript:;" >
                                     <i class="fa fa-frown-o"></i>
                                     <span class="title">Feedback</span>
                                 </a>
@@ -142,13 +138,17 @@
                     <span class="username username-hide-on-mobile">
                         { username }
                     </span>
-                    <!-- DOC: Do not remove below empty space(&nbsp;) as its purposely used -->
                     <img alt="" height="39" width="39" class="img-circle" src="{ picture }" />
                 </a>
                 <ul class="dropdown-menu dropdown-menu-default">
                     <li>
                         <a href="javascript:;">
                             <i class="fa fa-user"></i> My Profile
+                        </a>
+                    </li>
+                    <li onclick="{ linkAccount }">
+                        <a href="javascript:;">
+                            <i class="fa fa-compress"></i> Link Account
                         </a>
                     </li>
                     <li onclick="{ logout }">
@@ -160,21 +160,24 @@
             </li>
         </ul>
     </div>
-    <script>
+    <script type="es6">
         this.username = '';
         this.picture = '';
 
         var that = this;
-        localforage.getItem('profile').then(function(profile){
+        localforage.getItem('profile').then((profile) => {
             that.username = profile.nickname;
             that.picture = profile.picture || 'assets/admin/layout4/img/avatar.jpg';
             that.update();
         });
 
-        this.logout = function() {
+        this.logout = () => {
             MetaMap.Auth0.logout();
         }
-
-
+        
+        this.linkAccount = () => {
+            MetaMap.Auth0.linkAccount();
+        }
+        
     </script>
 </page-topmenu>

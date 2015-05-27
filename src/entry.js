@@ -1,5 +1,5 @@
 require('babel/polyfill');
-require('harmony-reflect');
+window.riot = require('riot');
 window._ = require('lodash');
 window.Promise = require('bluebird');
 require('core-js');

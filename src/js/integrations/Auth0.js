@@ -30,7 +30,9 @@ class Auth0 {
                             localforage.setItem('id_token', id_token);
                             localforage.setItem('profile', profile);
                             localforage.setItem('refresh_token', refresh_token);
+                            that.id_token = id_token;
                             that.profile = profile;
+                            that.refresh_token = refresh_token;
                             fulfill(profile);
                         }
                     });
@@ -38,6 +40,21 @@ class Auth0 {
             });
         });
         return promise;
+    }
+
+    linkAccount() {
+        let that = this;
+        this.lock.show({
+            callbackURL: 'https://popping-fire-897.firebaseapp.com/',
+            dict: {
+                signin: {
+                    title: 'Link with another account'
+                }
+            },
+            authParams: {
+                access_token: that.id_token || that.profile.identities[0].access_token
+            }
+        });
     }
 
     getSession() {
@@ -49,6 +66,8 @@ class Auth0 {
                 } else {
                     localforage.setItem('id_token', id_token);
                     localforage.setItem('profile', profile);
+                    that.id_token = id_token;
+                    that.profile = profile;
                     fulfill(profile, id_token);
                 }
             });
@@ -57,6 +76,7 @@ class Auth0 {
             let fulfilled = false;
             localforage.getItem('refresh_token').then((token) => {
                 if (token) {
+                    that.refresh_token = token;
                     that.lock.getClient().refreshToken(token, (a, tokObj) => {
                         getProfile(tokObj.id_token, fulfill, reject);
                     }, (error) => {
@@ -78,6 +98,8 @@ class Auth0 {
     logout() {
         localforage.removeItem('id_token');
         localforage.removeItem('refresh_token');
+        localforage.removeItem('profile');
+        this.profile = null;
         window.location.reload();
     }
 }
