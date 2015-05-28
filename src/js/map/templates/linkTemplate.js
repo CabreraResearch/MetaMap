@@ -1,121 +1,125 @@
 const go = window.go;
 const mk = go.GraphObject.make;
 
-const colorR = "#4cbfc2";
+const COLORS = require('../../constants/colors.js');
 
-const linkInfo = (map, obj) => {
-    var snpos = map.getLayouts().getSameNodesLinkPosition(obj);
-    return '' +
-        'object: ' + obj + "\n" +
-        'fromNode: ' + obj.fromNode + "\n" +
-        'toNode: ' + obj.toNode + "\n" +
-        'labelNodes: ' + obj.labelNodes.count + "\n" +
-        'labelNodeIsVisible: ' + map.getLayouts().labelNodeIsVisible(obj) + "\n" +
-        'fromPortId: ' + obj.fromPortId + "\n" +
-        'toPortId: ' + obj.toPortId + "\n" +
-        'category: ' + (obj.data ? obj.data.category : '') + "\n" +
-        'containingGroup: ' + obj.containingGroup + "\n" +
-        'fromAndToNodesAreVisible: ' + map.getLayouts().fromAndToNodesAreVisible(obj) + "\n" +
-        'curve: ' + obj.curve + "\n" +
-        'curviness: ' + obj.curviness + "\n" +
-        'fromEndSegmentLength: ' + Math.round(obj.fromEndSegmentLength) + "\n" +
-        'toEndSegmentLength: ' + Math.round(obj.toEndSegmentLength) + "\n" +
-        'sameNodesLinkPosition: ' + snpos.index + ' of ' + snpos.count + "\n" +
-        //+ 'geometry: ' + obj.geometry + "\n" +
-        'getLinkStrokeWidth: ' + map.getLayouts().getLinkStrokeWidth(obj) + "\n";
-}
-
-// when to show the R-thing knob on a link
-const showKnob = (map, link) => {
-    return link === map.getUi().mouseOverLink;
-}
-
-const getRLinkSelectionStroke = (map, obj) => {
-    if (obj.isSelected || obj === map.getUi().mouseOverLink) {
-        return colorR; // TODO: can P links be selected?
-    } else {
-        return "#000";
+class LinkTemplate {
+    constructor(map) {
+        this._map = map;
     }
-}
-
-const linkTemplate = (map) =>
-        mk(go.Link, {
+    init() {
+        return mk(go.Link, {
             selectionAdorned: false,
             layerName: '',
             routing: go.Link.Normal,
             relinkableFrom: true,
             relinkableTo: true,
-            mouseEnter: function (event, target, obj2) {
-                map.getUi().mouseOverLink = target;
-                map.getDiagram().updateAllTargetBindings();
+            mouseEnter: (event, target, obj2) => {
+                this._map.ui.mouseOverLink = target;
+                this._map.getDiagram().updateAllTargetBindings();
             },
-            mouseLeave: function (event, target, obj2) {
-                map.getUi().mouseOverLink = null;
-                map.getDiagram().updateAllTargetBindings();
+            mouseLeave: (event, target, obj2) => {
+                this._map.ui.mouseOverLink = null;
+                this._map.getDiagram().updateAllTargetBindings();
             },
-            mouseDragEnter: function (event, target, dragObject) {
-                map.getUi().mouseOverLink = target;
-                map.getDiagram().updateAllTargetBindings();
+            mouseDragEnter: (event, target, dragObject) => {
+                this._map.ui.mouseOverLink = target;
+                this._map.getDiagram().updateAllTargetBindings();
             },
-            mouseDragLeave: function (event, dropTarget, dragObject) {
-                map.getUi().mouseOverLink = null;
-                map.getDiagram().updateAllTargetBindings();
+            mouseDragLeave: (event, dropTarget, dragObject) => {
+                this._map.ui.mouseOverLink = null;
+                this._map.getDiagram().updateAllTargetBindings();
             },
-            mouseDrop: function (event, dropTarget) {
-                var parts = map.getDiagram().selection;
+            mouseDrop: (event, dropTarget) => {
+                var parts = this._map.getDiagram().selection;
                 if (parts && parts.count === 1 && parts.first() instanceof go.Group) {
-                    map.addThingAsRThing(parts.first(), dropTarget);
+                    this._map.addThingAsRThing(parts.first(), dropTarget);
                 }
             },
-            doubleClick: function (event, target) {
-                map.createRThing(target);
+            doubleClick: (event, target) => {
+                this._map.createRThing(target);
             },
-            contextClick: function (event, target) {
+            contextClick: (event, target) => {
                 if (event.control) {
-                    console.log(linkInfo(map, target));
+                    console.log(this.linkInfo(target));
                 }
             }
         },
             mk(go.Shape,
-                new go.Binding('stroke', '', () => getRLinkSelectionStroke(map)).ofObject(),
-                new go.Binding("strokeWidth", "", map.getLayouts().getLinkStrokeWidth).ofObject(), {
-                    name: "LINKSHAPE"
+                new go.Binding('stroke', '', this.getRLinkSelectionStroke).ofObject(),
+                new go.Binding('strokeWidth', '', this._map.layouts.getLinkStrokeWidth).ofObject(), {
+                    name: 'LINKSHAPE'
                 }
             ),
 
-            // show to/from arrowheads based on link "type" attribute
+            // show to/from arrowheads based on link 'type' attribute
             mk(go.Shape, {
-                fromArrow: "Backward"
+                fromArrow: 'Backward'
             },
-                new go.Binding('stroke', '', () => getRLinkSelectionStroke(map)).ofObject(),
-                new go.Binding("scale", "", map.getLayouts().getArrowheadScale).ofObject(),
-                new go.Binding('visible', 'type', function (t) {
+                new go.Binding('stroke', '', this.getRLinkSelectionStroke).ofObject(),
+                new go.Binding('scale', '', this._map.layouts.getArrowheadScale).ofObject(),
+                new go.Binding('visible', 'type', (t) => {
                     return t === 'from' || t === 'toFrom';
                 })
             ),
             mk(go.Shape, {
-                toArrow: "Standard"
+                toArrow: 'Standard'
             },
-                new go.Binding('stroke', '', () => getRLinkSelectionStroke(map)).ofObject(),
-                new go.Binding("scale", "", map.getLayouts().getArrowheadScale).ofObject(),
-                new go.Binding('visible', 'type', function (t) {
+                new go.Binding('stroke', '', this.getRLinkSelectionStroke).ofObject(),
+                new go.Binding('scale', '', this._map.layouts.getArrowheadScale).ofObject(),
+                new go.Binding('visible', 'type', (t) => {
                     return t === 'to' || t === 'toFrom';
                 })
             ),
-
-            mk(go.Panel, go.Panel.Auto, // link label "knob"
-                new go.Binding('opacity', '', function (obj) {
-                    return (showKnob(map, obj) ? 1 : 0);
+            mk(go.Panel, go.Panel.Auto, // link label 'knob'
+                new go.Binding('opacity', '', (obj) => {
+                    return (this.showKnob(obj) ? 1 : 0);
                 }).ofObject(),
-                new go.Binding("scale", "", map.getLayouts().getArrowheadScale).ofObject(),
+                new go.Binding('scale', '', this._map.layouts.getArrowheadScale).ofObject(),
                 mk(go.Shape, {
-                    figure: "Ellipse",
-                    fill: colorD,
-                    stroke: colorD,
+                    figure: 'Ellipse',
+                    fill: COLORS.colorD,
+                    stroke: COLORS.colorD,
                     width: 12,
                     height: 12
                 })
             )
-    );
+        );
+    }
 
-module.exports = linkTemplate;
+    linkInfo(obj) {
+        var snpos = this._map.layouts.getSameNodesLinkPosition(obj);
+        return '' +
+            'object: ' + obj + '\n' +
+            'fromNode: ' + obj.fromNode + '\n' +
+            'toNode: ' + obj.toNode + '\n' +
+            'labelNodes: ' + obj.labelNodes.count + '\n' +
+            'labelNodeIsVisible: ' + this._map.layouts.labelNodeIsVisible(obj) + '\n' +
+            'fromPortId: ' + obj.fromPortId + '\n' +
+            'toPortId: ' + obj.toPortId + '\n' +
+            'category: ' + (obj.data ? obj.data.category : '') + '\n' +
+            'containingGroup: ' + obj.containingGroup + '\n' +
+            'fromAndToNodesAreVisible: ' + this._map.layouts.fromAndToNodesAreVisible(obj) + '\n' +
+            'curve: ' + obj.curve + '\n' +
+            'curviness: ' + obj.curviness + '\n' +
+            'fromEndSegmentLength: ' + Math.round(obj.fromEndSegmentLength) + '\n' +
+            'toEndSegmentLength: ' + Math.round(obj.toEndSegmentLength) + '\n' +
+            'sameNodesLinkPosition: ' + snpos.index + ' of ' + snpos.count + '\n' +
+            //+ 'geometry: ' + obj.geometry + '\n' +
+            'getLinkStrokeWidth: ' + this._map.layouts.getLinkStrokeWidth(obj) + '\n';
+    }
+
+    // when to show the R-thing knob on a link
+    showKnob(link) {
+        return link === this._map.ui.mouseOverLink;
+    }
+
+    getRLinkSelectionStroke(obj) {
+        if (obj.isSelected || obj === this._map.ui.mouseOverLink) {
+            return COLORS.colorR; // TODO: can P links be selected?
+        } else {
+            return '#000';
+        }
+    }
+}
+module.exports = LinkTemplate;

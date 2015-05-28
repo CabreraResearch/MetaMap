@@ -533,7 +533,7 @@ class Layouts {
         // see if link is within a stacked or inventory layout, or if it's a hidden P link
         let inventoryAncestor = this.getCommonAncestorWithLayout(link.fromNode, link.toNode, ['left', 'right']);
         let stackedAncestor = this.getCommonAncestorWithLayout(link.fromNode, link.toNode, ['stacked']);
-        let hidePLink = (link.data && link.data.category === 'P' && !this._map.getTemplates().showPLink(link));
+        let hidePLink = (link.data && link.data.category === 'P' && !this._map.templates.showPLink(link));
         let crowdedRThing = this.hasCrowdedRThing(link);
 
         // see if this is one of multiple links between the same two nodes
@@ -795,7 +795,7 @@ class Layouts {
     // so that these will all be routed by the same rules. A null key is returned for any other 
     // links, indicating that no grouping is required.
     getSameNodesLinkKey(link) {
-        //        if (this.isRLink(link) || (this.isPLink(link) && this._map.getTemplates().showPLink(link))) {
+        //        if (this.isRLink(link) || (this.isPLink(link) && this._map.templates.showPLink(link))) {
         if (this.isRLink(link)) {
             let key = [link.fromNode.toString(), link.toNode.toString()].sort().join('|');
             //console.log('key: ' + key);
@@ -835,7 +835,5 @@ class Layouts {
     }
 
 }
-
-go.Diagram.inherit(Layouts, go.Layout);
 
 module.exports = Layouts;

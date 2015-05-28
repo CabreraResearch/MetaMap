@@ -1,6 +1,7 @@
 const Analytics = require('./Analytics.js');
 const Attachments = require('./Attachments.js');
 const Autosave = require('./autosave.js');
+const EditorOptions = require('./EditorOptions.js');
 const Generator = require('./generator.js');
 const Layouts = require('./Layouts.js');
 const Perspectives = require('./Perspectives.js');
@@ -15,6 +16,7 @@ class EditorConfig {
         this.analytics = new Analytics(editor, map);
         this.attachments = new Attachments(editor, map);
         this.autosave = new Autosave(editor, map);
+        this.editorOptions = new EditorOptions({}, map);
         this.generator = new Generator(editor, map);
         this.layouts = new Layouts(editor, map);
         this.perspectives = new Perspectives(editor, map);

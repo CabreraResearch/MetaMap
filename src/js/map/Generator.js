@@ -219,7 +219,7 @@ class Generator {
 
     mapIt(question) {
         
-        this._map.getAutosave().saveOnModelChanged = false;
+        this._map.autosave.saveOnModelChanged = false;
 
         if ($scope.sandbox) {
             this._diagram.clear();
@@ -241,10 +241,10 @@ class Generator {
         this._diagram.updateAllTargetBindings();
         this._diagram.layoutDiagram(true);
 
-        this._map.getUi().resetZoom();
+        this._map.ui.resetZoom();
 
-        this._map.getAutosave().saveOnModelChanged = true;
-        this._map.getAutosave().save('edit_generator');
+        this._map.autosave.saveOnModelChanged = true;
+        this._map.autosave.save('edit_generator');
     }
 
     selectQuestion(question) {
@@ -266,10 +266,10 @@ class Generator {
 
     // called when a tab is opened or closed
     currentTabChanged(newValue, oldValue) {
-        if (oldValue === this._map.getUi().TAB_ID_GENERATOR) { // closing tab
+        if (oldValue === this._map.ui.TAB_ID_GENERATOR) { // closing tab
             this._map.setEditingBlocked(false);
         }
-        else if (newValue === this._map.getUi().TAB_ID_GENERATOR) { // opening tab
+        else if (newValue === this._map.ui.TAB_ID_GENERATOR) { // opening tab
             this._map.setEditingBlocked(true);
         }
     }

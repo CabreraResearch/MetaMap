@@ -432,7 +432,7 @@ SandbankEditor.UI = function($scope, map) {
 
     // ------------ edit map UserTags ---------------
 
-    $scope.tagging = {}
+    $scope.tagging = new SandbankTagging($scope);
 
     this.editUserTags = function() {
         $scope.tagging.openModal(
@@ -446,7 +446,7 @@ SandbankEditor.UI = function($scope, map) {
 
     // ------------ edit map sharing ---------------
 
-    $scope.sharing = {}
+    $scope.sharing = new SandbankSharing($scope);
 
     this.editMapShares = function() {
         $scope.sharing.openModal(

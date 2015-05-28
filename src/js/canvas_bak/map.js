@@ -1,6 +1,6 @@
 // functions for creating and manipulating the map (i.e. Diagram)
 
-SandbankEditor.Map = function(editor) {
+SandbankEditor.Map = function($scope) {
 
     var self = this;
 
@@ -85,18 +85,18 @@ SandbankEditor.Map = function(editor) {
     this.init = function() {
 
         // initialize components
-        _analytics = new SandbankEditor.Analytics(editor, self);
-        _attachments = new SandbankEditor.Attachments(editor, self);
-        _autosave = new SandbankEditor.Autosave(editor, self);
-        _generator = new SandbankEditor.Generator(editor, self);
+        _analytics = new SandbankEditor.Analytics($scope, self);
+        _attachments = new SandbankEditor.Attachments($scope, self);
+        _autosave = new SandbankEditor.Autosave($scope, self);
+        _generator = new SandbankEditor.Generator($scope, self);
         // _history = new SandbankEditor.History($scope, self);
-        _layouts = new SandbankEditor.Layouts(editor, self);
-        _perspectives = new SandbankEditor.Perspectives(editor, self);
-        _presenter = new SandbankEditor.Presenter(editor, self);
-        //_standards = new SandbankEditor.Standards($scope, self);
-        _templates = new SandbankEditor.Templates(editor, self);
-        //_tests = new SandbankEditor.Tests($scope, self);
-        _ui = new SandbankEditor.UI(editor, self);
+        _layouts = new SandbankEditor.Layouts($scope, self);
+        _perspectives = new SandbankEditor.Perspectives($scope, self);
+        _presenter = new SandbankEditor.Presenter($scope, self);
+        _standards = new SandbankEditor.Standards($scope, self);
+        _templates = new SandbankEditor.Templates($scope, self);
+        _tests = new SandbankEditor.Tests($scope, self);
+        _ui = new SandbankEditor.UI($scope, self);
 
         // call init for each component, if defined
         _.each(getComponents(), function(component) {
@@ -137,6 +137,7 @@ SandbankEditor.Map = function(editor) {
             }
         });
 
+        //$scope.safeApply();
     };
 
     this.getDiagram = function() {
@@ -241,6 +242,7 @@ SandbankEditor.Map = function(editor) {
             if (component && component.handleDiagramEvent)
                 component.handleDiagramEvent(eventName, e);
         });
+        $scope.safeApply();
     }
 
     this.handleDiagramEvent = function(eventName, e) {
@@ -469,9 +471,9 @@ SandbankEditor.Map = function(editor) {
     // ------------ load and initialize model -------------
 
     this.load = function() {
-        var url = editor.mapUrl + '.json';
-        if (editor.sandbox) {
-            url = editor.mapUrl + '.json?sandbox=1';
+        var url = $scope.mapUrl + '.json';
+        if ($scope.sandbox) {
+            url = $scope.mapUrl + '.json?sandbox=1';
         }
         //TODO: restore non-Angular http-get for map data
         var data = { "map": { "metadata": { "sandbox": false, "id": 5547, "name": "Untitled Map", "url": "/maps/5547", "canEdit": true, "updatedAt": "2015-05-15T12:29:40.721-04:00", "updatedBy": null, "updatedByName": null, "userTags": [] }, "data": { "class": "go.GraphLinksModel", "nodeIsLinkLabelProperty": "isLinkLabel", "linkLabelKeysProperty": "labelKeys", "linkFromPortIdProperty": "fromPort", "linkToPortIdProperty": "toPort", "nodeDataArray": [{ "key": 1, "text": "New Idea", "isGroup": true, "loc": "0 0", "layout": "left", "sExpanded": true, "pExpanded": true }], "linkDataArray": [] }, "stateData": null, "editorOptions": null, "analytics": {}, "versions": [] } };
@@ -484,31 +486,31 @@ SandbankEditor.Map = function(editor) {
         _diagram.undoManager.isEnabled = true;
         _diagram.model.addChangedListener(_autosave.modelChanged);
         _autosave.saveOnModelChanged = true;
-        _diagram.isReadOnly = !editor.canEdit;
-        editor.updateEditStatus(editor.canEdit ? editor.LAST_UPDATED : editor.READ_ONLY);
+        _diagram.isReadOnly = !$scope.canEdit;
+        $scope.updateEditStatus($scope.canEdit ? $scope.LAST_UPDATED : $scope.READ_ONLY);
         _ui.resetZoom();
         self.loadMapExtraData(data.map);
 
         // if no nodes OR in thinkquery mode, launch generator
-        if (editor.thinkquery || !_diagram.model.nodeDataArray.length) {
+        if ($scope.thinkquery || !_diagram.model.nodeDataArray.length) {
             _ui.openTab(_ui.TAB_ID_GENERATOR);
         }
         // if we have slides, play presentation
-        else if (!editor.canEdit && _presenter.getSlideNodeDatas().length) {
+        else if (!$scope.canEdit && _presenter.getSlideNodeDatas().length) {
             _presenter.playSlide(1);
         }
     }
 
     this.loadForSandbox = function() {
-        _diagram.model = go.Model.fromJson(editor.mapData);
+        _diagram.model = go.Model.fromJson($scope.mapData);
         _ui.setStateData(''); // important! (otherwise corner highlighting breaks)
         _diagram.updateAllTargetBindings();
         _diagram.undoManager.isEnabled = true;
         _ui.resetZoom();
-        editor.canEdit = true;
+        $scope.canEdit = true;
 
         // if no nodes OR in thinkquery mode, launch generator
-        if (editor.thinkquery) {
+        if ($scope.thinkquery) {
             _ui.openTab(_ui.TAB_ID_GENERATOR);
         }
         // if we have slides, play presentation
@@ -549,11 +551,13 @@ SandbankEditor.Map = function(editor) {
 
     // TODO: is this still all needed with the newer userProfile stuff?
     this.loadMapExtraData = function(mapData) {
+        $scope.safeApply(function() {
             //console.log('map.loadMapExtraData, mapData: ' + mapData);
-            editor.mapUserTags = mapData.metadata.userTags; // TODO: is this used anywhere?
+            $scope.mapUserTags = mapData.metadata.userTags; // TODO: is this used anywhere?
 
             //$scope.map.getHistory().versionList = mapData.versions;
-            editor.map.getAnalytics().mapAnalytics = mapData.analytics;
+            $scope.map.getAnalytics().mapAnalytics = mapData.analytics;
+        });
     };
 
     // loads model data for an individual version and displays it
@@ -581,7 +585,7 @@ SandbankEditor.Map = function(editor) {
     // this is distinct from the global $scope.canEdit setting,
     // which if false prevents editing at all times
     this.setEditingBlocked = function(val) {
-        if (editor.canEdit) {
+        if ($scope.canEdit) {
             _diagram.isReadOnly = val;
         }
     };
@@ -600,7 +604,7 @@ SandbankEditor.Map = function(editor) {
     }
 
     this.createSister = function(thing) {
-        if (!editor.canEdit) {
+        if (!$scope.canEdit) {
             return null;
         }
 
@@ -621,7 +625,7 @@ SandbankEditor.Map = function(editor) {
     };
 
     this.createRToSister = function(thing) {
-        if (!editor.canEdit) {
+        if (!$scope.canEdit) {
             return null;
         }
 
@@ -655,7 +659,7 @@ SandbankEditor.Map = function(editor) {
     };
 
     this.createChild = function(thing, name, x, y) {
-        if (!editor.canEdit) {
+        if (!$scope.canEdit) {
             return null;
         }
 
@@ -676,7 +680,7 @@ SandbankEditor.Map = function(editor) {
     };
 
     this.createRThing = function(link, name) {
-        if (!editor.canEdit) {
+        if (!$scope.canEdit) {
             return null;
         }
 

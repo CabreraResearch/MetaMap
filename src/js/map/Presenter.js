@@ -77,7 +77,7 @@ class Presenter {
     }
 
     autosave() {
-        this._map.getAutosave().save('edit_presenter');
+        this._map.autosave.save('edit_presenter');
     }
 
     // ---------- editing functions for different slide types -------------
@@ -97,7 +97,7 @@ class Presenter {
 
         // filter out placeholder names - see this._map.js:getNewThingData, createSister, etc.
         list = _.difference(_.uniq(list, true),
-            this._map.getGenerator().getPlaceholderIdeaNames(),
+            this._map.generator.getPlaceholderIdeaNames(),
             ['New Idea', 'New Distinguished Idea', 'New Related Idea', 'New Relationship Idea', 'New Part Idea',
              'Idea', 'Part', 'Relationship Idea'] // newer simplified names
         );
@@ -158,10 +158,10 @@ class Presenter {
 
     // called when a tab is opened or closed
     currentTabChanged(newValue, oldValue) {
-        if (oldValue === this._map.getUi().TAB_ID_PRESENTER) { // closing tab
+        if (oldValue === this._map.ui.TAB_ID_PRESENTER) { // closing tab
             this.stopPresenting();
         }
-        else if (newValue === this._map.getUi().TAB_ID_PRESENTER) { // opening tab
+        else if (newValue === this._map.ui.TAB_ID_PRESENTER) { // opening tab
             // show slides (see layouts.slideTemplate, binding of visible attr)
             this.diagramAspectRatio = $('#diagram').width() / $('#diagram').height();
             console.log('diagramAspectRatio: ' + this.diagramAspectRatio);
@@ -176,7 +176,7 @@ class Presenter {
     }
 
     handleDiagramEvent(eventName, e) {
-        if (!this._map.getUi().currentTabIs(this._map.getUi().TAB_ID_PRESENTER)) {
+        if (!this._map.ui.currentTabIs(this._map.ui.TAB_ID_PRESENTER)) {
             return;
         }
 
@@ -213,11 +213,11 @@ class Presenter {
         return this._windowResized;
     }
     showSidebar() {
-        return this._map.getUi().currentTabIs(this._map.getUi().TAB_ID_PRESENTER) && (!this.isPresenting || this.showTOC);
+        return this._map.ui.currentTabIs(this._map.ui.TAB_ID_PRESENTER) && (!this.isPresenting || this.showTOC);
     }
 
     disableMapToolbarButtons() {
-        return !this._map.getUi().currentTabIs(this._map.getUi().TAB_ID_PRESENTER)
+        return !this._map.ui.currentTabIs(this._map.ui.TAB_ID_PRESENTER)
             || this.isPresenting
             || !this.getCurrentSlideType().hasMapRegion;
     }
@@ -531,7 +531,7 @@ class Presenter {
 
     needsNarrowCanvas() {
         let slide = this.findSlideByIndex(this.currentSlideIndex);
-        return this._map.getUi().currentTabIs(this._map.getUi().TAB_ID_PRESENTER) &&
+        return this._map.ui.currentTabIs(this._map.ui.TAB_ID_PRESENTER) &&
            slide != null &&
            (slide.data.type === 'TITLE_BODY_MAP' || slide.data.type === 'ACTIVITY_MAP' || slide.data.type === 'MAP_SUMMARY');
     }
@@ -554,7 +554,7 @@ class Presenter {
 
     playSlide(index) {
         let diagram = this._map.getDiagram();
-        this._map.getUi().openTab(this._map.getUi().TAB_ID_PRESENTER);
+        this._map.ui.openTab(this._map.ui.TAB_ID_PRESENTER);
 
         let slides = this.getSlideNodeDatas();
         if (slides.length) {
@@ -613,7 +613,7 @@ class Presenter {
             this.slideBlocker.visible = false;
         }
         else {
-            this._map.getUi().resetZoom();
+            this._map.ui.resetZoom();
             this.slideBlocker.visible = false;
         }
 
@@ -677,7 +677,7 @@ class Presenter {
 
         diagram.clearSelection();
         this._map.setEditingBlocked(false);
-        //this._map.getUi().resetZoom();
+        //this._map.ui.resetZoom();
 
     }
 

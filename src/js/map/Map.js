@@ -11,17 +11,18 @@ class Map {
         this._editor = config.Editor;
 
         this._config = new EditorConfig(this._editor, this);
-        this._analytics = this._config.analytics;
-        this._attachments = this._config.attachments;
-        this._autosave =this._config.autosave;
-        this._generator = this._config.generator;
-        this._layouts = this._config.layouts;
-        this._perspectives = this._config.perspectives;
-        this._presenter =this._config.presenter;
-        this._standards =this._config.standards;
-        this._templates =this._config.templates;
-        this._tests = this._config.tests;
-        this._ui = this._config.ui;
+        this.analytics = this._config.analytics;
+        this.attachments = this._config.attachments;
+        this.autosave = this._config.autosave;
+        this.editorOptions = this._config.editorOptions;
+        this.generator = this._config.generator;
+        this.layouts = this._config.layouts;
+        this.perspectives = this._config.perspectives;
+        this.presenter = this._config.presenter;
+        this.standards = this._config.standards;
+        this.templates = this._config.templates;
+        this.tests = this._config.tests;
+        this.ui = this._config.ui;
 
         //this._analytics = new SandbankEditor.Analytics(this._editor, this);
         //this._attachments = new SandbankEditor.Attachments(this._editor, this);
@@ -49,17 +50,17 @@ class Map {
         this._diagram.hasHorizontalScrollbar = false;
         this._diagram.hasVerticalScrollbar = false;
         this._diagram.padding = 500;
-        this._diagram.layout = this._layouts.getFreehandDiagramLayout();
+        this._diagram.layout = this.layouts.getFreehandDiagramLayout();
 
         this.initTools();
-        this._templates.initTemplates(this._diagram); // set up templates, customize temporary link behavior 
+        this.templates.initTemplates(this._diagram); // set up templates, customize temporary link behavior 
         this.addDiagramListeners();
 
-        this._templates.addExportFooter();
+        this.templates.addExportFooter();
     }
 
     printSlides() {
-        this.getPresenter().createSlideThumbnails();
+        this.presenter.createSlideThumbnails();
 
         setTimeout(() => {
             window.print();
@@ -70,7 +71,7 @@ class Map {
 
         this.imageExportLoading = true;
         $('#export-image img').remove();
-        this.getTemplates().showExportFooter();
+        this.templates.showExportFooter();
 
         let rect = this.getDiagram().computePartsBounds(this.getDiagram().nodes).copy();
 
@@ -97,7 +98,7 @@ class Map {
         let partsToExport = new go.List();
         partsToExport.addAll(this.getDiagram().nodes);
         partsToExport.addAll(this.getDiagram().links);
-        partsToExport.remove(this.getPresenter().slideBlocker);
+        partsToExport.remove(this.presenter.slideBlocker);
 
         let doImage = $timeout(() => {
             let img = this.getDiagram().makeImage({
@@ -111,7 +112,7 @@ class Map {
             $('#export-image').append(img);
             this.imageExportLoading = false;
 
-            this.getTemplates().hideExportFooter();
+            this.templates.hideExportFooter();
         }, 100);
     }
 
@@ -119,54 +120,19 @@ class Map {
 
     getComponents() {
         return [
-            this._analytics,
-            this._attachments,
-            this._autosave,
-            this._generator,
+            this.analytics,
+            this.attachments,
+            this.autosave,
+            this.generator,
             // this._history, 
-            this._layouts,
-            this._perspectives,
-            this._presenter,
-            this._standards,
-            this._templates,
-            this._tests,
-            this._ui
+            this.layouts,
+            this.perspectives,
+            this.presenter,
+            this.standards,
+            this.templates,
+            this.tests,
+            this.ui
         ];
-    }
-
-    getAnalytics() {
-        return this._analytics;
-    }
-    getAttachments() {
-        return this._attachments;
-    }
-    getAutosave() {
-        return this._autosave;
-    }
-    getGenerator() {
-        return this._generator;
-    }
-    // this.getHistory () { return this._history; };
-    getLayouts() {
-        return this._layouts;
-    }
-    getPerspectives() {
-        return this._perspectives;
-    }
-    getPresenter() {
-        return this._presenter;
-    }
-    getStandards() {
-        return this._standards;
-    }
-    getTemplates() {
-        return this._templates;
-    }
-    getTests() {
-        return this._tests;
-    }
-    getUi() {
-        return this._ui;
     }
 
     get currentTab() {
@@ -310,7 +276,7 @@ class Map {
         } else if (eventName === 'PartCreated') {
             this.partCreated(e);
         } else if (eventName === 'BackgroundSingleClicked') {
-            this._ui.showHelpTip('canvasTip');
+            this.ui.showHelpTip('canvasTip');
         } else if (eventName === 'LinkDrawn') {
             this.linkDrawn(e);
             this.setNewLinkDirection(e);
@@ -327,9 +293,9 @@ class Map {
     changedSelection(e) {
         //console.log('this.changedSelection');
         this._diagram.updateAllTargetBindings();
-        this._ui.maybeZoomToRegion();
+        this.ui.maybeZoomToRegion();
         if (this.relationshipsSelected()) {
-            this._ui.showHelpTip('relationshipTip');
+            this.ui.showHelpTip('relationshipTip');
         }
     }
 
@@ -339,8 +305,8 @@ class Map {
         if (!(group instanceof go.Group)) {
             return;
         }
-        this._diagram.model.setDataProperty(group.data, 'layout', this._ui.getMapEditorOptions().defaultThingLayout || 'left');
-        this._layouts.setNewPartLocationData(e);
+        this._diagram.model.setDataProperty(group.data, 'layout', this.editorOptions.defaultThingLayout || 'left');
+        this.layouts.setNewPartLocationData(e);
     }
 
     // fix link ports when a link is created - 
@@ -378,7 +344,7 @@ class Map {
         let link = e.subject;
         if (link.fromPortId === 'R') {
             this._diagram.model.startTransaction("change link direction");
-            this._diagram.model.setDataProperty(link.data, 'type', this._ui.getMapEditorOptions().defaultRelationshipDirection);
+            this._diagram.model.setDataProperty(link.data, 'type', this.editorOptions.defaultRelationshipDirection);
             this._diagram.commitTransaction("change link direction");
         }
     }
@@ -483,7 +449,7 @@ class Map {
 
         let it = this._diagram.selection.iterator;
         while (it.next()) {
-            let ancestors = this._layouts.getAncestorGroups(it.value);
+            let ancestors = this.layouts.getAncestorGroups(it.value);
             if (_.indexOf(ancestors, group) === -1)
                 return false;
         }
@@ -512,7 +478,7 @@ class Map {
 
         let it = this._diagram.selection.iterator;
         while (it.next()) {
-            if (!(it.value instanceof go.Link) || !this._layouts.isRLink(it.value))
+            if (!(it.value instanceof go.Link) || !this.layouts.isRLink(it.value))
                 return false;
         }
 
@@ -532,46 +498,46 @@ class Map {
             url = this._editor.mapUrl + '.json?sandbox=1';
         }
         //TODO: restore non-Angular http-get for map data
-        let data = { "map": { "metadata": { "sandbox": false, "id": 5547, "name": "Untitled Map", "url": "/maps/5547", "canEdit": true, "updatedAt": "2015-05-15T12:29:40.721-04:00", "updatedBy": null, "updatedByName": null, "userTags": [] }, "data": { "class": "go.GraphLinksModel", "nodeIsLinkLabelProperty": "isLinkLabel", "linkLabelKeysProperty": "labelKeys", "linkFromPortIdProperty": "fromPort", "linkToPortIdProperty": "toPort", "nodeDataArray": [{ "key": 1, "text": "New Idea", "isGroup": true, "loc": "0 0", "layout": "left", "sExpanded": true, "pExpanded": true }], "linkDataArray": [] }, "stateData": null, "editorOptions": null, "analytics": {}, "versions": [] } };
+        let data = { "map": { "metadata": { "sandbox": false, "id": 5547, "name": "Untitled Map", "url": "/maps/5547", "canEdit": true, "updatedAt": "2015-05-15T12:29:40.721-04:00", "updatedBy": null, "updatedByName": null, "userTags": [] }, "data": { "class": "go.GraphLinksModel", "nodeIsLinkLabelProperty": "isLinkLabel", "linkLabelKeysProperty": "labelKeys", "linkFromPortIdProperty": "fromPort", "linkToPortIdProperty": "toPort", "nodeDataArray": [{ "key": 1, "text": "New Idea", "isGroup": true, "loc": "0 0", "layout": "left", "sExpanded": true, "pExpanded": true }], "linkDataArray": [] }, "stateData": null, editorOptions: null, "analytics": {}, "versions": [] } };
         this._diagram.model = go.Model.fromJson(data);
-        this._ui.setStateData(data.map.stateData);
-        this._ui.setMapEditorOptions(data.map.editorOptions);
+        //this._ui.setStateData(data.map.stateData);
+        //this._ui.setMapEditorOptions(data.map._editorOptions);
 
         this.checkModel();
         this._diagram.updateAllTargetBindings();
         this._diagram.undoManager.isEnabled = true;
-        this._diagram.model.addChangedListener(this._autosave.modelChanged);
-        this._autosave.saveOnModelChanged = true;
+        this._diagram.model.addChangedListener(this.autosave.modelChanged);
+        this.autosave.saveOnModelChanged = true;
         this._diagram.isReadOnly = !this._editor.canEdit;
         this._editor.updateEditStatus(this._editor.canEdit ? this._editor.LAST_UPDATED : this._editor.READ_ONLY);
-        this._ui.resetZoom();
+        this.ui.resetZoom();
         this.loadMapExtraData(data.map);
 
         // if no nodes OR in thinkquery mode, launch generator
         if (this._editor.thinkquery || !this._diagram.model.nodeDataArray.length) {
-            this._ui.openTab(this._ui.TAB_ID_GENERATOR);
+            this.ui.openTab(this.ui.TAB_ID_GENERATOR);
         }
             // if we have slides, play presentation
-        else if (!this._editor.canEdit && this._presenter.getSlideNodeDatas().length) {
-            this._presenter.playSlide(1);
+        else if (!this._editor.canEdit && this.presenter.getSlideNodeDatas().length) {
+            this.presenter.playSlide(1);
         }
     }
 
     loadForSandbox() {
         this._diagram.model = go.Model.fromJson(this._editor.mapData);
-        this._ui.setStateData(''); // important! (otherwise corner highlighting breaks)
+        this.ui.setStateData(''); // important! (otherwise corner highlighting breaks)
         this._diagram.updateAllTargetBindings();
         this._diagram.undoManager.isEnabled = true;
-        this._ui.resetZoom();
+        this.ui.resetZoom();
         this._editor.canEdit = true;
 
         // if no nodes OR in thinkquery mode, launch generator
         if (this._editor.thinkquery) {
-            this._ui.openTab(this._ui.TAB_ID_GENERATOR);
+            this.ui.openTab(this.ui.TAB_ID_GENERATOR);
         }
             // if we have slides, play presentation
-        else if (this._presenter.getSlideNodeDatas().length) {
-            this._presenter.playSlide(1);
+        else if (this.presenter.getSlideNodeDatas().length) {
+            this.presenter.playSlide(1);
         }
 
     }
@@ -611,7 +577,7 @@ class Map {
         this._editor.mapUserTags = mapData.metadata.userTags; // TODO: is this used anywhere?
 
         //this._editor.map.getHistory().versionList = mapData.versions;
-        this.getAnalytics().mapAnalytics = mapData.analytics;
+        this.analytics.mapAnalytics = mapData.analytics;
     }
 
     // loads model data for an individual version and displays it
@@ -624,7 +590,7 @@ class Map {
                     this._diagram.model = go.Model.fromJson(response.data);
                     this._diagram.updateAllTargetBindings();
                     this._diagram.undoManager.isEnabled = false;
-                    this._autosave.saveOnModelChanged = false;
+                    this.autosave.saveOnModelChanged = false;
                     this._diagram.layoutDiagram(true);
                     this._diagram.isReadOnly = true;
                 } catch (e) {
@@ -651,7 +617,7 @@ class Map {
         return {
             text: 'Idea',
             isGroup: true,
-            layout: this._ui.getMapEditorOptions().defaultThingLayout || 'left',
+            layout: this.editorOptions.defaultThingLayout || 'left',
             sExpanded: true,
             pExpanded: true
         };
@@ -662,7 +628,7 @@ class Map {
             return null;
         }
 
-        let newLoc = this._layouts.getNewSisterLocation(thing);
+        let newLoc = this.layouts.getNewSisterLocation(thing);
         let data = _.extend(this.getNewThingData(), {
             group: thing.data.group,
             text: 'Idea',
@@ -685,7 +651,7 @@ class Map {
 
         let thingKey = this._diagram.model.getKeyForNodeData(thing.data);
         //console.log('thingKey: ' + thingKey);
-        let newLoc = this._layouts.getNewSisterLocation(thing, true); // withR = true
+        let newLoc = this.layouts.getNewSisterLocation(thing, true); // withR = true
         let data = _.extend(this.getNewThingData(), {
             group: thing.data.group,
             text: 'Idea',
@@ -717,7 +683,7 @@ class Map {
             return null;
         }
 
-        let newLoc = this._layouts.getNewChildLocation2(thing);
+        let newLoc = this.layouts.getNewChildLocation2(thing);
         if (x || y) {
             newLoc = new go.Point(x, y);
         }
@@ -727,7 +693,7 @@ class Map {
             loc: go.Point.stringify(newLoc)
         });
         this._diagram.model.addNodeData(data);
-        this._layouts.setDescendantLayouts(thing, thing.data.layout);
+        this.layouts.setDescendantLayouts(thing, thing.data.layout);
         let child = this._diagram.findNodeForData(data);
         child.updateTargetBindings();
         return child;
@@ -836,7 +802,7 @@ class Map {
         // so for example, members of members of newMembers will not be added as members
         group.addMembers(newMembers);
 
-        this._layouts.layoutNewMembersRelativeTo(newMembers, group, oldMemberBounds);
+        this.layouts.layoutNewMembersRelativeTo(newMembers, group, oldMemberBounds);
 
         this._diagram.clearSelection();
     }
@@ -850,14 +816,14 @@ class Map {
             // check existing members so we can calculate layout
             let oldMembersBounds = this._diagram.computePartsBounds(oldMembers);
             // NB: oldMembers can be on multiple levels, so not clear which level to use for rescaling old members after drag
-            let oldMembersLevel = this._layouts.computeLevel(oldMembers.first());
+            let oldMembersLevel = this.layouts.computeLevel(oldMembers.first());
 
             let it = oldMembers.iterator;
             while (it.next()) {
                 let member = it.value;
                 member.containingGroup = null;
             }
-            this._layouts.layoutOldMembersOutsideOf(oldMembers, group, oldMembersBounds, oldMembersLevel);
+            this.layouts.layoutOldMembersOutsideOf(oldMembers, group, oldMembersBounds, oldMembersLevel);
         }
             // if not dragging to top level, place dragged things after former parent in outline
         else {
@@ -953,14 +919,14 @@ class Map {
         let isExpanded = !(thing.data && !thing.data.sExpanded); // expand by default if property not present
         this._diagram.model.setDataProperty(thing.data, 'sExpanded', !isExpanded);
         thing.updateTargetBindings();
-        this._ui.showCornerTip(thing, 'S');
+        this.ui.showCornerTip(thing, 'S');
     }
 
     // P corner handler (single click)
     togglePExpansion(thing) {
         this._diagram.model.setDataProperty(thing.data, 'pExpanded', !this.pIsExpanded(thing));
         thing.updateTargetBindings();
-        this._ui.showCornerTip(thing, "P");
+        this.ui.showCornerTip(thing, "P");
     }
 
     pIsExpanded(group) {
@@ -1020,8 +986,8 @@ class Map {
     saveModel() {
         this._diagram.model = go.Model.fromJson($('#map-model-debug').val());
         this._diagram.updateAllTargetBindings();
-        this._diagram.model.addChangedListener(this._autosave.modelChanged);
-        this._autosave.saveOnModelChanged = true;
+        this._diagram.model.addChangedListener(this.autosave.modelChanged);
+        this.autosave.saveOnModelChanged = true;
     }
 }
 

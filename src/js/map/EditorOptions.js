@@ -36,7 +36,7 @@ class EditorOptions {
             },
             (options) => { // onUpdate
                 this.mapEditorOptions = options;
-                this.map.getAutosave().saveNow('edit_options');
+                this.map.autosave.saveNow('edit_options');
             }
         );
     }

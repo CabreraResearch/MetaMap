@@ -29,9 +29,9 @@ class MetaMap {
 
                 window.mapData = { "map": { "metadata": { "sandbox": false, "id": 5547, "name": "Untitled Map", "url": "/maps/5547", "canEdit": true, "updatedAt": "2015-05-15T12:29:40.721-04:00", "updatedBy": null, "updatedByName": null, "userTags": [] }, "data": { "class": "go.GraphLinksModel", "nodeIsLinkLabelProperty": "isLinkLabel", "linkLabelKeysProperty": "labelKeys", "linkFromPortIdProperty": "fromPort", "linkToPortIdProperty": "toPort", "nodeDataArray": [{ "key": 1, "text": "New Idea", "isGroup": true, "loc": "0 0", "layout": "left", "sExpanded": true, "pExpanded": true }], "linkDataArray": [] }, "stateData": null, "editorOptions": null, "analytics": {}, "versions": [] }};
 
-                //window._userCtrl = UserCtrl(x, x, '', '')
-                //window._mapEditorCtrl = MapEditorCtrl(x, x, '', '');
-                window.CrlMap = new Editor(window.mapData);
+                window._userCtrl = UserCtrl(x, x, '', '')
+                window._mapEditorCtrl = MapEditorCtrl(x, x, '', '');
+                //window.CrlMap = new Editor(window.mapData);
 
             }, 250);
             this.MetaFire.init();

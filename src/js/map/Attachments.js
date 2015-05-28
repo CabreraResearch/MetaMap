@@ -18,7 +18,7 @@ class Attachments {
 
     handleDiagramEvent(eventName, e) {
         if (eventName === 'ChangedSelection') {
-            if (this._map.getUi().currentTabIs(this._map.getUi().TAB_ID_ATTACHMENTS)) {
+            if (this._map.ui.currentTabIs(this._map.ui.TAB_ID_ATTACHMENTS)) {
                 this.stopEditingAll();
                 this.saveAttachments();
                 this.loadSelectedThingAttachments();
@@ -28,10 +28,10 @@ class Attachments {
 
     // called when a tab is opened or closed
     currentTabChanged(newValue, oldValue) {
-        if (newValue === this._map.getUi().TAB_ID_ATTACHMENTS) { // opening tab
+        if (newValue === this._map.ui.TAB_ID_ATTACHMENTS) { // opening tab
             this.loadSelectedThingAttachments();
         }
-        if (oldValue === this._map.getUi().TAB_ID_ATTACHMENTS) { // closing tab
+        if (oldValue === this._map.ui.TAB_ID_ATTACHMENTS) { // closing tab
             this.saveAttachments();
         }
     }
@@ -74,7 +74,7 @@ class Attachments {
             this._map.getDiagram().model.setDataProperty(this.selectedThing.data, 'attachments', this.attachments);
             this.selectedThing.updateTargetBindings();
         }
-        this._map.getAutosave().saveNow('edit_attachments');
+        this._map.autosave.saveNow('edit_attachments');
     }
 
     listAttachments(type) {

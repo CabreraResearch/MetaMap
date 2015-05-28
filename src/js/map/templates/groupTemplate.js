@@ -1,14 +1,7 @@
 const go = window.go;
 const mk = go.GraphObject.make;
 
-const groupFillColor = '#f9f9f9';
-const colorPLight = '#FDDDAF';
-const colorPDark = '#C9882B';
-
-// DSRP colors (from _variables.scss)
-const colorD = '#f2624c';
-const colorS = '#96c93d';
-const colorP = '#fbaa36';
+const COLORS = require('../../constants/colors.js');
 
 const eyeSvgPath = 'M 256.00,96.00C 144.341,96.00, 47.559,161.021,0.00,256.00c 47.559,94.979, 144.341,160.00, 256.00,160.00c 111.657,0.00, 208.439-65.021, 256.00-160.00 C 464.442,161.021, 367.657,96.00, 256.00,96.00z M 382.225,180.852c 30.081,19.187, 55.571,44.887, 74.717,75.148 c-19.146,30.261-44.637,55.961-74.718,75.149C 344.427,355.257, 300.779,368.00, 256.00,368.00c-44.78,0.00-88.428-12.743-126.225-36.852 C 99.695,311.962, 74.205,286.262, 55.058,256.00c 19.146-30.262, 44.637-55.962, 74.717-75.148c 1.959-1.25, 3.938-2.461, 5.929-3.65 C 130.725,190.866, 128.00,205.613, 128.00,221.00c0.00,70.692, 57.308,128.00, 128.00,128.00s 128.00-57.308, 128.00-128.00c0.00-15.387-2.725-30.134-7.704-43.799 C 378.286,178.39, 380.265,179.602, 382.225,180.852z M 256.00,205.00c0.00,26.51-21.49,48.00-48.00,48.00s-48.00-21.49-48.00-48.00s 21.49-48.00, 48.00-48.00 S 256.00,178.49, 256.00,205.00z';
 const eyeBlockedSvgPath = 'M 419.661,148.208 C 458.483,175.723 490.346,212.754 512.00,256.00 C 464.439,350.979 367.657,416.00 256.00,416.00 C 224.717,416.00 194.604,410.894 166.411,401.458 L 205.389,362.48 C 221.918,366.13 238.875,368.00 256.00,368.00 C 300.779,368.00 344.427,355.257 382.223,331.148 C 412.304,311.96 437.795,286.26 456.941,255.999 C 438.415,226.716 413.934,201.724 385.116,182.752 L 419.661,148.208 ZM 256.00,349.00 C 244.638,349.00 233.624,347.512 223.136,344.733 L 379.729,188.141 C 382.51,198.627 384.00,209.638 384.00,221.00 C 384.00,291.692 326.692,349.00 256.00,349.00 ZM 480.00,0.00l-26.869,0.00 L 343.325,109.806C 315.787,100.844, 286.448,96.00, 256.00,96.00C 144.341,96.00, 47.559,161.021,0.00,256.00 c 21.329,42.596, 52.564,79.154, 90.597,106.534L0.00,453.131L0.00,480.00 l 26.869,0.00 L 480.00,26.869L 480.00,0.00 z M 208.00,157.00c 24.022,0.00, 43.923,17.647, 47.446,40.685 l-54.762,54.762C 177.647,248.923, 160.00,229.022, 160.00,205.00C 160.00,178.49, 181.49,157.00, 208.00,157.00z M 55.058,256.00 c 19.146-30.262, 44.637-55.962, 74.717-75.148c 1.959-1.25, 3.938-2.461, 5.929-3.65C 130.725,190.866, 128.00,205.613, 128.00,221.00 c0.00,29.262, 9.825,56.224, 26.349,77.781l-29.275,29.275C 97.038,309.235, 73.197,284.67, 55.058,256.00z';
@@ -22,7 +15,7 @@ class GroupTemplate {
     init() {
         return mk(go.Group, go.Panel.Vertical,
             new go.Binding('layout', 'layout', (layoutName) => {
-                return this._map.getLayouts().getLayout(layoutName);
+                return this._map.layouts.getLayout(layoutName);
             }),
             new go.Binding('movable', '', (obj) => {
                 return !obj.isLinkLabel;
@@ -30,7 +23,7 @@ class GroupTemplate {
             new go.Binding('isSubGraphExpanded', 'sExpanded'),
             // dim the thing if it's being dragged over another thing (drop to sister/child)
             new go.Binding('opacity', '', (obj) => {
-                return (obj.isSelected && this._map.getUi().dragTargetGroup ? 0.25 : 1);
+                return (obj.isSelected && this._map.ui.dragTargetGroup ? 0.25 : 1);
             }).ofObject(), {
                 locationObjectName: 'mainpanel',
                 locationSpot: go.Spot.TopLeft,
@@ -39,12 +32,12 @@ class GroupTemplate {
                 layerName: 'Foreground',
                 // highlight corners
                 mouseEnter: (event, target, obj2) => {
-                    this._map.getUi().mouseOverGroup = target;
+                    this._map.ui.mouseOverGroup = target;
                     this._map.getDiagram().updateAllTargetBindings();
                 },
                 // unhighlight corners
                 mouseLeave: (event, target, obj2) => {
-                    this._map.getUi().mouseOverGroup = null;
+                    this._map.ui.mouseOverGroup = null;
                     this._map.getDiagram().updateAllTargetBindings();
                 }
                 // containingGroupChanged: function(part, oldgroup, newgroup) { 
@@ -53,18 +46,18 @@ class GroupTemplate {
                 // }
             },
             mk(go.Panel, go.Panel.Horizontal,
-                this.groupExternalTextBlock(this._map.getLayouts().showLeftTextBlock, 'right'),
+                this.groupExternalTextBlock(this._map.layouts.showLeftTextBlock, 'right'),
                 mk(go.Panel, go.Panel.Position, {
                         name: 'mainpanel'
                     },
-                    new go.Binding('scale', '', this._map.getLayouts().getScale).ofObject(),
+                    new go.Binding('scale', '', this._map.layouts.getScale).ofObject(),
                     // drag area
                     mk(go.Shape, 'Rectangle', {
                         name: 'dragarea',
                         position: new go.Point(0, 0),
                         width: 100,
                         height: 100,
-                        fill: groupFillColor,
+                        fill: COLORS.groupFillColor,
                         stroke: null,
                         cursor: 'move',
                         // show debug info
@@ -91,7 +84,7 @@ class GroupTemplate {
                         this.mainBorder()
                     )
                 ),
-                this.groupExternalTextBlock(this._map.getLayouts().showRightTextBlock, 'left')
+                this.groupExternalTextBlock(this._map.layouts.showRightTextBlock, 'left')
             ),
 
             // the placeholder normally holds the child nodes, but we just use a dummy placeholder
@@ -114,7 +107,7 @@ class GroupTemplate {
             'position: ' + parseInt(obj.position.x, 10) + ', ' + parseInt(obj.position.y, 10) + '\n' +
             'freehand position (data.loc): ' + go.Point.parse(obj.data.loc) + '\n' +
             'width/height: ' + parseInt(obj.actualBounds.width, 10) + '/' + parseInt(obj.actualBounds.height, 10) + '\n' +
-            'getScale(): ' + this._map.getLayouts().getScale(obj) + '\n' +
+            'getScale(): ' + this._map.layouts.getScale(obj) + '\n' +
             'isLinkLabel: ' + obj.data.isLinkLabel + '\n' +
             'labeledLink: ' + obj.labeledLink + '\n';
     }
@@ -137,14 +130,14 @@ class GroupTemplate {
     }
 
     getViewMarkerFill(obj) {
-        let weight = this._map.getPerspectives().getPerspectiveViewWeight(obj);
+        let weight = this._map.perspectives.getPerspectiveViewWeight(obj);
 
         if (weight === 3) {
-            return colorPDark;
+            return COLORS.colorPDark;
         } else if (weight === 2) {
-            return colorP;
+            return COLORS.colorP;
         } else if (weight === 1) {
-            return colorPLight;
+            return COLORS.colorPLight;
         } else {
             return 'transparent';
         }
@@ -157,10 +150,12 @@ class GroupTemplate {
             height: 25,
             width: 100,
             mouseDragEnter: this.getGroupMouseDragEnterHandler(this._map.LEFT),
-            mouseDragLeave: this.groupMouseDragLeaveHandler,
+            mouseDragLeave: (...args) => { this.groupMouseDragLeaveHandler(...args); },
             mouseDrop: this.getGroupMouseDropHandler(this._map.LEFT),
-            click: this.groupClickHandler
-        },
+            click: (...args) => {
+                    this.groupClickHandler(...args);
+                }
+            },
             // drag target region
             mk(go.Shape, 'Rectangle', {
                 position: new go.Point(0, 0),
@@ -191,9 +186,11 @@ class GroupTemplate {
             height: 50,
             width: 100,
             mouseDragEnter: this.getGroupMouseDragEnterHandler(null),
-            mouseDragLeave: this.groupMouseDragLeaveHandler,
+            mouseDragLeave: (...args) => { this.groupMouseDragLeaveHandler(...args); },
             mouseDrop: this.getGroupMouseDropHandler(null),
-            click: this.groupClickHandler
+            click: (...args) => {
+                this.groupClickHandler(...args);
+    }
         },
             mk(go.Shape, 'Rectangle', {
                 position: new go.Point(0, 0),
@@ -212,9 +209,11 @@ class GroupTemplate {
             height: 25,
             width: 100,
             mouseDragEnter: this.getGroupMouseDragEnterHandler(this._map.RIGHT),
-            mouseDragLeave: this.groupMouseDragLeaveHandler,
+            mouseDragLeave: (...args) => { this.groupMouseDragLeaveHandler(...args); },
             mouseDrop: this.getGroupMouseDropHandler(this._map.RIGHT),
-            click: this.groupClickHandler
+            click: (...args) => {
+                this.groupClickHandler(...args);
+    }
         },
             // drag target region
             mk(go.Shape, 'Rectangle', {
@@ -250,8 +249,8 @@ class GroupTemplate {
                 new go.Binding('text', 'text').makeTwoWay(),
                 new go.Binding('visible', '', (group) => {
                     // always show text inside box for R-things, because external text will throw off layout
-                    return this._map.getLayouts().isNotWithinInventoryLayout(group) ||
-                        this._map.getLayouts().isRThingWithinInventoryLayout(group);
+                    return this._map.layouts.isNotWithinInventoryLayout(group) ||
+                        this._map.layouts.isRThingWithinInventoryLayout(group);
                 }).ofObject(), {
                     width: 80,
                     margin: 10,
@@ -263,9 +262,11 @@ class GroupTemplate {
                     wrap: go.TextBlock.WrapDesiredSize,
 
                     mouseDragEnter: this.getGroupMouseDragEnterHandler(null),
-                    mouseDragLeave: this.groupMouseDragLeaveHandler,
+                    mouseDragLeave: (...args) => { this.groupMouseDragLeaveHandler(...args); },
                     mouseDrop: this.getGroupMouseDropHandler(null),
-                    click: this.groupClickHandler,
+                    click: (...args) => {
+                        this.groupClickHandler(...args);
+                    },
                     contextClick: (event, target) => {
                         if (event.control) {
                             console.log(this.groupInfo(target.part));
@@ -283,13 +284,15 @@ class GroupTemplate {
         return mk(go.TextBlock,
             new go.Binding('text', 'text').makeTwoWay(),
             new go.Binding('visible', '', visibleFn).ofObject(),
-            new go.Binding('scale', '', this._map.getLayouts().getExternalTextScale).ofObject(), {
+            new go.Binding('scale', '', this._map.layouts.getExternalTextScale).ofObject(), {
                 name: 'externaltext-' + textAlign, // NB: this screws up layouts for some reason - ??
                 textAlign: textAlign,
                 margin: 5,
                 font: '10px sans-serif',
                 isMultiline: true,
-                click: this.groupClickHandler
+                click: (...args) => {
+                    this.groupClickHandler(...args);
+        }
             }
         );
     }
@@ -300,15 +303,15 @@ class GroupTemplate {
     getGroupMouseDragEnterHandler(position) {
         return (event, target, obj2) => {
             //console.log('mouseDragEnter, e.dp: ' + event.documentPoint + ', target.part: ' + target.part + ', target bounds: ' + target.actualBounds);
-            this._map.getUi().dragTargetGroup = target.part;
-            this._map.getUi().dragTargetPosition = position;
+            this._map.ui.dragTargetGroup = target.part;
+            this._map.ui.dragTargetPosition = position;
             this._map.getDiagram().updateAllTargetBindings();
         };
     }
 
     groupMouseDragLeaveHandler(event, target, obj2) {
-        this._map.getUi().dragTargetGroup = null;
-        this._map.getUi().dragTargetPosition = null;
+        this._map.ui.dragTargetGroup = null;
+        this._map.ui.dragTargetPosition = null;
         this._map.getDiagram().updateAllTargetBindings();
     }
 
@@ -320,7 +323,7 @@ class GroupTemplate {
 
     groupClickHandler(event, target) {
         // handle single or double click
-        this._map.getUi().handleCornerClick('', target);
+        this._map.ui.handleCornerClick('', target);
     }
 
     // handle drop on one of the three target regions (top, middle, bottom)
@@ -342,14 +345,14 @@ class GroupTemplate {
     // similar functions that are scale-related are in layouts.js...
     getGroupSelectionStroke(obj) {
         if (obj.isSelected) {
-            if (this._map.getPerspectives().isInPEditorMode())
-                return colorP;
-            else if (this._map.getPerspectives().isInDEditorMode())
-                return colorD;
+            if (this._map.perspectives.isInPEditorMode())
+                return COLORS.colorP;
+            else if (this._map.perspectives.isInDEditorMode())
+                return COLORS.colorD;
             else
-                return '#000';
+                return COLORS.white;
         } else {
-            return '#000';
+            return COLORS.white;
         }
     }
 
@@ -363,76 +366,76 @@ class GroupTemplate {
     // callbacks to determine when the corners should be visible
 
     showDCorner(group) {
-        if (this._map.getPerspectives().isDEditorThing(group)) { // mark distinction thing
+        if (this._map.perspectives.isDEditorThing(group)) { // mark distinction thing
             return true;
-        } else if (this._map.getPerspectives().isInPOrDEditorMode()) { // don't show any corners if in P/D editor mode
+        } else if (this._map.perspectives.isInPOrDEditorMode()) { // don't show any corners if in P/D editor mode
             return false;
-        } else if (this._map.getPresenter().isCreatingThumbnail) { // don't show any corners if capturing thumbnail
+        } else if (this._map.presenter.isCreatingThumbnail) { // don't show any corners if capturing thumbnail
             return false;
         } else {
-            return (group === this._map.getUi().mouseOverGroup) || // show corners on mouseover
+            return (group === this._map.ui.mouseOverGroup) || // show corners on mouseover
                 (/*this.isTouchDevice() &&*/ group.isSelected) ||
                 (this.canDragSelectionToBecomeSistersOf(group, false) && // drag to D (make it sisters)
-                    (!this._map.getUi().dragTargetPosition ||
+                    (!this._map.ui.dragTargetPosition ||
                         this.cannotDragSelectionToBecomeOrderedSisterOf(group))); // not showing drag above/below indicators
         }
     }
 
     showSCorner(group) {
-        if (this._map.getPerspectives().isInPOrDEditorMode()) { // don't show any corners if in P/D editor mode
+        if (this._map.perspectives.isInPOrDEditorMode()) { // don't show any corners if in P/D editor mode
             return false;
-        } else if (this._map.getPresenter().isCreatingThumbnail) { // don't show any corners if capturing thumbnail
+        } else if (this._map.presenter.isCreatingThumbnail) { // don't show any corners if capturing thumbnail
             return false;
         } else {
-            return (group === this._map.getUi().mouseOverGroup) || // show corners on mouseover
+            return (group === this._map.ui.mouseOverGroup) || // show corners on mouseover
                 (/*$scope.isTouchDevice() &&*/ group.isSelected) ||
                 (this.canDragSelectionToBecomeChildrenOf(group, false) && // drag to S (make it children)
-                    (!this._map.getUi().dragTargetPosition ||
+                    (!this._map.ui.dragTargetPosition ||
                         this.cannotDragSelectionToBecomeOrderedSisterOf(group))); // not showing drag above/below indicators
         }
     }
 
     showRCorner(group) {
-        if (this._map.getPerspectives().isInPOrDEditorMode()) { // don't show any corners if in P/D editor mode
+        if (this._map.perspectives.isInPOrDEditorMode()) { // don't show any corners if in P/D editor mode
             return false;
-        } else if (this._map.getPresenter().isCreatingThumbnail) { // don't show any corners if capturing thumbnail
+        } else if (this._map.presenter.isCreatingThumbnail) { // don't show any corners if capturing thumbnail
             return false;
         } else {
-            return group === this._map.getUi().mouseOverGroup ||
+            return group === this._map.ui.mouseOverGroup ||
                 (/*$scope.isTouchDevice() &&*/ group.isSelected); // show corners on mouseover
         }
     }
 
     showPCorner(group) {
-        if (this._map.getPerspectives().isPEditorPoint(group)) {
+        if (this._map.perspectives.isPEditorPoint(group)) {
             return true; // mark perspective point
-        } else if (this._map.getPerspectives().isInPOrDEditorMode()) { // don't show any corners if in P/D editor mode
+        } else if (this._map.perspectives.isInPOrDEditorMode()) { // don't show any corners if in P/D editor mode
             return false;
-        } else if (this._map.getPresenter().isCreatingThumbnail) { // don't show any corners if capturing thumbnail
+        } else if (this._map.presenter.isCreatingThumbnail) { // don't show any corners if capturing thumbnail
             return false;
         } else {
-            return group === this._map.getUi().mouseOverGroup ||
+            return group === this._map.ui.mouseOverGroup ||
                 (/*$scope.isTouchDevice() &&*/ group.isSelected); // show corners on mouseover
         }
     }
 
     showPDot (link) {
-        return true; // this._map.getUi().getMapEditorOptions().perspectiveMode != 'both';
+        return true; // this._map.ui.getMapEditorOptions().perspectiveMode != 'both';
     }
 
     // these functions are used in two modes:
-    // 1. with isDropping == false, to highlight drop targets based on this._map.getUi().dragTargetGroup and this._map.getUi().dragTargetPosition,
+    // 1. with isDropping == false, to highlight drop targets based on this._map.ui.dragTargetGroup and this._map.ui.dragTargetPosition,
     //    which are set on mouseDragEnter/mouseDragleave
     // 2. with isDropping == true, on drop, when the above indicators have gone away, but we know what the dropped
     //    and target groups are, and we want to know what the drop should do.
 
     canDragSelectionToBecomeSistersOf(group, isDropping) {
-        return (group === this._map.getUi().dragTargetGroup || isDropping) &&
+        return (group === this._map.ui.dragTargetGroup || isDropping) &&
             this._map.thingsSelectedAreDescendantsOf(group);
     }
 
     canDragSelectionToBecomeChildrenOf(group, isDropping) {
-        return (group === this._map.getUi().dragTargetGroup || isDropping) &&
+        return (group === this._map.ui.dragTargetGroup || isDropping) &&
             !this._map.thingsSelectedIncludeSlide() &&
             !this._map.thingsSelectedAreDescendantsOf(group);
     }
@@ -446,9 +449,9 @@ class GroupTemplate {
         }
 
         // dragged and target must be Sisters in inventory layout
-        return (targetGroup == this._map.getUi().dragTargetGroup || isDropping) &&
-            (this._map.getUi().dragTargetPosition === side || isDropping) &&
-            this._map.getLayouts().areSistersInInventoryLayout(draggedGroup, targetGroup);
+        return (targetGroup === this._map.ui.dragTargetGroup || isDropping) &&
+            (this._map.ui.dragTargetPosition === side || isDropping) &&
+            this._map.layouts.areSistersInInventoryLayout(draggedGroup, targetGroup);
     }
 
 
@@ -491,7 +494,7 @@ class GroupTemplate {
                 position: new go.Point(0, 0),
                 desiredSize: new go.Size(50, 50),
                 geometry: go.Geometry.parse('F M0 1 L0 50 L50 0 L1 0z', true),
-                fill: colorD,
+                fill: COLORS.colorD,
                 stroke: null,
                 cursor: 'pointer',
                 click: (event, target) => {
@@ -499,10 +502,10 @@ class GroupTemplate {
                     if (event.alt) {
                         // NB: a side effect of this will be to select just this group,
                         // which would not happen otherwise via control-click
-                        this._map.getPerspectives().setDEditorThing(target.part);
+                        this._map.perspectives.setDEditorThing(target.part);
                     } else {
                         // handle single or double click
-                        this._map.getUi().handleCornerClick('D', target.part);
+                        this._map.ui.handleCornerClick('D', target.part);
                     }
                 },
                 contextClick: (event, target) => {
@@ -522,6 +525,7 @@ class GroupTemplate {
 
     // 'S' corner (bottom left, green)
     cornerS() {
+        let that = this;
         return mk(go.Panel, go.Panel.Position,
             new go.Binding('opacity', '', (obj) => {
                 return (this.showSCorner(obj) ? 1 : 0);
@@ -535,12 +539,12 @@ class GroupTemplate {
                 position: new go.Point(0, 0),
                 desiredSize: new go.Size(50, 50),
                 geometry: go.Geometry.parse('F M0 0 L0 49 L1 50 L50 50z', true),
-                fill: colorS,
+                fill: COLORS.colorS,
                 stroke: null,
                 cursor: 'pointer',
-                click: (event, target) => {
+                click: function (event, target) { 
                     // handle single or double click
-                    this._map.getUi().handleCornerClick('S', target.part);
+                    that._map.ui.handleCornerClick('S', target.part);
                 }
             }),
             // expansion indicator
@@ -613,7 +617,7 @@ class GroupTemplate {
                     'L 100 50 L 50 100 ' + // to midpoint of right side, midpoint of bottom side
                     'L0 100z', // bottom left, return home
                     true),
-                fill: colorR,
+                fill: COLORS.colorR,
                 stroke: null,
                 cursor: 'pointer',
 
@@ -626,7 +630,7 @@ class GroupTemplate {
                 toLinkableDuplicates: true,
                 click: (event, target) => {
                     // handle single or double click
-                    this._map.getUi().handleCornerClick('R', target.part);
+                    this._map.ui.handleCornerClick('R', target.part);
                 }
             }),
             mk(go.TextBlock, {
@@ -656,7 +660,7 @@ class GroupTemplate {
                 fill: '#000',
                 click: (event, target) => {
                     console.log('clip clicked');
-                    this._map.getUi().toggleTab(this._map.getUi().TAB_ID_ATTACHMENTS);
+                    this._map.ui.toggleTab(this._map.ui.TAB_ID_ATTACHMENTS);
                 }
             }
         );
@@ -665,7 +669,7 @@ class GroupTemplate {
     pEyeball() {
         return mk(go.Shape,
             new go.Binding('visible', '', (obj) => {
-                return this._map.getPerspectives().isPerspectivePoint(obj);
+                return this._map.perspectives.isPerspectivePoint(obj);
             }).ofObject(),
             new go.Binding('geometry', '', (obj) => {
                 return go.Geometry.parse(this._map.pIsExpanded(obj) ? eyeSvgPath : eyeBlockedSvgPath, true);
@@ -710,7 +714,7 @@ class GroupTemplate {
                     'L100 100 0 100z', // bottom right, bottom left, return home
                     true),
 
-                fill: colorP,
+                fill: COLORS.colorP,
                 stroke: null,
                 cursor: 'pointer',
 
@@ -724,7 +728,7 @@ class GroupTemplate {
                 toMaxLinks: 1,
                 click: (event, target) => {
                     // handle single or double click
-                    this._map.getUi().handleCornerClick('P', target.part);
+                    this._map.ui.handleCornerClick('P', target.part);
                 }
             }),
             this.pEyeball(), // P expansion indicator

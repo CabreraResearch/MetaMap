@@ -1,8 +1,8 @@
 const go = window.go;
-const slideTemplate = require('./templates/slideTemplate.js');
+const SlideTemplate = require('./templates/SlideTemplate.js');
 const GroupTemplate = require('./templates/GroupTemplate.js');
-const linkTemplate = require('./templates/linkTemplate.js');
-const pLinkTemplate = require('./templates/pLinkTemplate.js');
+const LinkTemplate = require('./templates/LinkTemplate.js');
+const PLinkTemplate = require('./templates/PLinkTemplate.js');
 const dLinkTemplate = require('./templates/dLinkTemplate.js');
 
 // convenient abbreviation for creating templates
@@ -21,17 +21,17 @@ class Templates {
         this._editor = editor;
         this._map = map;
 
-        this.slideTemplate = slideTemplate(map);
+        this.slideTemplate = new SlideTemplate(map);
         this.groupTemplate = new GroupTemplate(map);
-        this.linkTemplate = linkTemplate(map);
-        this.pLinkTemplate = pLinkTemplate(map);
+        this.linkTemplate = new LinkTemplate(map);
+        this.pLinkTemplate = new PLinkTemplate(map);
         this.dLinkTemplate = dLinkTemplate(map);
     }
 
     initTemplates(diagram) {
-        diagram.groupTemplate = this.groupTemplate;
-        diagram.nodeTemplate = this.slideTemplate;
-        diagram.linkTemplate = this.linkTemplate;
+        diagram.groupTemplate = this.groupTemplate.init();
+        diagram.nodeTemplate = this.slideTemplate.init();
+        diagram.linkTemplate = this.linkTemplate.init();
         diagram.linkTemplateMap.add('P', this.pLinkTemplate);
         diagram.linkTemplateMap.add('D', this.dLinkTemplate);
 
@@ -112,7 +112,7 @@ class Templates {
             fromBorder.portId = 'R';
             toBorder.portId = 'R';
         }
-        tempnode.scale = this._map.getLayouts().getScale(realnode);
+        tempnode.scale = this._map.layouts.getScale(realnode);
     }
 
     // prevent duplicate 'P' links in the same direction between the same two things

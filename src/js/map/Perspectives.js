@@ -12,16 +12,16 @@ class Perspectives {
 
     currentTabChanged(newValue, oldValue) {
         //console.log('Perspectives, currentTabChanged');
-        if (newValue === this._map.getUi().TAB_ID_PERSPECTIVES) { // opening perspectives
+        if (newValue === this._map.ui.TAB_ID_PERSPECTIVES) { // opening perspectives
             this.setPorDThing('P');
             this._map.setEditingBlocked(true);
-        } else if (oldValue === this._map.getUi().TAB_ID_PERSPECTIVES) { // closing perspectives
+        } else if (oldValue === this._map.ui.TAB_ID_PERSPECTIVES) { // closing perspectives
             this.saveLinks('P');
             this._map.setEditingBlocked(false);
-        } else if (newValue === this._map.getUi().TAB_ID_DISTINCTIONS) { // opening distinctions
+        } else if (newValue === this._map.ui.TAB_ID_DISTINCTIONS) { // opening distinctions
             this.setPorDThing('D');
             this._map.setEditingBlocked(true);
-        } else if (oldValue === this._map.getUi().TAB_ID_DISTINCTIONS) { // closing distinctions
+        } else if (oldValue === this._map.ui.TAB_ID_DISTINCTIONS) { // closing distinctions
             this.saveLinks('D');
             this._map.setEditingBlocked(false);
         }
@@ -29,7 +29,7 @@ class Perspectives {
 
     handleDiagramEvent(eventName, e) {
         if (eventName === 'ChangedSelection') {
-            if (this._map.getUi().currentTabIs(this._map.getUi().TAB_ID_PERSPECTIVES) || this._map.getUi().currentTabIs(this._map.getUi().TAB_ID_DISTINCTIONS)) {
+            if (this._map.ui.currentTabIs(this._map.ui.TAB_ID_PERSPECTIVES) || this._map.ui.currentTabIs(this._map.ui.TAB_ID_DISTINCTIONS)) {
                 this.updateLinks();
             }
         }
@@ -38,29 +38,29 @@ class Perspectives {
     // ---------- P/D Editor state
 
     isInPOrDEditorMode() {
-        return this._map.getUi().state.perspectivePointKey || this._map.getUi().state.distinctionThingKey;
+        return this._map.ui.state.perspectivePointKey || this._map.ui.state.distinctionThingKey;
     }
 
     isInPEditorMode() {
-        return this._map.getUi().state.perspectivePointKey;
+        return this._map.ui.state.perspectivePointKey;
     }
 
     isInDEditorMode() {
-        return this._map.getUi().state.distinctionThingKey;
+        return this._map.ui.state.distinctionThingKey;
     }
 
     isPEditorPoint(group) {
-        return this._map.getUi().state.perspectivePointKey === group.data.key;
+        return this._map.ui.state.perspectivePointKey === group.data.key;
     }
 
     isDEditorThing(group) {
-        return this._map.getUi().state.distinctionThingKey === group.data.key;
+        return this._map.ui.state.distinctionThingKey === group.data.key;
     }
 
     // NB: this is called via this._map.getCornerFunction, so we get the extra corner arg, which we can ignore
     setPEditorPoint(thing, corner) {
         if (this._editor.canEdit) {
-            this._map.getUi().openTab(this._map.getUi().TAB_ID_PERSPECTIVES);
+            this._map.ui.openTab(this._map.ui.TAB_ID_PERSPECTIVES);
         }
     }
 
@@ -70,7 +70,7 @@ class Perspectives {
             // by a control-click, which will not automatically select just it
             this._map.getDiagram().clearSelection();
             thing.isSelected = true;
-            this._map.getUi().openTab(this._map.getUi().TAB_ID_DISTINCTIONS);
+            this._map.ui.openTab(this._map.ui.TAB_ID_DISTINCTIONS);
         }
     }
 
@@ -113,7 +113,7 @@ class Perspectives {
         var links = group.findLinksInto();
         while (links.next()) {
             var link = links.value;
-            if (link.data.category === 'P' && link.fromNode === this._map.getUi().mouseOverGroup) {
+            if (link.data.category === 'P' && link.fromNode === this._map.ui.mouseOverGroup) {
                 return true;
             }
         }
@@ -121,7 +121,7 @@ class Perspectives {
     }
 
     getPerspectiveViewWeight(group) {
-        var mode = this._map.getUi().getMapEditorOptions().perspectiveMode;
+        var mode = this._map.ui.getMapEditorOptions().perspectiveMode;
         if (mode === 'spotlight' || mode === 'both') {
             return (this.isSelectedPerspectiveView(group) ? 1 : 0) +
                 (this.isToggledPerspectiveView(group) ? 1 : 0) +
@@ -136,7 +136,7 @@ class Perspectives {
     // category is "P" or "D" (perspectives or distinctions)
     setPorDThing(category) {
         // if already set, must do save perspectives or save distinctions
-        if (this._map.getUi().state.perspectivePointKey || this._map.getUi().state.distinctionThingKey)
+        if (this._map.ui.state.perspectivePointKey || this._map.ui.state.distinctionThingKey)
             return;
 
         var thing = this._map.getDiagram().selection.first();
@@ -144,9 +144,9 @@ class Perspectives {
         if (thing instanceof go.Group) {
             var key = thing.data.key;
             if (category === "P") {
-                this._map.getUi().state.perspectivePointKey = key;
+                this._map.ui.state.perspectivePointKey = key;
             } else if (category === "D") {
-                this._map.getUi().state.distinctionThingKey = key;
+                this._map.ui.state.distinctionThingKey = key;
             }
 
             // select views/others
@@ -163,11 +163,11 @@ class Perspectives {
 
         var pOrDThing = null;
         var category = null;
-        if (this._map.getUi().state.perspectivePointKey) {
-            pOrDThing = this._map.getDiagram().findNodeForKey(this._map.getUi().state.perspectivePointKey);
+        if (this._map.ui.state.perspectivePointKey) {
+            pOrDThing = this._map.getDiagram().findNodeForKey(this._map.ui.state.perspectivePointKey);
             category = "P";
-        } else if (this._map.getUi().state.distinctionThingKey) {
-            pOrDThing = this._map.getDiagram().findNodeForKey(this._map.getUi().state.distinctionThingKey);
+        } else if (this._map.ui.state.distinctionThingKey) {
+            pOrDThing = this._map.getDiagram().findNodeForKey(this._map.ui.state.distinctionThingKey);
             category = "D";
         }
 
@@ -242,11 +242,11 @@ class Perspectives {
     saveLinks(category) {
         var pOrDThing = null;
         if (category === "P") {
-            pOrDThing = this._map.getDiagram().findNodeForKey(this._map.getUi().state.perspectivePointKey);
-            this._map.getUi().state.perspectivePointKey = null;
+            pOrDThing = this._map.getDiagram().findNodeForKey(this._map.ui.state.perspectivePointKey);
+            this._map.ui.state.perspectivePointKey = null;
         } else if (category === "D") {
-            pOrDThing = this._map.getDiagram().findNodeForKey(this._map.getUi().state.distinctionThingKey);
-            this._map.getUi().state.distinctionThingKey = null;
+            pOrDThing = this._map.getDiagram().findNodeForKey(this._map.ui.state.distinctionThingKey);
+            this._map.ui.state.distinctionThingKey = null;
         }
 
         this._map.getDiagram().clearSelection();

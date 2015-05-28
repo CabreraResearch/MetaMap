@@ -1,4 +1,4 @@
-﻿const go = window.go;
+const go = window.go;
 let Layouts = require('../Layouts');
 
 class FreehandLayout extends Layouts {

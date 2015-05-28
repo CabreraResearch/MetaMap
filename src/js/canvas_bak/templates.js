@@ -1,6 +1,6 @@
 // goJS templates used in the editor
 
-SandbankEditor.Templates = function(editor, map) {
+SandbankEditor.Templates = function($scope, map) {
 
     var self = this;
 
@@ -147,7 +147,7 @@ SandbankEditor.Templates = function(editor, map) {
             return false;
         } else {
             return (group == map.getUi().mouseOverGroup) || // show corners on mouseover
-                (editor.isTouchDevice() && group.isSelected) ||
+                ($scope.isTouchDevice() && group.isSelected) ||
                 (canDragSelectionToBecomeSistersOf(group, false) && // drag to D (make it sisters)
                     (!map.getUi().dragTargetPosition ||
                         cannotDragSelectionToBecomeOrderedSisterOf(group))); // not showing drag above/below indicators
@@ -161,7 +161,7 @@ SandbankEditor.Templates = function(editor, map) {
             return false;
         } else {
             return (group == map.getUi().mouseOverGroup) || // show corners on mouseover
-                (editor.isTouchDevice() && group.isSelected) ||
+                ($scope.isTouchDevice() && group.isSelected) ||
                 (canDragSelectionToBecomeChildrenOf(group, false) && // drag to S (make it children)
                     (!map.getUi().dragTargetPosition ||
                         cannotDragSelectionToBecomeOrderedSisterOf(group))); // not showing drag above/below indicators
@@ -175,7 +175,7 @@ SandbankEditor.Templates = function(editor, map) {
             return false;
         } else {
             return group == map.getUi().mouseOverGroup ||
-                (editor.isTouchDevice() && group.isSelected); // show corners on mouseover
+                ($scope.isTouchDevice() && group.isSelected); // show corners on mouseover
         }
     }
 
@@ -188,7 +188,7 @@ SandbankEditor.Templates = function(editor, map) {
             return false;
         } else {
             return group == map.getUi().mouseOverGroup ||
-                (editor.isTouchDevice() && group.isSelected); // show corners on mouseover
+                ($scope.isTouchDevice() && group.isSelected); // show corners on mouseover
         }
     }
 
@@ -1183,8 +1183,8 @@ SandbankEditor.Templates = function(editor, map) {
         //console.log('showExportFooter, bounds rect: ' + rect + ', w: ' + w);
         _exportFooter.location = new go.Point(x, y);
         _exportFooter.findObject("rectangle").width = w;
-        _exportFooter.findObject("mapTitle").text = "Map Title: " + editor.mapTitle;
-        _exportFooter.findObject("authorName").text = "Author: " + editor.userName;
+        _exportFooter.findObject("mapTitle").text = "Map Title: " + $scope.mapTitle;
+        _exportFooter.findObject("authorName").text = "Author: " + $scope.userName;
         _exportFooter.opacity = 1;
         _exportFooter.invalidateLayout();
     };

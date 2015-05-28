@@ -62,7 +62,7 @@ class Editor {
     doneEditingTitle() {
         //console.log('doneEditingTitle');
         this.editingTitle = false;
-        this.map.getAutosave().save('edit_title');
+        this.map.autosave.save('edit_title');
     }
 
     editingTitleKeypress(e) {

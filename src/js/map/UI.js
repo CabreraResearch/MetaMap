@@ -2,9 +2,9 @@ let TABS = require('../constants/tabs.js');
 let go = window.go;
 
 class UI {
-    constructor(map, state) {
+    constructor(editor, map) {
         this.map = map;
-        this.state = state;
+        this.editor = editor;
 
         this.zoomingToRegion = false;
 
@@ -15,6 +15,7 @@ class UI {
         this.dragTargetPosition = null;
 
         this.helpTip = null;
+        this.state = {};
 
         this._cornerClicked = null;
         this._cornerFunction = null;
@@ -66,6 +67,14 @@ class UI {
 
     toggleZoomingToRegion() {
         this.zoomingToRegion = !this.zoomingToRegion;
+    }
+
+    getStateData() {
+        
+    }
+
+    setStateData() {
+        
     }
 
     // ----------------- zooming functions -------------------
@@ -163,7 +172,7 @@ class UI {
             if (it.value instanceof go.Group) {
                 let group = it.value;
                 diagram.model.setDataProperty(group.data, 'layout', layoutName);
-                this.map.getLayouts().setDescendantLayouts(group, group.data.layout);
+                this.map.layouts.setDescendantLayouts(group, group.data.layout);
                 this.map.refresh();
             }
         }
@@ -220,10 +229,12 @@ class UI {
     handleCornerClick (corner, thing) {
         //console.log('handleCornerClick: corner = ' + corner + ', cornerClicked = ' + _cornerClicked);
         // assume it's a single click, and set handler
-        let _cornerFunction = this.getCornerFunction(corner, 1);
+        this._cornerClickedCnt = 1;
+        let _cornerFunction = this.getCornerFunction(corner, this._cornerClickedCnt);
         // already clicked, so it's a double click; change handler
         if (this._cornerClicked === corner) {
-            _cornerFunction = this.getCornerFunction(corner, 2);
+            this._cornerClickedCnt += 1;
+            _cornerFunction = this.getCornerFunction(corner, this._cornerClickedCnt);
             console.log('handleCornerClick: double click on ' + corner);
             return;
         }
@@ -234,14 +245,31 @@ class UI {
         let timer = setTimeout(() => {
             // ding! invoke it
             if (_cornerFunction === this.showCornerTip) {
-                _cornerFunction(thing, corner);
+                this.showCornerTip(thing, corner);
             } else {
-                _cornerFunction(thing); // don't pass the corner arg to things like createChild that have a different second arg
+                this.execCornerFunction(corner, this._cornerClickedCnt, thing); // don't pass the corner arg to things like createChild that have a different second arg
             }
-            // reset handler and clicked flag
-            _cornerFunction = this.getCornerFunction(corner, 1);
+            this._cornerClickedCnt = 0;
             this._cornerClicked = null;
         }, this._cornerTimeout);
+    }
+
+    execCornerFunction(corner, clicks, ...args) {
+        if (corner === 'D') {
+            return (clicks === 1 ? this.showCornerTip(...args) : this.map.createSister(...args));
+        } else if (corner === 'S') {
+            return (clicks === 1 ? this.map.toggleSExpansion(...args) : this.map.createChild(...args));
+        } else if (corner === 'R') {
+            return (clicks === 1 ? this.showCornerTip(...args) : this.map.createRToSister(...args));
+        } else if (corner === 'P') {
+            return (clicks === 1 ? this.map.togglePExpansion(...args) : this.map.perspectives.setPEditorPoint(...args));
+        } else if (corner === '') { // click on text
+            return (clicks === 1 ? this.showCornerTip(...args) : this.editText(...args));
+        } else {
+            return () => {
+                console.log('getCornerFunction: no function found for corner: ' + corner + '!');
+            };
+        }
     }
 
     getCornerFunction(corner, clicks) {
@@ -252,7 +280,7 @@ class UI {
         } else if (corner === 'R') {
             return (clicks === 1 ? this.showCornerTip : this.map.createRToSister);
         } else if (corner === 'P') {
-            return (clicks === 1 ? this.map.togglePExpansion : this.map.getPerspectives().setPEditorPoint);
+            return (clicks === 1 ? this.map.togglePExpansion : this.map.perspectives.setPEditorPoint);
         } else if (corner === '') { // click on text
             return (clicks === 1 ? this.showCornerTip : this.editText);
         } else {
