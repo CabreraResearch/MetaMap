@@ -1,6 +1,6 @@
 // functions handling analytics
 // analytics display is in views/maps/_analytics_tab_map and _analytics_tab_thing
-SandbankEditor.Analytics = function ($scope, map) {
+SandbankEditor.Analytics = function (editor, map) {
 
     var self = this;
 

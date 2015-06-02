@@ -1,6 +1,6 @@
 // functions handling editor autosave function
 
-SandbankEditor.Autosave = function($scope, map) {
+SandbankEditor.Autosave = function(editor, map) {
 
     var self = this;
 
@@ -33,7 +33,7 @@ SandbankEditor.Autosave = function($scope, map) {
     // to remove duplicates, and save the current data
     function autosave() {
         // stop right here if we're in the sandbox and/or we don't have edit permissions
-        if ($scope.sandbox || !$scope.canEdit) {
+        if (editor.sandbox || !editor.canEdit) {
             return;
         }
 
@@ -58,7 +58,7 @@ SandbankEditor.Autosave = function($scope, map) {
 
         //console.log('autosave, changeList: ' + changeList + ', descriptionList: ' + descriptionList);
         var postData = {
-            "name": $scope.mapTitle,
+            "name": editor.mapTitle,
             "data": map.getDiagram().model.toJson(),
             "state_data": JSON.stringify(map.getUi().getStateData()),
             "editor_options": JSON.stringify(map.getUi().getMapEditorOptions()),
@@ -68,18 +68,18 @@ SandbankEditor.Autosave = function($scope, map) {
             "change_description": descriptionList.join('; '),
             "thumbnail_png": map.getPresenter().getMapThumbnail()
         };
-        var url = $scope.mapUrl + '.json';
+        var url = editor.mapUrl + '.json';
 
-        $scope.updateEditStatus($scope.SAVING);
+        editor.updateEditStatus(editor.SAVING);
         $http.put(url, postData).then(
             function(response) {
                 changeTypes = [];
-                $scope.updateEditStatus($scope.SAVE_OK);
+                editor.updateEditStatus(editor.SAVE_OK);
                 // load returned data for analytics, points, badges, versions
-                $scope.map.loadMapExtraData(response.data.map);
+                editor.map.loadMapExtraData(response.data.map);
             },
             function() {
-                $scope.updateEditStatus($scope.SAVE_FAILED);
+                editor.updateEditStatus(editor.SAVE_FAILED);
             });
     }
 

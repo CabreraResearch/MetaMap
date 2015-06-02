@@ -1,137 +1,139 @@
+const go = window.go;
+
 // functions for creating and manipulating the map (i.e. Diagram)
 
 SandbankEditor.Map = function(editor) {
 
-    var self = this;
+    var ret = {};
 
     // ----------- constants ---------------
-    this.LEFT = 'left';
-    this.RIGHT = 'right';
+    ret.LEFT = 'left';
+    ret.RIGHT = 'right';
 
     // ------------ instance vars ----------
 
-    var _diagram = null;
+    ret._diagram = null;
 
     // components
-    var _analytics = null;
-    var _attachments = null;
-    var _autosave = null;
-    var _generator = null;
+    ret._analytics = null;
+    ret._attachments = null;
+    ret._autosave = null;
+    ret._generator = null;
     //var _history = null;
-    var _layouts = null;
-    var _perspectives = null;
-    var _presenter = null;
-    var _standards = null;
-    var _templates = null;
-    var _tests = null;
-    var _ui = null;
+    ret._layouts = null;
+    ret._perspectives = null;
+    ret._presenter = null;
+    ret._standards = null;
+    ret._templates = null;
+    ret._tests = null;
+    ret._ui = null;
 
     // ------------ component accessors ----------------
 
-    function getComponents() {
+    ret.getComponents = function() {
         return [
-            _analytics,
-            _attachments,
-            _autosave,
-            _generator,
+            ret._analytics,
+            ret._attachments,
+            ret._autosave,
+            ret._generator,
             // _history, 
-            _layouts,
-            _perspectives,
-            _presenter,
-            _standards,
-            _templates,
-            _tests,
-            _ui
+            ret._layouts,
+            ret._perspectives,
+            ret._presenter,
+            ret._standards,
+            ret._templates,
+            ret._tests,
+            ret._ui
         ];
     }
 
-    this.getAnalytics = function() {
-        return _analytics;
+    ret.getAnalytics = function() {
+        return ret._analytics;
     };
-    this.getAttachments = function() {
-        return _attachments;
+    ret.getAttachments = function() {
+        return ret._attachments;
     };
-    this.getAutosave = function() {
-        return _autosave;
+    ret.getAutosave = function() {
+        return ret._autosave;
     };
-    this.getGenerator = function() {
-        return _generator;
+    ret.getGenerator = function() {
+        return ret._generator;
     };
-    // this.getHistory = function () { return _history; };
-    this.getLayouts = function() {
-        return _layouts;
+    // ret.getHistory = function () { return _history; };
+    ret.getLayouts = function() {
+        return ret._layouts;
     };
-    this.getPerspectives = function() {
-        return _perspectives;
+    ret.getPerspectives = function() {
+        return ret._perspectives;
     };
-    this.getPresenter = function() {
-        return _presenter;
+    ret.getPresenter = function() {
+        return ret._presenter;
     };
-    this.getStandards = function() {
-        return _standards;
+    ret.getStandards = function() {
+        return ret._standards;
     };
-    this.getTemplates = function() {
-        return _templates;
+    ret.getTemplates = function() {
+        return ret._templates;
     };
-    this.getTests = function() {
-        return _tests;
+    ret.getTests = function() {
+        return ret._tests;
     };
-    this.getUi = function() {
-        return _ui;
+    ret.getUi = function() {
+        return ret._ui;
     };
 
     // -------------- map init ------------------
 
-    this.init = function() {
+    ret.init = function() {
 
         // initialize components
-        _analytics = new SandbankEditor.Analytics(editor, self);
-        _attachments = new SandbankEditor.Attachments(editor, self);
-        _autosave = new SandbankEditor.Autosave(editor, self);
-        _generator = new SandbankEditor.Generator(editor, self);
-        // _history = new SandbankEditor.History($scope, self);
-        _layouts = new SandbankEditor.Layouts(editor, self);
-        _perspectives = new SandbankEditor.Perspectives(editor, self);
-        _presenter = new SandbankEditor.Presenter(editor, self);
-        //_standards = new SandbankEditor.Standards($scope, self);
-        _templates = new SandbankEditor.Templates(editor, self);
-        //_tests = new SandbankEditor.Tests($scope, self);
-        _ui = new SandbankEditor.UI(editor, self);
+        ret._analytics = new SandbankEditor.Analytics(editor, ret);
+        ret._attachments = new SandbankEditor.Attachments(editor, ret);
+        ret._autosave = new SandbankEditor.Autosave(editor, ret);
+        ret._generator = new SandbankEditor.Generator(editor, ret);
+        // _history = new SandbankEditor.History($scope, ret);
+        ret._layouts = new SandbankEditor.Layouts(editor, ret);
+        ret._perspectives = new SandbankEditor.Perspectives(editor, ret);
+        ret._presenter = new SandbankEditor.Presenter(editor, ret);
+        //_standards = new SandbankEditor.Standards($scope, ret);
+        ret._templates = new SandbankEditor.Templates(editor, ret);
+        //_tests = new SandbankEditor.Tests($scope, ret);
+        ret._ui = new SandbankEditor.UI(editor, ret);
 
         // call init for each component, if defined
-        _.each(getComponents(), function(component) {
+        _.each(ret.getComponents(), function(component) {
             if (component && component.init)
                 component.init();
         });
 
         // create diagram
-        _diagram = new go.Diagram("diagram");
-        _diagram.initialContentAlignment = go.Spot.Center;
-        _diagram.initialViewportSpot = go.Spot.Center;
-        _diagram.initialDocumentSpot = go.Spot.Center;
-        _diagram.hasHorizontalScrollbar = false;
-        _diagram.hasVerticalScrollbar = false;
-        _diagram.padding = 500;
-        _diagram.layout = _layouts.getFreehandDiagramLayout();
+        ret._diagram = new go.Diagram("diagram");
+        ret._diagram.initialContentAlignment = go.Spot.Center;
+        ret._diagram.initialViewportSpot = go.Spot.Center;
+        ret._diagram.initialDocumentSpot = go.Spot.Center;
+        ret._diagram.hasHorizontalScrollbar = false;
+        ret._diagram.hasVerticalScrollbar = false;
+        ret._diagram.padding = 500;
+        ret._diagram.layout = ret._layouts.getFreehandDiagramLayout();
 
-        initTools();
-        _templates.initTemplates(_diagram); // set up templates, customize temporary link behavior 
-        addDiagramListeners();
+        ret.initTools();
+        ret._templates.initTemplates(ret._diagram); // set up templates, customize temporary link behavior 
+        ret.addDiagramListeners();
 
-        _templates.addExportFooter();
+        ret._templates.addExportFooter();
 
         // watch for tab changes
-        // TODO: restore non-Angular version of this
+        // TODO: restore non-Angular version of ret
         //$scope.$watch('currentTab', function(newValue, oldValue) {
-        //    self.currentTabChanged(newValue, oldValue);
+        //    ret.currentTabChanged(newValue, oldValue);
         //});
     };
 
-    // this is called by a $scope.$watch in init()
-    this.currentTabChanged = function(newValue, oldValue) {
+    // ret is called by a $scope.$watch in init()
+    ret.currentTabChanged = function(newValue, oldValue) {
         // console.log('currentTabChanged, newValue: ' + newValue + ', oldValue: ' + oldValue);
         // notify any interested components
-        _.each(getComponents(), function(component) {
+        _.each(ret.getComponents(), function(component) {
             if (component && component.currentTabChanged) {
                 component.currentTabChanged(newValue, oldValue);
             }
@@ -139,18 +141,18 @@ SandbankEditor.Map = function(editor) {
 
     };
 
-    this.getDiagram = function() {
-        return _diagram;
+    ret.getDiagram = function() {
+        return ret._diagram;
     };
 
     // misc. tool configuration
-    function initTools() {
+    ret.initTools = function() {
         // disable clicking on TextBlocks to edit - we will invoke editing in other ways
-        _diagram.allowTextEdit = false;
+        ret._diagram.allowTextEdit = false;
 
         // select text when activating editor; 
         // use shift-enter to create new lines, enter to finish editing (NB: editor has multiline=true)
-        var textTool = _diagram.toolManager.textEditingTool;
+        var textTool = ret._diagram.toolManager.textEditingTool;
         textTool.doActivate = function() {
             go.TextEditingTool.prototype.doActivate.call(textTool);
             if (textTool.defaultTextEditor) {
@@ -165,9 +167,9 @@ SandbankEditor.Map = function(editor) {
         };
 
         // handle delete key on Mac (default behavior only uses fn-Delete to delete from canvas)
-        _diagram.commandHandler.doKeyDown = function() {
-            var e = _diagram.lastInput;
-            var cmd = _diagram.commandHandler;
+        ret._diagram.commandHandler.doKeyDown = function() {
+            var e = ret._diagram.lastInput;
+            var cmd = ret._diagram.commandHandler;
             if (e.event.which === 8) {
                 cmd.deleteSelection();
             } else {
@@ -178,9 +180,9 @@ SandbankEditor.Map = function(editor) {
         // [disable keyboard shortcuts, as these do not do centering on zoom, 
         // and can lead to confusion with browser zoom (which gets fired depends on focus)]
         // - turned back on to support pinch/zoom on iPad
-        _diagram.allowZoom = true;
+        ret._diagram.allowZoom = true;
 
-        _diagram.toolManager.mouseWheelBehavior = go.ToolManager.WheelZoom;
+        ret._diagram.toolManager.mouseWheelBehavior = go.ToolManager.WheelZoom;
 
         // decide what kinds of Parts can be added to a Group or to top-level
         // _diagram.commandHandler.memberValidation = function (grp, node) {
@@ -189,20 +191,20 @@ SandbankEditor.Map = function(editor) {
         // };
 
         // default link attributes
-        _diagram.toolManager.linkingTool.archetypeLinkData = {
+        ret._diagram.toolManager.linkingTool.archetypeLinkData = {
             type: 'noArrows'
         };
 
         // allow double-click in background to create a new node
-        _diagram.toolManager.clickCreatingTool.archetypeNodeData = getNewThingData();
+        ret._diagram.toolManager.clickCreatingTool.archetypeNodeData = ret.getNewThingData();
 
         // how long mouse must be held stationary before starting a drag-select (instead of a scroll) - default was 175ms
-        _diagram.toolManager.dragSelectingTool.delay = 400;
+        ret._diagram.toolManager.dragSelectingTool.delay = 400;
     }
 
     // ----------- handling of DiagramEvents --------------------
 
-    function addDiagramListeners() {
+    ret.addDiagramListeners = function() {
 
         // DiagramEvents to be handled here or by a component
         var diagramEvents = [
@@ -222,110 +224,110 @@ SandbankEditor.Map = function(editor) {
             "ViewportBoundsChanged"
         ];
         _.each(diagramEvents, function(eventName) {
-            _diagram.addDiagramListener(eventName, function(e) {
-                broadcastDiagramEvent(eventName, e);
+            ret._diagram.addDiagramListener(eventName, function(e) {
+                ret.broadcastDiagramEvent(eventName, e);
             });
         });
 
-        _diagram.addDiagramListener("BackgroundContextClicked", function(e) {
+        ret._diagram.addDiagramListener("BackgroundContextClicked", function(e) {
             // TODO: turn off in production
             //console.log('diagram model:' + _diagram.model.toJson());
         });
     }
 
     // broadcasts the given DiagramEvent (see apidocs for go.DiagramEvent)
-    // to any components that may be interested, including this one.
-    function broadcastDiagramEvent(eventName, e) {
-        self.handleDiagramEvent(eventName, e);
-        _.each(getComponents(), function(component) {
+    // to any components that may be interested, including ret one.
+    ret.broadcastDiagramEvent = function (eventName, e) {
+        ret.handleDiagramEvent(eventName, e);
+        _.each(ret.getComponents(), function(component) {
             if (component && component.handleDiagramEvent)
                 component.handleDiagramEvent(eventName, e);
         });
     }
 
-    this.handleDiagramEvent = function(eventName, e) {
+    ret.handleDiagramEvent = function(eventName, e) {
         //console.log('handleDiagramEvent: ' + eventName);
         if (eventName == 'ChangedSelection') {
-            changedSelection(e);
+            ret.changedSelection(e);
         } else if (eventName == 'SelectionCopied') {
-            selectionCopied(e);
+            ret.selectionCopied(e);
         } else if (eventName == 'PartCreated') {
-            partCreated(e);
+            ret.partCreated(e);
         } else if (eventName == 'BackgroundSingleClicked') {
-            _ui.showHelpTip('canvasTip');
+            ret._ui.showHelpTip('canvasTip');
         } else if (eventName == 'LinkDrawn') {
-            linkDrawn(e);
-            setNewLinkDirection(e);
+            ret.linkDrawn(e);
+            ret.setNewLinkDirection(e);
         } else if (eventName == 'LinkRelinked') {
-            linkRelinked(e);
+            ret.linkRelinked(e);
         } else if (eventName == 'ClipboardChanged') {
-            clipboardChanged(e);
+            ret.clipboardChanged(e);
         } else if (eventName == 'ClipboardPasted') {
-            clipboardPasted(e);
+            ret.clipboardPasted(e);
         }
     };
 
     // handle zoom to region if applicable
-    function changedSelection(e) {
+    ret.changedSelection = function (e) {
         //console.log('map.changedSelection');
-        _diagram.updateAllTargetBindings();
-        _ui.maybeZoomToRegion();
-        if (self.relationshipsSelected()) {
-            _ui.showHelpTip('relationshipTip');
+        ret._diagram.updateAllTargetBindings();
+        ret._ui.maybeZoomToRegion();
+        if (ret.relationshipsSelected()) {
+            ret._ui.showHelpTip('relationshipTip');
         }
     }
 
-    function partCreated(e) {
+    ret.partCreated = function (e) {
         //console.log('Map, PartCreated');
         var group = e.subject;
         if (!(group instanceof go.Group)) {
             return;
         }
-        _diagram.model.setDataProperty(group.data, 'layout', _ui.getMapEditorOptions().defaultThingLayout || 'left');
-        _layouts.setNewPartLocationData(e);
+        ret._diagram.model.setDataProperty(group.data, 'layout', ret._ui.getMapEditorOptions().defaultThingLayout || 'left');
+        ret._layouts.setNewPartLocationData(e);
     }
 
     // fix link ports when a link is created - 
     // the P and R ports both cover the whole node, and the P port is on top of the R port, 
     // so both P and R links get the toPort set to P by default.
-    function linkDrawn(e) {
+    ret.linkDrawn = function (e) {
         var link = e.subject;
         console.log('linkDrawn, link: ' + link + ', fromPort: ' + link.fromPortId + ', toPort: ' + link.toPortId);
         if (link.fromPortId == 'P') {
-            _diagram.model.startTransaction("change link category");
-            _diagram.model.setDataProperty(link.data, 'toPort', 'P');
-            _diagram.model.setDataProperty(link.data, 'category', 'P');
-            _diagram.model.commitTransaction("change link category");
+            ret._diagram.model.startTransaction("change link category");
+            ret._diagram.model.setDataProperty(link.data, 'toPort', 'P');
+            ret._diagram.model.setDataProperty(link.data, 'category', 'P');
+            ret._diagram.model.commitTransaction("change link category");
         }
         // prevent links from R to P
         else if (link.fromPortId == 'R') {
-            _diagram.model.startTransaction("change link toPort");
-            _diagram.model.setDataProperty(link.data, 'toPort', 'R');
-            _diagram.model.commitTransaction("change link toPort");
+            ret._diagram.model.startTransaction("change link toPort");
+            ret._diagram.model.setDataProperty(link.data, 'toPort', 'R');
+            ret._diagram.model.commitTransaction("change link toPort");
         }
     }
 
     // fix link ports when a link is relinked - 
     // dragging either end of an R-link to another node will set the corresponding port to P, 
     // since P port is on top of R port, so we reset both ports to R if the category is not P.
-    function linkRelinked(e) {
+    ret.linkRelinked = function(e) {
         var link = e.subject;
         if (!link.data.category || link.data.category !== 'P') {
-            _diagram.model.setDataProperty(link.data, 'fromPort', 'R');
-            _diagram.model.setDataProperty(link.data, 'toPort', 'R');
+            ret._diagram.model.setDataProperty(link.data, 'fromPort', 'R');
+            ret._diagram.model.setDataProperty(link.data, 'toPort', 'R');
         }
     }
 
-    function setNewLinkDirection(e) {
+    ret.setNewLinkDirection = function(e) {
         var link = e.subject;
         if (link.fromPortId == 'R') {
-            _diagram.model.startTransaction("change link direction");
-            _diagram.model.setDataProperty(link.data, 'type', _ui.getMapEditorOptions().defaultRelationshipDirection);
-            _diagram.commitTransaction("change link direction");
+            ret._diagram.model.startTransaction("change link direction");
+            ret._diagram.model.setDataProperty(link.data, 'type', ret._ui.getMapEditorOptions().defaultRelationshipDirection);
+            ret._diagram.commitTransaction("change link direction");
         }
     }
 
-    function clipboardChanged(e) {
+    ret.clipboardChanged = function(e) {
         var parts = e.subject.iterator;
         while (parts.next()) {
             var part = parts.value;
@@ -335,8 +337,8 @@ SandbankEditor.Map = function(editor) {
         }
     }
 
-    // NB: this is called when parts are copied by control-drag, NOT when the copy button is clicked
-    function selectionCopied(e) {
+    // NB: ret is called when parts are copied by control-drag, NOT when the copy button is clicked
+    ret.selectionCopied = function(e) {
         console.log('selectionCopied');
         var parts = e.subject.iterator;
         while (parts.next()) {
@@ -344,46 +346,46 @@ SandbankEditor.Map = function(editor) {
             if (part instanceof go.Group && part.isTopLevel) {
                 var loc = go.Point.parse(part.data.loc);
                 console.log('selectionCopied: updating loc of part ' + part + ' = ' + loc + ', scale: ' + part.scale);
-                _diagram.model.setDataProperty(part.data, 'loc', (loc.x + 50) + ' ' + (loc.y + 50));
+                ret._diagram.model.setDataProperty(part.data, 'loc', (loc.x + 50) + ' ' + (loc.y + 50));
                 part.updateTargetBindings('loc');
             }
         }
     }
 
-    function clipboardPasted(e) {
+    ret.clipboardPasted = function(e) {
         var parts = e.subject.iterator;
         while (parts.next()) {
             var part = parts.value;
             if (part instanceof go.Group && part.isTopLevel) {
                 var loc = go.Point.parse(part.data.loc);
                 //console.log('clipboardPasted: updating loc of part ' + part + ' = ' + loc + ', scale: ' + part.scale);
-                _diagram.model.setDataProperty(part.data, 'loc', (loc.x + 50) + ' ' + (loc.y + 50));
+                ret._diagram.model.setDataProperty(part.data, 'loc', (loc.x + 50) + ' ' + (loc.y + 50));
                 part.updateTargetBindings('loc');
             }
         }
     }
 
-    // computes the bounds of all groups in the diagram - this includes all ideas/things, 
+    // computes the bounds of all groups in the diagram - ret includes all ideas/things, 
     // and excludes nodes, including slides, the slide blocker, and the export footer
-    this.computeMapBounds = function() {
+    ret.computeMapBounds = function() {
         var groups = new go.List(go.Group);
-        var nodes = _diagram.nodes;
+        var nodes = ret._diagram.nodes;
         while (nodes.next()) {
             if (nodes.value instanceof go.Group) {
                 groups.add(nodes.value);
             }
         }
-        return _diagram.computePartsBounds(groups).copy(); // return a mutable rect
+        return ret._diagram.computePartsBounds(groups).copy(); // return a mutable rect
     };
 
     // ------------ what is currently selected? ----------------
 
     // returns true if all selected items are things (i.e. Groups), including r-things
-    this.thingsSelected = function() {
-        if (!_diagram || _diagram.selection.count < 1)
+    ret.thingsSelected = function() {
+        if (!ret._diagram || ret._diagram.selection.count < 1)
             return false;
 
-        var it = _diagram.selection.iterator;
+        var it = ret._diagram.selection.iterator;
         while (it.next()) {
             if (!(it.value instanceof go.Group))
                 return false;
@@ -393,24 +395,24 @@ SandbankEditor.Map = function(editor) {
     };
 
     // returns true if exactly one thing (Group) is selected
-    this.thingSelected = function() {
-        return _diagram  && _diagram.selection.count == 1 && _diagram.selection.first() instanceof go.Group;
+    ret.thingSelected = function() {
+        return ret._diagram  && ret._diagram.selection.count == 1 && ret._diagram.selection.first() instanceof go.Group;
     };
 
     // if a single group is selected, returns it, otherwise returns null
-    this.getUniqueThingSelected = function() {
-        if (_diagram  && _diagram.selection.count == 1 && _diagram.selection.first() instanceof go.Group) {
-            return _diagram.selection.first();
+    ret.getUniqueThingSelected = function() {
+        if (ret._diagram  && ret._diagram.selection.count == 1 && ret._diagram.selection.first() instanceof go.Group) {
+            return ret._diagram.selection.first();
         } else {
             return null;
         }
     };
 
-    this.thingsSelectedAreMembersOf = function(group) {
-        if (!_diagram || _diagram.selection.count < 1)
+    ret.thingsSelectedAreMembersOf = function(group) {
+        if (!ret._diagram || ret._diagram.selection.count < 1)
             return false;
 
-        var it = _diagram.selection.iterator;
+        var it = ret._diagram.selection.iterator;
         while (it.next()) {
             if (!(it.value instanceof go.Group) || it.value.containingGroup != group)
                 return false;
@@ -419,13 +421,13 @@ SandbankEditor.Map = function(editor) {
         return true;
     };
 
-    this.thingsSelectedAreDescendantsOf = function(group) {
-        if (!_diagram || _diagram.selection.count < 1)
+    ret.thingsSelectedAreDescendantsOf = function(group) {
+        if (!ret._diagram || ret._diagram.selection.count < 1)
             return false;
 
-        var it = _diagram.selection.iterator;
+        var it = ret._diagram.selection.iterator;
         while (it.next()) {
-            var ancestors = _layouts.getAncestorGroups(it.value);
+            var ancestors = ret._layouts.getAncestorGroups(it.value);
             if (_.indexOf(ancestors, group) == -1)
                 return false;
         }
@@ -433,11 +435,11 @@ SandbankEditor.Map = function(editor) {
         return true;
     };
 
-    this.thingsSelectedIncludeSlide = function() {
-        if (!_diagram || _diagram.selection.count < 1)
+    ret.thingsSelectedIncludeSlide = function() {
+        if (!ret._diagram || ret._diagram.selection.count < 1)
             return false;
 
-        var it = _diagram.selection.iterator;
+        var it = ret._diagram.selection.iterator;
         while (it.next()) {
             if (it.value.data && it.value.data.category == 'slide') {
                 return true;
@@ -448,13 +450,13 @@ SandbankEditor.Map = function(editor) {
     };
 
     // returns true if all selected items are relationships (i.e. Links)
-    this.relationshipsSelected = function() {
-        if (!_diagram || _diagram.selection.count < 1)
+    ret.relationshipsSelected = function() {
+        if (!ret._diagram || ret._diagram.selection.count < 1)
             return false;
 
-        var it = _diagram.selection.iterator;
+        var it = ret._diagram.selection.iterator;
         while (it.next()) {
-            if (!(it.value instanceof go.Link) || !_layouts.isRLink(it.value))
+            if (!(it.value instanceof go.Link) || !ret._layouts.isRLink(it.value))
                 return false;
         }
 
@@ -462,66 +464,66 @@ SandbankEditor.Map = function(editor) {
     };
 
     // returns true if exactly one relationship (Link) is selected
-    this.relationshipSelected = function() {
-        return _diagram  && _diagram.selection.count == 1 && _diagram.selection.first() instanceof go.Link;
+    ret.relationshipSelected = function() {
+        return ret._diagram  && ret._diagram.selection.count == 1 && ret._diagram.selection.first() instanceof go.Link;
     };
 
     // ------------ load and initialize model -------------
 
-    this.load = function() {
+    ret.load = function() {
         var url = editor.mapUrl + '.json';
         if (editor.sandbox) {
             url = editor.mapUrl + '.json?sandbox=1';
         }
         //TODO: restore non-Angular http-get for map data
         var data = { "map": { "metadata": { "sandbox": false, "id": 5547, "name": "Untitled Map", "url": "/maps/5547", "canEdit": true, "updatedAt": "2015-05-15T12:29:40.721-04:00", "updatedBy": null, "updatedByName": null, "userTags": [] }, "data": { "class": "go.GraphLinksModel", "nodeIsLinkLabelProperty": "isLinkLabel", "linkLabelKeysProperty": "labelKeys", "linkFromPortIdProperty": "fromPort", "linkToPortIdProperty": "toPort", "nodeDataArray": [{ "key": 1, "text": "New Idea", "isGroup": true, "loc": "0 0", "layout": "left", "sExpanded": true, "pExpanded": true }], "linkDataArray": [] }, "stateData": null, "editorOptions": null, "analytics": {}, "versions": [] } };
-        _diagram.model = go.Model.fromJson(data);
-        _ui.setStateData(data.map.stateData);
-        _ui.setMapEditorOptions(data.map.editorOptions);
+        ret._diagram.model = go.Model.fromJson(data);
+        ret._ui.setStateData(data.map.stateData);
+        ret._ui.setMapEditorOptions(data.map.editorOptions);
 
-        self.checkModel();
-        _diagram.updateAllTargetBindings();
-        _diagram.undoManager.isEnabled = true;
-        _diagram.model.addChangedListener(_autosave.modelChanged);
-        _autosave.saveOnModelChanged = true;
-        _diagram.isReadOnly = !editor.canEdit;
+        ret.checkModel();
+        ret._diagram.updateAllTargetBindings();
+        ret._diagram.undoManager.isEnabled = true;
+        ret._diagram.model.addChangedListener(ret._autosave.modelChanged);
+        ret._autosave.saveOnModelChanged = true;
+        ret._diagram.isReadOnly = !editor.canEdit;
         editor.updateEditStatus(editor.canEdit ? editor.LAST_UPDATED : editor.READ_ONLY);
-        _ui.resetZoom();
-        self.loadMapExtraData(data.map);
+        ret._ui.resetZoom();
+        ret.loadMapExtraData(data.map);
 
         // if no nodes OR in thinkquery mode, launch generator
-        if (editor.thinkquery || !_diagram.model.nodeDataArray.length) {
-            _ui.openTab(_ui.TAB_ID_GENERATOR);
+        if (editor.thinkquery || !ret._diagram.model.nodeDataArray.length) {
+            ret._ui.openTab(ret._ui.TAB_ID_GENERATOR);
         }
         // if we have slides, play presentation
-        else if (!editor.canEdit && _presenter.getSlideNodeDatas().length) {
-            _presenter.playSlide(1);
+        else if (!editor.canEdit && ret._presenter.getSlideNodeDatas().length) {
+            ret._presenter.playSlide(1);
         }
     }
 
-    this.loadForSandbox = function() {
-        _diagram.model = go.Model.fromJson(editor.mapData);
-        _ui.setStateData(''); // important! (otherwise corner highlighting breaks)
-        _diagram.updateAllTargetBindings();
-        _diagram.undoManager.isEnabled = true;
-        _ui.resetZoom();
+    ret.loadForSandbox = function() {
+        ret._diagram.model = go.Model.fromJson(editor.mapData);
+        ret._ui.setStateData(''); // important! (otherwise corner highlighting breaks)
+        ret._diagram.updateAllTargetBindings();
+        ret._diagram.undoManager.isEnabled = true;
+        ret._ui.resetZoom();
         editor.canEdit = true;
 
         // if no nodes OR in thinkquery mode, launch generator
         if (editor.thinkquery) {
-            _ui.openTab(_ui.TAB_ID_GENERATOR);
+            ret._ui.openTab(ret._ui.TAB_ID_GENERATOR);
         }
         // if we have slides, play presentation
-        else if (_presenter.getSlideNodeDatas().length) {
-            _presenter.playSlide(1);
+        else if (ret._presenter.getSlideNodeDatas().length) {
+            ret._presenter.playSlide(1);
         }
 
     };
 
     // fix any structural problems in the model before displaying it
-    this.checkModel = function() {
+    ret.checkModel = function() {
         // change "isLinkLabel" property to category:"LinkLabel" (change as of goJS 1.3)
-        _.each(_diagram.model.nodeDataArray, function(nodeData, index, list) {
+        _.each(ret._diagram.model.nodeDataArray, function(nodeData, index, list) {
             if (nodeData.isLinkLabel) {
                 delete nodeData.isLinkLabel;
                 nodeData.category = "LinkLabel";
@@ -529,8 +531,8 @@ SandbankEditor.Map = function(editor) {
         });
 
         // check for the link label (r-thing) for a link being the same as the from or to node 
-        // - this can cause infinite recursion in thinks like layout.getScale
-        _.each(_diagram.model.linkDataArray, function(linkData, index, list) {
+        // - ret can cause infinite recursion in thinks like layout.getScale
+        _.each(ret._diagram.model.linkDataArray, function(linkData, index, list) {
             var badLabelKeys = [];
             _.each(linkData.labelKeys, function(key, index2, list2) {
                 if (key == linkData.from || key == linkData.to) {
@@ -543,32 +545,32 @@ SandbankEditor.Map = function(editor) {
     };
 
     // loads other data besides the diagram model from the json object returned by maps/show.json
-    // - this includes points, badges, versions, and map analytics
+    // - ret includes points, badges, versions, and map analytics
     // NB: points and badges are set at page load time in layouts/user and users/badges, but
     // we also need to be able to update them here after an autosave
 
-    // TODO: is this still all needed with the newer userProfile stuff?
-    this.loadMapExtraData = function(mapData) {
+    // TODO: is ret still all needed with the newer userProfile stuff?
+    ret.loadMapExtraData = function(mapData) {
             //console.log('map.loadMapExtraData, mapData: ' + mapData);
-            editor.mapUserTags = mapData.metadata.userTags; // TODO: is this used anywhere?
+            editor.mapUserTags = mapData.metadata.userTags; // TODO: is ret used anywhere?
 
             //$scope.map.getHistory().versionList = mapData.versions;
             editor.map.getAnalytics().mapAnalytics = mapData.analytics;
     };
 
     // loads model data for an individual version and displays it
-    // NB: this also disables autosave; load() must be called to re-enable it
-    this.loadVersion = function(id) {
+    // NB: ret also disables autosave; load() must be called to re-enable it
+    ret.loadVersion = function(id) {
         $http.get('/map_versions/' + id).then(function(response) {
             if (response.status === 200) {
                 try {
                     //console.log('loaded map version with ID: ' + id);
-                    _diagram.model = go.Model.fromJson(response.data);
-                    _diagram.updateAllTargetBindings();
-                    _diagram.undoManager.isEnabled = false;
-                    _autosave.saveOnModelChanged = false;
-                    _diagram.layoutDiagram(true);
-                    _diagram.isReadOnly = true;
+                    ret._diagram.model = go.Model.fromJson(response.data);
+                    ret._diagram.updateAllTargetBindings();
+                    ret._diagram.undoManager.isEnabled = false;
+                    ret._autosave.saveOnModelChanged = false;
+                    ret._diagram.layoutDiagram(true);
+                    ret._diagram.isReadOnly = true;
                 } catch (e) {
                     alert('Could not load MetaMap version');
                     console.error(e.message);
@@ -578,64 +580,64 @@ SandbankEditor.Map = function(editor) {
     };
 
     // set whether editing capability is temporarily suspended -
-    // this is distinct from the global $scope.canEdit setting,
+    // ret is distinct from the global $scope.canEdit setting,
     // which if false prevents editing at all times
-    this.setEditingBlocked = function(val) {
+    ret.setEditingBlocked = function(val) {
         if (editor.canEdit) {
-            _diagram.isReadOnly = val;
+            ret._diagram.isReadOnly = val;
         }
     };
 
     // ------------- creating things in the model -------------------
 
     // default properties for all new Things (groups) - note that these can be overridden if needed
-    function getNewThingData() {
+    ret.getNewThingData = function() {
         return {
             text: 'Idea',
             isGroup: true,
-            layout: _ui.getMapEditorOptions().defaultThingLayout || 'left',
+            layout: ret._ui.getMapEditorOptions().defaultThingLayout || 'left',
             sExpanded: true,
             pExpanded: true
         };
     }
 
-    this.createSister = function(thing) {
+    ret.createSister = function(thing) {
         if (!editor.canEdit) {
             return null;
         }
 
-        var newLoc = _layouts.getNewSisterLocation(thing);
-        var data = _.extend(getNewThingData(), {
+        var newLoc = ret._layouts.getNewSisterLocation(thing);
+        var data = _.extend(ret.getNewThingData(), {
             group: thing.data.group,
             text: 'Idea',
             loc: go.Point.stringify(newLoc)
         });
-        _diagram.model.addNodeData(data);
-        var newSister = _diagram.findNodeForData(data);
+        ret._diagram.model.addNodeData(data);
+        var newSister = ret._diagram.findNodeForData(data);
 
         // put new sister right after thing (not as the last sibling)
         if (thing.containingGroup) {
-            self.moveSiblingNextTo(newSister, thing, self.RIGHT);
+            ret.moveSiblingNextTo(newSister, thing, ret.RIGHT);
         }
         return newSister;
     };
 
-    this.createRToSister = function(thing) {
+    ret.createRToSister = function(thing) {
         if (!editor.canEdit) {
             return null;
         }
 
-        var thingKey = _diagram.model.getKeyForNodeData(thing.data);
+        var thingKey = ret._diagram.model.getKeyForNodeData(thing.data);
         //console.log('thingKey: ' + thingKey);
-        var newLoc = _layouts.getNewSisterLocation(thing, true); // withR = true
-        var data = _.extend(getNewThingData(), {
+        var newLoc = ret._layouts.getNewSisterLocation(thing, true); // withR = true
+        var data = _.extend(ret.getNewThingData(), {
             group: thing.data.group,
             text: 'Idea',
             loc: go.Point.stringify(newLoc)
         });
-        _diagram.model.addNodeData(data);
-        var newSister = _diagram.findNodeForData(data);
-        var groupKey = _diagram.model.getKeyForNodeData(data);
+        ret._diagram.model.addNodeData(data);
+        var newSister = ret._diagram.findNodeForData(data);
+        var groupKey = ret._diagram.model.getKeyForNodeData(data);
 
         // create link
         var linkData = {
@@ -645,37 +647,37 @@ SandbankEditor.Map = function(editor) {
             fromPort: 'R',
             toPort: 'R'
         };
-        _diagram.model.addLinkData(linkData);
+        ret._diagram.model.addLinkData(linkData);
 
         // put new sister right after thing (not as the last sibling)
         if (thing.containingGroup) {
-            self.moveSiblingNextTo(newSister, thing, self.RIGHT);
+            ret.moveSiblingNextTo(newSister, thing, ret.RIGHT);
         }
         return newSister;
     };
 
-    this.createChild = function(thing, name, x, y) {
+    ret.createChild = function(thing, name, x, y) {
         if (!editor.canEdit) {
             return null;
         }
 
-        var newLoc = _layouts.getNewChildLocation2(thing);
+        var newLoc = ret._layouts.getNewChildLocation2(thing);
         if (x || y) {
             newLoc = new go.Point(x, y);
         }
-        var data = _.extend(getNewThingData(), {
+        var data = _.extend(ret.getNewThingData(), {
             group: thing.data.key,
             text: name || 'Part',
             loc: go.Point.stringify(newLoc)
         });
-        _diagram.model.addNodeData(data);
-        _layouts.setDescendantLayouts(thing, thing.data.layout);
-        var child = _diagram.findNodeForData(data);
+        ret._diagram.model.addNodeData(data);
+        ret._layouts.setDescendantLayouts(thing, thing.data.layout);
+        var child = ret._diagram.findNodeForData(data);
         child.updateTargetBindings();
         return child;
     };
 
-    this.createRThing = function(link, name) {
+    ret.createRThing = function(link, name) {
         if (!editor.canEdit) {
             return null;
         }
@@ -687,42 +689,42 @@ SandbankEditor.Map = function(editor) {
             return;
         }
 
-        var data = _.extend(getNewThingData(), {
+        var data = _.extend(ret.getNewThingData(), {
             text: name || 'Relationship Idea',
             //isLinkLabel: true,     // deprecated as of goJS 1.3
             category: "LinkLabel", // new as of goJS 1.3
             loc: '0 0'
         });
-        _diagram.model.startTransaction("create R Thing");
-        _diagram.model.addNodeData(data);
-        var key = _diagram.model.getKeyForNodeData(data);
-        var node = _diagram.findPartForKey(key);
+        ret._diagram.model.startTransaction("create R Thing");
+        ret._diagram.model.addNodeData(data);
+        var key = ret._diagram.model.getKeyForNodeData(data);
+        var node = ret._diagram.findPartForKey(key);
         node.labeledLink = link;
-        _diagram.model.commitTransaction("create R Thing");
-        _diagram.updateAllTargetBindings();
+        ret._diagram.model.commitTransaction("create R Thing");
+        ret._diagram.updateAllTargetBindings();
 
-        return _diagram.findNodeForData(data);
+        return ret._diagram.findNodeForData(data);
     };
 
     // ---------- creating things with specified names/locations - for use by generator and tests ------------
 
-    this.createThing = function(x, y, name, layout) {
-        group = _diagram.toolManager.clickCreatingTool.insertPart(new go.Point(x, y));
-        _diagram.model.setDataProperty(group.data, 'text', name);
+    ret.createThing = function(x, y, name, layout) {
+        group = ret._diagram.toolManager.clickCreatingTool.insertPart(new go.Point(x, y));
+        ret._diagram.model.setDataProperty(group.data, 'text', name);
         if (layout) {
-            _diagram.model.setDataProperty(group.data, 'layout', layout);
+            ret._diagram.model.setDataProperty(group.data, 'layout', layout);
         }
         return group;
     };
 
-    this.createRLinkWithRThing = function(thing1, thing2, name) {
-        var link = self.createRLink(thing1, thing2);
-        return self.createRThing(link, name);
+    ret.createRLinkWithRThing = function(thing1, thing2, name) {
+        var link = ret.createRLink(thing1, thing2);
+        return ret.createRThing(link, name);
     };
 
     // returns the linkData object for the new link
-    this.createRLink = function(thing1, thing2) {
-        _diagram.model.startTransaction('add link');
+    ret.createRLink = function(thing1, thing2) {
+        ret._diagram.model.startTransaction('add link');
         var data = {
             type: 'noArrows',
             from: thing1.data.key,
@@ -730,14 +732,14 @@ SandbankEditor.Map = function(editor) {
             fromPort: 'R',
             toPort: 'R'
         };
-        _diagram.model.addLinkData(data);
-        _diagram.model.commitTransaction('add link');
-        return _diagram.findLinkForData(data);
+        ret._diagram.model.addLinkData(data);
+        ret._diagram.model.commitTransaction('add link');
+        return ret._diagram.findLinkForData(data);
     };
 
     // returns the linkData object for the new link
-    this.createPLink = function(thing1, thing2) {
-        _diagram.model.startTransaction('add link');
+    ret.createPLink = function(thing1, thing2) {
+        ret._diagram.model.startTransaction('add link');
         var data = {
             type: 'noArrows',
             from: thing1.data.key,
@@ -746,17 +748,17 @@ SandbankEditor.Map = function(editor) {
             toPort: 'P',
             category: 'P'
         };
-        _diagram.model.addLinkData(data);
-        _diagram.model.commitTransaction('add link');
-        _diagram.model.setDataProperty(thing1.data, 'pExpanded', true);
-        return _diagram.findLinkForData(data);
+        ret._diagram.model.addLinkData(data);
+        ret._diagram.model.commitTransaction('add link');
+        ret._diagram.model.setDataProperty(thing1.data, 'pExpanded', true);
+        return ret._diagram.findLinkForData(data);
     };
 
     // ------------- moving things in the model structure -------------------
 
     // returns a go.List of the items in the current selection that are Groups
-    function getSelectedGroups() {
-        var it = _diagram.selection.iterator;
+    ret.getSelectedGroups = function() {
+        var it = ret._diagram.selection.iterator;
         var members = new go.List();
         while (it.next()) {
             var part = it.value;
@@ -768,38 +770,38 @@ SandbankEditor.Map = function(editor) {
     }
 
     // drag to S
-    this.addSelectedThingsAsChildrenOf = function(group) {
-        var newMembers = getSelectedGroups();
+    ret.addSelectedThingsAsChildrenOf = function(group) {
+        var newMembers = ret.getSelectedGroups();
 
         // check existing members so we can calculate layout
-        var oldMemberBounds = self.safeRect(_diagram.computePartsBounds(group.memberParts));
+        var oldMemberBounds = ret.safeRect(ret._diagram.computePartsBounds(group.memberParts));
 
-        // NB: this is subject to validation by CommandHandler.isValidMember,
+        // NB: ret is subject to validation by CommandHandler.isValidMember,
         // so for example, members of members of newMembers will not be added as members
         group.addMembers(newMembers);
 
-        _layouts.layoutNewMembersRelativeTo(newMembers, group, oldMemberBounds);
+        ret._layouts.layoutNewMembersRelativeTo(newMembers, group, oldMemberBounds);
 
-        _diagram.clearSelection();
+        ret._diagram.clearSelection();
     };
 
     // drag to D
-    this.addSelectedThingsAsSistersOf = function(group) {
-        var oldMembers = getSelectedGroups();
+    ret.addSelectedThingsAsSistersOf = function(group) {
+        var oldMembers = ret.getSelectedGroups();
 
         // if dragging to top level, move dragged things so they don't overlap the former parent
         if (!group.containingGroup) {
             // check existing members so we can calculate layout
-            var oldMembersBounds = _diagram.computePartsBounds(oldMembers);
+            var oldMembersBounds = ret._diagram.computePartsBounds(oldMembers);
             // NB: oldMembers can be on multiple levels, so not clear which level to use for rescaling old members after drag
-            var oldMembersLevel = _layouts.computeLevel(oldMembers.first());
+            var oldMembersLevel = ret._layouts.computeLevel(oldMembers.first());
 
             var it = oldMembers.iterator;
             while (it.next()) {
                 var member = it.value;
                 member.containingGroup = null;
             }
-            _layouts.layoutOldMembersOutsideOf(oldMembers, group, oldMembersBounds, oldMembersLevel);
+            ret._layouts.layoutOldMembersOutsideOf(oldMembers, group, oldMembersBounds, oldMembersLevel);
         }
         // if not dragging to top level, place dragged things after former parent in outline
         else {
@@ -807,27 +809,27 @@ SandbankEditor.Map = function(editor) {
             while (it2.next()) {
                 var member2 = it2.value;
                 member2.containingGroup = group.containingGroup;
-                self.moveSiblingNextTo(member2, group, self.RIGHT);
+                ret.moveSiblingNextTo(member2, group, ret.RIGHT);
             }
         }
-        _diagram.clearSelection();
+        ret._diagram.clearSelection();
     };
 
 
     // for dragging parts within a system - side is LEFT or RIGHT (i.e. above or below, resp. in inventory layout)
-    this.addSelectedThingAsOrderedSisterOf = function(group, side) {
+    ret.addSelectedThingAsOrderedSisterOf = function(group, side) {
         //console.log('addSelectedThingAsOrderedSisterOf, side: ' + side);
-        var thing = self.getUniqueThingSelected();
+        var thing = ret.getUniqueThingSelected();
         if (!thing) {
             return;
         }
-        self.moveSiblingNextTo(thing, group, side);
+        ret.moveSiblingNextTo(thing, group, side);
     };
 
     // moves the first thing (sibling) to be after the second thing (group)
     // in the part ordering - they are assumed to be siblings
     // side is LEFT or RIGHT
-    this.moveSiblingNextTo = function(sibling, group, side) {
+    ret.moveSiblingNextTo = function(sibling, group, side) {
         var parent = group.containingGroup;
         console.log('moveSiblingNextTo, sibling: ' + sibling + ', group: ' + group + ', parent: ' + parent + ', sibling.containingGroup: ' + sibling.containingGroup);
 
@@ -844,22 +846,22 @@ SandbankEditor.Map = function(editor) {
             if (member instanceof go.Group) {
                 // we're at the target group, so add the moved thing either before or after it
                 if (member == group) {
-                    if (side == self.LEFT) {
+                    if (side == ret.LEFT) {
                         memberOrder.add(sibling);
-                        _diagram.model.setDataProperty(sibling.data, 'order', order++);
+                        ret._diagram.model.setDataProperty(sibling.data, 'order', order++);
                         memberOrder.add(member);
-                        _diagram.model.setDataProperty(member.data, 'order', order++);
+                        ret._diagram.model.setDataProperty(member.data, 'order', order++);
                     } else {
                         memberOrder.add(member);
-                        _diagram.model.setDataProperty(member.data, 'order', order++);
+                        ret._diagram.model.setDataProperty(member.data, 'order', order++);
                         memberOrder.add(sibling);
-                        _diagram.model.setDataProperty(sibling.data, 'order', order++);
+                        ret._diagram.model.setDataProperty(sibling.data, 'order', order++);
                     }
                 }
                 // don't re-add the moved thing, it was added above
                 else if (member != sibling) {
                     memberOrder.add(member);
-                    _diagram.model.setDataProperty(member.data, 'order', order++);
+                    ret._diagram.model.setDataProperty(member.data, 'order', order++);
                 }
             }
         }
@@ -879,66 +881,66 @@ SandbankEditor.Map = function(editor) {
         }
     };
 
-    this.addThingAsRThing = function(thing, link) {
+    ret.addThingAsRThing = function(thing, link) {
         thing.labeledLink = link;
         thing.updateTargetBindings();
     };
 
     // D corner handler (single click)
-    this.toggleDFlag = function(thing) {
-        _diagram.model.setDataProperty(thing.data, 'dflag', !thing.data.dflag);
+    ret.toggleDFlag = function(thing) {
+        ret._diagram.model.setDataProperty(thing.data, 'dflag', !thing.data.dflag);
         thing.updateTargetBindings();
     };
 
     // S corner handler (single click)
-    this.toggleSExpansion = function(thing) {
+    ret.toggleSExpansion = function(thing) {
         var isExpanded = !(thing.data && !thing.data.sExpanded); // expand by default if property not present
-        _diagram.model.setDataProperty(thing.data, 'sExpanded', !isExpanded);
+        ret._diagram.model.setDataProperty(thing.data, 'sExpanded', !isExpanded);
         thing.updateTargetBindings();
-        _ui.showCornerTip(thing, 'S');
+        ret._ui.showCornerTip(thing, 'S');
     };
 
     // P corner handler (single click)
-    this.togglePExpansion = function(thing) {
-        _diagram.model.setDataProperty(thing.data, 'pExpanded', !self.pIsExpanded(thing));
+    ret.togglePExpansion = function(thing) {
+        ret._diagram.model.setDataProperty(thing.data, 'pExpanded', !ret.pIsExpanded(thing));
         thing.updateTargetBindings();
-        _ui.showCornerTip(thing, "P");
+        ret._ui.showCornerTip(thing, "P");
     };
 
-    this.pIsExpanded = function(group) {
+    ret.pIsExpanded = function(group) {
         return group.data && group.data.pExpanded === true;
     };
 
     // ---------------------- undo/redo --------------------
 
-    this.canUndo = function() {
-        return _diagram.commandHandler.canUndo();
+    ret.canUndo = function() {
+        return ret._diagram.commandHandler.canUndo();
     };
 
-    this.undo = function() {
-        _diagram.commandHandler.undo();
-        _diagram.layoutDiagram(true);
+    ret.undo = function() {
+        ret._diagram.commandHandler.undo();
+        ret._diagram.layoutDiagram(true);
     };
 
-    this.canRedo = function() {
-        return _diagram.commandHandler.canRedo();
+    ret.canRedo = function() {
+        return ret._diagram.commandHandler.canRedo();
     };
 
-    this.redo = function() {
-        _diagram.commandHandler.redo();
-        _diagram.layoutDiagram(true);
+    ret.redo = function() {
+        ret._diagram.commandHandler.redo();
+        ret._diagram.layoutDiagram(true);
     };
 
-    this.refresh = function() {
-        _diagram.updateAllTargetBindings();
-        _diagram.layoutDiagram(true);
+    ret.refresh = function() {
+        ret._diagram.updateAllTargetBindings();
+        ret._diagram.layoutDiagram(true);
     };
 
     // ------------------- utility ----------------------
 
     // check for a rect with NaN X/Y/W/H coords, so we can do stuff with it such as unionRect
     // (NaN,NaN,0,0) => (0,0,0,0)
-    this.safeRect = function(rect) {
+    ret.safeRect = function(rect) {
         if (isNaN(rect.x)) {
             rect.x = 0;
         }
@@ -956,14 +958,16 @@ SandbankEditor.Map = function(editor) {
 
     // ------------------- debug map model ----------------------
 
-    this.loadModel = function() {
-        $('#map-model-debug').val(_diagram.model.toJson());
+    ret.loadModel = function() {
+        $('#map-model-debug').val(ret._diagram.model.toJson());
     };
 
-    this.saveModel = function() {
-        _diagram.model = go.Model.fromJson($('#map-model-debug').val());
-        _diagram.updateAllTargetBindings();
-        _diagram.model.addChangedListener(_autosave.modelChanged);
-        _autosave.saveOnModelChanged = true;
+    ret.saveModel = function() {
+        ret._diagram.model = go.Model.fromJson($('#map-model-debug').val());
+        ret._diagram.updateAllTargetBindings();
+        ret._diagram.model.addChangedListener(ret._autosave.modelChanged);
+        ret._autosave.saveOnModelChanged = true;
     };
+
+    return ret;
 };

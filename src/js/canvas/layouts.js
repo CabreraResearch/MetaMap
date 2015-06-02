@@ -1,6 +1,6 @@
 // layouts used in the editor, for the diagram or individual Groups, plus layout-related functions
 
-SandbankEditor.Layouts = function($scope, map) {
+SandbankEditor.Layouts = function(editor, map) {
 
     var self = this;
 

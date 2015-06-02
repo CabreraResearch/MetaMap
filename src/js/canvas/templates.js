@@ -2,7 +2,7 @@
 
 SandbankEditor.Templates = function(editor, map) {
 
-    var self = this;
+    var ret = this;
 
     // constants
     this.groupFillColor = "#f9f9f9";
@@ -11,21 +11,21 @@ SandbankEditor.Templates = function(editor, map) {
 
     // initialize template-related stuff that depends on the diagram (and therefore can't go in init())
     this.initTemplates = function(diagram) {
-        diagram.groupTemplate = self.groupTemplate;
-        diagram.nodeTemplate = self.slideTemplate;
-        diagram.linkTemplate = self.linkTemplate;
-        diagram.linkTemplateMap.add('P', self.pLinkTemplate);
-        diagram.linkTemplateMap.add('D', self.dLinkTemplate);
+        diagram.groupTemplate = ret.groupTemplate;
+        diagram.nodeTemplate = ret.slideTemplate;
+        diagram.linkTemplate = ret.linkTemplate;
+        diagram.linkTemplateMap.add('P', ret.pLinkTemplate);
+        diagram.linkTemplateMap.add('D', ret.dLinkTemplate);
 
-        self.setTemporaryLinkTemplates(diagram.toolManager.linkingTool);
-        self.setTemporaryLinkTemplates(diagram.toolManager.relinkingTool);
+        ret.setTemporaryLinkTemplates(diagram.toolManager.linkingTool);
+        ret.setTemporaryLinkTemplates(diagram.toolManager.relinkingTool);
 
         diagram.toolManager.linkingTool.portTargeted = function(realnode, realport, tempnode, tempport, toend) {
-            self.handlePortTargeted(diagram.toolManager.linkingTool, realnode, realport, tempnode, tempport, toend);
+            ret.handlePortTargeted(diagram.toolManager.linkingTool, realnode, realport, tempnode, tempport, toend);
         };
 
         diagram.toolManager.relinkingTool.portTargeted = function(realnode, realport, tempnode, tempport, toend) {
-            self.handlePortTargeted(diagram.toolManager.relinkingTool, realnode, realport, tempnode, tempport, toend);
+            ret.handlePortTargeted(diagram.toolManager.relinkingTool, realnode, realport, tempnode, tempport, toend);
         };
 
         diagram.toolManager.relinkingTool.updateAdornments = function(part) {
@@ -36,8 +36,8 @@ SandbankEditor.Templates = function(editor, map) {
             //     console.log('relinkfrom: ' + from.part.width);
         };
 
-        diagram.toolManager.linkingTool.linkValidation = self.validateLink;
-        diagram.toolManager.relinkingTool.linkValidation = self.validateLink;
+        diagram.toolManager.linkingTool.linkValidation = ret.validateLink;
+        diagram.toolManager.relinkingTool.linkValidation = ret.validateLink;
     };
 
     // convenient abbreviation for creating templates
@@ -815,7 +815,7 @@ SandbankEditor.Templates = function(editor, map) {
                         position: new go.Point(0, 0),
                         width: 100,
                         height: 100,
-                        fill: self.groupFillColor,
+                        fill: ret.groupFillColor,
                         stroke: null,
                         cursor: "move",
                         // show debug info
@@ -939,7 +939,7 @@ SandbankEditor.Templates = function(editor, map) {
     this.pLinkTemplate =
         mk(go.Link,
             new go.Binding('opacity', '', function(obj) {
-                return (self.showPLink(obj) ? 1 : 0);
+                return (ret.showPLink(obj) ? 1 : 0);
             }).ofObject(), {
                 selectionAdorned: false,
                 layerName: 'Background', // make P links fall behind R links
