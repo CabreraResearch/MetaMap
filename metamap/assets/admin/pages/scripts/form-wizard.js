@@ -164,7 +164,7 @@ var FormWizard = function () {
                         $('[name="payment[]"]:checked', form).each(function(){ 
                             payment.push($(this).attr('data-title'));
                         });
-                        $(this).html(payment.join("<br>"));
+                        $(this).html(payment.join("<br/>"));
                     }
                 });
             }

@@ -1,31 +1,28 @@
-﻿(function() {
-  var content, gulp, gutil, handleErrors, inject, injectTask, logger, notify, path, rename, src, wiredep, wiredepStream;
+﻿(function () {
+    var gulp = require('gulp');
+    var gutil = require('gulp-util');
+    var rename = require('gulp-rename');
+    var path = require('path');
+    var wiredep = require('wiredep');
+    var wiredepStream = wiredep.stream;
+    var inject = require('gulp-inject');
+    var handleErrors = require('../util/handleErrors');
+    var logger = require('../util/bundleLogger');
+    var notify = require('../util/notify');
+    var content = require('../util/files');
+    var argv = require('yargs').argv;
 
-  gulp = require('gulp');
-
-  gutil = require('gulp-util');
-
-  rename = require('gulp-rename');
-
-  path = require('path');
-
-  wiredep = require('wiredep');
-
-  wiredepStream = wiredep.stream;
-
-  inject = require('gulp-inject');
-
-  handleErrors = require('../util/handleErrors');
-
-  logger = require('../util/bundleLogger');
-
-  notify = require('../util/notify');
-
-  content = require('../util/files');
-
-  src = ['./src/css/**/*.css', './src/tags/**/*.tag'];
-
-    injectTask = function(path, pageName, sourceFiles, exclude, includeDevDependencies) {
+    var getSrc = function(app) {
+        app = app || 'metamap';
+        var path = '';
+        switch (app) {
+            case 'metamap':
+                path = '/' + app;
+                break;
+        }
+        return ['.'+path+'/src/css/**/*.css', '.'+path+'/src/tags/**/*.tag'];
+    }
+    var injectTask = function (path, pageName, sourceFiles, exclude, includeDevDependencies) {
         if (path == null) {
             path = '';
         }
@@ -49,18 +46,18 @@
             .pipe(
                 inject(
                     gulp.src(sourceFiles, {
-                read: false
-                }), {
-                    addRootSlash: false,
-                    addPrefix: '..',
-                    transform: function (filepath) {
-                        if (filepath.slice(-4) === '.tag') {
-                            return '<script src="src/' + filepath + '" type="riot/tag"></script>';
+                        read: false
+                    }), {
+                        addRootSlash: false,
+                        addPrefix: '..',
+                        transform: function (filepath) {
+                            if (filepath.slice(-4) === '.tag') {
+                                return '<script src="src/' + filepath + '" type="riot/tag"></script>';
+                            }
+                            // Use the default transform as fallback: 
+                            return inject.transform.apply(inject.transform, arguments);
                         }
-                        // Use the default transform as fallback: 
-                        return inject.transform.apply(inject.transform, arguments);
-                    }
-                })
+                    })
             )
             .pipe(wiredepStream({
                 exclude: exclude,
@@ -71,18 +68,16 @@
             .on('error', handleErrors);
     };
 
-  gulp.task('inject-dev', function() {
-    return injectTask('./', 'dev', src, [/google/, /backbone/, /underscore/, /require/, /jquery.min.js/, /jqueryy-migrate/, /jquery-ui/, /raygun4js/]);
-  });
+    gulp.task('inject-dev', function () {
+        var app = argv.app || 'metamap';
+        return injectTask('./'+app, 'dev', getSrc(app), [/google/, /backbone/, /underscore/, /require/, /jquery.min.js/, /jqueryy-migrate/, /jquery-ui/, /raygun4js/]);
+    });
 
-  gulp.task('inject-test', function() {
-    return injectTask('./', 'test', src, [/google/, /backbone/, /underscore/, /require/, /jquery.min.js/, /jqueryy-migrate/, /jquery-ui/, /raygun4js/]);
-  });
+    gulp.task('inject-release', function () {
+        var app = argv.app || 'metamap';
+        return injectTask('./'+app, 'index', getSrc(app), [/[.]js$/, /google/]);
+    });
 
-  gulp.task('inject-release', function() {
-    return injectTask('./', 'index', src, [/[.]js$/, /google/]);
-  });
-
-  gulp.task('inject-all', ['inject-dev', 'inject-test', 'inject-release']);
+    gulp.task('inject-all', ['inject-dev', 'inject-release']);
 
 }).call(this);

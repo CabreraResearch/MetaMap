@@ -721,7 +721,7 @@ var ChartsAmcharts = function() {
             "titleField": "country",
             "outlineAlpha": 0.4,
             "depth3D": 15,
-            "balloonText": "[[title]]<br><span style='font-size:14px'><b>[[value]]</b> ([[percents]]%)</span>",
+            "balloonText": "[[title]]<br/><span style='font-size:14px'><b>[[value]]</b> ([[percents]]%)</span>",
             "angle": 30,
             "exportConfig": {
                 menuItems: [{

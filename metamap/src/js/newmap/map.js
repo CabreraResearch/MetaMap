@@ -1,4 +1,4 @@
-﻿const go = window.go;
+const go = window.go;
 const NodeLabelDraggingTool = require('./NodeLabelDraggingTool.js');
 function init() {
     var $ = go.GraphObject.make;  // for conciseness in defining templates

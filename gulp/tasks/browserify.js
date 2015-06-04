@@ -1,71 +1,62 @@
 ﻿(function() {
-  var Logger, basename, browserify, config, debug, glob, gulp, handleErrors, notify, pkg, runbrowserify, source, transforms, uglify, watchify;
-
-  browserify = require('browserify');
-
-  watchify = require('watchify');
-
-  Logger = require('../util/bundleLogger');
-
-  notify = require('../util/notify');
-
-  gulp = require('gulp');
-
-  handleErrors = require('../util/handleErrors');
-
-  source = require('vinyl-source-stream');
-
-  pkg = require('../../package.json');
-
+  
+  var browserify = require('browserify');
+  var watchify = require('watchify');
+  var Logger = require('../util/bundleLogger');
+  var notify = require('../util/notify');
+  var gulp = require('gulp');
+  var handleErrors = require('../util/handleErrors');
+  var source = require('vinyl-source-stream');
+  var pkg = require('../../package.json');
   var riotify = require('riotify');
+  var argv = require('yargs').argv;
+  var transforms = [riotify];
 
-  transforms = [riotify];
-
-  config = {
-    dev: {
-      entries: './src/entry.js',
-      export: {
-        glob: './src/tags/**/*.tag',
-        cwd: './src/tag'
-      },
-      filename: 'MetaMap.js',
-      dest: './dist',
-      transforms: transforms,
-      debug: true,
-      fullPaths: true
-    },
-    release: {
-      entries: './src/entry.js',
-      export: {
-        glob: './src/tags/**/*.tag',
-        cwd: './src/tags'
-      },
-      filename: 'MetaMap.min.js',
-      transforms: transforms,
-      debug: true,
-      dest: './dist',
-      fullPaths: false
-    },
-    test: {
-      entries: ['./src/entry.js', './test/entry.js'],
-      dest: './test',
-      filename: 'test.js',
-      external: {
-        glob: './src/tags/**/*.tag',
-        cwd: './src/tags'
-      },
-      transforms: transforms,
-      debug: true,
-      fullPaths: true
-    }
+  var config = function(app) {
+      app = app || 'metamap';
+      var path = '';
+      switch(app) {
+          case 'metamap':
+              path = '/' + app;
+              break;
+          case 'crlab':
+              path = '/' + app;
+              break;
+      }
+      return {
+          dev: {
+              entries: '.'+path+'/src/entry.js',
+              export: {
+                  glob: '.'+path+'/src/tags/**/*.tag',
+                  cwd: '.'+path+'/src/tag'
+              },
+              filename: app+'.js',
+              dest: '.'+path+'/dist',
+              transforms: transforms,
+              debug: true,
+              fullPaths: true
+          },
+          release: {
+              entries: '.'+path+'/src/entry.js',
+              export: {
+                  glob: '.'+path+'/src/tags/**/*.tag',
+                  cwd: '.'+path+'/src/tags'
+              },
+              filename: app+'.min.js',
+              transforms: transforms,
+              debug: true,
+              dest: '.'+path+'/dist',
+              fullPaths: false
+          }
+      }
   };
 
-    runbrowserify = function(name) {
-        var bundle, bundleCfg, bundleLogger, bundleMethod, bundler, cfg, module, transform, _i, _len, _ref;
-        bundleLogger = new Logger(name);
-        cfg = config[name];
-        bundleMethod = (global.isWatching ? watchify : browserify);
-        bundleCfg = {
+    var runbrowserify = function(name, app) {
+        var module;
+        var bundleLogger = new Logger(name);
+        var cfg = config(app)[name];
+        var bundleMethod = (global.isWatching ? watchify : browserify);
+        var bundleCfg = {
             entries: cfg.entries,
             fullPaths: false,
             extensions: ['.tag'],
@@ -73,7 +64,7 @@
             bundleExternal: false,
             standalone: 'MetaMap'
         };
-        bundler = bundleMethod(bundleCfg);
+        var bundler = bundleMethod(bundleCfg);
         //_ref = cfg.transforms;
         //for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         //    transform = _ref[_i];
@@ -99,7 +90,7 @@
         for (module in pkg['browser']) {
             bundler.external(module);
         }
-        bundle = function() {
+        var bundle = function() {
             bundleLogger.start();
             return bundler.bundle()
                 .on('error', handleErrors)
@@ -116,18 +107,16 @@
         return bundle();
     };
 
-  gulp.task('browserify', ['browserify-dev', 'browserify-test', 'browserify-release']);
+  gulp.task('browserify', ['browserify-dev', 'browserify-release']);
 
   gulp.task('browserify-dev', function() {
-    return runbrowserify('dev');
+      var app = argv.app || 'metamap';
+      return runbrowserify('dev', app);
   });
 
   gulp.task('browserify-release', function() {
-    return runbrowserify('release');
-  });
-
-  gulp.task('browserify-test', ['browserify-dev'], function() {
-    //return runbrowserify('test');
+      var app = argv.app || 'metamap';
+      return runbrowserify('release', app);
   });
 
 }).call(this);

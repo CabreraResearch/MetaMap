@@ -1,17 +1,27 @@
-﻿(function() {
-  var gulp, stripBom;
-
-  gulp = require('gulp');
-
-  stripBom = require('gulp-stripbom');
-
+(function() {
+  var gulp = require('gulp');
+  var stripBom = require('gulp-stripbom');
+  var paths = [
+      './crlab/**/*.js',
+      './crlab/**/*.tag',
+      './crlab/**/*.scss',
+      './crlab/**/*.css',
+      './*.tmpl',
+      './*.html',
+      './metamap/**/*.js',
+      './metamap/**/*.tag',
+      './metamap/**/*.css',
+      './metamap/**/*.scss',
+      './metamap/**/*.tmpl',
+      './metamap/**/*.html'
+      ];
 
   /*
    Bump the version in bower and package json
    */
 
   gulp.task('stripBom', function() {
-    return gulp.src(['./src/**/*.coffee', './*.tmpl', './*.html', './src/**/*.js', './src/**/*.less', './src/**/*.json', './dist/*.js', './dist/*.css', './dist/*.less', './dist/*.coffee'], {
+    return gulp.src(paths, {
       base: './'
     }).pipe(stripBom()).pipe(gulp.dest('./'));
   });
