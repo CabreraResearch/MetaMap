@@ -4,7 +4,7 @@
     Description:assan multi-page for Multipurpose use
     Version    : V1.6
 */
-@import "http://fonts.googleapis.com/css?family=Raleway:400,800,700,600,500";
+@import "//fonts.googleapis.com/css?family=Raleway:400,800,700,600,500";
 body {
   -webkit-font-smoothing: antialiased;
   -webkit-text-size-adjust: 100%;
@@ -392,10 +392,6 @@ p.sub-text {
 .navbar-default .navbar-nav > li > a:hover {
   color: #fbaa35; }
 
-.navbar-brand img {
-  width: 80px;
-  height: auto; }
-
 /*============================*/
 /*======dropdowm menu=========*/
 /*============================*/
@@ -759,7 +755,7 @@ TOP BARS
   position: absolute;
   top: 0;
   left: 0;
-  background: url(../img/plus.png) no-repeat center center rgba(79, 130, 233, 0.7);
+  background: url(../../dist/img/plus.png) no-repeat center center rgba(79, 130, 233, 0.7);
   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
   filter: alpha(opacity=0);
   opacity: 0;
@@ -846,8 +842,6 @@ input[type="color"]:focus,
   background-attachment: fixed; }
 
 /*carousel slider*/
-#myCarousel {
-  background: url(../img/showcase-1.jpg) no-repeat; }
 
 .item-c-slide {
   height: 480px; }

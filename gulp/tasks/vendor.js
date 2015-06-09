@@ -46,8 +46,8 @@ var runbrowserify = function (app) {
     return bundler.bundle()
         .on('error', handleErrors)
         .pipe(source('vendor.js'))
-        .pipe(gulp.dest('.'+app+'/dist'))
-        .pipe(notify.message('Finished bundling vendor packages'))
+        .pipe(gulp.dest('./'+app+'/dist'))
+        .pipe(notify.message('Finished bundling vendor packages to '+app + '/dist'))
         .on('end', function () {
             return bundleLogger.end();
         });

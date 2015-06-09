@@ -4,20 +4,19 @@
  * 
  */
 
- $( window ).resize(function() {
+$(window).resize(function () {
     $(".navbar-collapse").css({ maxHeight: $(window).height() - $(".navbar-header").height() + "px" });
 });
 //sticky header on scroll
 $(document).ready(function () {
     $(window).load(function () {
-        $(".sticky").sticky({topSpacing: 0});
+        $(".sticky").sticky({ topSpacing: 0 });
     });
-});
 
-/* ==============================================
- WOW plugin triggers animate.css on scroll
- =============================================== */
-$(document).ready(function () {
+
+    /* ==============================================
+     WOW plugin triggers animate.css on scroll
+     =============================================== */
     var wow = new WOW(
             {
                 boxClass: 'wow', // animated element css class (default is wow)
@@ -27,11 +26,9 @@ $(document).ready(function () {
             }
     );
     wow.init();
-});
 
 
-//parallax
-$(document).ready(function () {
+    //parallax
     $(window).stellar({
         horizontalScrolling: false,
         responsive: true/*,
@@ -41,10 +38,8 @@ $(document).ready(function () {
          horizontalOffset: 0,
          verticalOffset: 0*/
     });
-});
 
-//owl carousel for work
-$(document).ready(function () {
+    //owl carousel for work
 
     $("#work-carousel").owlCarousel({
         // Most important owl features
@@ -60,11 +55,9 @@ $(document).ready(function () {
         autoPlay: 6000
     });
 
-});
 
 
-//owl carousel for news
-$(document).ready(function () {
+    //owl carousel for news
 
     $("#news-carousel").owlCarousel({
         // Most important owl features
@@ -80,12 +73,10 @@ $(document).ready(function () {
         autoPlay: 4000
     });
 
-});
 
 
 
-//owl carousel for testimonials
-$(document).ready(function () {
+    //owl carousel for testimonials
 
     $("#testi-carousel").owlCarousel({
         // Most important owl features
@@ -101,10 +92,8 @@ $(document).ready(function () {
         autoPlay: 4000
     });
 
-});
-//featured work carousel slider
+    //featured work carousel slider
 
-$(document).ready(function () {
 
     $("#featured-work").owlCarousel({
         autoPlay: 5000, //Set AutoPlay to 3 seconds
@@ -118,16 +107,13 @@ $(document).ready(function () {
 
     });
 
-});
-/* ==============================================
- Counter Up
- =============================================== */
-jQuery(document).ready(function ($) {
+    /* ==============================================
+     Counter Up
+     =============================================== */
     $('.counter').counterUp({
         delay: 100,
         time: 800
     });
-});
 
 
 
@@ -135,56 +121,45 @@ jQuery(document).ready(function ($) {
 
 
 
-//MAGNIFIC POPUP
-$(document).ready(function () {
-$('.show-image').magnificPopup({type: 'image'});
-});
+    //MAGNIFIC POPUP
+    $('.show-image').magnificPopup({ type: 'image' });
 
-/* ==============================================
- flex slider
- =============================================== */
+    /* ==============================================
+     flex slider
+     =============================================== */
 
-$(document).ready(function () {
-$('.main-flex-slider,.testi-slide').flexslider({
-    slideshowSpeed: 5000,
-    directionNav: false,
-    animation: "fade"
-});
-});
-//OWL CAROUSEL
-$(document).ready(function () {
-$("#clients-slider").owlCarousel({
-    autoPlay: 3000,
-    pagination: false,
-    items: 4,
-    itemsDesktop: [1199, 3],
-    itemsDesktopSmall: [991, 2]
-});
-});
+    $('.main-flex-slider,.testi-slide').flexslider({
+        slideshowSpeed: 5000,
+        directionNav: false,
+        animation: "fade"
+    });
+    //OWL CAROUSEL
+    $("#clients-slider").owlCarousel({
+        autoPlay: 3000,
+        pagination: false,
+        items: 4,
+        itemsDesktop: [1199, 3],
+        itemsDesktopSmall: [991, 2]
+    });
 
 
-/*========tooltip and popovers====*/
-$(document).ready(function () {
-$("[data-toggle=popover]").popover();
+    /*========tooltip and popovers====*/
+    $("[data-toggle=popover]").popover();
 
-$("[data-toggle=tooltip]").tooltip();
-});
+    $("[data-toggle=tooltip]").tooltip();
 
 
 
-/* ==============================================
- mb.YTPlayer
- =============================================== */
-$(document).ready(function () {
-jQuery(function () {
-    jQuery(".player").mb_YTPlayer();
-});
-});
+    /* ==============================================
+     mb.YTPlayer
+     =============================================== */
+    jQuery(function () {
+        jQuery(".player").mb_YTPlayer();
+    });
 
 
-//transparent header
+    //transparent header
 
-$(document).ready(function () {
     $(window).scroll(function () {
         if ($(this).scrollTop() > 100) {
             $('.transparent-header').css("background", "#252525");

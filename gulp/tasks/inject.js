@@ -70,12 +70,20 @@
 
     gulp.task('inject-dev', function () {
         var app = argv.app || 'metamap';
-        return injectTask('./'+app, 'dev', getSrc(app), [/google/, /backbone/, /underscore/, /require/, /jquery.min.js/, /jqueryy-migrate/, /jquery-ui/, /raygun4js/]);
+        var path = '';
+        if (app == 'metamap') {
+            path = app;
+        }
+        return injectTask('./'+path, 'dev', getSrc(app), [/google/, /backbone/, /underscore/, /require/, /jquery.min.js/, /jqueryy-migrate/, /jquery-ui/, /raygun4js/]);
     });
 
     gulp.task('inject-release', function () {
         var app = argv.app || 'metamap';
-        return injectTask('./'+app, 'index', getSrc(app), [/[.]js$/, /google/]);
+        var path = '';
+        if (app == 'metamap') {
+            path = app;
+        }
+        return injectTask('./'+path, 'index', getSrc(app), [/[.]js$/, /google/]);
     });
 
     gulp.task('inject-all', ['inject-dev', 'inject-release']);

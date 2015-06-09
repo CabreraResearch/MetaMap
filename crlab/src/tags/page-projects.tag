@@ -4,7 +4,7 @@
             <div class="col-md-12">
                 <div class="center-heading">
                     <h2>
-                        Recent <strong>Projects</strong>
+                        <strong>Explore</strong>
                     </h2>
                     <span class="center-line"></span>
                 </div>
@@ -15,27 +15,41 @@
         <div class="cube-masonry">
 
             <div id="filters-container" class="cbp-l-filters-alignCenter">
-                <div data-filter="*" class="cbp-filter-item-active cbp-filter-item">
+                <div data-filter=".featured" class="cbp-filter-item-active cbp-filter-item">
+                    Featured <div class="cbp-filter-counter"></div>
+                </div>
+                <div data-filter=".publications" class="cbp-filter-item">
+                    Publications <div class="cbp-filter-counter"></div>
+                </div>
+                <div data-filter=".infographics" class="cbp-filter-item">
+                    Infographics <div class="cbp-filter-counter"></div>
+                </div>
+                <div data-filter=".infographics, .featured" class="cbp-filter-item">
+                    Software <div class="cbp-filter-counter"></div>
+                </div>
+                <div data-filter=".infographics, .featured" class="cbp-filter-item">
+                    Products <div class="cbp-filter-counter"></div>
+                </div>
+                <div data-filter=".infographics, .featured" class="cbp-filter-item">
+                    Videos <div class="cbp-filter-counter"></div>
+                </div>
+                <div data-filter=".infographics, .featured" class="cbp-filter-item">
+                    Training <div class="cbp-filter-counter"></div>
+                </div>
+                <div data-filter=".infographics, .featured" class="cbp-filter-item">
+                    Speaking <div class="cbp-filter-counter"></div>
+                </div>
+                <div data-filter=".infographics, .featured" class="cbp-filter-item">
+                    Special Projects <div class="cbp-filter-counter"></div>
+                </div>
+                <div data-filter="*" class=" cbp-filter-item">
                     All <div class="cbp-filter-counter"></div>
-                </div>
-                <div data-filter=".identity" class="cbp-filter-item">
-                    Identity <div class="cbp-filter-counter"></div>
-                </div>
-                <div data-filter=".web-design" class="cbp-filter-item">
-                    Web Design <div class="cbp-filter-counter"></div>
-                </div>
-                <div data-filter=".graphic" class="cbp-filter-item">
-                    Graphic <div class="cbp-filter-counter"></div>
-                </div>
-                <div data-filter=".graphic, .identity" class="cbp-filter-item">
-                    Web Design & Identity <div class="cbp-filter-counter"></div>
                 </div>
             </div>
 
             <div id="masnory-container" class="cbp">
-                <div class="cbp-item identity">
+                <div class="cbp-item featured">
                     <a class="cbp-caption cbp-lightbox" data-title="Easy Note">
-                        <br/>by Cosmin Capitanu" href="crlab/dist/img/mas-1.jpg">
                         <div class="cbp-caption-defaultWrap">
                             <img src="crlab/dist/img/mas-1.jpg" alt=""/>
                         </div>
@@ -49,10 +63,8 @@
                         </div>
                     </a>
                 </div>
-                <div class="cbp-item web-design">
+                <div class="cbp-item publications">
                     <a class="cbp-caption cbp-lightbox" data-title="The Gang Blue">
-                        <br/>by Cosmin Capitanu"
-                        href="crlab/dist/img/img-1.jpg">
                         <div class="cbp-caption-defaultWrap">
                             <img src="crlab/dist/img/img-1.jpg" alt=""/>
                         </div>
@@ -66,10 +78,8 @@
                         </div>
                     </a>
                 </div>
-                <div class="cbp-item graphic identity">
+                <div class="cbp-item infographics featured">
                     <a class="cbp-caption cbp-lightbox" data-title="Tiger">
-                        <br/>by Cosmin Capitanu"
-                        href="crlab/dist/img/img-2.jpg">
                         <div class="cbp-caption-defaultWrap">
                             <img src="crlab/dist/img/img-2.jpg" alt=""/>
                         </div>
@@ -83,10 +93,8 @@
                         </div>
                     </a>
                 </div>
-                <div class="cbp-item graphic">
+                <div class="cbp-item infographics">
                     <a class="cbp-caption cbp-lightbox" data-title="Flat Roman Typeface Ui">
-                        <br/>by Cosmin Capitanu"
-                        href="crlab/dist/img/mas-2.jpg">
                         <div class="cbp-caption-defaultWrap">
                             <img src="crlab/dist/img/mas-2.jpg" alt=""/>
                         </div>
@@ -100,10 +108,8 @@
                         </div>
                     </a>
                 </div>
-                <div class="cbp-item identity">
+                <div class="cbp-item featured">
                     <a class="cbp-caption cbp-lightbox" data-title="Seemple* Music for iPad">
-                        <br/>by Tiberiu Neamu"
-                        href="crlab/dist/img/mas-2.jpg">
                         <div class="cbp-caption-defaultWrap">
                             <img src="crlab/dist/img/mas-1.jpg" alt=""/>
                         </div>
@@ -117,9 +123,8 @@
                         </div>
                     </a>
                 </div>
-                <div class="cbp-item graphic">
+                <div class="cbp-item infographics">
                     <a class="cbp-caption cbp-lightbox" data-title="Remind~Me More">
-                        <br/>by Tiberiu Neamu" href="crlab/dist/img/img-3.jpg">
                         <div class="cbp-caption-defaultWrap">
                             <img src="crlab/dist/img/img-3.jpg" alt=""/>
                         </div>
@@ -133,9 +138,8 @@
                         </div>
                     </a>
                 </div>
-                <div class="cbp-item web-design">
+                <div class="cbp-item publications">
                     <a class="cbp-caption cbp-lightbox" data-title="Workout Buddy">
-                        <br/>by Tiberiu Neamu" href="crlab/dist/img/img-4.jpg">
                         <div class="cbp-caption-defaultWrap">
                             <img src="crlab/dist/img/img-4.jpg" alt=""/>
                         </div>
@@ -149,9 +153,8 @@
                         </div>
                     </a>
                 </div>
-                <div class="cbp-item identity">
+                <div class="cbp-item featured">
                     <a class="cbp-caption cbp-lightbox" data-title="Volume Knob">
-                        <br/>by Paul Flavius Nechita" href="http://vimeo.com/156783#">
                         <div class="cbp-caption-defaultWrap">
                             <img src="crlab/dist/img/img-5.jpg" alt=""/>
                         </div>
@@ -165,9 +168,8 @@
                         </div>
                     </a>
                 </div>
-                <div class="cbp-item identity">
+                <div class="cbp-item featured">
                     <a class="cbp-caption cbp-lightbox" data-title="Ski * Buddy">
-                        <br/>by Tiberiu Neamu" href="crlab/dist/img/mas-2.jpg">
                         <div class="cbp-caption-defaultWrap">
                             <img src="crlab/dist/img/mas-1.jpg" alt=""/>
                         </div>
@@ -181,10 +183,8 @@
                         </div>
                     </a>
                 </div>
-                <div class="cbp-item web-design graphic">
+                <div class="cbp-item publications infographics">
                     <a class="cbp-caption cbp-lightbox" data-title="Virtualization Icon">
-                        <br/>by Paul Flavius Nechita"
-                        href="https://www.youtube.com/watch?v=dChhzNGHgnA">
                         <div class="cbp-caption-defaultWrap">
                             <img src="crlab/dist/img/img-6.jpg" alt=""/>
                         </div>
@@ -198,10 +198,8 @@
                         </div>
                     </a>
                 </div>
-                <div class="cbp-item web-design graphic">
+                <div class="cbp-item publications infographics">
                     <a class="cbp-caption cbp-lightbox" data-title="World Clock Widget">
-                        <br/>by Paul Flavius Nechita"
-                        href="crlab/dist/img/img-7.jpg">
                         <div class="cbp-caption-defaultWrap">
                             <img src="crlab/dist/img/img-7.jpg" alt=""/>
                         </div>
@@ -215,9 +213,8 @@
                         </div>
                     </a>
                 </div>
-                <div class="cbp-item web-design graphic">
+                <div class="cbp-item publications infographics">
                     <a class="cbp-caption cbp-lightbox" data-title="Sickpuppy">
-                        <br/>by Cosmin Capitanu" href="crlab/dist/img/img-8.jpg">
                         <div class="cbp-caption-defaultWrap">
                             <img src="crlab/dist/img/img-8.jpg" alt="" />
                         </div>

@@ -52,6 +52,16 @@
   };
 
     var runbrowserify = function(name, app) {
+        var standalone = '';
+        switch (app) {
+            case 'metamap':
+                standalone = 'MetaMap';
+                break;
+            case 'crlab':
+                standalone = 'CRLab';
+                break;
+        }
+
         var module;
         var bundleLogger = new Logger(name);
         var cfg = config(app)[name];
@@ -62,7 +72,7 @@
             extensions: ['.tag'],
             debug: true,
             bundleExternal: false,
-            standalone: 'MetaMap'
+            standalone: standalone
         };
         var bundler = bundleMethod(bundleCfg);
         //_ref = cfg.transforms;

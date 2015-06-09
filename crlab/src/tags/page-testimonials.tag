@@ -1,6 +1,17 @@
 <page-testimonials>
     <div class="container">
         <div class="row">
+            <div class="col-sm-8 col-sm-offset-2">
+                <div class="center-heading">
+                    <h2>
+                        <strong>What</strong> Our Users Say
+                    </h2>
+                    <span class="center-line"></span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
             <div class="col-md-4 margin-btm-20">
                 <div class="quote dark">
                     <blockquote>
@@ -11,7 +22,7 @@
                 </div>
                 <div class="quote-footer text-right">
                     <div class="quote-author-img">
-                        <img src="img/customer-1.jpg" alt=""/>
+                        <img src="crlab/dist/img/customer-1.jpg" alt=""/>
                     </div>
                     <h4>Rakesh Sharma</h4>
                     <p>
@@ -30,7 +41,7 @@
                 </div>
                 <div class="quote-footer text-right">
                     <div class="quote-author-img">
-                        <img src="img/customer-2.jpg" alt=""/>
+                        <img src="crlab/dist/img/customer-2.jpg" alt=""/>
                     </div>
                     <h4>Rakesh Sharma</h4>
                     <p>
@@ -49,7 +60,7 @@
                 </div>
                 <div class="quote-footer text-right">
                     <div class="quote-author-img">
-                        <img src="img/customer-3.jpg" alt=""/>
+                        <img src="crlab/dist/img/customer-3.jpg" alt=""/>
                     </div>
                     <h4>Rakesh Sharma</h4>
                     <p>

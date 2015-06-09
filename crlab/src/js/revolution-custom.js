@@ -9,22 +9,9 @@
 
 jQuery(document).ready(function () {
 
-    revapi = jQuery('.tp-banner').revolution(
-            {
-                delay: 6000,
-                startwidth: 1170,
-                startheight: 600,
-                hideThumbs: 10,
-                fullWidth: "on",
-                forceFullWidth: "on",
-                navigationStyle: "preview4"
-            });
+    
 
-});	//ready
-
-jQuery(document).ready(function () {
-
-    revapi = jQuery('.tp-banner-boxed').revolution(
+    jQuery('.tp-banner-boxed').revolution(
             {
                 delay: 6000,
                 startwidth: 1170,
@@ -33,13 +20,7 @@ jQuery(document).ready(function () {
                 navigationStyle: "preview4"
             });
 
-});
-
-
-
-jQuery(document).ready(function () {
-
-    revapi = jQuery('.tp-fullscreen-banner').revolution(
+    jQuery('.tp-fullscreen-banner').revolution(
             {
                 delay: 15000,
                 startwidth: 1170,
@@ -51,15 +32,7 @@ jQuery(document).ready(function () {
 
             });
 
-});	//ready
-
-
-//ken burns effect
-
-
-jQuery(document).ready(function () {
-
-    revapi = jQuery('.ken-burns-banner').revolution(
+    jQuery('.ken-burns-banner').revolution(
             {
                 dottedOverlay: "none",
                 delay: 16000,
@@ -115,12 +88,6 @@ jQuery(document).ready(function () {
                 startWithSlide: 0
             });
 
-});	//ready
-
-
-
-//vertical slider
-jQuery(document).ready(function () {
     jQuery('.tp-banner-vertical').show().revolution(
             {
                 dottedOverlay: "none",
@@ -161,7 +128,7 @@ jQuery(document).ready(function () {
                 stopAfterLoops: -1,
                 stopAtSlide: -1,
                 shuffle: "off",
-                autoHeight: "off",     forceFullWidth: "on",
+                autoHeight: "off", forceFullWidth: "on",
                 hideThumbsOnMobile: "off",
                 hideNavDelayOnMobile: 1500,
                 hideBulletsOnMobile: "off",
