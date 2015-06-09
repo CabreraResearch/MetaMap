@@ -52,26 +52,23 @@
         </div>
     </div>
     <script type="es6">
-        var that = this;
-        that.data = [];
-        
-        CRLab.MetaFire.getData('crlab/banner').then( (data) => {
-        that.data = data;
-        that.update();
-
-        _.delay(function () {
-        $(that.tp_banner).revolution(
-        {
-        delay: 6000,
-        startwidth: 1170,
-        startheight: 600,
-        hideThumbs: 10,
-        //fullWidth: "on",
-        //forceFullWidth: "on",
-        lazyLoad: "on"
-        // navigationStyle: "preview4"
+        this.data = [];
+            
+        $(this.tp_banner).revolution({
+            delay: 6000,
+            startwidth: 1170,
+            startheight: 600,
+            hideThumbs: 10,
+            //fullWidth: "on",
+            //forceFullWidth: "on",
+            lazyLoad: "on"
+            // navigationStyle: "preview4"
         });
-        }, 100);
-        })
+        
+        //CRLab.MetaFire.getData('crlab/banner').then( (data) => {
+        //    this.data = data;
+        //    this.update();
+        //})
+        
     </script>
 </page-banner>

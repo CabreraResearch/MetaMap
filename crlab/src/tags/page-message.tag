@@ -33,13 +33,12 @@
         </div>
     </div>
     <script type="es6">
-        let that = this
-        that.header = {}
-        that.items = []
+        this.header = {}
+        this.items = []
         CRLab.MetaFire.getData('crlab/message').then( (data) => {
-            that.header = data.header
-            that.items = data.items
-            that.update()
+            this.header = data.header
+            this.items = data.items
+            this.update()
         })
     </script>
 </page-message>
