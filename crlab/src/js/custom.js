@@ -59,19 +59,7 @@ $(document).ready(function () {
 
     //owl carousel for news
 
-    $("#news-carousel").owlCarousel({
-        // Most important owl features
-        items: 2,
-        itemsCustom: false,
-        itemsDesktop: [1199, 2],
-        itemsDesktopSmall: [980, 2],
-        itemsTablet: [768, 2],
-        itemsTabletSmall: false,
-        itemsMobile: [479, 1],
-        singleItem: false,
-        startDragging: true,
-        autoPlay: 4000
-    });
+    
 
 
 

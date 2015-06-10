@@ -15,31 +15,30 @@
                         data-bgposition="left top" 
                         data-bgrepeat="no-repeat" />
                     <div class="caption title-2 sft" 
-                         style="text-align: center;"
                          data-x="50"
                          data-y="100"
                          data-speed="1000"
                          data-start="1000"
                          data-easing="easeOutExpo">
-                        GET THE BOOK <br/> THAT'S CHANGING <br/> THE WORLD
+                        Become a <br/>
+                        Systems Thinker
                     </div>
 
                     <div class="caption text sfl"
-                         style="text-align: center;"
                          data-x="50"
-                         data-y="280"
+                         data-y="220"
                          data-speed="1000"
                          data-start="1800"
                          data-easing="easeOutExpo">
-                         Systems thinking can help us solve everyday and wicked problems,<br/>
-                         increase our personal effectiveness as human beings, <br/> 
-                         and transform our organizations. <br/> 
+                         Solve everyday and wicked problems. <br/>
+                         Increase your personal effectiveness. <br/>
+                         Transform your organization. <br/>
                          This book is for anyone interested in learning <br/>
                          the foundational ideas of systems thinking.
                     </div>
                     <div class="caption sfb rev-buttons tp-resizeme"
-                         data-x="185"
-                         data-y="415"
+                         data-x="50"
+                         data-y="355"
                          data-speed="500"
                          data-start="1800"
                          data-easing="Sine.easeOut">
