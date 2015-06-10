@@ -36,19 +36,19 @@
     </div>
     <script type="es6">
         this.mixin('config');
-        this.url = this.pathImg() + 'testimonials/';
+        this.url = this.pathImg('testimonials');
 
         CRLab.MetaFire.getData(CRLab.site + '/testimonials').then( (data) => {
-            this.header = data.header;
-            this.items = data.items;
-            this.update();
-            
-            $(this.testimonial_slide).flexslider({
-                slideshowSpeed: 5000,
-                directionNav: false,
-                animation: "fade"
-            });
-            
+        this.header = data.header;
+        this.items = data.items;
+        this.update();
+
+        $(this.testimonial_slide).flexslider({
+        slideshowSpeed: 5000,
+        directionNav: false,
+        animation: "fade"
+        });
+
         })
 
     </script>

@@ -54,6 +54,16 @@ class MetaFire {
         
         return promise;
     }
+
+    on (path, callback, event = 'value' ) {
+        if (path) {
+            let child = this.getChild(path);
+            child.on(event, (snapshot) => {
+                callback(snapshot.val());
+            });
+        }
+    }
+
     setData (data, path) {
         var child = this.fb;
         if (path) {
