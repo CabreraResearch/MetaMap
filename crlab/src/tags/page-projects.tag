@@ -51,7 +51,7 @@
                 <div class="cbp-item featured">
                     <a class="cbp-caption cbp-lightbox" data-title="Easy Note">
                         <div class="cbp-caption-defaultWrap">
-                            <img src="crlab/dist/img/mas-1.jpg" alt=""/>
+                            <img src="{ url }mas-1.jpg" alt=""/>
                         </div>
                         <div class="cbp-caption-activeWrap">
                             <div class="cbp-l-caption-alignCenter">
@@ -66,7 +66,7 @@
                 <div class="cbp-item publications">
                     <a class="cbp-caption cbp-lightbox" data-title="The Gang Blue">
                         <div class="cbp-caption-defaultWrap">
-                            <img src="crlab/dist/img/img-1.jpg" alt=""/>
+                            <img src="{ url }img-1.jpg" alt=""/>
                         </div>
                         <div class="cbp-caption-activeWrap">
                             <div class="cbp-l-caption-alignCenter">
@@ -81,7 +81,7 @@
                 <div class="cbp-item infographics featured">
                     <a class="cbp-caption cbp-lightbox" data-title="Tiger">
                         <div class="cbp-caption-defaultWrap">
-                            <img src="crlab/dist/img/img-2.jpg" alt=""/>
+                            <img src="{ url }img-2.jpg" alt=""/>
                         </div>
                         <div class="cbp-caption-activeWrap">
                             <div class="cbp-l-caption-alignCenter">
@@ -96,7 +96,7 @@
                 <div class="cbp-item infographics">
                     <a class="cbp-caption cbp-lightbox" data-title="Flat Roman Typeface Ui">
                         <div class="cbp-caption-defaultWrap">
-                            <img src="crlab/dist/img/mas-2.jpg" alt=""/>
+                            <img src="{ url }mas-2.jpg" alt=""/>
                         </div>
                         <div class="cbp-caption-activeWrap">
                             <div class="cbp-l-caption-alignCenter">
@@ -111,7 +111,7 @@
                 <div class="cbp-item featured">
                     <a class="cbp-caption cbp-lightbox" data-title="Seemple* Music for iPad">
                         <div class="cbp-caption-defaultWrap">
-                            <img src="crlab/dist/img/mas-1.jpg" alt=""/>
+                            <img src="{ url }mas-1.jpg" alt=""/>
                         </div>
                         <div class="cbp-caption-activeWrap">
                             <div class="cbp-l-caption-alignCenter">
@@ -126,7 +126,7 @@
                 <div class="cbp-item infographics">
                     <a class="cbp-caption cbp-lightbox" data-title="Remind~Me More">
                         <div class="cbp-caption-defaultWrap">
-                            <img src="crlab/dist/img/img-3.jpg" alt=""/>
+                            <img src="{ url }img-3.jpg" alt=""/>
                         </div>
                         <div class="cbp-caption-activeWrap">
                             <div class="cbp-l-caption-alignCenter">
@@ -141,7 +141,7 @@
                 <div class="cbp-item publications">
                     <a class="cbp-caption cbp-lightbox" data-title="Workout Buddy">
                         <div class="cbp-caption-defaultWrap">
-                            <img src="crlab/dist/img/img-4.jpg" alt=""/>
+                            <img src="{ url }img-4.jpg" alt=""/>
                         </div>
                         <div class="cbp-caption-activeWrap">
                             <div class="cbp-l-caption-alignCenter">
@@ -156,7 +156,7 @@
                 <div class="cbp-item featured">
                     <a class="cbp-caption cbp-lightbox" data-title="Volume Knob">
                         <div class="cbp-caption-defaultWrap">
-                            <img src="crlab/dist/img/img-5.jpg" alt=""/>
+                            <img src="{ url }img-5.jpg" alt=""/>
                         </div>
                         <div class="cbp-caption-activeWrap">
                             <div class="cbp-l-caption-alignCenter">
@@ -171,7 +171,7 @@
                 <div class="cbp-item featured">
                     <a class="cbp-caption cbp-lightbox" data-title="Ski * Buddy">
                         <div class="cbp-caption-defaultWrap">
-                            <img src="crlab/dist/img/mas-1.jpg" alt=""/>
+                            <img src="{ url }mas-1.jpg" alt=""/>
                         </div>
                         <div class="cbp-caption-activeWrap">
                             <div class="cbp-l-caption-alignCenter">
@@ -186,7 +186,7 @@
                 <div class="cbp-item publications infographics">
                     <a class="cbp-caption cbp-lightbox" data-title="Virtualization Icon">
                         <div class="cbp-caption-defaultWrap">
-                            <img src="crlab/dist/img/img-6.jpg" alt=""/>
+                            <img src="{ url }img-6.jpg" alt=""/>
                         </div>
                         <div class="cbp-caption-activeWrap">
                             <div class="cbp-l-caption-alignCenter">
@@ -201,7 +201,7 @@
                 <div class="cbp-item publications infographics">
                     <a class="cbp-caption cbp-lightbox" data-title="World Clock Widget">
                         <div class="cbp-caption-defaultWrap">
-                            <img src="crlab/dist/img/img-7.jpg" alt=""/>
+                            <img src="{ url }img-7.jpg" alt=""/>
                         </div>
                         <div class="cbp-caption-activeWrap">
                             <div class="cbp-l-caption-alignCenter">
@@ -216,7 +216,7 @@
                 <div class="cbp-item publications infographics">
                     <a class="cbp-caption cbp-lightbox" data-title="Sickpuppy">
                         <div class="cbp-caption-defaultWrap">
-                            <img src="crlab/dist/img/img-8.jpg" alt="" />
+                            <img src="{ url }img-8.jpg" alt="" />
                         </div>
                         <div class="cbp-caption-activeWrap">
                             <div class="cbp-l-caption-alignCenter">
@@ -236,4 +236,11 @@
     <div class="text-center">
         <a href="masonry-portfolio-4.html" class="btn btn-theme-dark btn-lg">View All Work</a>
     </div>
+    
+    <script type="es6">
+        this.mixin('config');
+        this.url = this.pathImg() + 'temp/';
+
+    </script>
+    
 </page-projects>

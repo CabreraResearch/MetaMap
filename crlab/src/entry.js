@@ -23,5 +23,8 @@ require('./tags/page-projects.tag');
 require('./tags/page-message.tag');
 require('./tags/page-testimonials.tag');
 
+var configMixin = require('./js/mixins/config.js');
+riot.mixin('config', configMixin);
+
 var CRLab = require('./CRLab');
 module.exports = new CRLab();

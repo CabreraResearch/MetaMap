@@ -9,18 +9,23 @@
                     <span class="icon-bar"></span>
                 </button>
                 <a class="navbar-brand" href="#">
-                    <img height="21px" width="21px" src="crlab/dist/img/{ data.img }" alt={ data.alt } />
+                    <img if="{ data }" 
+                         height="21px" 
+                         width="21px" 
+                         src="{ url }site/{ data.img }" 
+                         alt="{ data.alt }" />
                 </a>
             </div>
             <page-menu-navbar></page-menu-navbar>
         </div>
     </div>
     <script type="es6">
-        var that = this;
-        that.data = [];
+        this.mixin('config');
+        this.url = this.pathImg();
+        
         CRLab.MetaFire.getData('crlab/logo').then( (data) => {
-            that.data = data;
-            that.update();
+            this.data = data;
+            this.update();
         })
     </script>
 </page-navbar>

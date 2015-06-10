@@ -22,7 +22,7 @@
                 </div>
                 <div class="quote-footer text-right">
                     <div class="quote-author-img">
-                        <img src="crlab/dist/img/customer-1.jpg" alt=""/>
+                        <img src="{ url }customer-1.jpg" alt=""/>
                     </div>
                     <h4>Rakesh Sharma</h4>
                     <p>
@@ -41,7 +41,7 @@
                 </div>
                 <div class="quote-footer text-right">
                     <div class="quote-author-img">
-                        <img src="crlab/dist/img/customer-2.jpg" alt=""/>
+                        <img src="{ url }customer-2.jpg" alt=""/>
                     </div>
                     <h4>Rakesh Sharma</h4>
                     <p>
@@ -60,7 +60,7 @@
                 </div>
                 <div class="quote-footer text-right">
                     <div class="quote-author-img">
-                        <img src="crlab/dist/img/customer-3.jpg" alt=""/>
+                        <img src="{ url }customer-3.jpg" alt=""/>
                     </div>
                     <h4>Rakesh Sharma</h4>
                     <p>
@@ -72,5 +72,10 @@
         </div>
         <!--testimonials row-->
     </div>
+    <script type="es6">
+        this.mixin('config');
+        this.url = this.pathImg() + 'temp/';
 
+        
+    </script>
 </page-testimonials>

@@ -459,7 +459,7 @@ p {
   position: absolute;
   top: 0;
   left: 0;
-  background: url(../img/plus.png) no-repeat center center rgba(108, 168, 255, 0.7);
+  background: url(../../dist/img/plus.png) no-repeat center center rgba(108, 168, 255, 0.7);
   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
   filter: alpha(opacity=0);
   opacity: 0;
@@ -638,7 +638,7 @@ input[type="color"]:focus,
 /**************work and portfolio whole*******/
 /* mouse grab icon */
 .grabbing {
-  cursor: url(../img/grabbing.png) 8 8, move !important; }
+  cursor: url(../../dist/img/grabbing.png) 8 8, move !important; }
 
 .portfolio {
   padding: 60px 0;
@@ -870,7 +870,7 @@ h3.heading-progress {
 
 /****fun facts*****/
 .fun-fact-wrap {
-  background: url(../img/bg-4.jpg);
+  background: url(../../dist/img/bg-4.jpg);
   background-repeat: repeat !important;
   padding-top: 100px;
   padding-bottom: 70px; }
@@ -968,7 +968,7 @@ h3.heading-progress {
 
 /***************about me*********************/
 .me-intro {
-  background: url(../img/showcase-6.jpg);
+  background: url(../../dist/img/showcase-6.jpg);
   padding: 160px 0; }
 
 .me-intro h2 {

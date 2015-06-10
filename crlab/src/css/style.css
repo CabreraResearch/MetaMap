@@ -327,7 +327,7 @@ p.sub-text {
   position: relative; }
 
 .no-padding.img {
-  background: url(../img/showcase-1.jpg) scroll center no-repeat;
+  background: url(../../dist/img/showcase-1.jpg) scroll center no-repeat;
   background-size: cover;
   position: absolute;
   height: 100%; }
@@ -933,7 +933,7 @@ input[type="color"]:focus,
 
 .slider-overlay {
   background: rgba(0, 0, 0, 0.2);
-  background-image: url("../img/pattern.png");
+  background-image: url("../../dist/img/pattern.png");
   background-repeat: repeat;
   position: absolute;
   top: 0;
@@ -1033,7 +1033,7 @@ input[type="color"]:focus,
 
 /*******************home parallax-bg----***********************/
 #home-parallax {
-  background: url("../img/showcase-4.jpg") no-repeat;
+  background: url("../../dist/img/showcase-4.jpg") no-repeat;
   padding: 190px 0; }
 
 .typed-cursor {
@@ -1374,7 +1374,7 @@ h1.typed-text {
 /**************work and portfolio whole*******/
 /* mouse grab icon */
 .grabbing {
-  cursor: url(../img/grabbing.png) 8 8, move !important; }
+  cursor: url(../../dist/img/grabbing.png) 8 8, move !important; }
 
 .portfolio {
   padding: 60px 0;
@@ -1808,7 +1808,7 @@ ul.post-desc li + li {
     left: 28px; } }
 /*testimonials parallax*/
 .testimonials {
-  background: url(../img/bg-4.jpg) no-repeat;
+  background: url(../../dist/img/bg-4.jpg) no-repeat;
   padding: 80px 0; }
 
 .testimonials .center-heading h2 {
@@ -2184,7 +2184,7 @@ ul.post-desc li + li {
 
 /**************coming soon*************/
 .soon-bg {
-  background: url(../img/showcase-1.jpg);
+  background: url(../../dist/img/showcase-1.jpg);
   padding: 100px 0; }
 
 .soon-bg h2 {
@@ -2234,7 +2234,7 @@ ul.post-desc li + li {
 
 /****fun facts*****/
 .fun-fact-wrap {
-  background: url(../img/showcase-4.jpg);
+  background: url(../../dist/img/showcase-4.jpg);
   background-repeat: repeat !important;
   padding-top: 100px;
   padding-bottom: 70px; }
@@ -2279,7 +2279,7 @@ ul.post-desc li + li {
 
 /**********static background with transparent header*/
 .static-bg {
-  background: url(../img/showcase-3.jpg);
+  background: url(../../dist/img/showcase-3.jpg);
   padding-top: 230px;
   padding-bottom: 200px; }
 
@@ -2327,7 +2327,7 @@ ul.post-desc li + li {
 /****************************breadcrumb***************************/
 .breadcrumb-wrap {
   padding: 30px 0;
-  background-image: url(../img/shadow-bg.png);
+  background-image: url(../../dist/img/shadow-bg.png);
   background-position: center center;
   background-repeat: no-repeat;
   background-color: #f6f6f6;
@@ -2945,7 +2945,7 @@ label span {
     top: 0;
     width: 100%;
     height: 100%;
-    background-image: url(../img/pattern.png);
+    background-image: url(../../dist/img/pattern.png);
     background-repeat: repeat;
     background-color: rgba(44,62,80,0.3);
     z-index: 2;
@@ -3761,7 +3761,7 @@ ASSAN SHOP CSS STARTS FROM BELOW
 
 /****shop breadcrumb****/
 .breadcrumb-light {
-  background: url(../img/showcase-1.jpg) repeat fixed;
+  background: url(../../dist/img/showcase-1.jpg) repeat fixed;
   background-size: cover;
   padding: 70px 0;
   border-bottom: 0px; }
@@ -4435,7 +4435,7 @@ table.shopping-cart-table tr th, table.shopping-cart-table tr td {
 
 /************************home events**********************/
 .events-bg {
-  background: url(../img/showcase-1.jpg);
+  background: url(../../dist/img/showcase-1.jpg);
   padding: 150px 0; }
 
 .events-bg h2 {
@@ -4495,7 +4495,7 @@ table.shopping-cart-table tr th, table.shopping-cart-table tr td {
   background-color: #eee; }
 
 .register-event {
-  background: url(../img/showcase-4.jpg);
+  background: url(../../dist/img/showcase-4.jpg);
   padding: 100px 0; }
 
 .register-event .center-heading h2 {
@@ -4844,7 +4844,7 @@ table.shopping-cart-table tr th, table.shopping-cart-table tr td {
   line-height: 27px; }
 
 .constro-cta {
-  background: url(../img/construction/constro-bg-2.jpg);
+  background: url(../../dist/img/construction/constro-bg-2.jpg);
   padding: 80px 0;
   text-align: center; }
 

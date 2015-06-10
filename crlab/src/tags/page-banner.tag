@@ -9,7 +9,7 @@
                     data-masterspeed="1000" 
                     data-title="Powerful Theme">
                     <!-- MAIN IMAGE -->
-                    <img src="crlab/dist/img/book_banner.png"  
+                    <img src="crlab/dist/img/site/book_banner.png"  
                          alt="darkblurbg"  
                         data-bgfit="cover"
                         data-bgposition="left top" 
@@ -52,7 +52,9 @@
     </div>
     <script type="es6">
         this.data = [];
-            
+        this.mixin('config'); 
+        this.url = this.pathImg();
+        
         $(this.tp_banner).revolution({
             delay: 6000,
             startwidth: 1170,

@@ -8,7 +8,7 @@
                     <div each="{ data }">
                         <!--<a href="#">
                             <div class="item-img-wrap">
-                                <img src="crlab/dist/img/img-8.jpg" class="img-responsive" alt="workimg"/>
+                                <img src="../../dist/img/img-8.jpg" class="img-responsive" alt="workimg"/>
                                 <div class="item-img-overlay">
                                     <span></span>
                                 </div>
@@ -16,16 +16,9 @@
                         </a>-->
                         <!--news link-->
                         <div class="news-desc">
-                            <span>{ category || 'News' }</span>
-                            <h4>
-                                <a href="javascript:;">{ Humanize.truncate(title, 125) }</a>
-                            </h4>
-                            <span>
-                                By <a href="{ by ? by.link : 'javascript:;' }">{ by ? by.title : 'CRL' }</a> on { moment(date).format('MM/DD/YY') }
-                            </span>
-                            <span>
-                                <a href="{ link }">Read more...</a>
-                            </span>
+                            <h5>
+                                <a href="{ by ? link : 'javascript:;' }" target="_blank">{ Humanize.truncate(title, 125) }</a>
+                            </h5>
                         </div>
                     </div>
                 </div>

@@ -91,47 +91,47 @@
                         <ul class="list-inline f2-work">
                             <li>
                                 <a href="portfolio-single.html">
-                                    <img src="crlab/dist/img/img-1.jpg" class="img-responsive" alt=""/>
+                                    <img src="{ url }img-1.jpg" class="img-responsive" alt=""/>
                                 </a>
                             </li>
                             <li>
                                 <a href="portfolio-single.html">
-                                    <img src="crlab/dist/img/img-2.jpg" class="img-responsive" alt=""/>
+                                    <img src="{ url }img-2.jpg" class="img-responsive" alt=""/>
                                 </a>
                             </li>
                             <li>
                                 <a href="portfolio-single.html">
-                                    <img src="crlab/dist/img/img-3.jpg" class="img-responsive" alt=""/>
+                                    <img src="{ url }img-3.jpg" class="img-responsive" alt=""/>
                                 </a>
                             </li>
                             <li>
                                 <a href="portfolio-single.html">
-                                    <img src="crlab/dist/img/img-4.jpg" class="img-responsive" alt=""/>
+                                    <img src="{ url }img-4.jpg" class="img-responsive" alt=""/>
                                 </a>
                             </li>
                             <li>
                                 <a href="portfolio-single.html">
-                                    <img src="crlab/dist/img/img-5.jpg" class="img-responsive" alt=""/>
+                                    <img src="{ url }img-5.jpg" class="img-responsive" alt=""/>
                                 </a>
                             </li>
                             <li>
                                 <a href="portfolio-single.html">
-                                    <img src="crlab/dist/img/img-6.jpg" class="img-responsive" alt=""/>
+                                    <img src="{ url }img-6.jpg" class="img-responsive" alt=""/>
                                 </a>
                             </li>
                             <li>
                                 <a href="portfolio-single.html">
-                                    <img src="crlab/dist/img/img-7.jpg" class="img-responsive" alt=""/>
+                                    <img src="{ url }img-7.jpg" class="img-responsive" alt=""/>
                                 </a>
                             </li>
                             <li>
                                 <a href="portfolio-single.html">
-                                    <img src="crlab/dist/img/img-8.jpg" class="img-responsive" alt=""/>
+                                    <img src="{ url }img-8.jpg" class="img-responsive" alt=""/>
                                 </a>
                             </li>
                             <li>
                                 <a href="portfolio-single.html">
-                                    <img src="crlab/dist/img/img-9.jpg" class="img-responsive" alt=""/>
+                                    <img src="{ url }img-9.jpg" class="img-responsive" alt=""/>
                                 </a>
                             </li>
                         </ul>
@@ -166,5 +166,8 @@
             </div>
         </div>
     </footer>
-
+    <script type="es6">
+        this.mixin('config');
+        this.url = this.pathImg() + 'temp/';
+    </script>
 </page-footer>

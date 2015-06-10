@@ -17,31 +17,34 @@
             <div id="clients-slider">
                 <div class="item">
                     <a href="#">
-                        <img src="crlab/dist/img/cl-1.png" alt=""/>
+                        <img src="{ url }cl-1.png" alt=""/>
                     </a>
                 </div>
                 <div class="item">
                     <a href="#">
-                        <img src="crlab/dist/img/cl-2.png" alt=""/>
+                        <img src="{ url }cl-2.png" alt=""/>
                     </a>
                 </div>
                 <div class="item">
                     <a href="#">
-                        <img src="crlab/dist/img/cl-3.png" alt=""/>
+                        <img src="{ url }cl-3.png" alt=""/>
                     </a>
                 </div>
                 <div class="item">
                     <a href="#">
-                        <img src="crlab/dist/img/cl-4.png" alt=""/>
+                        <img src="{ url }cl-4.png" alt=""/>
                     </a>
                 </div>
                 <div class="item">
                     <a href="#">
-                        <img src="crlab/dist/img/cl-5.png" alt=""/>
+                        <img src="{ url }cl-5.png" alt=""/>
                     </a>
                 </div>
             </div>
         </div>
     </section>
-
+    <script type="es6">
+        this.mixin('config');
+        this.url = this.pathImg() + 'temp/';
+    </script>
 </page-clients>

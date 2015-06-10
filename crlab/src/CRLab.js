@@ -10,6 +10,10 @@ class CRLab {
         usersnap();
     }
 
+    get site() {
+        return 'crlab';
+    }
+
     init() {
         riot.mount('*');
     }
