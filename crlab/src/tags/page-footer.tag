@@ -5,34 +5,12 @@
             <div class="row">
                 <div class="col-md-3 col-sm-6 margin30">
                     <div class="footer-col">
-                        <h3>About assan</h3>
-                        <p>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer lorem quam, adipiscing condimentum tristique vel, eleifend sed turpis. Pellentesque cursus arcu id magna euismod in elementum purus molestie.
-                        </p>
+                        <h3>{ data.about.title }</h3>
+                        <p>{ data.about.text }</p>
                         <ul class="list-inline social-1">
-                            <li>
-                                <a href="#">
-                                    <i class="fa fa-facebook"></i>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    <i class="fa fa-twitter"></i>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    <i class="fa fa-google-plus"></i>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    <i class="fa fa-pinterest"></i>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    <i class="fa fa-dribbble"></i>
+                            <li each="{ data.about.social }">
+                                <a href="{ link }" alt="{ title }">
+                                    <i class="{ icon }"></i>
                                 </a>
                             </li>
                         </ul>
@@ -41,97 +19,27 @@
                 <!--footer col-->
                 <div class="col-md-3 col-sm-6 margin30">
                     <div class="footer-col">
-                        <h3>Contact</h3>
+                        <h3>Contact Us</h3>
 
                         <ul class="list-unstyled contact">
-                            <li>
+                            <li each="{ data.contact }">
                                 <p>
                                     <strong>
-                                        <i class="fa fa-map-marker"></i> Address:
-                                    </strong> vaisahali, jaipur, 302012
+                                        <i class="{ icon }"></i> { title }:
+                                    </strong> { text }
                                 </p>
                             </li>
-                            <li>
-                                <p>
-                                    <strong>
-                                        <i class="fa fa-envelope"></i> Mail Us:
-                                    </strong>
-                                    <a href="#">Support@designmylife.com</a>
-                                </p>
-                            </li>
-                            <li>
-                                <p>
-                                    <strong>
-                                        <i class="fa fa-phone"></i> Phone:
-                                    </strong> +91 1800 2345 2132
-                                </p>
-                            </li>
-                            <li>
-                                <p>
-                                    <strong>
-                                        <i class="fa fa-print"></i> Fax
-                                    </strong> 1800 2345 2132
-                                </p>
-                            </li>
-                            <li>
-                                <p>
-                                    <strong>
-                                        <i class="fa fa-skype"></i> Skype
-                                    </strong> assan.856
-                                </p>
-                            </li>
-
                         </ul>
                     </div>
                 </div>
                 <!--footer col-->
                 <div class="col-md-3 col-sm-6 margin30">
                     <div class="footer-col">
-                        <h3>Featured Work</h3>
+                        <h3>Recent</h3>
                         <ul class="list-inline f2-work">
-                            <li>
-                                <a href="portfolio-single.html">
-                                    <img src="{ url }img-1.jpg" class="img-responsive" alt=""/>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="portfolio-single.html">
-                                    <img src="{ url }img-2.jpg" class="img-responsive" alt=""/>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="portfolio-single.html">
-                                    <img src="{ url }img-3.jpg" class="img-responsive" alt=""/>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="portfolio-single.html">
-                                    <img src="{ url }img-4.jpg" class="img-responsive" alt=""/>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="portfolio-single.html">
-                                    <img src="{ url }img-5.jpg" class="img-responsive" alt=""/>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="portfolio-single.html">
-                                    <img src="{ url }img-6.jpg" class="img-responsive" alt=""/>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="portfolio-single.html">
-                                    <img src="{ url }img-7.jpg" class="img-responsive" alt=""/>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="portfolio-single.html">
-                                    <img src="{ url }img-8.jpg" class="img-responsive" alt=""/>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="portfolio-single.html">
-                                    <img src="{ url }img-9.jpg" class="img-responsive" alt=""/>
+                            <li each="{ data.recent }">
+                                <a href="{ link }">
+                                    <img src="{ url + img }" class="img-responsive" alt="{ title }"/>
                                 </a>
                             </li>
                         </ul>
@@ -141,9 +49,7 @@
                 <div class="col-md-3 col-sm-6 margin30">
                     <div class="footer-col">
                         <h3>Newsletter</h3>
-                        <p>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer lorem quam,
-                        </p>
+                        <p>{ data.newsletter.text }</p>
                         <form role="form" class="subscribe-form">
                             <div class="input-group">
                                 <input type="text" class="form-control" placeholder="Enter email to subscribe"/>
@@ -160,7 +66,7 @@
             <div class="row">
                 <div class="col-md-12 text-center">
                     <div class="footer-btm">
-                        <span>&copy;2014. Theme by Design_mylife</span>
+                        <span>&copy;2015 by Cabrera Research Lab</span>
                     </div>
                 </div>
             </div>
@@ -168,6 +74,10 @@
     </footer>
     <script type="es6">
         this.mixin('config');
-        this.url = this.pathImg() + 'temp/';
+        this.url = this.pathImg();
+        CRLab.MetaFire.getData(CRLab.site + '/footer').then( (data) => {
+            this.data = data;
+            this.update();
+        })
     </script>
 </page-footer>
