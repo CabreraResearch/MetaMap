@@ -121,14 +121,7 @@ $(document).ready(function () {
         directionNav: false,
         animation: "fade"
     });
-    //OWL CAROUSEL
-    $("#clients-slider").owlCarousel({
-        autoPlay: 3000,
-        pagination: false,
-        items: 4,
-        itemsDesktop: [1199, 3],
-        itemsDesktopSmall: [991, 2]
-    });
+    
 
 
     /*========tooltip and popovers====*/

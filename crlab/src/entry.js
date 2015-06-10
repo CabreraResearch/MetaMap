@@ -13,7 +13,7 @@ window.URI = require('URIjs');
 window.localforage = require('localforage');
 
 require('./tags/page-banner.tag');
-require('./tags/page-clients.tag');
+require('./tags/page-impact.tag');
 require('./tags/page-countmein.tag');
 require('./tags/page-footer.tag');
 require('./tags/page-navbar-menu.tag');

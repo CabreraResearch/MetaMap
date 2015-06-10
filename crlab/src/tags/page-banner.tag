@@ -66,7 +66,7 @@
             // navigationStyle: "preview4"
         });
         
-        //CRLab.MetaFire.getData('crlab/banner').then( (data) => {
+        //CRLab.MetaFire.getData(CRLab.site + '/banner').then( (data) => {
         //    this.data = data;
         //    this.update();
         //})

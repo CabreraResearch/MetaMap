@@ -35,7 +35,7 @@
     <script type="es6">
         this.header = {}
         this.items = []
-        CRLab.MetaFire.getData('crlab/message').then( (data) => {
+        CRLab.MetaFire.getData(CRLab.site + '/message').then( (data) => {
             this.header = data.header
             this.items = data.items
             this.update()

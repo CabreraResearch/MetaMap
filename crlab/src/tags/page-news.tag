@@ -28,7 +28,7 @@
     <script type="es6">
         this.data = [];
 
-        CRLab.MetaFire.getData('crlab/news').then( (data) => {
+        CRLab.MetaFire.getData(CRLab.site + '/news').then( (data) => {
             this.data = _.toArray(data);
             this.update();
             $(this.news_carousel).owlCarousel({
