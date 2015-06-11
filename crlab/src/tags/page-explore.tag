@@ -24,7 +24,7 @@
             </div>
 
             <div id="masonry_container" class="cbp">
-                <div each="{ content }" class="cbp-item { type }">
+                <div each="{ content }" class="cbp-item { type } { _.keys(tags).join(' ') }">
                     <div class="cbp-caption cbp-lightbox" data-title="{ text }" href="{ link || parent.url + img }">
                         <div class="cbp-caption-defaultWrap">
                             <img src="{ parent.url + img }" alt="{ title }"/>
@@ -75,7 +75,7 @@
                 $(this.masonry_container).cubeportfolio({
                     filters: '#filters_container',
                     layoutMode: 'grid',
-                    defaultFilter: '*',
+                    defaultFilter: '.featured',
                     animationType: 'flipOutDelay',
                     gapHorizontal: 20,
                     gapVertical: 20,
