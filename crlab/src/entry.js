@@ -19,7 +19,7 @@ require('./tags/page-footer.tag');
 require('./tags/page-navbar-menu.tag');
 require('./tags/page-navbar.tag');
 require('./tags/page-news.tag');
-require('./tags/page-projects.tag');
+require('./tags/page-explore.tag');
 require('./tags/page-message.tag');
 require('./tags/page-methodology.tag');
 require('./tags/page-testimonials.tag');
