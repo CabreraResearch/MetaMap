@@ -29,7 +29,7 @@ riot.mixin('config', configMixin);
 
 riot.tag('raw', '<span></span>', function (opts) {
     this.updateContent = function () {
-        this.root.innerHTML = opts.content;
+        this.root.innerHTML = (opts) ? (opts.content || '') : '';
     };
 
     this.on('update', () => {
