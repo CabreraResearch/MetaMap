@@ -71,6 +71,7 @@
             CRLab.MetaFire.getData(CRLab.site + '/content').then( (data) => {
                 this.content = _.sortBy(_.toArray(data), 'order');
                 this.content = _.union( this.content, this.items );
+                this.content = _.filter( this.content, (item) => { return !(item.archived === true) } );
                 this.update();
                 $(this.masonry_container).cubeportfolio({
                     filters: '#filters_container',
