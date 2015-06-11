@@ -42,7 +42,7 @@
                          data-speed="500"
                          data-start="1800"
                          data-easing="Sine.easeOut">
-                        <a href="#" class="btn btn-theme-bg btn-lg">Pre-order Now</a>
+                        <a href="#" class="btn btn-lg btn-theme-dark">Pre-order Now</a>
                     </div>
                     
                 </li>
