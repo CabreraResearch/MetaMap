@@ -1,0 +1,81 @@
+header,
+#header-right,
+.header-popup,
+#tutorial,
+#main-toolbar,
+#map-properties,
+#map-title a,
+#map-title .dropdown-menu,
+#map-edit-status,
+#navigator,
+#history-tab,
+#analytics-tab-thing,
+#perspectives-tab,
+#distinctions-tab,
+#attachments-tab,
+#generator-tab,
+#standards-tab,
+#help-tip,
+#tests,
+.tab-close-button {
+  display: none; }
+
+#presenter-print-view {
+  display: block; }
+
+.slide-sidebar, .slide-wrapper {
+  display: none; }
+
+#presenter-toolbar-bottom {
+  display: none; }
+
+img.slide-thumbnail-image {
+  display: block; }
+
+.slide-thumbnail-number,
+.slide-thumbnail-duplicate,
+.slide-thumbnail-delete,
+.slide-thumbnail-move-left,
+.slide-thumbnail-move-right {
+  display: none; }
+
+.slide-text-display input,
+.slide-text-display textarea,
+.slide-text-display button {
+  display: none; }
+.slide-text-display .slide-title span {
+  display: inline; }
+.slide-text-display .slide-title .slide-thumbnail-number {
+  display: inline; }
+
+#map-title {
+  font-size: 24pt;
+  font-weight: bold;
+  margin-bottom: 10pt; }
+
+ul.map-actions {
+  display: none; }
+
+#new-map-button, #save-copy-form {
+  display: none; }
+
+#analytics-tab-map {
+  display: none;
+  clear: both; }
+  #analytics-tab-map .analytics-subject-wrapper {
+    float: none;
+    clear: both; }
+  #analytics-tab-map .big-analytic-wrapper {
+    float: none;
+    clear: both; }
+
+#diagram {
+  display: none;
+  position: relative;
+  height: 5in;
+  border: solid 1px #ccc;
+  margin-bottom: .25in; }
+  #diagram canvas {
+    height: 5in; }
+
+/*# sourceMappingURL=metamap_print.css.map */
