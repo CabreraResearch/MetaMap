@@ -5,7 +5,7 @@
                 <div class="center-heading">
                     <h2>{ header.title }</h2>
                     <span class="center-line"></span>
-                    <p>{ header.text }</p>
+                    <p><raw content="{ header.text }"/> </p>
                 </div>
             </div>
         </div>

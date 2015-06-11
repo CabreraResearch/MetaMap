@@ -27,5 +27,17 @@ require('./tags/page-testimonials.tag');
 var configMixin = require('./js/mixins/config.js');
 riot.mixin('config', configMixin);
 
+riot.tag('raw', '<span></span>', function (opts) {
+    this.updateContent = function () {
+        this.root.innerHTML = opts.content;
+    };
+
+    this.on('update', () => {
+        this.updateContent();
+    });
+
+    this.updateContent();
+});
+
 var CRLab = require('./CRLab');
 module.exports = new CRLab();
