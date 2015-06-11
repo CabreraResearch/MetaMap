@@ -25,14 +25,15 @@
 
             <div id="masonry_container" class="cbp">
                 <div each="{ content }" class="cbp-item { type }">
-                    <div class="cbp-caption cbp-lightbox" data-title="{ text }" href="{ parent.url + img }">
+                    <div class="cbp-caption cbp-lightbox" data-title="{ text }" href="{ link || parent.url + img }">
                         <div class="cbp-caption-defaultWrap">
                             <img src="{ parent.url + img }" alt="{ title }"/>
                         </div>
                         <div class="cbp-caption-activeWrap">
                             <div class="cbp-l-caption-alignCenter">
                                 <div class="cbp-l-caption-body">
-                                    <div each="{ val, i in buttons }" 
+                                    <div if="{ buttons }" 
+                                         each="{ val, i in buttons }" 
                                          data-link="{ val.link }"
                                          class="{ 'cbp-l-caption-title': i == 0,
                                                 'cbp-singlePage': i == 0, 
@@ -42,7 +43,9 @@
                                                 'cbp-l-caption-buttonRight': i == 1
                                        }"
                                        >{ val.title }</div>
-                                    
+                                    <div if="{ !buttons }"
+                                         class="{ 'cbp-l-caption-title': true }"
+                                       >{ title }</div>
                                 </div>
                             </div>
                         </div>
@@ -64,8 +67,10 @@
         CRLab.MetaFire.getData(CRLab.site + '/explore').then( (data) => {
             this.filters = _.sortBy(data.filters, 'order');
             this.header = data.header;
+            this.items = data.items;
             CRLab.MetaFire.getData(CRLab.site + '/content').then( (data) => {
                 this.content = _.sortBy(_.toArray(data), 'order');
+                this.content = _.union( this.content, this.items );
                 this.update();
                 $(this.masonry_container).cubeportfolio({
                     filters: '#filters_container',
