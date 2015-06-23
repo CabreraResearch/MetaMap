@@ -10,14 +10,14 @@ const config = () => {
             db: 'popping-fire-897',
             metaMapUrl: '',
             title: 'Cabrera Research Lab',
-            favico: 'crlab/dist/img/ico/favicon.ico'
+            favico: 'frontend/dist/img/ico/favicon.ico'
         },
         THINK_WATER: {
             frontEnd: 'thinkwater',
             db: 'popping-fire-897',
             metaMapUrl: '',
             title: 'ThinkWater',
-            favico: 'crlab/dist/img/ico/favicon.ico'
+            favico: 'frontend/dist/img/ico/favicon.ico'
         }
     }
 
@@ -32,7 +32,7 @@ const config = () => {
     }
     switch (first.toLowerCase()) {
     case 'meta-map-staging':
-    case 'crlab':
+    case 'frontend':
         ret.site = SITES['CRL'];
         break;
     case 'thinkwater-staging':
@@ -49,7 +49,7 @@ const config = () => {
     return ret;
 };
 
-class CRLab {
+class FrontEnd {
 
     constructor(tags) {
         this.tags = tags;
@@ -88,4 +88,4 @@ class CRLab {
     }
 }
 
-module.exports = CRLab;
+module.exports = FrontEnd;

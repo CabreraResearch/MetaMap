@@ -75,7 +75,7 @@
     <script type="es6">
         this.mixin('config');
         this.url = this.pathImg();
-        CRLab.MetaFire.getData(CRLab.site + '/footer').then( (data) => {
+        FrontEnd.MetaFire.getData(FrontEnd.site + '/footer').then( (data) => {
             this.data = data;
             this.update();
         })

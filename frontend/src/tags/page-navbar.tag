@@ -23,7 +23,7 @@
         this.mixin('config');
         this.url = this.pathImg();
         
-        CRLab.MetaFire.getData(CRLab.site + '/logo').then( (data) => {
+        FrontEnd.MetaFire.getData(FrontEnd.site + '/logo').then( (data) => {
             this.data = data;
             this.update();
         })

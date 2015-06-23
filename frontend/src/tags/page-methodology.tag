@@ -62,7 +62,7 @@
         this.mixin('config');
         this.url = this.pathImg();
 
-        CRLab.MetaFire.getData(CRLab.site + '/methodology').then( (data) => {
+        FrontEnd.MetaFire.getData(FrontEnd.site + '/methodology').then( (data) => {
             this.header = data.header;
             this.frameworks = data.frameworks;
             this.partners = data.partners;

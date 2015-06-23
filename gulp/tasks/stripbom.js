@@ -2,10 +2,10 @@
   var gulp = require('gulp');
   var stripBom = require('gulp-stripbom');
   var paths = [
-      './crlab/**/*.js',
-      './crlab/**/*.tag',
-      './crlab/**/*.scss',
-      './crlab/**/*.css',
+      './frontend/**/*.js',
+      './frontend/**/*.tag',
+      './frontend/**/*.scss',
+      './frontend/**/*.css',
       './*.tmpl',
       './*.html',
       './metamap/**/*.js',

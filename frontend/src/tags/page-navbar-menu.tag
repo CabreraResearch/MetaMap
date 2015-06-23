@@ -22,7 +22,7 @@
     <script type="es6">
         var that = this;
         that.data = [];
-        CRLab.MetaFire.getData(CRLab.site + '/navbar').then( (data) => {
+        FrontEnd.MetaFire.getData(FrontEnd.site + '/navbar').then( (data) => {
             that.data = data;
             that.update();
         })

@@ -26,7 +26,7 @@
         this.mixin('config');
         this.url = this.pathImg();
 
-        CRLab.MetaFire.getData(CRLab.site + '/impact').then( (data) => {
+        FrontEnd.MetaFire.getData(FrontEnd.site + '/impact').then( (data) => {
             this.header = data.header;
             this.items = data.items;
             this.update();

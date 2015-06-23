@@ -1,14 +1,14 @@
 
 let config = {
     pathImg: (folder) => {
-        let ret = `${window.CRLab.site}/dist/img/`;
+        let ret = `${window.FrontEnd.site}/dist/img/`;
         if (folder) {
             ret += `${folder}/`;
         }
         return ret;
     },
     getData: (path, callback, that) => {
-        window.CRLab.MetaFire.on(`${window.CRLab.site}/${path}`, (data) => {
+        window.FrontEnd.MetaFire.on(`${window.FrontEnd.site}/${path}`, (data) => {
             that.data = data;
             that.update();
             if (callback) {
@@ -17,7 +17,7 @@ let config = {
         });
     },
     watchData: (path, callback) => {
-        window.CRLab.MetaFire.on(`${window.CRLab.site}/${path}`, (data) => {
+        window.FrontEnd.MetaFire.on(`${window.FrontEnd.site}/${path}`, (data) => {
             if (callback) {
                 callback(data);
             }

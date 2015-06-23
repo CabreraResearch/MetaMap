@@ -64,11 +64,11 @@
     <script type="es6">
         this.mixin('config');
         this.url = this.pathImg() + 'content/';
-        CRLab.MetaFire.getData(CRLab.site + '/explore').then( (data) => {
+        FrontEnd.MetaFire.getData(FrontEnd.site + '/explore').then( (data) => {
             this.filters = _.sortBy(data.filters, 'order');
             this.header = data.header;
             this.items = data.items;
-            CRLab.MetaFire.getData(CRLab.site + '/content').then( (data) => {
+            FrontEnd.MetaFire.getData(FrontEnd.site + '/content').then( (data) => {
                 this.content = _.sortBy(_.toArray(data), 'order');
                 this.content = _.union( this.content, this.items );
                 this.content = _.filter( this.content, (item) => { return !(item.archived === true) } );

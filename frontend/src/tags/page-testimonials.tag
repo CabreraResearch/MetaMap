@@ -41,7 +41,7 @@
         this.mixin('config');
         this.url = this.pathImg('testimonials');
 
-        CRLab.MetaFire.getData(CRLab.site + '/testimonials').then( (data) => {
+        FrontEnd.MetaFire.getData(FrontEnd.site + '/testimonials').then( (data) => {
             this.header = data.header;
             this.items = data.items;
             this.update();

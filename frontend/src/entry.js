@@ -54,5 +54,5 @@ riot.tag('raw', '<span></span>', function (opts) {
     this.updateContent();
 });
 
-var CRLab = require('./CRLab');
-module.exports = new CRLab(tags);
+var FrontEnd = require('./FrontEnd');
+module.exports = new FrontEnd(tags);
