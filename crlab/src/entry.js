@@ -12,6 +12,21 @@ window.moment = require('moment');
 window.URI = require('URIjs');
 window.localforage = require('localforage');
 
+let tags = [
+    'page-head',
+    'page-banner',
+    'page-impact',
+    'page-countmein',
+    'page-footer',
+    'page-navbar-menu',
+    'page-navbar',
+    'page-news',
+    'page-explore',
+    'page-message',
+    'page-methodology',
+    'page-testimonials'
+];
+
 require('./tags/page-banner.tag');
 require('./tags/page-impact.tag');
 require('./tags/page-countmein.tag');
@@ -40,4 +55,4 @@ riot.tag('raw', '<span></span>', function (opts) {
 });
 
 var CRLab = require('./CRLab');
-module.exports = new CRLab();
+module.exports = new CRLab(tags);

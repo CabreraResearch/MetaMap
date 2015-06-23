@@ -16,7 +16,7 @@
             <div id="impact_slider" class="owl-carousel">
                 <div class="item" each="{ items }">
                     <a href="javascript:;">
-                        <img width="200px" height="125px" src="{ parent.url }impact/{ img }" alt="{ title }"/>
+                        <img if="{ img }" width="200px" height="125px" src="{ parent.url }impact/{ img }" alt="{ title }"/>
                     </a>
                 </div>
             </div>

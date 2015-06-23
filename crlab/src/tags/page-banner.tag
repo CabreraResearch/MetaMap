@@ -1,4 +1,4 @@
-<page-banner>
+<page-banner id="banner">
 
     <div class="fullwidthbanner">
         <div id="tp_banner" class="tp-banner">
@@ -10,7 +10,7 @@
                     data-masterspeed="1000" 
                     data-title="{ title }">
                     <!-- MAIN IMAGE -->
-                    <img src="{ parent.url + img }"  
+                    <img if="{ img }" src="{ parent.url + img }"  
                          alt="darkblurbg"  
                         data-bgfit="cover"
                         data-bgposition="left top" 
@@ -53,21 +53,29 @@
         this.data = [];
         this.mixin('config'); 
         this.url = this.pathImg('site');
+        this.mounted = false;
         
-        CRLab.MetaFire.getData(CRLab.site + '/banner').then( (data) => {
-            this.data = data;
-            this.update();
+        this.watchData('/banner', (data) => {
+            if(false == this.mounted) {
+                this.mounted = true;
+                this.data = data;
+                this.update();
             
-            $(this.tp_banner).revolution({
-                delay: 6000,
-                startwidth: 1170,
-                startheight: 600,
-                hideThumbs: 10,
-                //fullWidth: "on",
-                //forceFullWidth: "on",
-                lazyLoad: "on"
-                // navigationStyle: "preview4"
-            });
+                $(this.tp_banner).revolution({
+                    delay: 6000,
+                    startwidth: 1170,
+                    startheight: 600,
+                    hideThumbs: 10,
+                    //fullWidth: "on",
+                    //forceFullWidth: "on",
+                    lazyLoad: "on"
+                    // navigationStyle: "preview4"
+                });
+            } 
+            //else {
+            //    this.unmount(true);
+            //    riot.mount('page-banner');
+            //}
         })
         
     </script>

@@ -1812,7 +1812,6 @@ ul.post-desc li + li{
 }
 /*testimonials parallax*/
 .testimonials{
-    background:url(../../dist/img/bg-4.jpg) no-repeat;
     padding: 80px 0;
 }
 .testimonials .center-heading h2{
@@ -1980,7 +1979,7 @@ ul.post-desc li + li{
 /* #footer is by default*/
 #footer {
 
-    background: #111;
+    background: $darkcolor;
     font-size: 0.9em;
     padding: 80px 0 0;
     position: relative;
@@ -2030,7 +2029,7 @@ ul.post-desc li + li{
 .footer-btm{
     margin-top: 30px;
     padding: 20px;
-    background-color: #0c0c0c;
+    background-color: $darkcolor;
     border-top-left-radius: 6px;
     border-top-right-radius:6px; 
 }

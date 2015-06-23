@@ -1,8 +1,12 @@
 let Auth0Lock = require('auth0-lock');
+let Promise = window.Promise;
+let localforage = window.localforage;
 
 class Auth0 {
 
-    constructor() {
+    constructor(config) {
+        this.config = config;
+        this.callbackURL = window.location.href;
         this.lock = new Auth0Lock('wsOnart23yViIShqT4wfJ18w2vt2cl32', 'metamap.auth0.com');
         this.lock.on('loading ready', (...e) => {
             
@@ -45,7 +49,7 @@ class Auth0 {
     linkAccount() {
         let that = this;
         this.lock.show({
-            callbackURL: 'https://popping-fire-897.firebaseapp.com/',
+            callbackURL: that.callbackURL,
             dict: {
                 signin: {
                     title: 'Link with another account'

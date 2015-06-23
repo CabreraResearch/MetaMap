@@ -1,9 +1,13 @@
 let Firebase = require('firebase');
+let Promise = window.Promise;
+let localforage = window.localforage;
+let MetaMap = window.MetaMap;
 
 class MetaFire {
 
-    constructor () {
-        this.fb = new Firebase("https://popping-fire-897.firebaseio.com");
+    constructor (config) {
+        this.config = config;
+        this.fb = new Firebase(`https://${this.config.site.db}.firebaseio.com`);
     }
 
     login() {
@@ -77,5 +81,3 @@ class MetaFire {
     }
 }
 module.exports = MetaFire;
-
-

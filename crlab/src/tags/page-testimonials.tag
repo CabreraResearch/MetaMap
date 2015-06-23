@@ -1,5 +1,8 @@
 <page-testimonials>
-    <div id="testimonials-carousel" class="testimonials testimonials-v-2 wow animated fadeInUp" data-wow-duration="700ms" data-wow-delay="100ms">
+    <div id="testimonials-carousel" 
+         class="testimonials testimonials-v-2 wow animated fadeInUp" 
+         data-wow-duration="700ms" 
+         data-wow-delay="100ms">
         <div class="container">
             <div class="row">
                 <div class="col-sm-8 col-sm-offset-2">
