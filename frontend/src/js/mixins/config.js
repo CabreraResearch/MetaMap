@@ -1,7 +1,7 @@
 
 let config = {
     pathImg: (folder) => {
-        let ret = `${window.FrontEnd.site}/dist/img/`;
+        let ret = `frontend/dist/img/`;
         if (folder) {
             ret += `${folder}/`;
         }
