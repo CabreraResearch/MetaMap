@@ -57,7 +57,7 @@ class FrontEnd {
 
         document.title = this.config.site.title;
         let favico = document.getElementById('favico');
-        favico.setAttribute('href', this.config.favico);
+        favico.setAttribute('href', `//c68f7981a8bbe926a1e0154cbfbd5af1b4df0f21.googledrive.com/host/0B6GAN4gX1bnSflRndTRJeFZ5NEszSEFlSzVKZDZJSzFxeDdicFpoLXVwSDNFRWN0RFhfS2c/${this.config.site.frontEnd}/favicon.ico`);
 
         this.MetaFire = new MetaFire(this.config);
         this.Auth0 = new Auth0(this.config);

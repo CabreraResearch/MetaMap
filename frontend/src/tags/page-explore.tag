@@ -25,9 +25,10 @@
 
             <div id="masonry_container" class="cbp">
                 <div each="{ content }" class="cbp-item { type } { _.keys(tags).join(' ') }">
-                    <div class="cbp-caption cbp-lightbox" data-title="{ text }" href="{ link || parent.url + img }">
+                    <div class="cbp-caption cbp-lightbox" 
+                         data-title="{ text }" href="{ link || parent.url + type + '/' + img }">
                         <div class="cbp-caption-defaultWrap">
-                            <img src="{ parent.url + img }" alt="{ title }"/>
+                            <img if="{ img }" src="{ parent.url + type + '/' + img }" alt="{ title }"/>
                         </div>
                         <div class="cbp-caption-activeWrap">
                             <div class="cbp-l-caption-alignCenter">
@@ -63,7 +64,7 @@
     
     <script type="es6">
         this.mixin('config');
-        this.url = this.pathImg() + 'content/';
+        this.url = this.pathImg();
         FrontEnd.MetaFire.getData(FrontEnd.site + '/explore').then( (data) => {
             this.filters = _.sortBy(data.filters, 'order');
             this.header = data.header;

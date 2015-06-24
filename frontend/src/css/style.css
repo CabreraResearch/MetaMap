@@ -4897,4 +4897,8 @@ table.shopping-cart-table tr th, table.shopping-cart-table tr td {
 .btn-sweet-alert {
   margin: 5px; }
 
+.modal-backdrop {
+    background-color: #000;
+}
+
 /*# sourceMappingURL=style.css.map */

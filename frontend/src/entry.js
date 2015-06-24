@@ -27,6 +27,7 @@ let tags = [
     'page-testimonials'
 ];
 
+require('./tags/components/modal-dialog.tag');
 require('./tags/page-banner.tag');
 require('./tags/page-impact.tag');
 require('./tags/page-countmein.tag');

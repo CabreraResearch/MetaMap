@@ -7,7 +7,6 @@
                 <li if="{ title }" each="{ data }"
                     data-transition="fade" 
                     data-slotamount="5" 
-                    data-masterspeed="1000" 
                     data-title="{ title }">
                     <!-- MAIN IMAGE -->
                     <img if="{ img }" src="{ parent.url + img }"  
@@ -62,7 +61,8 @@
                 this.update();
             
                 $(this.tp_banner).revolution({
-                    delay: 6000,
+                    stopAtSlide: 1,
+                    stopAfterLoops: 0,
                     startwidth: 1170,
                     startheight: 600,
                     hideThumbs: 10,

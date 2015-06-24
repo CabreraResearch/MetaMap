@@ -1,4 +1,4 @@
-﻿var run = require('gulp-run');
+var run = require('gulp-run');
 var gulp = require('gulp');
 var argv = require('yargs').argv;
 var _slack = require('node-slack');
@@ -22,6 +22,9 @@ var sendToSlack = function(i) {
 gulp.task('deploy', function () {
     var p = argv.message;
     message.text = 'Just deployed new release that: ' + p;
-    run('firebase deploy -m ' + p).exec() // prints "Hello World\n". 
+
+    run('firebase deploy --firebase=meta-map-staging -m ' + p).exec() // prints "Hello World\n". 
+        .pipe(sendToSlack(message));
+    run('firebase deploy --firebase=thinkwater-staging -m ' + p).exec() // prints "Hello World\n". 
         .pipe(sendToSlack(message));
 })
