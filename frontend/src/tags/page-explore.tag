@@ -24,8 +24,8 @@
             </div>
 
             <div id="masonry_container" class="cbp">
-                <div each="{ content }" class="cbp-item { type } { _.keys(tags).join(' ') }">
-                    <div class="cbp-caption cbp-lightbox" 
+                <div onclick="{ parent.onClick }" each="{ content }" class="cbp-item { type } { _.keys(tags).join(' ') }">
+                    <div class="cbp-caption" 
                          data-title="{ text }" href="{ link || parent.url + type + '/' + img }">
                         <div class="cbp-caption-defaultWrap">
                             <img if="{ img }" src="{ parent.url + type + '/' + img }" alt="{ title }"/>
@@ -33,18 +33,7 @@
                         <div class="cbp-caption-activeWrap">
                             <div class="cbp-l-caption-alignCenter">
                                 <div class="cbp-l-caption-body">
-                                    <div if="{ buttons }" 
-                                         each="{ val, i in buttons }" 
-                                         data-link="{ val.link }"
-                                         class="{ 'cbp-l-caption-title': i == 0,
-                                                'cbp-singlePage': i == 0, 
-                                                'cbp-l-caption-buttonLeft': i == 0,
-                                                'cbp-l-caption-title': i == 1,
-                                                'cbp-lightbox': i == 1,
-                                                'cbp-l-caption-buttonRight': i == 1
-                                       }"
-                                       >{ val.title }</div>
-                                    <div if="{ !buttons }"
+                                    <div if="{ title }"
                                          class="{ 'cbp-l-caption-title': true }"
                                        >{ title }</div>
                                 </div>
@@ -65,6 +54,11 @@
     <script type="es6">
         this.mixin('config');
         this.url = this.pathImg();
+        
+        this.onClick = (e) => {
+            riot.mount('modal-dialog', { event: e, tag: this })
+        }
+        
         FrontEnd.MetaFire.getData(FrontEnd.site + '/explore').then( (data) => {
             this.filters = _.sortBy(data.filters, 'order');
             this.header = data.header;
@@ -102,10 +96,10 @@
                     displayTypeSpeed: 100,
 
                     // lightbox
-                    lightboxDelegate: '.cbp-lightbox',
-                    lightboxGallery: true,
-                    lightboxTitleSrc: 'data-title',
-                    lightboxCounter: '<div class="cbp-popup-lightbox-counter">{{current}} of {{total}}</div>',
+                    //lightboxDelegate: '.cbp-lightbox',
+                    //lightboxGallery: true,
+                    //lightboxTitleSrc: 'data-title',
+                    //lightboxCounter: '<div class="cbp-popup-lightbox-counter">{{current}} of {{total}}</div>',
                 });
             })
         })
