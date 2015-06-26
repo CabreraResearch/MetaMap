@@ -23,8 +23,8 @@ gulp.task('deploy', function () {
     var p = argv.message;
     message.text = 'Just deployed new release that: ' + p;
 
-    run('firebase deploy --firebase=meta-map-staging -m "' + p + '"').exec();
+    run('firebase deploy --firebase=thinkwater-staging -m "' + p + '"').exec();
 
-    run('firebase deploy --firebase=thinkwater-staging -m "' + p + '"').exec() // prints "Hello World\n". 
+    run('firebase deploy --firebase=meta-map-staging -m "' + p + '"').exec() 
         .pipe(sendToSlack(message));
 })

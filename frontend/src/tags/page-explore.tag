@@ -24,7 +24,7 @@
             </div>
 
             <div id="masonry_container" class="cbp">
-                <div onclick="{ parent.onClick }" each="{ content }" class="cbp-item { type } { _.keys(tags).join(' ') }">
+                <div id="{ id }" onclick="{ parent.onClick }" each="{ content }" class="cbp-item { type } { _.keys(tags).join(' ') }">
                     <div class="cbp-caption" 
                          data-title="{ text }" href="{ link || parent.url + type + '/' + img }">
                         <div class="cbp-caption-defaultWrap">
@@ -56,52 +56,47 @@
         this.url = this.pathImg();
         
         this.onClick = (e) => {
-            riot.mount('modal-dialog', { event: e, tag: this })
+            riot.route(_.kebabCase(e.item.title),e,this)
+            //riot.mount('modal-dialog', { event: e, tag: this })
         }
         
         FrontEnd.MetaFire.getData(FrontEnd.site + '/explore').then( (data) => {
             this.filters = _.sortBy(data.filters, 'order');
             this.header = data.header;
-            this.items = data.items;
-            FrontEnd.MetaFire.getData(FrontEnd.site + '/content').then( (data) => {
-                this.content = _.sortBy(_.toArray(data), 'order');
-                this.content = _.union( this.content, this.items );
-                this.content = _.filter( this.content, (item) => { return !(item.archived === true) } );
-                this.update();
-                $(this.masonry_container).cubeportfolio({
-                    filters: '#filters_container',
-                    layoutMode: 'grid',
-                    defaultFilter: '.featured',
-                    animationType: 'flipOutDelay',
-                    gapHorizontal: 20,
-                    gapVertical: 20,
-                    gridAdjustment: 'responsive',
-                    mediaQueries: [
-                        {
-                            width: 1100,
-                            cols: 4
-                        }, {
-                            width: 800,
-                            cols: 3
-                        }, {
-                            width: 500,
-                            cols: 2
-                        }, {
-                            width: 320,
-                            cols: 1
-                        }
-                    ],
-                    caption: 'overlayBottomAlong',
-                    displayType: 'bottomToTop',
-                    displayTypeSpeed: 100,
-
-                    // lightbox
-                    //lightboxDelegate: '.cbp-lightbox',
-                    //lightboxGallery: true,
-                    //lightboxTitleSrc: 'data-title',
-                    //lightboxCounter: '<div class="cbp-popup-lightbox-counter">{{current}} of {{total}}</div>',
-                });
-            })
+            this.items = _.map(data.items, (val,key) => {
+                val.id = key
+                return val
+            });
+            this.content = _.filter( this.items, (item) => { return !(item.archive === true) } );
+            this.update();
+            
+            $(this.masonry_container).cubeportfolio({
+                filters: '#filters_container',
+                layoutMode: 'grid',
+                defaultFilter: '.featured',
+                animationType: 'flipOutDelay',
+                gapHorizontal: 20,
+                gapVertical: 20,
+                gridAdjustment: 'responsive',
+                mediaQueries: [
+                    {
+                        width: 1100,
+                        cols: 4
+                    }, {
+                        width: 800,
+                        cols: 3
+                    }, {
+                        width: 500,
+                        cols: 2
+                    }, {
+                        width: 320,
+                        cols: 1
+                    }
+                ],
+                caption: 'overlayBottomAlong',
+                displayType: 'bottomToTop',
+                displayTypeSpeed: 100
+            });
         })
     </script>
     

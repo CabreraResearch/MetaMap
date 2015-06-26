@@ -6,7 +6,7 @@
                 <div class="col-md-3 col-sm-6 margin30">
                     <div class="footer-col">
                         <h3>{ data.about.title }</h3>
-                        <p>{ data.about.text }</p>
+                        <p style="color: #fff;">{ data.about.text }</p>
                         <ul class="list-inline social-1">
                             <li each="{ data.about.social }">
                                 <a href="{ link }" alt="{ title }">
@@ -23,7 +23,7 @@
 
                         <ul class="list-unstyled contact">
                             <li each="{ data.contact }">
-                                <p>
+                                <p style="color: #fff;">
                                     <strong>
                                         <i class="{ icon }"></i> { title }:
                                     </strong> { text }
@@ -49,12 +49,12 @@
                 <div class="col-md-3 col-sm-6 margin30">
                     <div class="footer-col">
                         <h3>Newsletter</h3>
-                        <p>{ data.newsletter.text }</p>
+                        <p style="color: #fff;">{ data.newsletter.text }</p>
                         <form role="form" class="subscribe-form">
                             <div class="input-group">
                                 <input type="text" class="form-control" placeholder="Enter email to subscribe"/>
                                 <span class="input-group-btn">
-                                    <button class="btn  btn-theme-dark btn-lg" type="submit">Ok</button>
+                                    <button class="btn btn-lg" type="submit">Ok</button>
                                 </span>
                             </div>
                         </form>
@@ -66,7 +66,7 @@
             <div class="row">
                 <div class="col-md-12 text-center">
                     <div class="footer-btm">
-                        <span>&copy;2015 by Cabrera Research Lab</span>
+                        <span>&copy;2015 Cabrera Research Lab</span>
                     </div>
                 </div>
             </div>

@@ -2183,6 +2183,12 @@ ul.post-desc li + li {
 .social-1 li a i.fa-dribbble {
   background-color: #ea4c89; }
 
+.social-1 li a i.fa-linkedin {
+  background-color: #069; }
+
+.social-1 li a i.fa-youtube-play {
+  background-color: #cc181e; }
+
 /**************coming soon*************/
 .soon-bg {
   background: url(../../dist/img/showcase-1.jpg);

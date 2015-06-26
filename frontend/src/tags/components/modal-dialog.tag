@@ -1,5 +1,5 @@
 <modal-dialog>
-    <div if="{ opts }" class="modal fade" id="{ opts.id }">
+    <div class="modal fade" id="{ _.kebabCase(data.title) }">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-body">
@@ -15,13 +15,27 @@
     </div>
     <script type="es6">
         this.on('mount', () => {
-            if(opts) {
+            if(opts && opts.id) {
                 
-                let type = opts.event.item.type
-                console.log(type)
-                riot.mount(this.modal_dialog_container, `${type}-dialog`, opts)
+                FrontEnd.MetaFire.getData(`${FrontEnd.site}/explore/items/${opts.id}`).then( (data) => {
                 
-                $(this.root.firstChild).modal();
+                    let type = data.type
+                    console.log(type)
+                    
+                    this.update()
+                    
+                    opts.event = {}
+                    opts.event.item = data
+                    
+                    riot.mount(this.modal_dialog_container, `${type}-dialog`, opts)
+                
+                    $(this.root.firstChild)
+                        .modal()
+                        .on('hidden.bs.modal', () => {
+                            this.unmount(true);
+                        });
+                    
+                });
             }
         });
     </script>

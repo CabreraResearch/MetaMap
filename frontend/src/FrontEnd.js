@@ -73,6 +73,10 @@ class FrontEnd {
         //    riot.mount(tag, this);
         //});
         riot.mount('*');
+        riot.route.start();
+        riot.route((target, ...params) => {
+            riot.mount('modal-dialog', { id: target });
+        });
     }
 
     login() {
