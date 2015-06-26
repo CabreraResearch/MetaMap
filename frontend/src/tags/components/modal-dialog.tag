@@ -33,6 +33,7 @@
                         .modal()
                         .on('hidden.bs.modal', () => {
                             this.unmount(true);
+                            riot.route('#')
                         });
                     
                 });

@@ -54,7 +54,7 @@ class FrontEnd {
     constructor(tags) {
         this.tags = tags;
         this.config = config();
-
+        
         document.title = this.config.site.title;
         let favico = document.getElementById('favico');
         favico.setAttribute('href', `//c68f7981a8bbe926a1e0154cbfbd5af1b4df0f21.googledrive.com/host/0B6GAN4gX1bnSflRndTRJeFZ5NEszSEFlSzVKZDZJSzFxeDdicFpoLXVwSDNFRWN0RFhfS2c/${this.config.site.frontEnd}/favicon.ico`);
@@ -77,6 +77,16 @@ class FrontEnd {
         riot.route((target, ...params) => {
             riot.mount('modal-dialog', { id: target });
         });
+        let hash = window.location.hash;
+        if (hash) {
+            if (hash.startsWith('#')) {
+                hash = hash.substr(1);
+            }
+            _.delay(() => {
+                riot.route(hash);
+            }, 250);
+            
+        }
     }
 
     login() {
