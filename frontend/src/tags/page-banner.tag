@@ -1,4 +1,4 @@
-<page-banner id="banner">
+<page-banner id="home">
 
     <div class="fullwidthbanner">
         <div id="tp_banner" class="tp-banner">

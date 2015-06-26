@@ -1,4 +1,4 @@
-<page-explore>
+<page-explore id="explore" anchor="explore">
     <div class="container">
         <div class="row">
             <div class="col-md-12">

@@ -15,27 +15,28 @@
     </div>
     <script type="es6">
         this.on('mount', () => {
-            if(opts && opts.id) {
+            if(opts && opts.id && opts.id != '#') {
                 
                 FrontEnd.MetaFire.getData(`${FrontEnd.site}/explore/items/${opts.id}`).then( (data) => {
                 
-                    let type = data.type
-                    console.log(type)
+                    if(data && data.type) {
+                        let type = data.type
+                        console.log(type)
                     
-                    this.update()
+                        this.update()
                     
-                    opts.event = {}
-                    opts.event.item = data
+                        opts.event = {}
+                        opts.event.item = data
                     
-                    riot.mount(this.modal_dialog_container, `${type}-dialog`, opts)
+                        riot.mount(this.modal_dialog_container, `${type}-dialog`, opts)
                 
-                    $(this.root.firstChild)
-                        .modal()
-                        .on('hidden.bs.modal', () => {
-                            this.unmount(true);
-                            riot.route('#')
-                        });
-                    
+                        $(this.root.firstChild)
+                            .modal()
+                            .on('hidden.bs.modal', () => {
+                                this.unmount(true);
+                                FrontEnd.Router.to('explore')
+                            });
+                    }
                 });
             }
         });
