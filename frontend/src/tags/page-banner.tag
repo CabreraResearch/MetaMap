@@ -4,7 +4,7 @@
         <div id="tp_banner" class="tp-banner">
             <ul>
                 <!-- SLIDE -->
-                <li if="{ title }" each="{ data }"
+                <li each="{ data }"
                     data-transition="fade" 
                     data-slotamount="5" 
                     data-title="{ title }">
@@ -14,7 +14,7 @@
                         data-bgfit="cover"
                         data-bgposition="left top" 
                         data-bgrepeat="no-repeat" />
-                    <div class="caption title-2 sft" 
+                    <div if="{ title }" class="caption title-2 sft"
                          data-x="50"
                          data-y="100"
                          data-speed="1000"
@@ -80,7 +80,6 @@
                     stopAfterLoops: 0,
                     startwidth: 1170,
                     startheight: 600,
-                    navigationType: "none",
                     hideThumbs: 10
                     //fullWidth: "on",
                     //forceFullWidth: "on",
