@@ -1,4 +1,4 @@
-<page-footer>
+<page-footer id="contact">
     <footer id="footer">
         <div class="container">
 
@@ -49,35 +49,48 @@
                 <div class="col-md-3 col-sm-6 margin30">
                     <div class="footer-col">
                         <h3>Newsletter</h3>
-                        <p style="color: #fff;">{ data.newsletter.text }</p>
-                        <form role="form" class="subscribe-form">
-                            <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Enter email to subscribe"/>
-                                <span class="input-group-btn">
-                                    <button class="btn btn-lg" type="submit">Ok</button>
-                                </span>
-                            </div>
-                        </form>
+
+                        <div id="mc_embed_signup">
+                            <form action="{ data.newsletter.mailchimp }" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate="">
+                                <p style="color: #fff;">{ data.newsletter.text }</p>
+                                <div id="mc_embed_signup_scroll" >
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <span class="input-group-addon">E-Mail</span>
+                                            <input type="email" value="" name="EMAIL" class="form-control required email" id="mce-EMAIL" />
+                                        </div>
+                                        <button type="submit" value="Subscribe" name="subscribe" 
+                                                style="margin-top: 5px;"
+                                                id="mc-embedded-subscribe"
+                                                class="btn btn-theme-bg">Subscribe</button>
+                                    </div>
+                                    <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+                                    <div style="position: absolute; left: -5000px;">
+                                        <input type="text" name="b_58947385383d323caf9047f39_40c673760d" tabindex="-1" value="" />
+                                    </div>
+            
+                                    <div id="mce-responses" class="clear" style="margin-top: 5px;">
+                                        <div class="response" id="mce-error-response" style="color: red; display:none"></div>
+                                        <div class="response" id="mce-success-response" style="color: #fff; display:none"></div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
                     </div>
                 </div>
                 <!--footer col-->
 
             </div>
-            <div class="row">
-                <div class="col-md-12 text-center">
-                    <div class="footer-btm">
-                        <span>&copy;2015 Cabrera Research Lab</span>
-                    </div>
-                </div>
-            </div>
+
         </div>
     </footer>
     <script type="es6">
         this.mixin('config');
         this.url = this.pathImg();
         FrontEnd.MetaFire.getData(FrontEnd.site + '/footer').then( (data) => {
-            this.data = data;
-            this.update();
+        this.data = data;
+        this.update();
         })
     </script>
 </page-footer>

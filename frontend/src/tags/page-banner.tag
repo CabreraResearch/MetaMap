@@ -72,7 +72,7 @@
         this.watchData('/banner', (data) => {
             if(false == this.mounted) {
                 this.mounted = true;
-                this.data = data;
+                this.data = _.sortBy(data, 'order');
                 this.update();
             
                 $(this.tp_banner).revolution({
