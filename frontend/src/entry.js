@@ -7,10 +7,12 @@ window.$ = window.jQuery = require('jquery');
 require('jquery-ui');
 require('bootstrap');
 window.Firebase = require('firebase');
+window.Firepad = require('firepad');
 window.Humanize = require('humanize-plus');
 window.moment = require('moment');
 window.URI = require('URIjs');
 window.localforage = require('localforage');
+window.Ps = require('perfect-scrollbar');
 
 let tags = [
     'page-head',
@@ -27,6 +29,7 @@ let tags = [
     'page-testimonials'
 ];
 
+require('./tags/dialogs/blog-dialog.tag');
 require('./tags/dialogs/infographic-dialog.tag');
 require('./tags/dialogs/product-dialog.tag');
 require('./tags/dialogs/project-dialog.tag');
@@ -35,6 +38,7 @@ require('./tags/dialogs/software-dialog.tag');
 require('./tags/dialogs/speaking-dialog.tag');
 require('./tags/dialogs/training-dialog.tag');
 require('./tags/dialogs/video-dialog.tag');
+require('./tags/dialogs/store-dialog.tag');
 require('./tags/components/modal-dialog.tag');
 require('./tags/page-banner.tag');
 require('./tags/page-impact.tag');

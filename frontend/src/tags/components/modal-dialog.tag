@@ -1,7 +1,9 @@
 <modal-dialog>
-    <div class="modal fade" id="{ _.kebabCase(data.title) }">
+    <div  class="modal fade" 
+         id="{ _.kebabCase(data.title) }" 
+         >
         <div class="modal-dialog modal-lg">
-            <div class="modal-content">
+            <div id="modal" class="modal-content" style="height: { height }px; position: fixed; width: 100%;" >
                 <div class="modal-body">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
@@ -14,6 +16,9 @@
         </div>
     </div>
     <script type="es6">
+        this.mixin('config'); 
+        this.url = this.pathImg()
+        this.height = window.innerHeight - 75;
         this.on('mount', () => {
             if(opts && opts.id && opts.id != '#') {
                 
@@ -21,20 +26,41 @@
                 
                     if(data && data.type) {
                         let type = data.type
-                        console.log(type)
-                    
+                        
                         this.update()
                     
-                        opts.event = {}
-                        opts.event.item = data
-                    
-                        riot.mount(this.modal_dialog_container, `${type}-dialog`, opts)
-                
+                        opts.event = {
+                            item: data,
+                            id: opts.id,
+                            dialog: this.modal
+                        }
+                        let module = type
+                        switch(type) {
+                            case 'html':
+                                module = 'blog'
+                                break;
+                            default:
+                                module = type;
+                                break;
+                        }
+                        
+                        riot.mount(this.modal_dialog_container, `${module}-dialog`, opts)
+                        
+                        Ps.initialize(this.modal)
+                        
                         $(this.root.firstChild)
                             .modal()
                             .on('hidden.bs.modal', () => {
                                 this.unmount(true);
-                                FrontEnd.Router.to('explore')
+                                switch(type) {
+                                    case 'html':
+                                    case 'store':
+                                       FrontEnd.Router.to('home')
+                                       break;
+                                    default:
+                                        FrontEnd.Router.to('explore')
+                                        break;
+                                }
                             });
                     }
                 });

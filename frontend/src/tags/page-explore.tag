@@ -1,4 +1,4 @@
-<page-explore id="explore" anchor="explore">
+<page-explore id="explore">
     <div class="container">
         <div class="row">
             <div class="col-md-12">
@@ -48,32 +48,40 @@
     </div>
     <div class="divide50"></div>
     <div class="text-center">
-        <a href="masonry-portfolio-4.html" class="btn btn-theme-dark btn-lg">Explore All</a>
+        <a href="javascript:;" onclick="{ showAll }" class="btn btn-theme-dark btn-lg">Explore All</a>
     </div>
     
     <script type="es6">
         this.mixin('config');
         this.url = this.pathImg();
         
+        this.showAll = () => {
+            $(this.masonry_container).cubeportfolio('filter', '*');
+        }
+        
         this.onClick = (e) => {
             riot.route(_.kebabCase(e.item.title),e,this)
             //riot.mount('modal-dialog', { event: e, tag: this })
         }
         
-        FrontEnd.MetaFire.getData(FrontEnd.site + '/explore').then( (data) => {
+        FrontEnd.MetaFire.getData(`${FrontEnd.site}/explore`).then( (data) => {
             this.filters = _.sortBy(data.filters, 'order');
             this.header = data.header;
-            this.items = _.map(data.items, (val,key) => {
-                val.id = key
-                return val
-            });
-            this.content = _.filter( this.items, (item) => { return !(item.archive === true) } );
+            this.items = _.sortBy(_.map(data.items, (val,key) => {
+                if(val && !(val.archive === true)) {
+                    val.id = key
+                    return val
+                }
+            }),'order');
+            this.content = this.items; //_.filter( this.items, (item) => { return !(item.archive === true) } );
             this.update();
+            
+            let defaultFilter = _.first(this.filters,function(filter) { return filter.default === true });
             
             $(this.masonry_container).cubeportfolio({
                 filters: '#filters_container',
                 layoutMode: 'grid',
-                defaultFilter: '.featured',
+                defaultFilter: `.${defaultFilter.tag}`,
                 animationType: 'flipOutDelay',
                 gapHorizontal: 20,
                 gapVertical: 20,

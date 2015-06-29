@@ -35,8 +35,8 @@
             }
         };
         
-        FrontEnd.MetaFire.getData(FrontEnd.site + '/navbar').then( (data) => {
-            this.data = data;
+        FrontEnd.MetaFire.getData(`${FrontEnd.site}/navbar`).then( (data) => {
+            this.data = _.sortBy(data, 'order');
             this.update();
         })
     </script>

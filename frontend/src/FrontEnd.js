@@ -11,7 +11,8 @@ const config = () => {
             db: 'popping-fire-897',
             metaMapUrl: '',
             title: 'Cabrera Research Lab',
-            favico: 'frontend/dist/img/ico/favicon.ico'
+            favico: 'frontend/dist/img/ico/favicon.ico',
+            store: ''
         },
         THINK_WATER: {
             frontEnd: 'thinkwater',

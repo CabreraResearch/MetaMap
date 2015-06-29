@@ -38,8 +38,11 @@
                              data-y="355"
                              data-speed="500"
                              data-start="1800"
-                             data-easing="Sine.easeOut">
-                            <a href="#" class="btn btn-lg btn-theme-dark">{ title }</a>
+                             data-easing="Sine.easeOut"
+                             onclick="{ parent.getLink }">
+                            <a href="{ link || '' }" 
+                               target="{ target || ''}"
+                               class="btn btn-lg btn-theme-dark">{ title }</a>
                         </div>
                     
                     </div>
@@ -54,6 +57,18 @@
         this.url = this.pathImg('site');
         this.mounted = false;
         
+        this.getLink = (e) => {
+            let ret = ''
+            switch(e.item.type) {
+                case 'amazon':
+                    ret = `http://www.amazon.com/gp/product/${ASIN}/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=${ASIN}&linkCode=as2&tag=cabrreselab-20&linkId=H2P2IFCPWG7KPHJN`
+                    
+                default:
+                    ret =  '#';
+            }
+            console.log(ret)
+        }
+        
         this.watchData('/banner', (data) => {
             if(false == this.mounted) {
                 this.mounted = true;
@@ -65,10 +80,11 @@
                     stopAfterLoops: 0,
                     startwidth: 1170,
                     startheight: 600,
-                    hideThumbs: 10,
+                    navigationType: "none",
+                    hideThumbs: 10
                     //fullWidth: "on",
                     //forceFullWidth: "on",
-                    lazyLoad: "on"
+                    //lazyLoad: "on"
                     // navigationStyle: "preview4"
                 });
             } 
