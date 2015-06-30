@@ -39,6 +39,8 @@ require('./tags/dialogs/speaking-dialog.tag');
 require('./tags/dialogs/training-dialog.tag');
 require('./tags/dialogs/video-dialog.tag');
 require('./tags/dialogs/store-dialog.tag');
+require('./tags/social/follow-facebook.tag');
+require('./tags/social/follow-twitter.tag');
 require('./tags/components/modal-dialog.tag');
 require('./tags/page-banner.tag');
 require('./tags/page-impact.tag');

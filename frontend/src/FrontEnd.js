@@ -3,6 +3,11 @@ let Auth0 = require('./js/integrations/auth0');
 let usersnap = require('./js/integrations/usersnap');
 let riot = window.riot;
 let Router = require('./js/core/Router');
+let ga = require('./js/integrations/google.js');
+let twitter = require('./js/integrations/twitter.js');
+let facebook = require('./js/integrations/facebook.js');
+
+const imageUrl = '//c68f7981a8bbe926a1e0154cbfbd5af1b4df0f21.googledrive.com/host/0B6GAN4gX1bnSflRndTRJeFZ5NEszSEFlSzVKZDZJSzFxeDdicFpoLXVwSDNFRWN0RFhfS2c/';
 
 const config = () => {
     const SITES = {
@@ -11,15 +16,13 @@ const config = () => {
             db: 'popping-fire-897',
             metaMapUrl: '',
             title: 'Cabrera Research Lab',
-            favico: 'frontend/dist/img/ico/favicon.ico',
-            store: ''
+            GA: 'UA-63193554-2'
         },
         THINK_WATER: {
             frontEnd: 'thinkwater',
             db: 'popping-fire-897',
             metaMapUrl: '',
-            title: 'ThinkWater',
-            favico: 'frontend/dist/img/ico/favicon.ico'
+            title: 'ThinkWater'
         }
     }
 
@@ -59,11 +62,20 @@ class FrontEnd {
  
         document.title = this.config.site.title;
         let favico = document.getElementById('favico');
-        favico.setAttribute('href', `//c68f7981a8bbe926a1e0154cbfbd5af1b4df0f21.googledrive.com/host/0B6GAN4gX1bnSflRndTRJeFZ5NEszSEFlSzVKZDZJSzFxeDdicFpoLXVwSDNFRWN0RFhfS2c/${this.config.site.frontEnd}/favicon.ico`);
+        favico.setAttribute('href', `${imageUrl}${this.config.site.frontEnd}/favicon.ico`);
 
         this.MetaFire = new MetaFire(this.config);
         this.Auth0 = new Auth0(this.config);
+
+        ga(this.config.GA);
+        this.initTwitter = twitter();
+        this.initFacebook = facebook();
         usersnap();
+    }
+
+    initSocial() {
+        this.initTwitter();
+        this.initFacebook();
     }
 
     get site() {

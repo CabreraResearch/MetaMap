@@ -1,13 +1,25 @@
-<page-footer id="contact">
+<page-footer >
     <footer id="footer">
-        <div class="container">
-
+        <div id="contact" class="container">
             <div class="row">
                 <div class="col-md-3 col-sm-6 margin30">
                     <div class="footer-col">
                         <h3>{ data.about.title }</h3>
                         <p style="color: #fff;">{ data.about.text }</p>
-                        <ul class="list-inline social-1">
+                        
+                        <ul class="list-unstyled contact">
+                            <li each="{ data.contact }">
+                                <p style="color: #fff;">
+                                    <strong>
+                                        <i class="{ icon }"></i>{ title }:
+                                    </strong>
+                                    <a if="{ link }" href="{ link }" style="color: #fff" >{ link }</a>
+                                    <span if="{ !link }">{ text }</span>
+                                </p>
+                            </li>
+                        </ul>
+                        
+                        <ul id="social_follow" class="list-inline social-1">
                             <li each="{ data.about.social }">
                                 <a href="{ link }" alt="{ title }">
                                     <i class="{ icon }"></i>
@@ -19,50 +31,56 @@
                 <!--footer col-->
                 <div class="col-md-3 col-sm-6 margin30">
                     <div class="footer-col">
-                        <h3>Contact Us</h3>
+                        <h3>Follow Us</h3>
 
-                        <ul class="list-unstyled contact">
-                            <li each="{ data.contact }">
-                                <p style="color: #fff;">
-                                    <strong>
-                                        <i class="{ icon }"></i> { title }:
-                                    </strong> { text }
-                                </p>
-                            </li>
-                        </ul>
+                        <a if="{ social.twitter }" class="twitter-timeline" 
+                           href="https://twitter.com/{ social.twitter.title }" 
+                           data-widget-id="615895190172237824">Tweets by @{ social.twitter.title }</a>
+                        
                     </div>
                 </div>
                 <!--footer col-->
                 <div class="col-md-3 col-sm-6 margin30">
                     <div class="footer-col">
-                        <h3>Recent</h3>
-                        <ul class="list-inline f2-work">
-                            <li each="{ data.recent }">
-                                <a href="{ link }">
-                                    <img src="{ url + img }" class="img-responsive" alt="{ title }"/>
-                                </a>
-                            </li>
-                        </ul>
+                        <h3>Like Us</h3>
+                        <div if="{ social.facebook }" class="fb-page" data-href="https://www.facebook.com/{ social.facebook.title }" 
+                             data-small-header="true" 
+                             data-adapt-container-width="true" 
+                             data-hide-cover="false" 
+                             data-show-facepile="true" 
+                             data-height="300"
+                             data-show-posts="true">
+                            <div class="fb-xfbml-parse-ignore">
+                                <blockquote cite="https://www.facebook.com/{ social.facebook.title }">
+                                    <a href="https://www.facebook.com/{ social.facebook.title }">{ title }</a>
+                                </blockquote>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <!--footer col-->
                 <div class="col-md-3 col-sm-6 margin30">
                     <div class="footer-col">
-                        <h3>Newsletter</h3>
+                        <h3>Join Us</h3>
 
                         <div id="mc_embed_signup">
                             <form action="{ data.newsletter.mailchimp }" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate="">
                                 <p style="color: #fff;">{ data.newsletter.text }</p>
-                                <div id="mc_embed_signup_scroll" >
-                                    <div class="form-group">
+                                <div id="mc_embed_signup_scroll" class="row-fluid" >
+                                    <div>
                                         <div class="input-group">
-                                            <span class="input-group-addon">E-Mail</span>
-                                            <input type="email" value="" name="EMAIL" class="form-control required email" id="mce-EMAIL" />
+                                            
+                                            <input type="email" 
+                                                   placeholder="Email..."
+                                                   style="height: 31px;"
+                                                   value="" name="EMAIL" class="form-control" id="mce-EMAIL" />
+                                            <span class="input-group-btn">
+                                                <button type="submit" value="Subscribe" name="subscribe"
+                                                    id="mc-embedded-subscribe"
+                                                    class="btn btn-theme-bg">Subscribe</button>
+                                            </span>
                                         </div>
-                                        <button type="submit" value="Subscribe" name="subscribe" 
-                                                style="margin-top: 5px;"
-                                                id="mc-embedded-subscribe"
-                                                class="btn btn-theme-bg">Subscribe</button>
+                                        
                                     </div>
                                     <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
                                     <div style="position: absolute; left: -5000px;">
@@ -88,9 +106,21 @@
     <script type="es6">
         this.mixin('config');
         this.url = this.pathImg();
-        FrontEnd.MetaFire.getData(FrontEnd.site + '/footer').then( (data) => {
-        this.data = data;
-        this.update();
+        
+        this.social = null
+        this.data = null
+        this.title = FrontEnd.config.site.title
+        
+        FrontEnd.MetaFire.getData(`${FrontEnd.site}/footer`).then( (data) => {
+            this.data = data;
+            this.update();
+            
+            FrontEnd.MetaFire.getData(`${FrontEnd.site}/social`).then( (social) => {
+                this.social = social
+                this.update();
+                FrontEnd.initSocial()
+            });
+            
         })
     </script>
 </page-footer>
