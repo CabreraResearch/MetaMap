@@ -35,7 +35,7 @@
 
                         <a if="{ social.twitter }" class="twitter-timeline" 
                            href="https://twitter.com/{ social.twitter.title }" 
-                           data-widget-id="615895190172237824">Tweets by @{ social.twitter.title }</a>
+                           data-widget-id="{ social.twitter.api }">Tweets by @{ social.twitter.title }</a>
                         
                     </div>
                 </div>
@@ -49,6 +49,7 @@
                              data-hide-cover="false" 
                              data-show-facepile="true" 
                              data-height="300"
+                             
                              data-show-posts="true">
                             <div class="fb-xfbml-parse-ignore">
                                 <blockquote cite="https://www.facebook.com/{ social.facebook.title }">
@@ -64,10 +65,11 @@
                         <h3>Join Us</h3>
 
                         <div id="mc_embed_signup">
-                            <form action="{ data.newsletter.mailchimp }" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate="">
-                                <p style="color: #fff;">{ data.newsletter.text }</p>
-                                <div id="mc_embed_signup_scroll" class="row-fluid" >
-                                    <div>
+                            <form action="//cabreralabs.us4.list-manage.com/subscribe/post?u=58947385383d323caf9047f39&amp;id=9799d3a7b9" 
+                                  method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="" target="_blank" novalidate="">
+                            <p style="color: #fff;">{ data.newsletter.text }</p>
+                                <div id="mc_embed_signup_scroll">
+                                    <div class="mc-field-group">
                                         <div class="input-group">
                                             
                                             <input type="email" 
@@ -75,16 +77,16 @@
                                                    style="height: 31px;"
                                                    value="" name="EMAIL" class="form-control" id="mce-EMAIL" />
                                             <span class="input-group-btn">
-                                                <button type="submit" value="Subscribe" name="subscribe"
+                                                <input role="button" type="submit" value="Subscribe" name="subscribe"
                                                     id="mc-embedded-subscribe"
-                                                    class="btn btn-theme-bg">Subscribe</button>
+                                                    class="btn btn-theme-bg">Subscribe</input>
                                             </span>
                                         </div>
                                         
                                     </div>
-                                    <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+                                    <!--real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
                                     <div style="position: absolute; left: -5000px;">
-                                        <input type="text" name="b_58947385383d323caf9047f39_40c673760d" tabindex="-1" value="" />
+                                        <input type="text" name="b_58947385383d323caf9047f39_9799d3a7b9" tabindex="-1" value="" />
                                     </div>
             
                                     <div id="mce-responses" class="clear" style="margin-top: 5px;">
@@ -95,6 +97,32 @@
                             </form>
                         </div>
 
+                        <!--<div id="mc_embed_signup">
+                            <form action="//cabreralabs.us4.list-manage.com/subscribe/post?u=58947385383d323caf9047f39&amp;id=9799d3a7b9" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate="">
+                                <p style="color: #fff;">{ data.newsletter.text }</p>
+                                <div id="mc_embed_signup_scroll">
+
+                                    <div class="mc-field-group input-group">
+                                        <label for="mce-EMAIL" style="display: none;"></label>
+                                        <input role="button" placeholder="Email..." type="email" value="" name="EMAIL" class="required email" id="mce-EMAIL" />
+                                        <span class="clear input-group-btn">
+                                            <input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="btn btn-theme-bg button" />
+                                        </span>
+                                    </div>
+                                    
+                                    <div id="mce-responses" class="clear">
+                                        <div class="response" id="mce-error-response" style="display:none"></div>
+                                        <div class="response" id="mce-success-response" style="display:none"></div>
+                                    </div>
+                                    -->
+                                    <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups--><!--
+                                    <div style="position: absolute; left: -5000px;">
+                                        <input type="text" name="b_58947385383d323caf9047f39_9799d3a7b9" tabindex="-1" value="" />
+                                    </div>
+                                </div>
+                            </form>
+                        </div>-->
+                        
                     </div>
                 </div>
                 <!--footer col-->
