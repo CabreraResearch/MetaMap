@@ -9,7 +9,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                     <section id="modal_dialog_container">
-                        
+
                     </section>
                 </div>
             </div>
@@ -34,17 +34,8 @@
                             id: opts.id,
                             dialog: this.modal
                         }
-                        let module = type
-                        switch(type) {
-                            case 'html':
-                                module = 'blog'
-                                break;
-                            default:
-                                module = type;
-                                break;
-                        }
                         
-                        riot.mount(this.modal_dialog_container, `${module}-dialog`, opts)
+                        riot.mount(this.modal_dialog_container, `blog-dialog`, opts)
                         
                         Ps.initialize(this.modal)
                         

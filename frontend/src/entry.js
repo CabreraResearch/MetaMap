@@ -30,14 +30,6 @@ let tags = [
 ];
 
 require('./tags/dialogs/blog-dialog.tag');
-require('./tags/dialogs/infographic-dialog.tag');
-require('./tags/dialogs/product-dialog.tag');
-require('./tags/dialogs/project-dialog.tag');
-require('./tags/dialogs/publication-dialog.tag');
-require('./tags/dialogs/software-dialog.tag');
-require('./tags/dialogs/speaking-dialog.tag');
-require('./tags/dialogs/training-dialog.tag');
-require('./tags/dialogs/video-dialog.tag');
 require('./tags/dialogs/store-dialog.tag');
 require('./tags/social/follow-facebook.tag');
 require('./tags/social/follow-twitter.tag');

@@ -8,23 +8,59 @@
                     <raw content="{ data.text }"/>
                 </p>
             </div>
-            <div if="{ blog }">
-                <raw content="{ blog }"/>
+            <div if="{ blog }" class="row">
+                <div class="col-sm-10 ">
+                    <div >
+                        <raw content="{ blog }"/>
+                    </div>
+                    <div class="center-heading">
+                        <a each="{ val, i in data.buttons }"
+                            role="button"
+                            data-link="{ val.link }"
+                            class="btn btn-lg btn-theme-dark"
+                            style="margin-right: 10px;">
+                            { val.title }
+                        </a>
+                    </div>
+                </div>
+                <div class="well col-sm-2" style="width: 120px; position: fixed; margin-left: { margin }px">
+                    <ul class="list-unstyled contact ">
+                        <li>
+                            <a href="https://twitter.com/share" class="twitter-share-button" data-via="{ social.twitter.title }">Tweet</a>
+                        </li>
+                        <li>
+                            <div style="margin-top: 10px;" id="gplusone" class="g-plusone" data-size="small"></div>
+                        </li>
+                        <li>
+                            <div class="fb-share-button" data-href="{ url }" data-layout="button_count"></div>
+                        </li>
+                    </ul>
+                </div>
             </div>
-            <a each="{ val, i in data.buttons }"
-                role="button" 
-                data-link="{ val.link }"
-                class="btn btn-lg btn-theme-dark" 
-                style="margin-right: 10px;">
-                { val.title }
-            </a>
+            <div if="{ !blog }" class="center-heading">
+                <a each="{ val, i in data.buttons }"
+                    role="button"
+                    data-link="{ val.link }"
+                    class="btn btn-lg btn-theme-dark"
+                    style="margin-right: 10px;">
+                    { val.title }
+                </a>
+            </div>
         </div>
     </div>
     <script type="es6">
         this.on('mount', () => {
             if(opts && opts.event.id) {
                 this.data = opts.event.item
+                
+                this.margin = (window.innerWidth - $('#modal').width()) + 220
+                this.url = window.location.href
+                
                 this.update()
+                FrontEnd.MetaFire.getData(`${FrontEnd.site}/social`).then( (social) => {
+                    this.social = social
+                });
+                
                 let ref = FrontEnd.MetaFire.getChild(`${FrontEnd.site}/content/${opts.event.id}`)
                 let firepad = new Firepad.Headless(ref);
                 firepad.getHtml( (html) => {
@@ -32,6 +68,18 @@
                     this.update();
                     Ps.update(opts.event.dialog)
                 });
+            }
+        });
+        let ignore = false
+        this.on('update', () => {
+            if(!ignore && $('#modal').width() > 100) {
+                this.margin = (window.innerWidth - $('#modal').width()) + 220
+                this.update()
+                FrontEnd.initSocial()
+                gapi.plusone.render('gplusone')
+                ignore = true
+            } else {
+                ignore = false
             }
         });
     </script>
