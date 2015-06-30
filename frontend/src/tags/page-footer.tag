@@ -13,7 +13,7 @@
                                     <strong>
                                         <i class="{ icon }"></i>{ title }:
                                     </strong>
-                                    <a if="{ link }" href="{ link }" style="color: #fff" >{ link }</a>
+                                    <a if="{ link }" href="{ link }" style="color: #fff" >{ text || link }</a>
                                     <span if="{ !link }">{ text }</span>
                                 </p>
                             </li>
@@ -49,7 +49,7 @@
                              data-hide-cover="false" 
                              data-show-facepile="true" 
                              data-height="300"
-                             
+                             data-width="280"
                              data-show-posts="true">
                             <div class="fb-xfbml-parse-ignore">
                                 <blockquote cite="https://www.facebook.com/{ social.facebook.title }">
@@ -96,39 +96,9 @@
                                 </div>
                             </form>
                         </div>
-
-                        <!--<div id="mc_embed_signup">
-                            <form action="//cabreralabs.us4.list-manage.com/subscribe/post?u=58947385383d323caf9047f39&amp;id=9799d3a7b9" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate="">
-                                <p style="color: #fff;">{ data.newsletter.text }</p>
-                                <div id="mc_embed_signup_scroll">
-
-                                    <div class="mc-field-group input-group">
-                                        <label for="mce-EMAIL" style="display: none;"></label>
-                                        <input role="button" placeholder="Email..." type="email" value="" name="EMAIL" class="required email" id="mce-EMAIL" />
-                                        <span class="clear input-group-btn">
-                                            <input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="btn btn-theme-bg button" />
-                                        </span>
-                                    </div>
-                                    
-                                    <div id="mce-responses" class="clear">
-                                        <div class="response" id="mce-error-response" style="display:none"></div>
-                                        <div class="response" id="mce-success-response" style="display:none"></div>
-                                    </div>
-                                    -->
-                                    <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups--><!--
-                                    <div style="position: absolute; left: -5000px;">
-                                        <input type="text" name="b_58947385383d323caf9047f39_9799d3a7b9" tabindex="-1" value="" />
-                                    </div>
-                                </div>
-                            </form>
-                        </div>-->
-                        
                     </div>
                 </div>
-                <!--footer col-->
-
             </div>
-
         </div>
     </footer>
     <script type="es6">
