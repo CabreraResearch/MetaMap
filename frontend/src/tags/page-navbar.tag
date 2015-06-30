@@ -8,13 +8,12 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#">
+                <div>
                     <img if="{ data }" 
-                         height="21px" 
-                         width="21px" 
+                         style="margin-top: 7px; margin-right: 15px;"
                          src="{ url }site/{ data.img }" 
                          alt="{ data.alt }" />
-                </a>
+                </div>
             </div>
             <page-menu-navbar></page-menu-navbar>
         </div>
