@@ -28,7 +28,8 @@
                     <div class="cbp-caption" 
                          data-title="{ text }" href="{ link || parent.url + type + '/' + img }">
                         <div class="cbp-caption-defaultWrap">
-                            <img if="{ img }" src="{ parent.url + type + '/' + img }" alt="{ title }"/>
+                            <img if="{ youtubeid }" src="//img.youtube.com/vi/{ youtubeid }/mqdefault.jpg" alt="{ title }"/>
+                            <img if="{ !youtubeid && img }" src="{ parent.url + type + '/' + img }" alt="{ title }"/>
                         </div>
                         <div class="cbp-caption-activeWrap">
                             <div class="cbp-l-caption-alignCenter">
