@@ -1,5 +1,5 @@
 const staticRoutes = {
-    'footer': true,
+    'contact': true,
     'home': true,
     'explore': true
 }
@@ -19,6 +19,9 @@ class Router {
 
     static getPath(path) {
         if (path) {
+            if (path.startsWith('!')) {
+                path = path.substr(1);
+            }
             if (path.startsWith('#')) {
                 path = path.substr(1);
             }
@@ -33,7 +36,12 @@ class Router {
     static to(path) {
         path = route.getPath(path);
         if (path) {
-            riot.route(path);
+            if (staticRoutes[path]) {
+                riot.route(path);
+            } else {
+                riot.route(`!${path}`);
+            }
+            
         }
     }
 

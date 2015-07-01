@@ -60,8 +60,7 @@
         }
         
         this.onClick = (e) => {
-            riot.route(_.kebabCase(e.item.title),e,this)
-            //riot.mount('modal-dialog', { event: e, tag: this })
+            FrontEnd.Router.to(_.kebabCase(e.item.title),e,this)
         }
         
         FrontEnd.MetaFire.getData(`${FrontEnd.site}/explore`).then( (data) => {
