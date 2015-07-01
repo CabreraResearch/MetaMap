@@ -29,15 +29,7 @@
                     <div >
                         <raw content="{ blog }"/>
                     </div>
-                    <div class="center-heading">
-                        <a each="{ val, i in data.buttons }"
-                            role="button"
-                            data-link="{ val.link }"
-                            class="btn btn-lg btn-theme-dark"
-                            style="margin-right: 10px;">
-                            { val.title }
-                        </a>
-                    </div>
+                    <buttons buttons="{ data.buttons }"></buttons>
                 </div>
                 <div class="well col-sm-2" style="width: 120px; position: fixed; margin-left: { margin }px">
                     <ul class="list-unstyled contact ">
@@ -53,15 +45,7 @@
                     </ul>
                 </div>
             </div>
-            <div if="{ !blog }" class="center-heading">
-                <a each="{ val, i in data.buttons }"
-                    role="button"
-                    data-link="{ val.link }"
-                    class="btn btn-lg btn-theme-dark"
-                    style="margin-right: 10px;">
-                    { val.title }
-                </a>
-            </div>
+            <buttons if="{ !blog }" buttons="{ data.buttons }"></buttons>
         </div>
     </div>
     <script type="es6">

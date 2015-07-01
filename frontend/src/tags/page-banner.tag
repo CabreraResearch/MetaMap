@@ -7,7 +7,9 @@
                 <li each="{ data }"
                     data-transition="fade" 
                     data-slotamount="5" 
-                    data-title="{ title }">
+                    data-title="{ title }"
+                    style="background: rgb(240,110,30);"
+                    >
                     <!-- MAIN IMAGE -->
                     <img if="{ img }" src="{ parent.url + img }"  
                          alt="darkblurbg"  
@@ -62,7 +64,7 @@
                         
 			            data-nextslideatend="false"
                         data-thumbimage="https://img.youtube.com/vi/{ youtubeid }/mqdefault.jpg">
-                        <iframe src="http://www.youtube.com/embed/{ youtubeid }?hd=1&wmode=opaque&controls=1&showinfo=0"
+                        <iframe src="https://www.youtube.com/embed/{ youtubeid }?hd=1&wmode=opaque&controls=1&showinfo=0"
                                 width="640" 
                                 height="360"
 			                    style="width:640px;height:360px;">

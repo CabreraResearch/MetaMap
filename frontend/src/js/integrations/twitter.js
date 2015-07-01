@@ -18,8 +18,14 @@ var twitterApi = function (apiKey) {
         return t;
     }(document, "script", "twitter-wjs"));
 
+    let tryCount = 0;
     let load = () => {
-        return window.twttr.widgets.load();
+        if (window.twttr && window.twttr.widgets) {
+            return window.twttr.widgets.load();
+        } else if(tryCount < 5) {
+            tryCount += 1;
+            _.delay(load, 250);
+        }
     }
 
     return load;

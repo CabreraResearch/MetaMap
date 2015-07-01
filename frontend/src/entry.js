@@ -30,9 +30,7 @@ let tags = [
 ];
 
 require('./tags/dialogs/blog-dialog.tag');
-require('./tags/dialogs/store-dialog.tag');
-require('./tags/social/follow-facebook.tag');
-require('./tags/social/follow-twitter.tag');
+require('./tags/components/buttons.tag');
 require('./tags/components/modal-dialog.tag');
 require('./tags/page-banner.tag');
 require('./tags/page-impact.tag');
