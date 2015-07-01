@@ -16,13 +16,20 @@ const config = () => {
             db: 'popping-fire-897',
             metaMapUrl: '',
             title: 'Cabrera Research Lab',
-            GA: 'UA-63193554-2'
+            google: {
+                analytics: 'UA-63193554-2',
+                tagmanager: 'GTM-KZQ2C2'
+            }
         },
         THINK_WATER: {
             frontEnd: 'thinkwater',
             db: 'popping-fire-897',
             metaMapUrl: '',
-            title: 'ThinkWater'
+            title: 'ThinkWater',
+            google: {
+                analytics: 'UA-63193554-2',
+                tagmanager: 'GTM-KZQ2C2'
+            }
         }
     }
 
@@ -36,18 +43,18 @@ const config = () => {
         first = segments[1];
     }
     switch (first.toLowerCase()) {
-    case 'meta-map-staging':
-    case 'frontend':
-        ret.site = SITES['CRL'];
-        break;
-    case 'thinkwater-staging':
-    case 'thinkwater':
-        ret.site = SITES['THINK_WATER'];
-        break;
-    default:
-        //For now, default to CRL
-        ret.site = SITES['CRL'];
-        break;
+        case 'meta-map-staging':
+        case 'frontend':
+            ret.site = SITES['CRL'];
+            break;
+        case 'thinkwater-staging':
+        case 'thinkwater':
+            ret.site = SITES['THINK_WATER'];
+            break;
+        default:
+            //For now, default to CRL
+            ret.site = SITES['CRL'];
+            break;
     }
 
     Object.freeze(ret);
@@ -59,7 +66,7 @@ class FrontEnd {
     constructor(tags) {
         this.tags = tags;
         this.config = config();
- 
+
         document.title = this.config.site.title;
         let favico = document.getElementById('favico');
         favico.setAttribute('href', `${imageUrl}${this.config.site.frontEnd}/favicon.ico`);
@@ -67,7 +74,7 @@ class FrontEnd {
         this.MetaFire = new MetaFire(this.config);
         this.Auth0 = new Auth0(this.config);
 
-        ga(this.config.GA);
+        ga(this.config.site.google);
         this.initTwitter = twitter();
         this.initFacebook = facebook();
         usersnap();

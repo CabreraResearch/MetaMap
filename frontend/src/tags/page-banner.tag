@@ -11,12 +11,12 @@
                     style="background: rgb(240,110,30);"
                     >
                     <!-- MAIN IMAGE -->
-                    <img if="{ img }" src="{ parent.url + img }"  
+                    <img if="{ !youtubeid && img }" src="{ parent.url + img }"  
                          alt="darkblurbg"  
                         data-bgfit="cover"
                         data-bgposition="left top" 
                         data-bgrepeat="no-repeat" />
-                    <div if="{ title }" class="caption title-2 sft"
+                    <div if="{ !youtubeid && title }" class="caption title-2 sft"
                          data-x="50"
                          data-y="100"
                          data-speed="1000"
@@ -25,7 +25,7 @@
                         <raw content="{ title }"></raw>
                     </div>
 
-                    <div if="{ subtext }" class="caption text sfl"
+                    <div if="{ !youtubeid && subtext }" class="caption text sfl"
                          data-x="50"
                          data-y="220"
                          data-speed="1000"
@@ -33,7 +33,7 @@
                          data-easing="easeOutExpo">
                         <raw content="{ subtext }"></raw>
                     </div>
-                    <div each="{ buttons }">
+                    <div if="{ !youtubeid }" each="{ _.sortBy(buttons, 'order') }">
                     
                         <div class="caption sfb rev-buttons tp-resizeme"
                              data-x="50"
@@ -50,8 +50,8 @@
                     </div>
 
                     <div if="{ youtubeid }" class="tp-caption sft customout tp-videolayer"
-						data-x="center" data-hoffset="134"
-			            data-y="center" data-voffset="-6"
+						data-x="center" data-hoffset="0"
+			            data-y="center" data-voffset="0"
 			            data-customin="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:5;scaleY:5;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
 			            data-customout="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0.75;scaleY:0.75;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
 			            data-speed="600"
@@ -65,9 +65,9 @@
 			            data-nextslideatend="false"
                         data-thumbimage="https://img.youtube.com/vi/{ youtubeid }/mqdefault.jpg">
                         <iframe src="https://www.youtube.com/embed/{ youtubeid }?hd=1&wmode=opaque&controls=1&showinfo=0"
-                                width="640" 
-                                height="360"
-			                    style="width:640px;height:360px;">
+                                 width="1066px"
+                                height="600px"
+			                    style="width:1066px;height:600px;">
                         </iframe>
                     </div>
                     
@@ -85,7 +85,7 @@
         this.watchData('/banner', (data) => {
             if(false == this.mounted) {
                 this.mounted = true;
-                this.data = _.sortBy(data, 'order');
+                this.data = _.filter(_.sortBy(data, 'order'), (i) => { return i.archive != true });
                 this.update();
             
                 $(this.tp_banner).revolution({

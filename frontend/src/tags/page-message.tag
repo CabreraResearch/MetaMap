@@ -37,7 +37,7 @@
         this.items = []
         FrontEnd.MetaFire.getData(FrontEnd.site + '/message').then( (data) => {
             this.header = data.header
-            this.items = data.items
+            this.items = _.filter(_.sortBy(data.items, 'order'), (i) => { return i.archive != true });
             this.update()
         })
     </script>

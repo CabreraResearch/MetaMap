@@ -25,8 +25,7 @@
 
             <div id="masonry_container" class="cbp">
                 <div id="{ id }" onclick="{ parent.onClick }" each="{ content }" class="cbp-item { type } { _.keys(tags).join(' ') }">
-                    <div class="cbp-caption" 
-                         data-title="{ text }" href="{ link || parent.url + type + '/' + img }">
+                    <div class="cbp-caption">
                         <div class="cbp-caption-defaultWrap">
                             <img if="{ img }" src="{ parent.url + type + '/' + img }" alt="{ title }"/>
                         </div>
@@ -64,7 +63,7 @@
         }
         
         FrontEnd.MetaFire.getData(`${FrontEnd.site}/explore`).then( (data) => {
-            this.filters = _.sortBy(data.filters, 'order');
+            this.filters = _.filter(_.sortBy(data.filters, 'order'), (i) => { return i.archive != true });
             this.header = data.header;
             this.items = _.sortBy(_.map(data.items, (val,key) => {
                 if(val && !(val.archive === true)) {
@@ -72,7 +71,7 @@
                     return val
                 }
             }),'order');
-            this.content = this.items; //_.filter( this.items, (item) => { return !(item.archive === true) } );
+            this.content = this.items;
             this.update();
             
             let defaultFilter = _.first(this.filters,function(filter) { return filter.default === true });

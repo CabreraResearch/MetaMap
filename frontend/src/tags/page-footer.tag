@@ -8,10 +8,10 @@
                         <p style="color: #fff;">{ data.about.text }</p>
                         
                         <ul class="list-unstyled contact">
-                            <li each="{ data.contact }">
+                            <li each="{ _.sortBy(data.contact,'order') }">
                                 <p style="color: #fff;">
                                     <strong>
-                                        <i class="{ icon }"></i>{ title }:
+                                        <i class="{ icon }"></i>{ title || '' }
                                     </strong>
                                     <a if="{ link }" href="{ link }" style="color: #fff" >{ text || link }</a>
                                     <span if="{ !link }">{ text }</span>
@@ -20,7 +20,7 @@
                         </ul>
                         
                         <ul id="social_follow" class="list-inline social-1">
-                            <li each="{ data.about.social }">
+                            <li each="{ _.sortBy(data.about.social, 'order') }">
                                 <a href="{ link }" alt="{ title }">
                                     <i class="{ icon }"></i>
                                 </a>

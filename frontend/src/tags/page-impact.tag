@@ -28,11 +28,11 @@
 
         FrontEnd.MetaFire.getData(FrontEnd.site + '/impact').then( (data) => {
             this.header = data.header;
-            this.items = data.items;
+            this.items = _.filter(_.sortBy(data.items, 'order'), (i) => { return i.archive != true });
             this.update();
 
             $(this.impact_slider).owlCarousel({
-                autoPlay: 3000,
+                autoPlay: 5000,
                 pagination: false,
                 items: 4,
                 loop: true,

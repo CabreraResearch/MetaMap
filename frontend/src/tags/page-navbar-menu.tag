@@ -36,7 +36,7 @@
         };
         
         FrontEnd.MetaFire.getData(`${FrontEnd.site}/navbar`).then( (data) => {
-            this.data = _.sortBy(data, 'order');
+            this.data = _.filter(_.sortBy(data, 'order'), (i) => { return i.archive != true });
             this.update();
         })
     </script>

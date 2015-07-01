@@ -6,18 +6,9 @@
                 <h3 class="heading">Latest News</h3>
                 <div id="news_carousel" class="owl-carousel owl-spaced">
                     <div each="{ data }">
-                        <!--<a href="#">
-                            <div class="item-img-wrap">
-                                <img src="../../dist/img/img-8.jpg" class="img-responsive" alt="workimg"/>
-                                <div class="item-img-overlay">
-                                    <span></span>
-                                </div>
-                            </div>
-                        </a>-->
-                        <!--news link-->
                         <div class="news-desc">
                             <h5>
-                                <a href="{ by ? link : 'javascript:;' }" target="_blank">{ Humanize.truncate(title, 125) }</a>
+                                <a href="{ link }" target="_blank">{ Humanize.truncate(title, 125) }</a>
                             </h5>
                         </div>
                     </div>
@@ -29,7 +20,7 @@
         this.data = [];
 
         FrontEnd.MetaFire.getData(FrontEnd.site + '/news').then( (data) => {
-            this.data = _.toArray(data);
+            this.data = _.filter(_.sortBy(data, 'order'), (i) => { return i.archive != true });
             this.update();
             $(this.news_carousel).owlCarousel({
                 // Most important owl features
@@ -42,8 +33,9 @@
                 itemsMobile: [479, 1],
                 singleItem: false,
                 startDragging: true,
-                autoPlay: 4000
-                });
+                autoPlay: 5000,
+                loop: true
+            });
         })
     </script>
     

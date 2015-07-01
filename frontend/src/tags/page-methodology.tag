@@ -17,7 +17,7 @@
                     <p class="lead">{ frameworks.header.text }</p>
                 </div>
                 <div class="panel-group" id="frameworks">
-                    <div each="{ val, i in frameworks.items }" class="panel panel-default">
+                    <div each="{ val, i in _.sortBy(frameworks.items, 'order') }" class="panel panel-default">
                         <div class="panel-heading">
                             <h4 class="panel-title">
                                 <a data-toggle="collapse" data-parent="#frameworks" href="#collapseFrameworks_{ i }">
@@ -40,7 +40,7 @@
                     <p class="lead">{ partners.header.text }</p>
                 </div>
                 <div class="panel-group" id="accordion">
-                    <div each="{ val, i in partners.items }" class="panel panel-default">
+                    <div each="{ val, i in _.sortBy(partners.items, 'order') }" class="panel panel-default">
                         <div class="panel-heading">
                             <h4 class="panel-title">
                                 <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne_{ i }">

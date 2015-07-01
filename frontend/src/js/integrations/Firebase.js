@@ -47,9 +47,10 @@ class MetaFire {
             child = this.getChild(path);
         }
         var promise = new Promise( (resolve, reject) => {
-            child.on('value',
+            child.orderByChild('order').on('value',
                 (snapshot) => {
-                    resolve(snapshot.val());
+                    let data = snapshot.val();
+                    resolve(data);
                 },
                 (error) => {
                     reject(error);
@@ -62,8 +63,9 @@ class MetaFire {
     on (path, callback, event = 'value' ) {
         if (path) {
             let child = this.getChild(path);
-            child.on(event, (snapshot) => {
-                callback(snapshot.val());
+            child.orderByChild('order').on(event, (snapshot) => {
+                let data = snapshot.val();
+                callback(data);
             });
         }
     }
