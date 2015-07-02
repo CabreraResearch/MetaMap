@@ -2271,10 +2271,10 @@ ul.post-desc li + li {
   text-align: center; }
 
 .facts-in h3 {
-  margin-bottom: 25px;
-  font-size: 50px;
+  margin-bottom: 40px;
+  font-size: 70px;
   font-weight: 700;
-  color: #fff; }
+  color: #f06e1e; }
 
 .facts-in h3 i {
   font-size: 40px;
@@ -2283,7 +2283,7 @@ ul.post-desc li + li {
 
 .facts-in h4 {
   margin-bottom: 0px;
-  color: #fff;
+  color: #f06e1e;
   font-family: "Open Sans", sans-serif;
   font-weight: 400;
   text-transform: uppercase; }

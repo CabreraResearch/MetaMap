@@ -1,4 +1,4 @@
-<page-news>
+<page-news id="news">
     <div class="container">
 
         <div class="row">

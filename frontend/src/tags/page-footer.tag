@@ -29,7 +29,7 @@
                     </div>
                 </div>
                 <!--footer col-->
-                <div class="col-md-3 col-sm-6 margin30">
+                <div class="col-md-3 col-sm-6 margin30 hidden-xs hidden-sm">
                     <div class="footer-col">
                         <h3>Follow Us</h3>
 
@@ -40,7 +40,7 @@
                     </div>
                 </div>
                 <!--footer col-->
-                <div class="col-md-3 col-sm-6 margin30">
+                <div class="col-md-3 col-sm-6 margin30 hidden-xs hidden-sm" style="padding-right: 1px;">
                     <div class="footer-col">
                         <h3>Like Us</h3>
                         <div if="{ social.facebook }" class="fb-page" data-href="https://www.facebook.com/{ social.facebook.title }" 
@@ -49,7 +49,7 @@
                              data-hide-cover="false" 
                              data-show-facepile="true" 
                              data-height="300"
-                             data-width="280"
+                             data-width="250"
                              data-show-posts="true">
                             <div class="fb-xfbml-parse-ignore">
                                 <blockquote cite="https://www.facebook.com/{ social.facebook.title }">

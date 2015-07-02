@@ -1,4 +1,4 @@
-<page-message>
+<page-message id="message">
     <div class="container">
         <div class="row">
             <div class="col-sm-12 ">

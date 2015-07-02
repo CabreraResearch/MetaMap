@@ -7,6 +7,18 @@ var facebookApi = function (apiKey) {
             xfbml: true,
             version: 'v2.3'
         });
+
+        window.FB.Event.subscribe('edge.create', function (targetUrl) {
+            window.ga('send', 'social', 'facebook', 'like', targetUrl);
+        });
+
+        window.FB.Event.subscribe('edge.remove', function (targetUrl) {
+            window.ga('send', 'social', 'facebook', 'unlike', targetUrl);
+        });
+
+        window.FB.Event.subscribe('message.send', function (targetUrl) {
+            window.ga('send', 'social', 'facebook', 'send', targetUrl);
+        });
     };
 
     (function (d, s, id) {
