@@ -638,6 +638,25 @@ TOP BARS
 /************************** Buttons **************************/
 /*************************************************************/
 
+.pill {
+    font-weight:700;
+    letter-spacing: 0px;
+    font-family: 'Raleway', sans-serif;
+    font-size: 13px;
+    text-transform: uppercase;
+    padding: 14px 28px 13px 28px;
+    border: 1px solid $skincolor;
+    color:$skincolor;
+    @include box-shadow (1px 1px 3px rgba(0,0,0,0.2));
+    line-height: 1.3333333;
+    border-radius: 6px;
+    display: inline-block;
+    margin-bottom: 0;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
 .btn {
     font-weight:600;
     letter-spacing: 0px;
@@ -1826,7 +1845,7 @@ ul.post-desc li + li{
     font-family: $primary-font;
 }
 .testimonials  h4 i{
-    color:$skincolor;
+    color:$darkcolor;
     margin-right: 5px;
 }
 .testimonials p{
@@ -1889,7 +1908,7 @@ ul.post-desc li + li{
 }
 .testi-slide .flex-control-paging li a.flex-active{
     background: transparent !important;
-    border: 2px solid $skincolor;
+    border: 2px solid $darkcolor;
 }
 
 .quote{
@@ -2718,7 +2737,7 @@ label span{
 
 /****clients***/
 #testimonials-carousel{
-    background-color: $darkcolor;
+    background-color: $skincolor;
     padding: 90px 0;
 }
 #testimonials-carousel.light{
@@ -2734,7 +2753,7 @@ label span{
     text-align: center;
 }
 #testimonials-carousel p{
-    color:#bbb;
+    color:$darkcolor;
 }
 #cta-1{
     padding: 40px 0;
@@ -4363,7 +4382,7 @@ table.shopping-cart-table tr th, table.shopping-cart-table tr td {
     font-style: normal;
 }
 .fun-facts-bg{
-    background: $skincolor;
+    background: $lightcolor;
 }
 
 /***theme features box***/

@@ -39,14 +39,6 @@ $(document).ready(function () {
          verticalOffset: 0*/
     });
 
-    /* ==============================================
-     Counter Up
-     =============================================== */
-    $('.counter').counterUp({
-        delay: 100,
-        time: 800
-    });
-
     //MAGNIFIC POPUP
     $('.show-image').magnificPopup({ type: 'image' });
 

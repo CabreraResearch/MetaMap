@@ -7,9 +7,9 @@
                 <div id="news_carousel" class="owl-carousel owl-spaced">
                     <div each="{ data }">
                         <div class="news-desc">
-                            <h5>
+                            <p>
                                 <a href="{ link }" target="_blank">{ Humanize.truncate(title, 125) }</a>
-                            </h5>
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -19,7 +19,7 @@
     <script type="es6">
         this.data = [];
 
-        FrontEnd.MetaFire.getData(FrontEnd.site + '/news').then( (data) => {
+        FrontEnd.MetaFire.getData(`${FrontEnd.site}/news`).then( (data) => {
             this.data = _.filter(_.sortBy(data, 'order'), (i) => { return i.archive != true });
             this.update();
             $(this.news_carousel).owlCarousel({
