@@ -30,6 +30,7 @@ let tags = [
 ];
 
 require('./tags/dialogs/blog-dialog.tag');
+require('./tags/dialogs/manifesto-dialog.tag');
 require('./tags/components/buttons.tag');
 require('./tags/components/modal-dialog.tag');
 require('./tags/page-banner.tag');

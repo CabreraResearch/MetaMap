@@ -19,10 +19,7 @@ class Router {
 
     static getPath(path) {
         if (path) {
-            if (path.startsWith('!')) {
-                path = path.substr(1);
-            }
-            if (path.startsWith('#')) {
+            while (path.startsWith('!') || path.startsWith('#')) {
                 path = path.substr(1);
             }
         }

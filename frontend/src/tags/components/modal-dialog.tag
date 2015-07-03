@@ -23,9 +23,14 @@
             if(opts && opts.id && opts.id != '#') {
                 
                 FrontEnd.MetaFire.getData(`${FrontEnd.site}/explore/items/${opts.id}`).then( (data) => {
-                
-                    if(data && data.type) {
-                        let type = data.type
+                    let dialogClass = 'blog-dialog'
+                    
+                    if(opts.id == 'the-systems-thinking-manifesto-poster') {
+                        data = data || {}
+                        dialogClass = 'manifesto-dialog'
+                    }
+                    
+                    if(data) {
                         
                         this.update()
                     
@@ -35,7 +40,7 @@
                             dialog: this.modal
                         }
                         
-                        riot.mount(this.modal_dialog_container, `blog-dialog`, opts)
+                        riot.mount(this.modal_dialog_container, dialogClass, opts)
                         
                         Ps.initialize(this.modal)
                         
