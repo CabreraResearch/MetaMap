@@ -1,20 +1,15 @@
 <modal-dialog>
-    <div  class="modal fade" 
-         id="{ _.kebabCase(data.title) }" 
-         >
-        <div class="modal-dialog modal-lg">
-            <div id="modal" class="modal-content" style="height: { height }px; position: fixed; width: 100%;" >
-                <div class="modal-body">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <section id="modal_dialog_container">
+    <section id="{ _.kebabCase(data.title) }" >
 
-                    </section>
-                </div>
+        <div class="divide50"></div>
+
+        <div class="container">
+
+            <div id="modal_dialog_container">
+
             </div>
         </div>
-    </div>
+    </section>
     <script type="es6">
         this.mixin('config'); 
         this.url = this.pathImg()
@@ -40,6 +35,8 @@
                             dialog: this.modal
                         }
                         
+                        $('#main').hide()
+                        
                         riot.mount(this.modal_dialog_container, dialogClass, opts)
                         
                         Ps.initialize(this.modal)
@@ -60,6 +57,8 @@
                             });
                     }
                 });
+                
+               
             }
         });
     </script>

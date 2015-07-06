@@ -44,6 +44,7 @@ require('./tags/page-explore.tag');
 require('./tags/page-message.tag');
 require('./tags/page-methodology.tag');
 require('./tags/page-testimonials.tag');
+require('./tags/page-main.tag');
 
 var configMixin = require('./js/mixins/config.js');
 riot.mixin('config', configMixin);

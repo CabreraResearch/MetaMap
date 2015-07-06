@@ -25,24 +25,11 @@
                 
             </iframe>
             <div if="{ blog }" class="row">
-                <div class="col-sm-10 ">
+                <div class="col-sm-12 ">
                     <div >
                         <raw content="{ blog }"/>
                     </div>
                     <buttons buttons="{ data.buttons }"></buttons>
-                </div>
-                <div class="well col-sm-2" style="width: 120px; position: fixed; margin-left: { margin }px">
-                    <ul class="list-unstyled contact ">
-                        <li>
-                            <a href="https://twitter.com/share" class="twitter-share-button" data-via="{ social.twitter.title }">Tweet</a>
-                        </li>
-                        <li>
-                            <div style="margin-top: 10px;" id="gplusone" class="g-plusone" data-size="small"></div>
-                        </li>
-                        <li>
-                            <div class="fb-share-button" data-href="{ url }" data-layout="button_count"></div>
-                        </li>
-                    </ul>
                 </div>
             </div>
             <buttons if="{ !blog }" buttons="{ data.buttons }"></buttons>

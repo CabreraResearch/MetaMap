@@ -1,5 +1,5 @@
 <page-countmein id="countmein">
-    <section style="background: rgb(212, 214, 215);">
+    <section if="{ data }" style="background: rgb(212, 214, 215);">
 
         <div class="divide50"></div>
 
@@ -58,36 +58,7 @@
                                                             class="btn btn-lg btn-theme-dark">{ title }</a>
                                                     </div>
                                                     <div if="{ val.type == 'social' }" >
-                                                        <div style="padding-bottom: 5px;">
-                                                            <div class="fb-like" 
-                                                                 data-href="https://www.facebook.com/cabreraresearch" 
-                                                                 data-layout="button_count" 
-                                                                 data-action="like" 
-                                                                 data-show-faces="true" 
-                                                                 data-share="true"></div>
-                                                        </div>
-                                                        <div style="padding-bottom: 5px;">
-                                                            <a href="https://twitter.com/cabreraresearch" 
-                                                               class="twitter-follow-button" 
-                                                               data-show-count="false">Follow</a>
-                                                        </div>
-                                                        <div style="padding-bottom: 5px;">
-                                                            
-                                                            <div class="g-follow"
-                                                                 data-annotation="none"
-                                                                 data-height="20"
-                                                                 data-href="https://plus.google.com/108042407227560834221"
-                                                                 data-rel="publisher">
-
-                                                            </div>
-                                                            <script type="IN/FollowCompany"
-                                                                    data-id="5343365"
-                                                                    data-onsuccess="LinkedInShare">
-                                                            </script>
-                                                        </div>
-                                                        <div>
-                                                            
-                                                        </div>
+                                                        <div class="addthis_horizontal_follow_toolbox"></div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -123,6 +94,7 @@
     </section>
     
     <script>
+        this.data = null
         this.mixin('config'); 
         this.url = this.pathImg('site');
         

@@ -3,7 +3,8 @@
         <span each="{ _.sortBy(opts.buttons,'order') }">
             <a if="{ !amazonid }"
                 role="button"
-                data-link="{ link }"
+                href="{ link }"
+                target="_blank"
                 class="btn btn-lg btn-theme-dark"
                 style="margin-right: 10px;">
                 { title }

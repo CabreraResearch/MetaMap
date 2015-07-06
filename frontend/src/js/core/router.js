@@ -4,6 +4,21 @@ const staticRoutes = {
     'explore': true
 }
 
+let isHidden = false;
+let toggleMain = (hide) => {
+    if (hide) {
+        isHidden = true;
+        $('#main').hide();
+        $('#at4-share').parent().show();
+        
+    } else {
+        isHidden = false;
+        $('#at4-share').parent().hide();
+        $('#main').show();
+        $('modal-dialog').empty();
+    }
+}
+
 class Router {
 
     constructor() {
@@ -11,7 +26,11 @@ class Router {
         riot.route((target, ...params) => {
             let path = this.getPath(target);
             if (!staticRoutes[path]) {
+                toggleMain(true);
                 riot.mount('modal-dialog', { id: path });
+            } else {
+                toggleMain(false);
+                $('modal-dialog').empty();
             }
         });
         this.to(window.location.hash || 'home');
@@ -34,11 +53,12 @@ class Router {
         path = route.getPath(path);
         if (path) {
             if (staticRoutes[path]) {
+                toggleMain(false);
                 riot.route(path);
             } else {
+                toggleMain(true);
                 riot.route(`!${path}`);
             }
-            
         }
     }
 

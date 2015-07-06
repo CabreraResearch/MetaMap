@@ -50,41 +50,12 @@
     <!-- End Google Tag Manager -->
 
     <page-navbar></page-navbar>
-    <page-banner></page-banner>
 
-    <div class="divide60"></div>
-
-    <page-message></page-message>
-
-    <div class="divide80"></div>
-
-    <page-methodology></page-methodology>
-
-    <div class="divide50"></div>
-
-    <page-testimonials></page-testimonials>
-
-    <div class="divide50"></div>
-
-    <page-impact></page-impact>
-
-    <div class="divide50"></div>
-
-    <page-countmein></page-countmein>
-
-    <div class="divide70"></div>
-
-    <page-news></page-news>
-
-    <div class="divide50"></div>
-
-    <page-explore></page-explore>
-
-    <div class="divide40"></div>
-
-    <page-footer></page-footer>
+    <page-main></page-main>
 
     <modal-dialog></modal-dialog>
+
+    <page-footer></page-footer>
 
     <script src="frontend/dist/vendor.js"></script>
     <script src="frontend/dist/frontend.js"></script>
@@ -156,5 +127,25 @@
         }
     </script>
     <script src="//platform.linkedin.com/in.js" type="text/javascript"></script>
+
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-559a8d190828c94d"></script>
+<script>
+    addthis.ready(function() {
+        if (['#home', '#contact'].indexOf(window.location.hash) >= 0) {
+            var tryCount = 0;
+            var hideShares = function(keepGoing) {
+                if($('#at4-share') && $('#at4-share').length >= 1) {
+                    $('#at4-share').parent().hide();
+                } else {
+                    tryCount += 1;
+                    if (tryCount < 15) {
+                        _.delay(hideShares, 200);
+                    }
+                }
+            }
+            hideShares();
+        }
+    })
+</script>
 </body>
 </html>
