@@ -4062,7 +4062,7 @@ Customized Bootstrap Modal
 .modal.draggable-modal .modal-header {
   cursor: move;
 }
-.modal .modal-dialog {
+.modal .dynamic-page {
   z-index: 10051;
 }
 .modal > .loading {
@@ -4097,12 +4097,12 @@ Customized Bootstrap Modal
 }
 
 /* Full width modal */
-.modal-full.modal-dialog {
+.modal-full.dynamic-page {
   width: 99%;
 }
 
 @media (max-width: 768px) {
-  .modal-full.modal-dialog {
+  .modal-full.dynamic-page {
     width: auto;
   }
 }

@@ -1,5 +1,5 @@
-<manifesto-dialog>
-    <div class="row">
+<blog-page>
+    <div if="opts" class="row">
         <div class="col-sm-12 ">
             <div class="center-heading">
                 <h2>{ data.title }</h2>
@@ -7,8 +7,23 @@
                 <p>
                     <raw content="{ data.text }"/>
                 </p>
-                <img src="https://c68f7981a8bbe926a1e0154cbfbd5af1b4df0f21.googledrive.com/host/0B6GAN4gX1bnSflRndTRJeFZ5NEszSEFlSzVKZDZJSzFxeDdicFpoLXVwSDNFRWN0RFhfS2c/crlab/site/manifesto_poster_no_diagram.png" alt="Systems Thinking Manifesto" class="img-responsive"></img>
             </div>
+            <iframe if="{ data.youtubeid }" 
+                    id="ytplayer" 
+                    type="text/html" 
+                    width="720" 
+                    height="405"
+                    src="https://www.youtube.com/embed/{ data.youtubeid }?autoplay=1"
+                    frameborder="0" allowfullscreen="" />
+            <iframe if="{ data.vimeoid }" src="https://player.vimeo.com/video/{ data.vimeoid }" 
+                    width="720" 
+                    height="405" 
+                    frameborder="0" 
+                    webkitallowfullscreen="" 
+                    mozallowfullscreen="" 
+                    allowfullscreen="">
+                
+            </iframe>
             <div if="{ blog }" class="row">
                 <div class="col-sm-12 ">
                     <div >
@@ -25,34 +40,18 @@
             if(opts && opts.event.id) {
                 this.data = opts.event.item
                 
-                this.margin = (window.innerWidth - $('#modal').width()) + 220
                 this.url = window.location.href
                 
                 this.update()
-                FrontEnd.MetaFire.getData(`${FrontEnd.site}/social`).then( (social) => {
-                    this.social = social
-                });
                 
-                let ref = FrontEnd.MetaFire.getChild(`${FrontEnd.site}/content/systems-thinking-manifesto`)
+                let ref = FrontEnd.MetaFire.getChild(`${FrontEnd.site}/content/${opts.event.id}`)
                 let firepad = new Firepad.Headless(ref);
                 firepad.getHtml( (html) => {
                     this.blog = html;
                     this.update();
-                    Ps.update(opts.event.dialog)
                 });
             }
         });
-        let ignore = false
-        this.on('update', () => {
-            if(!ignore && $('#modal').width() > 100) {
-                this.margin = (window.innerWidth - $('#modal').width()) + 220
-                this.update()
-                FrontEnd.initSocial()
-                gapi.plusone.render('gplusone')
-                ignore = true
-            } else {
-                ignore = false
-            }
-        });
+        
     </script>
-</manifesto-dialog>
+</blog-page>

@@ -29,10 +29,12 @@ let tags = [
     'page-testimonials'
 ];
 
-require('./tags/dialogs/blog-dialog.tag');
-require('./tags/dialogs/manifesto-dialog.tag');
+require('./tags/pages/blog-page.tag');
+require('./tags/pages/manifesto-page.tag');
+require('./tags/pages/stms-page.tag');
+require('./tags/pages/not-found-page.tag');
 require('./tags/components/buttons.tag');
-require('./tags/components/modal-dialog.tag');
+require('./tags/components/dynamic-page.tag');
 require('./tags/page-banner.tag');
 require('./tags/page-impact.tag');
 require('./tags/page-countmein.tag');

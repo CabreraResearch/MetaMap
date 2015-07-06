@@ -1,4 +1,4 @@
-<modal-dialog>
+<dynamic-page>
     <section id="{ _.kebabCase(data.title) }" >
 
         <div class="divide50"></div>
@@ -18,11 +18,17 @@
             if(opts && opts.id && opts.id != '#') {
                 
                 FrontEnd.MetaFire.getData(`${FrontEnd.site}/explore/items/${opts.id}`).then( (data) => {
-                    let dialogClass = 'blog-dialog'
+                    let dialogClass = 'blog-page'
                     
                     if(opts.id == 'the-systems-thinking-manifesto-poster') {
                         data = data || {}
-                        dialogClass = 'manifesto-dialog'
+                        dialogClass = 'manifesto-page'
+                    } else if(opts.id == 'stms') {
+                        data = data || {}
+                        dialogClass = 'stms-page'
+                    } else if (!data) {
+                        data = data || {}
+                        dialogClass = 'not-found-page'
                     }
                     
                     if(data) {
@@ -35,31 +41,12 @@
                             dialog: this.modal
                         }
                         
-                        $('#main').hide()
-                        
                         riot.mount(this.modal_dialog_container, dialogClass, opts)
                         
-                        Ps.initialize(this.modal)
-                        
-                        $(this.root.firstChild)
-                            .modal()
-                            .on('hidden.bs.modal', () => {
-                                this.unmount(true);
-                                switch(type) {
-                                    case 'html':
-                                    case 'store':
-                                       FrontEnd.Router.to('home')
-                                       break;
-                                    default:
-                                        FrontEnd.Router.to('explore')
-                                        break;
-                                }
-                            });
                     }
                 });
                 
-               
             }
         });
     </script>
-</modal-dialog>
+</dynamic-page>

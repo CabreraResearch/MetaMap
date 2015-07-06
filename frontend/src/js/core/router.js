@@ -15,7 +15,7 @@ let toggleMain = (hide) => {
         isHidden = false;
         $('#at4-share').parent().hide();
         $('#main').show();
-        $('modal-dialog').empty();
+        $('dynamic-page').empty();
     }
 }
 
@@ -27,10 +27,9 @@ class Router {
             let path = this.getPath(target);
             if (!staticRoutes[path]) {
                 toggleMain(true);
-                riot.mount('modal-dialog', { id: path });
+                riot.mount('dynamic-page', { id: path });
             } else {
                 toggleMain(false);
-                $('modal-dialog').empty();
             }
         });
         this.to(window.location.hash || 'home');

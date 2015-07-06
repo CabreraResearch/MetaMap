@@ -17,6 +17,13 @@
     "*.tmpl",
     ".git/**"
   ],
+  "redirects": [
+    {
+      "source": "/stms",
+      "destination": "/#stms",
+      "type": 301
+    }
+  ],
   "rewrites": [
     {
       "source": "**",
