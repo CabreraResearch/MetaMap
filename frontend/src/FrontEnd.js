@@ -6,30 +6,15 @@ let Router = require('./js/core/Router');
 let ga = require('./js/integrations/google.js');
 let twitter = require('./js/integrations/twitter.js');
 let facebook = require('./js/integrations/facebook.js');
-
-const imageUrl = '//c68f7981a8bbe926a1e0154cbfbd5af1b4df0f21.googledrive.com/host/0B6GAN4gX1bnSflRndTRJeFZ5NEszSEFlSzVKZDZJSzFxeDdicFpoLXVwSDNFRWN0RFhfS2c/';
+let addThis = require('./js/integrations/addthis.js');
 
 const config = () => {
     const SITES = {
         CRL: {
-            frontEnd: 'crlab',
-            db: 'popping-fire-897',
-            metaMapUrl: '',
-            title: 'Cabrera Research Lab',
-            google: {
-                analytics: 'UA-63193554-2',
-                tagmanager: 'GTM-KZQ2C2'
-            }
+            db: 'meta-map-production'
         },
         THINK_WATER: {
-            frontEnd: 'thinkwater',
-            db: 'popping-fire-897',
-            metaMapUrl: '',
-            title: 'ThinkWater',
-            google: {
-                analytics: 'UA-63193554-2',
-                tagmanager: 'GTM-KZQ2C2'
-            }
+            db: 'thinkwater-production'
         }
     }
 
@@ -57,7 +42,6 @@ const config = () => {
             break;
     }
 
-    Object.freeze(ret);
     return ret;
 };
 
@@ -67,34 +51,37 @@ class FrontEnd {
         this.tags = tags;
         this.config = config();
 
-        document.title = this.config.site.title;
-        let favico = document.getElementById('favico');
-        favico.setAttribute('href', `${imageUrl}${this.config.site.frontEnd}/favicon.ico`);
-
         this.MetaFire = new MetaFire(this.config);
         this.Auth0 = new Auth0(this.config);
-
-        ga(this.config.site.google);
-        this.initTwitter = twitter();
-        this.initFacebook = facebook();
-        usersnap();
+        this.socialFeatures = [];
     }
 
     initSocial() {
-        this.initTwitter();
-        this.initFacebook();
+        _.each(this.socialFeatures, (feature) => {
+            if(feature) feature();
+        });
     }
 
     get site() {
-        return this.config.site.frontEnd;
+        return 'frontend';
     }
 
     init() {
-        //_.each(this.tags, (tag) => {
-        //    riot.mount(tag, this);
-        //});
-        riot.mount('*');
-        this.Router = new Router();
+        this.MetaFire.on('config', (data) => {
+            _.extend(this.config.site, data);
+            document.title = this.config.site.title;
+            let favico = document.getElementById('favico');
+            favico.setAttribute('href', `${this.config.site.imageUrl}frontend/favicon.ico`);
+
+            ga(this.config.site.google);
+            this.socialFeatures.push(twitter());
+            this.socialFeatures.push(facebook());
+            this.socialFeatures.push(addThis(this.config.site.addthis.pubid));
+            usersnap();
+
+            riot.mount('*');
+            this.Router = new Router();
+        });
     }
 
     login() {

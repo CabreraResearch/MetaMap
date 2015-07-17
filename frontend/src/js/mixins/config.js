@@ -1,7 +1,7 @@
 
 let config = {
     pathImg: (folder) => {
-        let ret = `//c68f7981a8bbe926a1e0154cbfbd5af1b4df0f21.googledrive.com/host/0B6GAN4gX1bnSflRndTRJeFZ5NEszSEFlSzVKZDZJSzFxeDdicFpoLXVwSDNFRWN0RFhfS2c/${window.FrontEnd.site}/`;
+        let ret = `${window.FrontEnd.config.site.imageUrl}`;
         if (folder) {
             ret += `${folder}/`;
         }

@@ -13,7 +13,7 @@
     </div>
     <script>
         this.data = {
-            message: 'Opps, the page could not be found!'
+            message: 'Oops, that page could not be found!'
         }
             
         this.on('mount', () => {
