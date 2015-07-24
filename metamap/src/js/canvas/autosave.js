@@ -1,14 +1,8 @@
 // functions handling editor autosave function
 
-SandbankEditor.Autosave = function(editor, map) {
+SandbankEditor.Autosave = function($scope, $http, map) {
 
     var self = this;
-
-    var $http = {
-        put: () => {
-            return new Promise((fulfill, reject) => {});
-        }
-    };
 
     var changeTypes = [];
 
@@ -33,7 +27,7 @@ SandbankEditor.Autosave = function(editor, map) {
     // to remove duplicates, and save the current data
     function autosave() {
         // stop right here if we're in the sandbox and/or we don't have edit permissions
-        if (editor.sandbox || !editor.canEdit) {
+        if ($scope.sandbox || !$scope.canEdit) {
             return;
         }
 
@@ -58,7 +52,7 @@ SandbankEditor.Autosave = function(editor, map) {
 
         //console.log('autosave, changeList: ' + changeList + ', descriptionList: ' + descriptionList);
         var postData = {
-            "name": editor.mapTitle,
+            "name": $scope.mapTitle,
             "data": map.getDiagram().model.toJson(),
             "state_data": JSON.stringify(map.getUi().getStateData()),
             "editor_options": JSON.stringify(map.getUi().getMapEditorOptions()),
@@ -68,19 +62,15 @@ SandbankEditor.Autosave = function(editor, map) {
             "change_description": descriptionList.join('; '),
             "thumbnail_png": map.getPresenter().getMapThumbnail()
         };
-        var url = editor.mapUrl + '.json';
+        var url = $scope.mapUrl + '.json';
 
-        editor.updateEditStatus(editor.SAVING);
-        $http.put(url, postData).then(
-            function(response) {
+        $scope.updateEditStatus($scope.SAVING);
+        
                 changeTypes = [];
-                editor.updateEditStatus(editor.SAVE_OK);
+                $scope.updateEditStatus($scope.SAVE_OK);
                 // load returned data for analytics, points, badges, versions
-                editor.map.loadMapExtraData(response.data.map);
-            },
-            function() {
-                editor.updateEditStatus(editor.SAVE_FAILED);
-            });
+               // $scope.map.loadMapExtraData(response.data.map);
+            
     }
 
 

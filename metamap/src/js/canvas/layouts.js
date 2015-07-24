@@ -1,6 +1,6 @@
 // layouts used in the editor, for the diagram or individual Groups, plus layout-related functions
 
-SandbankEditor.Layouts = function(editor, map) {
+SandbankEditor.Layouts = function($scope, map) {
 
     var self = this;
 
@@ -955,7 +955,7 @@ SandbankEditor.Layouts = function(editor, map) {
     // -------------- link tests ---------------
 
     this.isRLink = function(link) {
-        return link instanceof go.Link && link.data && !link.data.category && link.fromNode && link.toNode;
+        return link instanceof go.Link && link.data && link.data.category === undefined && link.fromNode && link.toNode;
     };
 
     this.isDLink = function(link) {

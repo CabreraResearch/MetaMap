@@ -1,6 +1,6 @@
 // functions handling attachments
 
-window.SandbankEditor.Attachments = function ($scope, map) {
+SandbankEditor.Attachments = function ($scope, $http, $resource, map) {
 
     var self = this;
 

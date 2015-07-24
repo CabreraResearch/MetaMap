@@ -29,7 +29,8 @@ class Auth0 {
                         } else {
                             localforage.setItem('id_token', id_token);
                             localforage.setItem('profile', profile);
-                            localforage.setItem('refresh_token', refresh_token);
+
+                            that.ctoken = ctoken;
                             that.id_token = id_token;
                             that.profile = profile;
                             that.refresh_token = refresh_token;
@@ -52,7 +53,7 @@ class Auth0 {
                 }
             },
             authParams: {
-                access_token: that.id_token || that.profile.identities[0].access_token
+                access_token: that.ctoken
             }
         });
     }
@@ -74,30 +75,21 @@ class Auth0 {
         }
         let promise = new Promise((fulfill, reject) => {
             let fulfilled = false;
-            localforage.getItem('refresh_token').then((token) => {
-                if (token) {
-                    that.refresh_token = token;
-                    that.lock.getClient().refreshToken(token, (a, tokObj) => {
-                        getProfile(tokObj.id_token, fulfill, reject);
-                    }, (error) => {
-                        reject(error);
-                    });
+            
+            localforage.getItem('id_token').then((id_token) => {
+                if (id_token) {
+                    getProfile(id_token, fulfill, reject);
                 } else {
-                    localforage.getItem('id_token').then((id_token) => {
-                        if (token) {
-                            getProfile(id_token, fulfill, reject);
-                        } else {
-                            fulfill(null);
-                        }
-                    });
+                    fulfill(null);
                 }
             });
+                
+            
         });
         return promise;
     }
     logout() {
         localforage.removeItem('id_token');
-        localforage.removeItem('refresh_token');
         localforage.removeItem('profile');
         this.profile = null;
         window.location.reload();

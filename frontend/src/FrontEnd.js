@@ -98,7 +98,7 @@ class FrontEnd {
                 'exFatal': true
             });
         }
-        console.log(val);
+        console.error(val);
     }
 
     login() {

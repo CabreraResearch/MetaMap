@@ -55,7 +55,7 @@ var Index = function() {
                 };
             }
 
-           
+            
         }
 
     };

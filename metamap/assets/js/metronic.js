@@ -236,9 +236,8 @@ var Metronic = function() {
         if ($('body').hasClass('page-md')) { 
             // Material design click effect
             // credit where credit's due; http://thecodeplayer.com/walkthrough/ripple-click-effect-google-material-design       
+            var element, circle, d, x, y;
             $('body').on('click', 'a.btn, button.btn, input.btn, label.btn', function(e) { 
-                var element, circle, d, x, y;
-
                 element = $(this);
       
                 if(element.find(".md-click-circle").length == 0) {
@@ -257,6 +256,10 @@ var Metronic = function() {
                 y = e.pageY - element.offset().top - circle.height()/2;
                 
                 circle.css({top: y+'px', left: x+'px'}).addClass("md-click-animate");
+
+                setTimeout(function() {
+                    circle.remove();      
+                }, 1000);
             });
         }
 
@@ -275,6 +278,12 @@ var Metronic = function() {
         $('body').on('blur', '.form-md-floating-label .form-control', function(e) { 
             handleInput($(this));
         });        
+
+        $('.form-md-floating-label .form-control').each(function(){
+            if ($(this).val().length > 0) {
+                $(this).addClass('edited');
+            }
+        });
     }
 
     // Handles custom checkboxes & radios using jQuery iCheck plugin
@@ -315,7 +324,7 @@ var Metronic = function() {
         if (!$().confirmation) {
             return;
         }
-        $('[data-toggle=confirmation]').confirmation({ container: 'body', btnOkClass: 'btn-xs btn-success', btnCancelClass: 'btn-xs btn-danger'});
+        $('[data-toggle=confirmation]').confirmation({ container: 'body', btnOkClass: 'btn btn-sm btn-success', btnCancelClass: 'btn btn-sm btn-danger'});
     }
     
     // Handles Bootstrap Accordions.
@@ -329,7 +338,7 @@ var Metronic = function() {
     var handleTabs = function() {
         //activate tab if tab id provided in the URL
         if (location.hash) {
-            var tabid = location.hash.substr(1);
+            var tabid = encodeURI(location.hash.substr(1));
             $('a[href="#' + tabid + '"]').parents('.tab-pane:hidden').each(function() {
                 var tabid = $(this).attr("id");
                 $('a[href="#' + tabid + '"]').click();
@@ -407,7 +416,7 @@ var Metronic = function() {
           Hold dropdown on click  
         */
         $('body').on('click', '.dropdown-menu.hold-on-click', function(e) {
-            //e.stopPropagation();
+            e.stopPropagation();
         });
     };
 
@@ -524,6 +533,40 @@ var Metronic = function() {
         }
     };
 
+    // handle group element heights
+    var handleHeight = function() {
+       $('[data-auto-height]').each(function() {
+            var parent = $(this);
+            var items = $('[data-height]', parent);
+            var height = 0;
+            var mode = parent.attr('data-mode');
+            var offset = parseInt(parent.attr('data-offset') ? parent.attr('data-offset') : 0);
+
+            items.each(function() {
+                if ($(this).attr('data-height') == "height") {
+                    $(this).css('height', '');
+                } else {
+                    $(this).css('min-height', '');
+                }
+
+                var height_ = (mode == 'base-height' ? $(this).outerHeight() : $(this).outerHeight(true));
+                if (height_ > height) {
+                    height = height_;
+                }
+            });
+
+            height = height + offset;
+
+            items.each(function() {
+                if ($(this).attr('data-height') == "height") {
+                    $(this).css('height', height);
+                } else {
+                    $(this).css('min-height', height);
+                }
+            });
+       });       
+    }
+
     //* END:CORE HANDLERS *//
 
     return {
@@ -554,6 +597,10 @@ var Metronic = function() {
             handleModals(); // handle modals
             handleBootstrapConfirmation(); // handle bootstrap confirmations
             handleTextareaAutosize(); // handle autosize textareas
+
+            //Handle group element heights
+            handleHeight();
+            this.addResizeHandler(handleHeight); // handle auto calculating height on window resize
 
             // Hacks
             handleFixInputPlaceholderForIE(); //IE8 & IE9 input placeholder issue fix

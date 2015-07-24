@@ -1,7 +1,6 @@
 let Firebase = window.Firebase; //require('firebase');
 let Promise = window.Promise;
 let localforage = window.localforage;
-let MetaMap = window.MetaMap;
 
 class MetaFire {
 
@@ -14,9 +13,9 @@ class MetaFire {
         let that = this;
         let ret = new Promise((fulfill, reject) => {
             localforage.getItem('id_token').then((id_token) => {
-                MetaMap.Auth0.getSession().then((profile) => {
+                window.MetaMap.Auth0.getSession().then((profile) => {
 
-                    MetaMap.Auth0.lock.getClient().getDelegationToken({
+                    window.MetaMap.Auth0.lock.getClient().getDelegationToken({
                         target: profile.clientID,
                         id_token: id_token,
                         api_type: 'firebase'
@@ -25,6 +24,7 @@ class MetaFire {
                         localforage.setItem('firebase_token', that.firebase_token);
                         this.fb.authWithCustomToken(that.firebase_token, (error, authData) => {
                             if (error) {
+                                window.FrontEnd.error(error);
                                 reject(error);
                             } else {
                                 fulfill(authData);
@@ -57,6 +57,7 @@ class MetaFire {
                     }
                 },
                 (error) => {
+                    window.FrontEnd.error({ message: `Cannot access ${path}`});
                     reject(error);
                 });
         });

@@ -1,8 +1,8 @@
 // goJS templates used in the editor
 
-SandbankEditor.Templates = function(editor, map) {
+SandbankEditor.Templates = function($scope, map) {
 
-    var ret = this;
+    var self = this;
 
     // constants
     this.groupFillColor = "#f9f9f9";
@@ -11,21 +11,21 @@ SandbankEditor.Templates = function(editor, map) {
 
     // initialize template-related stuff that depends on the diagram (and therefore can't go in init())
     this.initTemplates = function(diagram) {
-        diagram.groupTemplate = ret.groupTemplate;
-        diagram.nodeTemplate = ret.slideTemplate;
-        diagram.linkTemplate = ret.linkTemplate;
-        diagram.linkTemplateMap.add('P', ret.pLinkTemplate);
-        diagram.linkTemplateMap.add('D', ret.dLinkTemplate);
+        diagram.groupTemplate = self.groupTemplate;
+        diagram.nodeTemplate = self.slideTemplate;
+        diagram.linkTemplate = self.linkTemplate;
+        diagram.linkTemplateMap.add('P', self.pLinkTemplate);
+        diagram.linkTemplateMap.add('D', self.dLinkTemplate);
 
-        ret.setTemporaryLinkTemplates(diagram.toolManager.linkingTool);
-        ret.setTemporaryLinkTemplates(diagram.toolManager.relinkingTool);
+        self.setTemporaryLinkTemplates(diagram.toolManager.linkingTool);
+        self.setTemporaryLinkTemplates(diagram.toolManager.relinkingTool);
 
         diagram.toolManager.linkingTool.portTargeted = function(realnode, realport, tempnode, tempport, toend) {
-            ret.handlePortTargeted(diagram.toolManager.linkingTool, realnode, realport, tempnode, tempport, toend);
+            self.handlePortTargeted(diagram.toolManager.linkingTool, realnode, realport, tempnode, tempport, toend);
         };
 
         diagram.toolManager.relinkingTool.portTargeted = function(realnode, realport, tempnode, tempport, toend) {
-            ret.handlePortTargeted(diagram.toolManager.relinkingTool, realnode, realport, tempnode, tempport, toend);
+            self.handlePortTargeted(diagram.toolManager.relinkingTool, realnode, realport, tempnode, tempport, toend);
         };
 
         diagram.toolManager.relinkingTool.updateAdornments = function(part) {
@@ -36,8 +36,8 @@ SandbankEditor.Templates = function(editor, map) {
             //     console.log('relinkfrom: ' + from.part.width);
         };
 
-        diagram.toolManager.linkingTool.linkValidation = ret.validateLink;
-        diagram.toolManager.relinkingTool.linkValidation = ret.validateLink;
+        diagram.toolManager.linkingTool.linkValidation = self.validateLink;
+        diagram.toolManager.relinkingTool.linkValidation = self.validateLink;
     };
 
     // convenient abbreviation for creating templates
@@ -147,9 +147,9 @@ SandbankEditor.Templates = function(editor, map) {
             return false;
         } else {
             return (group == map.getUi().mouseOverGroup) || // show corners on mouseover
-                (editor.isTouchDevice() && group.isSelected) ||
+                ($scope.isTouchDevice() && group.isSelected) ||
                 (canDragSelectionToBecomeSistersOf(group, false) && // drag to D (make it sisters)
-                    (!map.getUi().dragTargetPosition ||
+                    (map.getUi().dragTargetPosition === null ||
                         cannotDragSelectionToBecomeOrderedSisterOf(group))); // not showing drag above/below indicators
         }
     }
@@ -161,9 +161,9 @@ SandbankEditor.Templates = function(editor, map) {
             return false;
         } else {
             return (group == map.getUi().mouseOverGroup) || // show corners on mouseover
-                (editor.isTouchDevice() && group.isSelected) ||
+                ($scope.isTouchDevice() && group.isSelected) ||
                 (canDragSelectionToBecomeChildrenOf(group, false) && // drag to S (make it children)
-                    (!map.getUi().dragTargetPosition ||
+                    (map.getUi().dragTargetPosition === null ||
                         cannotDragSelectionToBecomeOrderedSisterOf(group))); // not showing drag above/below indicators
         }
     }
@@ -175,7 +175,7 @@ SandbankEditor.Templates = function(editor, map) {
             return false;
         } else {
             return group == map.getUi().mouseOverGroup ||
-                (editor.isTouchDevice() && group.isSelected); // show corners on mouseover
+                ($scope.isTouchDevice() && group.isSelected); // show corners on mouseover
         }
     }
 
@@ -188,7 +188,7 @@ SandbankEditor.Templates = function(editor, map) {
             return false;
         } else {
             return group == map.getUi().mouseOverGroup ||
-                (editor.isTouchDevice() && group.isSelected); // show corners on mouseover
+                ($scope.isTouchDevice() && group.isSelected); // show corners on mouseover
         }
     }
 
@@ -249,7 +249,7 @@ SandbankEditor.Templates = function(editor, map) {
     // side is map.LEFT or map.RIGHT
     function handleGroupMouseDrop(event, dropTarget, side) {
         //console.log('dragAboveTarget.mouseDrop, target: ' + dropTarget + ', part: ' + dropTarget .part + ', show: ' + show);
-        if (side  && canDragSelectionToBecomeOrderedSisterOf(dropTarget.part, side, true)) {
+        if (side !== null && canDragSelectionToBecomeOrderedSisterOf(dropTarget.part, side, true)) {
             map.addSelectedThingAsOrderedSisterOf(dropTarget.part, side);
         } else if (canDragSelectionToBecomeSistersOf(dropTarget.part, true)) {
             map.addSelectedThingsAsSistersOf(dropTarget.part);
@@ -446,7 +446,7 @@ SandbankEditor.Templates = function(editor, map) {
     function attachmentPaperClip() {
         return mk(go.Shape,
             new go.Binding('visible', '', function(obj) {
-                return obj.data.attachments  && obj.data.attachments !== undefined && obj.data.attachments.length > 0;
+                return obj.data.attachments !== null && obj.data.attachments !== undefined && obj.data.attachments.length > 0;
             }).ofObject(),
             new go.Binding('geometry', '', function(obj) {
                 return go.Geometry.parse(paperclipSvgPath, true);
@@ -815,7 +815,7 @@ SandbankEditor.Templates = function(editor, map) {
                         position: new go.Point(0, 0),
                         width: 100,
                         height: 100,
-                        fill: ret.groupFillColor,
+                        fill: self.groupFillColor,
                         stroke: null,
                         cursor: "move",
                         // show debug info
@@ -939,7 +939,7 @@ SandbankEditor.Templates = function(editor, map) {
     this.pLinkTemplate =
         mk(go.Link,
             new go.Binding('opacity', '', function(obj) {
-                return (ret.showPLink(obj) ? 1 : 0);
+                return (self.showPLink(obj) ? 1 : 0);
             }).ofObject(), {
                 selectionAdorned: false,
                 layerName: 'Background', // make P links fall behind R links
@@ -1135,7 +1135,7 @@ SandbankEditor.Templates = function(editor, map) {
                 stroke: null
             }),
             mk(go.Picture, {
-                source: 'assets/img/metamap-logo-50.png',
+                source: '/assets/metamap-logo-50.png',
                 alignment: go.Spot.TopLeft,
                 alignmentFocus: go.Spot.TopLeft,
                 width: 195,
@@ -1183,8 +1183,8 @@ SandbankEditor.Templates = function(editor, map) {
         //console.log('showExportFooter, bounds rect: ' + rect + ', w: ' + w);
         _exportFooter.location = new go.Point(x, y);
         _exportFooter.findObject("rectangle").width = w;
-        _exportFooter.findObject("mapTitle").text = "Map Title: " + editor.mapTitle;
-        _exportFooter.findObject("authorName").text = "Author: " + editor.userName;
+        _exportFooter.findObject("mapTitle").text = "Map Title: " + $scope.mapTitle;
+        _exportFooter.findObject("authorName").text = "Author: " + $scope.userName;
         _exportFooter.opacity = 1;
         _exportFooter.invalidateLayout();
     };

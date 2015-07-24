@@ -1,4 +1,4 @@
-SandbankEditor.UI = function($scope, map) {
+SandbankEditor.UI = function($scope, $timeout, $http, $resource, $modal, $log, map) {
 
     var self = this;
 
@@ -65,7 +65,7 @@ SandbankEditor.UI = function($scope, map) {
 
     // options modal
 
-    $scope.editorOptions = new SandbankEditorOptions($scope);
+    $scope.editorOptions = new SandbankEditorOptions($scope, $http, $resource, $modal, $log);
 
     this.editOptions = function() {
         $scope.editorOptions.openModal(
@@ -93,10 +93,10 @@ SandbankEditor.UI = function($scope, map) {
     };
 
     this.setStateData = function(data) {
-        //$scope.safeApply(function() {
-        //    self.state = data || defaultState;
-        //    //$scope.currentTab = self.state.currentTab;
-        //});
+        $scope.safeApply(function() {
+            self.state = data || defaultState;
+            //$scope.currentTab = self.state.currentTab;
+        });
     };
 
     // TODO: Save state more frequently?? Currently it is only saved when autosave is triggered by other actions...
@@ -132,16 +132,16 @@ SandbankEditor.UI = function($scope, map) {
     };
 
     this.openTab = function(tabID) {
-        //$scope.safeApply(function() {
-        //    $scope.currentTab = tabID;
-        //});
+        $scope.safeApply(function() {
+            $scope.currentTab = tabID;
+        });
     };
 
     this.closeTab = function(tabID) {
-        //$scope.safeApply(function() {
-        //    self.state.currentTab = null; // TODO: trigger autosave
-        //    $scope.currentTab = null;
-        //});
+        $scope.safeApply(function() {
+            self.state.currentTab = null; // TODO: trigger autosave
+            $scope.currentTab = null;
+        });
     };
 
     this.disableTab = function(tabID) {
@@ -153,25 +153,25 @@ SandbankEditor.UI = function($scope, map) {
     };
 
     this.toggleTab = function(tabID) {
-        //$scope.safeApply(function() {
-        //    if ($scope.currentTab == tabID) {
-        //        $scope.currentTab = null;
-        //    } else if (!self.disableTab(tabID)) {
-        //        $scope.currentTab = tabID;
-        //    }
-        //});
+        $scope.safeApply(function() {
+            if ($scope.currentTab == tabID) {
+                $scope.currentTab = null;
+            } else if (!self.disableTab(tabID)) {
+                $scope.currentTab = tabID;
+            }
+        });
     };
 
     this.toggleNavigator = function() {
-        //$scope.safeApply(function() {
-        //    self.state.showNavigator = !self.state.showNavigator;
-        //});
+        $scope.safeApply(function() {
+            self.state.showNavigator = !self.state.showNavigator;
+        });
     };
 
     this.toggleZoomingToRegion = function() {
-        //$scope.safeApply(function() {
-        //    self.zoomingToRegion = !self.zoomingToRegion;
-        //});
+        $scope.safeApply(function() {
+            self.zoomingToRegion = !self.zoomingToRegion;
+        });
     };
 
 
@@ -212,7 +212,7 @@ SandbankEditor.UI = function($scope, map) {
             var rect = diagram.computePartsBounds(diagram.selection);
             diagram.zoomToRect(rect);
         }
-        //$scope.safeApply();
+        $scope.safeApply();
     };
 
     this.resetZoom = function() {
@@ -419,20 +419,20 @@ SandbankEditor.UI = function($scope, map) {
         }
 
         self.helpTip = tip;
-        //$scope.safeApply();
+        $scope.safeApply();
         $('#help-tip').show();
 
         setTimeout(function() {
             $('#help-tip').fadeOut(500, function() {
                 self.helpTip = null;
-                //$scope.safeApply();
+                $scope.safeApply();
             });
         }, 5000);
     };
 
     // ------------ edit map UserTags ---------------
 
-    $scope.tagging = {}
+    $scope.tagging = new SandbankTagging($scope, $http, $resource, $modal, $log);
 
     this.editUserTags = function() {
         $scope.tagging.openModal(
@@ -446,7 +446,7 @@ SandbankEditor.UI = function($scope, map) {
 
     // ------------ edit map sharing ---------------
 
-    $scope.sharing = {}
+    $scope.sharing = new SandbankSharing($scope, $http, $resource, $modal, $log);
 
     this.editMapShares = function() {
         $scope.sharing.openModal(

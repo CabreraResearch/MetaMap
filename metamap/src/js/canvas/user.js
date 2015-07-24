@@ -1,4 +1,8 @@
-window.UserCtrl = function($scope) {
+window.Sandbank = {};
+
+// the topmost controller for the app
+
+window.UserCtrl = function($rootScope, $scope, $http, $modal, $upload) {
 
     // query string params
     $scope.params = URI(window.location).query(true);
@@ -390,7 +394,7 @@ window.UserCtrl = function($scope) {
     // depending which page we're on - mapId gets overridden in editor.js if we're editing a map
 
     try {
-        $scope.ccsTagging = new SandbankCcsTagging($scope);
+        $scope.ccsTagging = new SandbankCcsTagging($scope, $http, $modal);
         $scope.ccsTagging.mapId = null;
     } catch (e) {}
 
@@ -465,7 +469,102 @@ window.UserCtrl = function($scope) {
             });
     };
 
-    
+    // --------- user's org memberships -----------
+
+    $scope.joinNation = new SandbankJoinNation($scope, $http, $modal);
+
+    function getMembershipForOrg(id) {
+        return _.findWhere($scope.userProfile.memberships, {
+            organizationId: id
+        });
+    }
+
+    $scope.userIsMemberOfOrg = function(id) {
+        if ($scope.userProfile) {
+            return (getMembershipForOrg(id) != undefined);
+        } else {
+            return false;
+        }
+    };
+
+    $scope.toggleUserMemberOfOrg = function(id, name) {
+        if ($scope.userIsMemberOfOrg(id)) {
+            if (confirm('Remove your membership in this ThinkNation?')) {
+                var membership = getMembershipForOrg(id);
+                $http.delete('/memberships/' + membership.id + '.json')
+                    .then(function(response) {
+                        $scope.loadUserProfile();
+                    });
+            }
+        } else {
+            $scope.joinNation.openModal(
+                id,
+                name
+            );
+        }
+    };
+
+
+    // ------------ following other users ---------------
+
+    $scope.followUser = function(user) {
+        $http.post('/user_follows.json', {
+            followee_id: user.id
+        }).then(function(response) {
+                user.followId = response.data;
+                alertify.success('You are now following ' + user.name);
+            },
+            function() {});
+    };
+
+    $scope.unfollowUser = function(user) {
+        $http.delete('/user_follows/' + user.followId + '.json').then(function(response) {
+                user.followId = null;
+                alertify.success('You are no longer following ' + user.name);
+            },
+            function() {});
+    };
+
+    // ------------ following tags ---------------
+
+    function followTag(controller, tag) {
+        $http.post('/' + controller + '/' + tag.id + '/follow.json', {
+            id: tag.id
+        }).then(function(response) {
+                tag.following = true;
+                alertify.success('You are now following ' + tag.name);
+            },
+            function() {});
+    }
+
+    function unfollowTag(controller, tag) {
+        $http.delete('/' + controller + '/' + tag.id + '/unfollow.json').then(function(response) {
+                tag.following = false;
+                alertify.success('You are no longer following ' + tag.name);
+            },
+            function() {});
+    }
+
+    $scope.followUserTag = function(tag) {
+        followTag('user_tags', tag);
+    };
+    $scope.unfollowUserTag = function(tag) {
+        unfollowTag('user_tags', tag);
+    };
+
+    $scope.followAdminTag = function(tag) {
+        followTag('admin_tags', tag);
+    };
+    $scope.unfollowAdminTag = function(tag) {
+        unfollowTag('admin_tags', tag);
+    };
+
+    $scope.followCcsTag = function(tag) {
+        followTag('common_core_standards', tag);
+    };
+    $scope.unfollowCcsTag = function(tag) {
+        unfollowTag('common_core_standards', tag);
+    };
 
     // ------------ auto-save user profile ---------------
 
@@ -606,16 +705,14 @@ window.UserCtrl = function($scope) {
     // avoid '$apply already in progress' error (source: https://coderwall.com/p/ngisma)
     $scope.safeApply = function(fn) {
         //console.log('safeApply on scope: ' + $scope);
-
-        // TODO? restore non-Angular version of this method
-        //var phase = this.$root.$$phase;
-        //if (phase == '$apply' || phase == '$digest') {
+        var phase = this.$root.$$phase;
+        if (phase == '$apply' || phase == '$digest') {
             if (fn && (typeof(fn) === 'function')) {
                 fn();
             }
-        //} else {
-        //    this.$apply(fn);
-        //}
+        } else {
+            this.$apply(fn);
+        }
     };
 
     // source: http://ctrlq.org/code/19616-detect-touch-screen-javascript
@@ -625,3 +722,5 @@ window.UserCtrl = function($scope) {
 
     init();
 };
+
+window.UserCtrl.$inject = ['$rootScope', '$scope', '$http', '$modal', '$upload'];

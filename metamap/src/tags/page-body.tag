@@ -10,4 +10,6 @@
 
         <page-footer></page-footer>
     </div>
+
+    <meta-dialog></meta-dialog>
 </page-body>

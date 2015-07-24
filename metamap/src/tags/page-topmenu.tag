@@ -167,7 +167,7 @@
         var that = this;
         localforage.getItem('profile').then((profile) => {
             that.username = profile.nickname;
-            that.picture = profile.picture || 'assets/admin/layout4/img/avatar.jpg';
+            that.picture = profile.picture || 'metamap/assets/admin/layout4/img/avatar.jpg';
             that.update();
         });
 

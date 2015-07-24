@@ -272,6 +272,9 @@ var GeneratorCtrl = function ($scope) {
 
 };
 
+GeneratorCtrl.$inject = ['$scope'];
+
+
 SandbankEditor.Generator = function ($scope, map) {
 
     this.init = function () {

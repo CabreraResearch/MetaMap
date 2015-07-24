@@ -7,7 +7,10 @@
                 <div id="app-container">
                     
                     <div id="diagram" style="position:absolute; background-color: white; height: 100%; width: 80%; "></div>
-                    
+
+                    <div id="overview-diagram" style="display: none;"></div>
+
+
                 </div>
             </div>
         </div>

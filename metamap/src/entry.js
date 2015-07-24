@@ -18,6 +18,8 @@ require('./js/integrations/newrelic');
 require('./js/integrations/raygun');
 require('./js/integrations/usersnap');
 
+require('./tags/components/meta-dialog.tag');
+require('./tags/components/meta-table.tag');
 require('./tags/page-actions.tag');
 require('./tags/page-container.tag');
 require('./tags/page-content.tag');
@@ -40,7 +42,11 @@ require('./js/canvas/layouts.js');
 require('./js/canvas/map.js');
 require('./js/canvas/perspectives.js');
 require('./js/canvas/presenter.js');
+require('./js/canvas/sharing.js');
+require('./js/canvas/standards.js');
+require('./js/canvas/tagging.js');
 require('./js/canvas/templates.js');
+require('./js/canvas/tests.js');
 require('./js/canvas/ui.js');
 
 var mm = require('./MetaMap');
