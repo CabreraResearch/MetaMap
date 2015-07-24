@@ -33,18 +33,18 @@
                          data-easing="easeOutExpo">
                         <raw content="{ subtext }"></raw>
                     </div>
-                    <div if="{ !youtubeid }" each="{ _.sortBy(buttons, 'order') }">
+                    <div if="{ !youtubeid }" each="{ val, i in _.sortBy(buttons, 'order') }">
                     
                         <div class="caption sfb rev-buttons tp-resizeme"
-                             data-x="50"
+                             data-x="{ 50 + i*200 }" 
                              data-y="355"
                              data-speed="500"
                              data-start="1800"
                              data-easing="Sine.easeOut"
                              onclick="{ parent.getLink }">
-                            <a href="{ link || '' }" 
-                               target="{ target || ''}"
-                               class="btn btn-lg btn-theme-dark">{ title }</a>
+                            <a href="{ val.link || '' }" 
+                               target="{ _blank: val.link.startsWith('http') }"
+                               class="btn btn-lg btn-theme-dark">{ val.title }</a>
                         </div>
                     
                     </div>

@@ -4,54 +4,41 @@
             <div class="portlet box grey-cascade">
                 <div class="portlet-title">
                     <div class="caption">
-                        <i class="fa fa-globe"></i>Managed Table
+                        <i class="fa fa-icon-th-large"></i>Maps
                     </div>
-                    <div class="tools">
-                        <a href="javascript:;" class="collapse">
+                    <div class="actions">
+                        <a href="javascript:;" class="btn btn-default btn-sm">
+                            <i class="fa fa-pencil"></i> Add
                         </a>
-                        <a href="#portlet-config" data-toggle="modal" class="config">
-                        </a>
-                        <a href="javascript:;" class="reload">
-                        </a>
-                        <a href="javascript:;" class="remove">
-                        </a>
+                        <div class="btn-group">
+                            <a class="btn btn-default btn-sm" href="javascript:;" data-toggle="dropdown">
+                                <i class="fa fa-cogs"></i> Tools <i class="fa fa-angle-down"></i>
+                            </a>
+                            <ul class="dropdown-menu pull-right">
+                                <li>
+                                    <a href="javascript:;">
+                                        <i class="fa fa-pencil"></i> Edit
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="javascript:;">
+                                        <i class="fa fa-trash-o"></i> Delete
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="javascript:;">
+                                        <i class="fa fa-share"></i> Share
+                                    </a>
+                                </li>
+                                <li class="divider">
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
                 <div class="portlet-body">
                     <div class="table-toolbar">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="btn-group">
-                                    <button id="sample_editable_1_new" class="btn green">
-                                        Add New <i class="fa fa-plus"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="btn-group pull-right">
-                                    <button class="btn dropdown-toggle" data-toggle="dropdown">
-                                        Tools <i class="fa fa-angle-down"></i>
-                                    </button>
-                                    <ul class="dropdown-menu pull-right">
-                                        <li>
-                                            <a href="javascript:;">
-                                                Print
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:;">
-                                                Save as PDF
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:;">
-                                                Export to Excel
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
+                        
                     </div>
                     <table class="table table-striped table-bordered table-hover" id="sample_1">
                         <thead>
@@ -89,7 +76,6 @@
                                     </span>
                                 </td>
                             </tr>
-
                         </tbody>
                     </table>
                 </div>
@@ -111,7 +97,28 @@
                 // begin first table
                 table.dataTable({
 
-                    
+                    // Uncomment below line("dom" parameter) to fix the dropdown overflow issue in the datatable cells. The default datatable layout
+                    // setup uses scrollable div(table-scrollable) with overflow:auto to enable vertical scroll(see: assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.js). 
+                    // So when dropdowns used the scrollable div should be removed. 
+                    //"dom": "<'row'<'col-md-6 col-sm-12'l><'col-md-6 col-sm-12'f>r>t<'row'<'col-md-5 col-sm-12'i><'col-md-7 col-sm-12'p>>",
+
+                    "bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
+
+                    "columns": [{
+                        "orderable": false
+                    }, {
+                        "orderable": true
+                    }, {
+                        "orderable": true
+                    }, {
+                        "orderable": true
+                    }, {
+                        "orderable": false
+                    }],
+                    "lengthMenu": [
+                        [5, 15, 20, -1],
+                        [5, 15, 20, "All"] // change per page values here
+                    ]
                 });
 
                 var tableWrapper = table.parent().parent().parent().find('#sample_1_wrapper');
