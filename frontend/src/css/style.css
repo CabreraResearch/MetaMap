@@ -2210,6 +2210,40 @@ ul.post-desc li + li {
 .social-1 li a i.fa-youtube-play {
   background-color: #cc181e; }
 
+.fa-divide,
+.fa-less-than,
+.fa-greater-than,
+.fa-less-than-equal,
+.fa-greater-than-equal,
+.fa-equal {
+    font-family: Arial;
+    font-weight: bold;
+}
+
+.fa-divide:before {
+    content: "\2236";
+}
+
+.fa-less-than:before {
+    content: "<";
+}
+
+.fa-greater-than:before {
+    content: ">";
+}
+
+.fa-less-than-equal:before {
+    content: "\2264";
+}
+
+.fa-greater-than-equal:before {
+    content: "\2265";
+}
+
+.fa-equal:before {
+    content: "=";
+}
+
 /**************coming soon*************/
 .soon-bg {
   background: url(../../dist/img/showcase-1.jpg);

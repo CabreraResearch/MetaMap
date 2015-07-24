@@ -8,22 +8,25 @@
                     <raw content="{ data.text }"/>
                 </p>
             </div>
-            <iframe if="{ data.youtubeid }" 
-                    id="ytplayer" 
-                    type="text/html" 
-                    width="720" 
+            <iframe if="{ data.youtubeid }"
+                    id="ytplayer"
+                    type="text/html"
+                    width="720"
                     height="405"
                     src="https://www.youtube.com/embed/{ data.youtubeid }?autoplay=1"
-                    frameborder="0" allowfullscreen="" />
-            <iframe if="{ data.vimeoid }" src="https://player.vimeo.com/video/{ data.vimeoid }" 
-                    width="720" 
-                    height="405" 
-                    frameborder="0" 
-                    webkitallowfullscreen="" 
-                    mozallowfullscreen="" 
-                    allowfullscreen="">
-                
-            </iframe>
+                    frameborder="0" allowfullscreen=""
+                    class="fitvids"
+                    style="height: 405px; width: 720px; display: block; margin-left: auto; margin-right: auto;"
+                />
+            <iframe if="{ data.vimeoid }" src="https://player.vimeo.com/video/{ data.vimeoid }"
+                    width="720"
+                    height="405"
+                    frameborder="0"
+                    webkitallowfullscreen=""
+                    mozallowfullscreen=""
+                    allowfullscreen=""
+                    class="fitvids"
+                    style="height: 405px; width: 720px; display: block; margin-left: auto; margin-right: auto;" />
             <div if="{ blog }" class="row">
                 <div class="col-sm-12 ">
                     <div >

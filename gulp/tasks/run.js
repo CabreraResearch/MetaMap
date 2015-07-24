@@ -21,10 +21,26 @@ var sendToSlack = function(i) {
 // Use gulp-run to start a pipeline 
 gulp.task('deploy', function () {
     var p = argv.message;
-    message.text = 'Just deployed new release that: ' + p;
+    var target = argv.target || 'staging';
+    message.text = 'Just deployed new release to '+target+' that: ' + p;
 
-    run('firebase deploy --firebase=thinkwater-staging -m "' + p + '"').exec();
+    switch(target) {
+        case 'production':
+        case 'prod':
+            run('firebase deploy --firebase=thinkwater-production -m "' + p + '"').exec();
 
-    run('firebase deploy --firebase=meta-map-staging -m "' + p + '"').exec() 
-        .pipe(sendToSlack(message));
+            run('firebase deploy --firebase=meta-map-production -m "' + p + '"').exec()
+                .pipe(sendToSlack(message));
+            break;
+
+        case 'staging':
+        default:
+            run('firebase deploy --firebase=thinkwater-staging -m "' + p + '"').exec();
+
+            run('firebase deploy --firebase=meta-map-staging -m "' + p + '"').exec()
+                .pipe(sendToSlack(message));
+            break;
+    }
+
+    
 })

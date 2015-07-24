@@ -9,11 +9,7 @@ $(window).resize(function () {
 });
 //sticky header on scroll
 $(document).ready(function () {
-    $(window).load(function () {
-        $(".sticky").sticky({ topSpacing: 0 });
-    });
-
-
+    
     /* ==============================================
      WOW plugin triggers animate.css on scroll
      =============================================== */

@@ -42,16 +42,19 @@
         this.url = this.pathImg('testimonials');
 
         FrontEnd.MetaFire.getData(FrontEnd.site + '/testimonials').then( (data) => {
-            this.header = data.header;
-            this.items = _.filter(_.sortBy(data.items, 'order'), (i) => { return i.archive != true });
-            this.update();
+            try {
+                this.header = data.header;
+                this.items = _.filter(_.sortBy(data.items, 'order'), (i) => { return i.archive != true });
+                this.update();
 
-            $(this.testimonial_slide).flexslider({
-                slideshowSpeed: 5000,
-                directionNav: false,
-                animation: "fade"
-            });
-
+                $(this.testimonial_slide).flexslider({
+                    slideshowSpeed: 5000,
+                    directionNav: false,
+                    animation: "fade"
+                });
+            } catch(e) {
+                window.FrontEnd.error(e);
+            }
         })
 
     </script>

@@ -76,12 +76,12 @@
     "babel/polyfill": "babel/polyfill"
   },
   "devDependencies": {
-    "babel": "^5.6.23",
+    "babel": "^5.8.3",
     "babelify": "^6.1.3",
     "brfs": "^1.4.0",
-    "browserify": "^10.2.6",
-    "browserify-shim": "^3.8.9",
-    "chai": "^3.0.0",
+    "browserify": "^11.0.0",
+    "browserify-shim": "^3.8.10",
+    "chai": "^3.2.0",
     "ejsify": "^1.0.0",
     "errorhandler": "^1.4.1",
     "extend": "^3.0.0",
@@ -122,12 +122,12 @@
     "yargs": "^3.15.0"
   },
   "optionalDependencies": {
-    "URIjs": "^1.15.2",
+    "URIjs": "^1.16.0",
     "auth0-js": "^6.4.2",
-    "auth0-lock": "^7.6.2",
+    "auth0-lock": "^7.7.1",
     "bluebird": "^2.9.34",
     "bootstrap": "^3.3.5",
-    "core-js": "^0.9.18",
+    "core-js": "^1.0.0",
     "firebase": "^2.2.7",
     "firepad": "^1.1.1",
     "humanize-plus": "^1.5.0",

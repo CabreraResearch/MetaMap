@@ -28,11 +28,22 @@
 
     <div class="divide50"></div>
 
-    <page-explore></page-explore>
+    <div id="explore_container">
+
+    </div>
 
     <div class="divide40"></div>
-    
+
     <script type="es6">
-        
+        var isSafari = /Safari/.test(navigator.userAgent) && /Apple Computer/.test(navigator.vendor);
+        if(!isSafari) {
+            this.on('mount', () => {
+                window.setTimeout( () => {
+                    riot.mount(this.explore_container, 'page-explore', { items: [] });
+                }, 250);
+            })
+        }
+
     </script>
+    
 </page-main>

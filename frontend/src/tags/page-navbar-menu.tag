@@ -15,11 +15,14 @@
     <script type="es6">
         this.data = []
         
-        
-        
         FrontEnd.MetaFire.getData(`${FrontEnd.site}/navbar`).then( (data) => {
-            this.data = _.filter(_.sortBy(data, 'order'), (i) => { return i.archive != true });
-            this.update();
+            
+            try {
+                this.data = _.filter(_.sortBy(data, 'order'), (i) => { return i.archive != true });
+                this.update();
+            } catch(e) {
+                window.FrontEnd.error(e);
+            }
         })
     </script>
 </page-menu-navbar>

@@ -35,10 +35,16 @@
     <script type="es6">
         this.header = {}
         this.items = []
+        
         FrontEnd.MetaFire.getData(FrontEnd.site + '/message').then( (data) => {
-            this.header = data.header
-            this.items = _.filter(_.sortBy(data.items, 'order'), (i) => { return i.archive != true });
-            this.update()
+            
+            try {
+                this.header = data.header
+                this.items = _.filter(_.sortBy(data.items, 'order'), (i) => { return i.archive != true });
+                this.update()
+            } catch(e) {
+                window.FrontEnd.error(e);
+            }
         })
     </script>
 </page-message>

@@ -2,7 +2,7 @@
     <footer id="footer">
         <div id="contact" class="container">
             <div class="row">
-                <div class="col-md-3 col-sm-6 margin30">
+                <div class="col-md-4 col-sm-6 margin30">
                     <div class="footer-col">
                         <h3>{ data.about.title }</h3>
                         <p style="color: #fff;">{ data.about.text }</p>
@@ -29,7 +29,7 @@
                     </div>
                 </div>
                 <!--footer col-->
-                <div class="col-md-3 col-sm-6 margin30 hidden-xs hidden-sm">
+                <div class="col-md-4 col-sm-6 margin30 hidden-xs hidden-sm">
                     <div class="footer-col">
                         <h3>Follow Us</h3>
 
@@ -40,7 +40,7 @@
                     </div>
                 </div>
                 <!--footer col-->
-                <div class="col-md-3 col-sm-6 margin30 hidden-xs hidden-sm" style="padding-right: 1px;">
+                <div class="col-md-4 col-sm-6 margin30 hidden-xs hidden-sm" style="padding-right: 1px;">
                     <div class="footer-col">
                         <h3>Like Us</h3>
                         <div if="{ social.facebook }" class="fb-page" data-href="https://www.facebook.com/{ social.facebook.title }" 
@@ -49,7 +49,6 @@
                              data-hide-cover="false" 
                              data-show-facepile="true" 
                              data-height="300"
-                             data-width="250"
                              data-show-posts="true">
                             <div class="fb-xfbml-parse-ignore">
                                 <blockquote cite="https://www.facebook.com/{ social.facebook.title }">
@@ -59,43 +58,16 @@
                         </div>
                     </div>
                 </div>
-                <!--footer col-->
-                <div class="col-md-3 col-sm-6 margin30">
-                    <div class="footer-col">
-                        <h3>Join Us</h3>
-
-                        <div id="mc_embed_signup">
-                            <form action="//cabreralabs.us4.list-manage.com/subscribe/post?u=58947385383d323caf9047f39&amp;id=9799d3a7b9" 
-                                  method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="" target="_blank" novalidate="">
-                            <p style="color: #fff;">{ data.newsletter.text }</p>
-                                <div id="mc_embed_signup_scroll">
-                                    <div class="mc-field-group">
-                                        <div class="input-group">
-                                            
-                                            <input type="email" 
-                                                   placeholder="Email..."
-                                                   style="height: 31px;"
-                                                   value="" name="EMAIL" class="form-control" id="mce-EMAIL" />
-                                            <span class="input-group-btn">
-                                                <input role="button" type="submit" value="Subscribe" name="subscribe"
-                                                    id="mc-embedded-subscribe"
-                                                    class="btn btn-theme-bg">Subscribe</input>
-                                            </span>
-                                        </div>
-                                        
-                                    </div>
-                                    <!--real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
-                                    <div style="position: absolute; left: -5000px;">
-                                        <input type="text" name="b_58947385383d323caf9047f39_9799d3a7b9" tabindex="-1" value="" />
-                                    </div>
-            
-                                    <div id="mce-responses" class="clear" style="margin-top: 5px;">
-                                        <div class="response" id="mce-error-response" style="color: red; display:none"></div>
-                                        <div class="response" id="mce-success-response" style="color: #fff; display:none"></div>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
+            </div>
+            <div if="{ data.copyright }" class="row">
+                <div class="col-md-12 text-center">
+                    <div class="footer-btm">
+                        <span>
+                            <raw content="{ data.copyright.text }"></raw>
+                        </span>
+                        <img style="display: block; margin-left: auto; margin-right: auto; height: 5%; width: 5%;" src="{ url+data.copyright.img+'?copy1' }"></img>
+                        <span style="font-size: 8px;">{ data.copyright.license }</span>
+                        <img style="display: block; margin-left: auto; margin-right: auto; height: 3%; width: 3%;" src="{ url+data.copyright.img2+'?copy2' }"></img>
                     </div>
                 </div>
             </div>
@@ -103,22 +75,25 @@
     </footer>
     <script type="es6">
         this.mixin('config');
-        this.url = this.pathImg();
+        this.url = this.pathImg('site');
         
         this.social = null
         this.data = null
         this.title = FrontEnd.config.site.title
         
         FrontEnd.MetaFire.getData(`${FrontEnd.site}/footer`).then( (data) => {
-            this.data = data;
-            this.update();
-            
-            FrontEnd.MetaFire.getData(`${FrontEnd.site}/social`).then( (social) => {
-                this.social = social
+            try {
+                this.data = data;
                 this.update();
-                FrontEnd.initSocial()
-            });
             
+                FrontEnd.MetaFire.getData(`${FrontEnd.site}/social`).then( (social) => {
+                    this.social = social
+                    this.update();
+                    FrontEnd.initSocial()
+                });
+            } catch(e) {
+                window.FrontEnd.error(e);
+            }
         })
     </script>
 </page-footer>

@@ -27,18 +27,22 @@
         this.url = this.pathImg();
 
         FrontEnd.MetaFire.getData(FrontEnd.site + '/impact').then( (data) => {
-            this.header = data.header;
-            this.items = _.filter(_.sortBy(data.items, 'order'), (i) => { return i.archive != true });
-            this.update();
+            try {
+                this.header = data.header;
+                this.items = _.filter(_.sortBy(data.items, 'order'), (i) => { return i.archive != true });
+                this.update();
 
-            $(this.impact_slider).owlCarousel({
-                autoPlay: 5000,
-                pagination: false,
-                items: 4,
-                loop: true,
-                itemsDesktop: [1199, 4],
-                itemsDesktopSmall: [991, 2]
-                });
+                $(this.impact_slider).owlCarousel({
+                    autoPlay: 5000,
+                    pagination: false,
+                    items: 4,
+                    loop: true,
+                    itemsDesktop: [1199, 4],
+                    itemsDesktopSmall: [991, 2]
+                    });
+            } catch(e) {
+                window.FrontEnd.error(e);
+            }
         })
         
     </script>

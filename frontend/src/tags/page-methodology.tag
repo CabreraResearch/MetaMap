@@ -63,11 +63,15 @@
         this.url = this.pathImg();
 
         FrontEnd.MetaFire.getData(FrontEnd.site + '/methodology').then( (data) => {
-            this.header = data.header;
-            this.frameworks = data.frameworks;
-            this.partners = data.partners;
+            try {
+                this.header = data.header;
+                this.frameworks = data.frameworks;
+                this.partners = data.partners;
             
-            this.update();
+                this.update();
+            } catch(e) {
+                window.FrontEnd.error(e);
+            }
         })
 
     </script>

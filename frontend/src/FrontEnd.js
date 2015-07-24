@@ -1,5 +1,4 @@
 let MetaFire = require('./js/integrations/firebase');
-let Auth0 = require('./js/integrations/auth0');
 let usersnap = require('./js/integrations/usersnap');
 let riot = window.riot;
 let Router = require('./js/core/Router');
@@ -28,10 +27,12 @@ const config = () => {
         first = segments[1];
     }
     switch (first.toLowerCase()) {
+        case 'crlab':
         case 'meta-map-staging':
         case 'frontend':
             ret.site = SITES['CRL'];
             break;
+        case 'thinkwater-production':
         case 'thinkwater-staging':
         case 'thinkwater':
             ret.site = SITES['THINK_WATER'];
@@ -52,7 +53,6 @@ class FrontEnd {
         this.config = config();
 
         this.MetaFire = new MetaFire(this.config);
-        this.Auth0 = new Auth0(this.config);
         this.socialFeatures = [];
     }
 
@@ -71,7 +71,7 @@ class FrontEnd {
             _.extend(this.config.site, data);
             document.title = this.config.site.title;
             let favico = document.getElementById('favico');
-            favico.setAttribute('href', `${this.config.site.imageUrl}frontend/favicon.ico`);
+            favico.setAttribute('href', `${this.config.site.imageUrl}favicon.ico`);
 
             ga(this.config.site.google);
             this.socialFeatures.push(twitter());
@@ -84,6 +84,23 @@ class FrontEnd {
         });
     }
 
+    log(val) {
+        if (window.ga) {
+            window.ga('send', 'event', 'log', 'label', val);
+        }
+        console.log(val);
+    }
+
+    error(val) {
+        if (window.ga) {
+            window.ga('send', 'exception', {
+                'exDescription': val.message,
+                'exFatal': true
+            });
+        }
+        console.log(val);
+    }
+
     login() {
         let self = this;
         this.Auth0.login().then((profile) => {
@@ -93,7 +110,6 @@ class FrontEnd {
 
     logout() {
         this.MetaFire.logout();
-        this.Auth0.logout();
     }
 }
 

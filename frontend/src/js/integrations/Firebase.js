@@ -1,4 +1,4 @@
-let Firebase = require('firebase');
+let Firebase = window.Firebase; //require('firebase');
 let Promise = window.Promise;
 let localforage = window.localforage;
 let MetaMap = window.MetaMap;
@@ -50,7 +50,11 @@ class MetaFire {
             child.orderByChild('order').on('value',
                 (snapshot) => {
                     let data = snapshot.val();
-                    resolve(data);
+                    try {
+                        resolve(data);
+                    } catch (e) {
+                        window.FrontEnd.error(e);
+                    }
                 },
                 (error) => {
                     reject(error);
@@ -65,7 +69,11 @@ class MetaFire {
             let child = this.getChild(path);
             child.orderByChild('order').on(event, (snapshot) => {
                 let data = snapshot.val();
-                callback(data);
+                try {
+                    callback(data);
+                } catch (e) {
+                    window.FrontEnd.error(e);
+                }
             });
         }
     }

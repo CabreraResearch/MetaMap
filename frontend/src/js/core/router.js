@@ -5,17 +5,27 @@ const staticRoutes = {
 }
 
 let isHidden = false;
-let toggleMain = (hide) => {
+let toggleMain = (hide, path) => {
+    track(path);
     if (hide) {
         isHidden = true;
         $('#main').hide();
         $('#at4-share').parent().show();
-        
+
     } else {
         isHidden = false;
         $('#at4-share').parent().hide();
         $('#main').show();
         $('dynamic-page').empty();
+    }
+}
+
+let track = (path) => {
+    if (window.ga) {
+        window.ga('set', {
+            page: path
+        });
+        window.ga('send', 'pageview');
     }
 }
 
@@ -26,10 +36,10 @@ class Router {
         riot.route((target, ...params) => {
             let path = this.getPath(target);
             if (!staticRoutes[path]) {
-                toggleMain(true);
+                toggleMain(true, path);
                 riot.mount('dynamic-page', { id: path });
             } else {
-                toggleMain(false);
+                toggleMain(false, path);
             }
         });
         this.to(window.location.hash || 'home');
@@ -52,10 +62,10 @@ class Router {
         path = route.getPath(path);
         if (path) {
             if (staticRoutes[path]) {
-                toggleMain(false);
+                toggleMain(false, path);
                 riot.route(path);
             } else {
-                toggleMain(true);
+                toggleMain(true, path);
                 riot.route(`!${path}`);
             }
         }

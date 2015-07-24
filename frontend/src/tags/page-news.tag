@@ -20,22 +20,26 @@
         this.data = [];
 
         FrontEnd.MetaFire.getData(`${FrontEnd.site}/news`).then( (data) => {
-            this.data = _.filter(_.sortBy(data, 'order'), (i) => { return i.archive != true });
-            this.update();
-            $(this.news_carousel).owlCarousel({
-                // Most important owl features
-                items: 4,
-                itemsCustom: false,
-                itemsDesktop: [1199, 4],
-                itemsDesktopSmall: [980, 2],
-                itemsTablet: [768, 2],
-                itemsTabletSmall: false,
-                itemsMobile: [479, 1],
-                singleItem: false,
-                startDragging: true,
-                autoPlay: 5000,
-                loop: true
-            });
+            try {
+                this.data = _.filter(_.sortBy(data, 'order'), (i) => { return i.archive != true });
+                this.update();
+                $(this.news_carousel).owlCarousel({
+                    // Most important owl features
+                    items: 4,
+                    itemsCustom: false,
+                    itemsDesktop: [1199, 4],
+                    itemsDesktopSmall: [980, 2],
+                    itemsTablet: [768, 2],
+                    itemsTabletSmall: false,
+                    itemsMobile: [479, 1],
+                    singleItem: false,
+                    startDragging: true,
+                    autoPlay: 5000,
+                    loop: true
+                });
+            } catch(e) {
+                window.FrontEnd.error(e);
+            }
         })
     </script>
     

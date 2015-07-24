@@ -9,10 +9,11 @@
                     <span class="icon-bar"></span>
                 </button>
                 <div>
-                    <img if="{ data }" 
+                    <a href="#home"><img if="{ data }" 
                          style="margin-top: 7px; margin-right: 15px;"
                          src="{ url }site/{ data.img }" 
                          alt="{ data.alt }" />
+                    </a>
                 </div>
             </div>
             <page-menu-navbar></page-menu-navbar>
@@ -23,8 +24,14 @@
         this.url = this.pathImg();
         
         FrontEnd.MetaFire.getData(FrontEnd.site + '/logo').then( (data) => {
-            this.data = data;
-            this.update();
+            
+            try {                
+                this.data = data;
+                this.update();
+                $(".sticky").sticky({ topSpacing: 0 });
+            } catch(e) {
+                window.FrontEnd.error(e);
+            }
         })
     </script>
 </page-navbar>

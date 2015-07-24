@@ -11,7 +11,7 @@
                     style="background: rgb(240,110,30);"
                     >
                     <!-- MAIN IMAGE -->
-                    <img if="{ !youtubeid && img }" src="{ parent.url + img }"  
+                    <img if="{ !youtubeid && img && img != 'undefined' }" src="{ parent.url + img + '?banner' }"  
                          alt="darkblurbg"  
                         data-bgfit="cover"
                         data-bgposition="left top" 
@@ -67,7 +67,8 @@
                         <iframe src="https://www.youtube.com/embed/{ youtubeid }?hd=1&wmode=opaque&controls=1&showinfo=0"
                                  width="1066px"
                                 height="600px"
-			                    style="width:1066px;height:600px;">
+			                    style="width:1066px;height:600px;"
+                                >
                         </iframe>
                     </div>
                     
@@ -83,27 +84,27 @@
         this.mounted = false;
         
         this.watchData('/banner', (data) => {
-            if(false == this.mounted) {
-                this.mounted = true;
-                this.data = _.filter(_.sortBy(data, 'order'), (i) => { return i.archive != true });
-                this.update();
+            try {
+                if(false == this.mounted) {
+                    this.mounted = true;
+                    this.data = _.filter(_.sortBy(data, 'order'), (i) => { return i.archive != true });
+                    this.update();
             
-                $(this.tp_banner).revolution({
-                    stopAtSlide: 1,
-                    stopAfterLoops: 0,
-                    startwidth: 1170,
-                    startheight: 600,
-                    hideThumbs: 10
-                    //fullWidth: "on",
-                    //forceFullWidth: "on",
-                    //lazyLoad: "on"
-                    // navigationStyle: "preview4"
-                });
-            } 
-            //else {
-            //    this.unmount(true);
-            //    riot.mount('page-banner');
-            //}
+                    $(this.tp_banner).revolution({
+                        stopAtSlide: 1,
+                        stopAfterLoops: 0,
+                        startwidth: 1170,
+                        startheight: 600,
+                        hideThumbs: 10
+                        //fullWidth: "on",
+                        //forceFullWidth: "on",
+                        //lazyLoad: "on"
+                        // navigationStyle: "preview4"
+                    });
+                } 
+            } catch(e) {
+                window.FrontEnd.error(e);
+            }
         })
         
     </script>
