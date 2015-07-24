@@ -16,6 +16,12 @@
 
     <script type="es6">
         
+        this.on('update', () => {
+            $(this['full-width']).modal();
+        
+        });
+        
+        
     </script>
     
 </meta-dialog>

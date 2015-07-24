@@ -43,6 +43,9 @@
                     <table class="table table-striped table-bordered table-hover" id="sample_1">
                         <thead>
                             <tr>
+                                <th>
+                                    MapId
+                                </th>
                                 <th class="table-checkbox">
                                     <input type="checkbox" class="group-checkable" data-set="#sample_1 .checkboxes"/>
                                 </th>
@@ -58,10 +61,16 @@
                                 <th>
                                     Status
                                 </th>
+                                <th>
+                                    Action
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr each="{ data }" class="odd gradeX">
+                                <td style="display: none;">
+                                    { id }
+                                </td>
                                 <td>
                                     <input type="checkbox" class="checkboxes" value="1"/>
                                 </td>
@@ -75,6 +84,9 @@
                                         Private
                                     </span>
                                 </td>
+                                <td>
+                                    <button class="btn btn-sm blue filter-submit" onclick="{ parent.onOpen }"><i class="fa fa-icon-eye-open"></i> Open</button>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -86,10 +98,35 @@
         this.mixin('config');
         this.url = this.pathImg();
         
+        this.onOpen = (event, ...o) => {
+            let id = event.item.id;
+            var x = {
+                ccsTagging: {},
+                safeApply: function (fn, ...params) {
+                    if (fn) {
+                        fn(...params);
+                    }
+                },
+                $watch: function () { },
+                get: function () { return { then: function () { } } },
+                isTouchDevice: function () { return false; }
+            }
+            FrontEnd.MetaFire.getData(`maps/data/${id}`).then((map)=>{
+                $('#full-width').modal('toggle');
+                x.mapData = map;
+                window._mapEditorCtrl = MapEditorCtrl(x, x, x, x, x);
+            });
+            
+            
+        }
+        
         FrontEnd.MetaFire.getData('maps/list').then( (data) => {
             
             try {                
-                this.data = _.toArray(data);
+                this.data = _.map(data, (obj, key) => {
+                    obj.id = key
+                    return obj
+                });
                 this.update();
                 
                 var table = $(this.sample_1);
@@ -102,9 +139,11 @@
                     // So when dropdowns used the scrollable div should be removed. 
                     //"dom": "<'row'<'col-md-6 col-sm-12'l><'col-md-6 col-sm-12'f>r>t<'row'<'col-md-5 col-sm-12'i><'col-md-7 col-sm-12'p>>",
 
-                    "bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
+                    //"bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
 
                     "columns": [{
+                        visible: false
+                    },{
                         "orderable": false
                     }, {
                         "orderable": true
@@ -114,11 +153,9 @@
                         "orderable": true
                     }, {
                         "orderable": false
-                    }],
-                    "lengthMenu": [
-                        [5, 15, 20, -1],
-                        [5, 15, 20, "All"] // change per page values here
-                    ]
+                    }, {
+                        "orderable": false
+                    }]
                 });
 
                 var tableWrapper = table.parent().parent().parent().find('#sample_1_wrapper');

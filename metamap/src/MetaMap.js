@@ -25,20 +25,7 @@ class MetaMap {
                 Demo.init(); // init demo features
                 Index.init(); // init index page
                 Tasks.initDashboardWidget(); // init tash dashboard widget
-                var x = {
-                    ccsTagging: {},
-                    safeApply: function (fn, ...params) {
-                        if (fn) {
-                            fn(...params);
-                        }
-                    },
-                    $watch: function () { },
-                    get: function () { return { then: function () { } } },
-                        isTouchDevice: function () { return false; }
-                    }
 
-                window.mapData = x.mapData = { "map": { "metadata": { "sandbox": false, "id": 5547, "name": "Untitled Map", "url": "/maps/5547", "canEdit": true, "updatedAt": "2015-05-15T12:29:40.721-04:00", "updatedBy": null, "updatedByName": null, "userTags": [] }, "data": { "class": "go.GraphLinksModel", "nodeIsLinkLabelProperty": "isLinkLabel", "linkLabelKeysProperty": "labelKeys", "linkFromPortIdProperty": "fromPort", "linkToPortIdProperty": "toPort", "nodeDataArray": [{ "key": 1, "text": "New Idea", "isGroup": true, "loc": "0 0", "layout": "left", "sExpanded": true, "pExpanded": true }], "linkDataArray": [] }, "stateData": null, "editorOptions": null, "analytics": {}, "versions": [] }};
-                window._mapEditorCtrl = MapEditorCtrl(x, x, x, x, x);
                 
             }, 250);
         });

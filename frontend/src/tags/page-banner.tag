@@ -61,8 +61,7 @@
 			            data-endeasing="Power4.easeOut"
 			            data-autoplay="true"
 			            data-autoplayonlyfirsttime="false"
-                        
-			            data-nextslideatend="false"
+                        data-nextslideatend="false"
                         data-thumbimage="https://img.youtube.com/vi/{ youtubeid }/mqdefault.jpg">
                         <iframe src="https://www.youtube.com/embed/{ youtubeid }?hd=1&wmode=opaque&controls=1&showinfo=0"
                                  width="1066px"

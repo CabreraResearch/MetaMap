@@ -7,9 +7,9 @@ window.MapEditorCtrl = function($rootScope, $scope, $http, $resource, $timeout, 
     $scope.map = new SandbankEditor.Map($scope, $http, $resource, $timeout, $modal, $log);
 
     // window.mapData is set in _form view
-    var metadata = window.mapData.map.metadata;
+    var metadata = {};
     $scope.sandbox = metadata.sandbox;
-    $scope.mapData = window.mapData.map.data; // this gets overwritten by load() unless we are in the sandbox with no map ID
+    //$scope.mapData = window.mapData.map.data; // this gets overwritten by load() unless we are in the sandbox with no map ID
     $scope.mapId = metadata.id;
     $scope.mapTitle = metadata.name;
     $scope.mapUserTags = metadata.userTags;
