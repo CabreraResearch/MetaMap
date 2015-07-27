@@ -12,6 +12,9 @@ const config = () => {
         CRL: {
             db: 'meta-map-production'
         },
+        CRL_STAGING: {
+            db: 'meta-map-staging'
+        },
         THINK_WATER: {
             db: 'thinkwater-production'
         }
@@ -27,19 +30,20 @@ const config = () => {
         first = segments[1];
     }
     switch (first.toLowerCase()) {
-        case 'crlab':
+        case 'localhost':
         case 'meta-map-staging':
-        case 'frontend':
-            ret.site = SITES['CRL'];
+            ret.site = SITES.CRL_STAGING;
             break;
+
+        case 'crlab':
+        case 'frontend':
+            ret.site = SITES.CRL;
+            break;
+
         case 'thinkwater-production':
         case 'thinkwater-staging':
         case 'thinkwater':
-            ret.site = SITES['THINK_WATER'];
-            break;
-        default:
-            //For now, default to CRL
-            ret.site = SITES['CRL'];
+            ret.site = SITES.THINK_WATER;
             break;
     }
 
@@ -66,13 +70,29 @@ class FrontEnd {
         return 'frontend';
     }
 
-    init() {
-        this.MetaFire.on('config', (data) => {
-            _.extend(this.config.site, data);
-            document.title = this.config.site.title;
-            let favico = document.getElementById('favico');
-            favico.setAttribute('href', `${this.config.site.imageUrl}favicon.ico`);
+    onReady() {
+        if (!this._onReady) {
+            this._onReady = new Promise((fulfill, reject) => {
+                this.MetaFire.on('config', (data) => {
+                    try {
+                        _.extend(this.config.site, data);
+                        document.title = this.config.site.title;
+                        let favico = document.getElementById('favico');
+                        favico.setAttribute('href', `${this.config.site.imageUrl}favicon.ico`);
 
+                        fulfill(this.config.site);
+                    } catch (e) {
+                        reject(e);
+                    }
+                });
+            });
+        }
+
+        return this._onReady;
+    }
+
+    init() {
+        return this.onReady().then((config) => {
             ga(this.config.site.google);
             this.socialFeatures.push(twitter());
             this.socialFeatures.push(facebook());

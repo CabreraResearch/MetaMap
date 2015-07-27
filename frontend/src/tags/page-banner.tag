@@ -11,7 +11,7 @@
                     style="background: rgb(240,110,30);"
                     >
                     <!-- MAIN IMAGE -->
-                    <img if="{ !youtubeid && img && img != 'undefined' }" src="{ parent.url + img + '?banner' }"  
+                    <img if="{ !youtubeid && img && img != 'undefined' }" src="{parent.url+img}?tag=banner"  
                          alt="darkblurbg"  
                         data-bgfit="cover"
                         data-bgposition="left top" 

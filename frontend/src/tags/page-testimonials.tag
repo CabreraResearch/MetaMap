@@ -20,7 +20,7 @@
                     <div id="testimonial_slide" class="testi-slide">
                         <ul class="slides">
                             <li each="{ items }">
-                                <img src="{ parent.url + img }" alt="{ user }" />
+                                <img src="{ parent.url + img }?tag=testimonials&user={user}" alt="{ user }" />
                                     <h4>
                                         <i class="fa fa-quote-left ion-quote"></i>
                                         { text}

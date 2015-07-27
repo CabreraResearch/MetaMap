@@ -32,7 +32,7 @@
                    class="cbp-item { type } { _.keys(tags).join(' ') }">
                     <div class="cbp-caption">
                         <div class="cbp-caption-defaultWrap">
-                            <img if="{ img }" src="{ parent.url + type + '/' + img }" alt="{ title }"/>
+                            <img if="{ img && img.length }" src="{parent.url+type}/{img}?tag=explore" alt="{ title }"/>
                         </div>
                         <div class="cbp-caption-activeWrap">
                             <div class="cbp-l-caption-alignCenter">

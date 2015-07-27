@@ -2,91 +2,87 @@ let Auth0Lock = require('auth0-lock');
 
 class Auth0 {
 
-    constructor() {
-        this.lock = new Auth0Lock('wsOnart23yViIShqT4wfJ18w2vt2cl32', 'metamap.auth0.com');
+    constructor(config) {
+        this.config = config;
+        this.lock = new Auth0Lock(config.api, config.app);
         this.lock.on('loading ready', (...e) => {
             
         });
     }
 
     login() {
-        let that = this;
-        
-        let promise = new Promise((fulfill, reject) => {
-            that.getSession().then((profile) => {
-                if (profile) {
-                    fulfill(profile);
-                } else {
-                    that.lock.show({
-                        closable: false,
-                        loginAfterSignup: true,
-                        authParams: {
-                            scope: 'openid offline_access'
-                        }
-                    }, (err, profile, id_token, ctoken, opt, refresh_token) => {
-                        if (err) {
-                            reject(err);
-                        } else {
-                            localforage.setItem('id_token', id_token);
-                            localforage.setItem('profile', profile);
+        if (!this._login) {
+            this._login = new Promise((fulfill, reject) => {
+                this.getSession().then((profile) => {
+                    if (profile) {
+                        fulfill(profile);
+                    } else {
+                        this.lock.show({
+                            closable: false,
+                            loginAfterSignup: true,
+                            authParams: {
+                                scope: 'openid offline_access'
+                            }
+                        }, (err, profile, id_token, ctoken, opt, refresh_token) => {
+                            if (err) {
+                                this.logout();
+                                reject(err);
+                            } else {
+                                localforage.setItem('id_token', id_token);
+                                localforage.setItem('profile', profile);
 
-                            that.ctoken = ctoken;
-                            that.id_token = id_token;
-                            that.profile = profile;
-                            that.refresh_token = refresh_token;
-                            fulfill(profile);
-                        }
-                    });
-                }
+                                this.ctoken = ctoken;
+                                this.id_token = id_token;
+                                this.profile = profile;
+                                this.refresh_token = refresh_token;
+                                fulfill(profile);
+                            }
+                        });
+                    }
+                });
             });
-        });
-        return promise;
+        }
+        return this._login;
     }
 
     linkAccount() {
-        let that = this;
         this.lock.show({
-            callbackURL: 'https://popping-fire-897.firebaseapp.com/',
+            callbackURL: window.location.href,
             dict: {
                 signin: {
                     title: 'Link with another account'
                 }
             },
             authParams: {
-                access_token: that.ctoken
+                access_token: this.ctoken
             }
         });
     }
 
     getSession() {
-        let that = this;
-        let getProfile = (id_token, fulfill, reject) => {
-            return that.lock.getProfile(id_token, function(err, profile) {
-                if (err) {
-                    reject(err);
-                } else {
-                    localforage.setItem('id_token', id_token);
-                    localforage.setItem('profile', profile);
-                    that.id_token = id_token;
-                    that.profile = profile;
-                    fulfill(profile, id_token);
-                }
+        if (!this._getSession) {
+            this._getSession = new Promise((fulfill, reject) => {
+                localforage.getItem('id_token').then((id_token) => {
+                    if (id_token) {
+                        return this.lock.getProfile(id_token, (err, profile) => {
+                            if (err) {
+                                this.logout();
+                                reject(err);
+                            } else {
+                                localforage.setItem('id_token', id_token);
+                                localforage.setItem('profile', profile);
+                                this.id_token = id_token;
+                                this.profile = profile;
+                                fulfill(profile, id_token);
+                            }
+                        });
+                    } else {
+                        fulfill(null);
+                    }
+                });
             });
         }
-        let promise = new Promise((fulfill, reject) => {
-            let fulfilled = false;
-            
-            localforage.getItem('id_token').then((id_token) => {
-                if (id_token) {
-                    getProfile(id_token, fulfill, reject);
-                } else {
-                    fulfill(null);
-                }
-            });
-                
-            
-        });
-        return promise;
+        return this._getSession;
     }
     logout() {
         localforage.removeItem('id_token');

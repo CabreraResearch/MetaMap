@@ -6,7 +6,7 @@
         <div class="container">
             <div class="row">
                 <div id="impact_img"  class="col-md-6">
-                    <img class="img-responsive" alt="7 billion thinkers" src="{ url+impact.img + '?countmein' }"></img>
+                    <img class="img-responsive" alt="7 billion thinkers" src="{ url+impact.img}?tag=countmein"></img>
                 </div>
                 <div class="col-md-6">
                     <br/>

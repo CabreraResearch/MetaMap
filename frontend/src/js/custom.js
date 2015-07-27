@@ -1,13 +1,3 @@
-/*Theme    : assan
- * Author  : Design_mylife
- * Version : V1.4
- * 
- */
-
-$(window).resize(function () {
-    $(".navbar-collapse").css({ maxHeight: $(window).height() - $(".navbar-header").height() + "px" });
-});
-//sticky header on scroll
 $(document).ready(function () {
     
     /* ==============================================
@@ -23,7 +13,6 @@ $(document).ready(function () {
     );
     wow.init();
 
-
     //parallax
     $(window).stellar({
         horizontalScrolling: false,
@@ -34,38 +23,4 @@ $(document).ready(function () {
          horizontalOffset: 0,
          verticalOffset: 0*/
     });
-
-    //MAGNIFIC POPUP
-    $('.show-image').magnificPopup({ type: 'image' });
-
-    /* ==============================================
-     flex slider
-     =============================================== */
-
-    $('.main-flex-slider,.testi-slide').flexslider({
-        slideshowSpeed: 5000,
-        directionNav: false,
-        animation: "fade"
-    });
-    
-
-
-    /*========tooltip and popovers====*/
-    $("[data-toggle=popover]").popover();
-
-    $("[data-toggle=tooltip]").tooltip();
-
-
-    //transparent header
-
-    $(window).scroll(function () {
-        if ($(this).scrollTop() > 100) {
-            $('.transparent-header').css("background", "#252525");
-        } else {
-            $('.transparent-header').css("background", "transparent");
-        }
-    });
 });
-
-
-

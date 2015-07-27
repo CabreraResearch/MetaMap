@@ -11,7 +11,7 @@
                 <div>
                     <a href="#home"><img if="{ data }" 
                          style="margin-top: 7px; margin-right: 15px;"
-                         src="{ url }site/{ data.img }" 
+                         src="{ url }site/{ data.img }?tag=navbar" 
                          alt="{ data.alt }" />
                     </a>
                 </div>
@@ -33,5 +33,9 @@
                 window.FrontEnd.error(e);
             }
         })
+        
+        $(window).resize(function () {
+            $(".navbar-collapse").css({ maxHeight: $(window).height() - $(".navbar-header").height() + "px" });
+        });
     </script>
 </page-navbar>

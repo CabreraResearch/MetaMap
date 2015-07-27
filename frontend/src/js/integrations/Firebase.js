@@ -10,31 +10,42 @@ class MetaFire {
     }
 
     login() {
-        let that = this;
-        let ret = new Promise((fulfill, reject) => {
-            localforage.getItem('id_token').then((id_token) => {
-                window.MetaMap.Auth0.getSession().then((profile) => {
+        if (!this._login) {
+            this._login = new Promise((fulfill, reject) => {
+                localforage.getItem('id_token').then((id_token) => {
+                    window.MetaMap.Auth0.getSession().then((profile) => {
 
-                    window.MetaMap.Auth0.lock.getClient().getDelegationToken({
-                        target: profile.clientID,
-                        id_token: id_token,
-                        api_type: 'firebase'
-                    }, (err, delegationResult) => {
-                        that.firebase_token = delegationResult.id_token;
-                        localforage.setItem('firebase_token', that.firebase_token);
-                        this.fb.authWithCustomToken(that.firebase_token, (error, authData) => {
-                            if (error) {
-                                window.FrontEnd.error(error);
-                                reject(error);
-                            } else {
-                                fulfill(authData);
-                            }
-                        }); 
+                        window.MetaMap.Auth0.lock.getClient().getDelegationToken({
+                            target: profile.clientID,
+                            id_token: id_token,
+                            api_type: 'firebase'
+                        }, (err, delegationResult) => {
+                            this.firebase_token = delegationResult.id_token;
+                            localforage.setItem('firebase_token', this.firebase_token);
+                            this.fb.authWithCustomToken(this.firebase_token, (error, authData) => {
+                                if (error) {
+                                    window.FrontEnd.error(error);
+                                    reject(error);
+                                } else {
+                                    fulfill(authData);
+                                }
+                            });
+                        });
                     });
                 });
             });
-        });
-        return ret;
+            this._onReady = this._login;
+        }
+        return this._login;
+    }
+
+    onReady() {
+        if (!this._onReady) {
+            this._onReady = new Promise((fulfill, reject) => {
+                fulfill();
+            });
+        }
+        return this._onReady;
     }
 
     getChild(path) {
@@ -42,12 +53,14 @@ class MetaFire {
     }
 
     getData (path) {
-        var child = this.fb;
-        if (path) {
-            child = this.getChild(path);
-        }
-        var promise = new Promise( (resolve, reject) => {
-            child.orderByChild('order').on('value',
+        return this.onReady().then(() => {
+            var child = this.fb;
+            if (path) {
+                child = this.getChild(path);
+            }
+            return new Promise((resolve, reject) => {
+
+                child.orderByChild('order').on('value',
                 (snapshot) => {
                     let data = snapshot.val();
                     try {
@@ -57,24 +70,25 @@ class MetaFire {
                     }
                 },
                 (error) => {
-                    window.FrontEnd.error({ message: `Cannot access ${path}`});
+                    window.FrontEnd.error({ message: `Cannot access ${path}` });
                     reject(error);
                 });
+            });
         });
-        
-        return promise;
     }
 
     on (path, callback, event = 'value' ) {
         if (path) {
-            let child = this.getChild(path);
-            child.orderByChild('order').on(event, (snapshot) => {
-                let data = snapshot.val();
-                try {
-                    callback(data);
-                } catch (e) {
-                    window.FrontEnd.error(e);
-                }
+            this.onReady().then(() => {
+                let child = this.getChild(path);
+                child.orderByChild('order').on(event, (snapshot) => {
+                    let data = snapshot.val();
+                    try {
+                        callback(data);
+                    } catch (e) {
+                        window.FrontEnd.error(e);
+                    }
+                });
             });
         }
     }
