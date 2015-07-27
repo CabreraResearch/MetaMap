@@ -1,3 +1,6 @@
+let LinkLabelDraggingTool = require('./extensions/LinkLabelDraggingTool.js');
+let NodeLabelDraggingTool = require('./extensions/NodeLabelDraggingTool.js');
+
 // functions for creating and manipulating the map (i.e. Diagram)
 
 SandbankEditor.Map = function($scope, $http, $resource, $timeout, $modal, $log) {
@@ -113,6 +116,8 @@ SandbankEditor.Map = function($scope, $http, $resource, $timeout, $modal, $log) 
         _diagram.hasVerticalScrollbar = false;
         _diagram.padding = 500;
         _diagram.layout = _layouts.getFreehandDiagramLayout();
+        _diagram.toolManager.mouseMoveTools.insertAt(0, new LinkLabelDraggingTool());
+        _diagram.toolManager.mouseMoveTools.insertAt(0, new NodeLabelDraggingTool());
 
         initTools();
         _templates.initTemplates(_diagram); // set up templates, customize temporary link behavior 
@@ -471,11 +476,10 @@ SandbankEditor.Map = function($scope, $http, $resource, $timeout, $modal, $log) 
 
     this.load = function() {
        
-        //var data = { "map": { "metadata": { "sandbox": null, "id": 5954, "name": "Untitled Map", "url": "/maps/5954", "canEdit": true, "updatedAt": "2015-07-07T18:28:55.765-04:00", "updatedBy": 863, "updatedByName": "Christopher Froehlich", "userTags": [] }, "data": { "class": "go.GraphLinksModel", "linkFromPortIdProperty": "fromPort", "linkToPortIdProperty": "toPort", "nodeIsLinkLabelProperty": "isLinkLabel", "linkLabelKeysProperty": "labelKeys", "nodeDataArray": [{ "key": 1, "text": "New Idea", "isGroup": true, "loc": "-130.5 -78.5", "layout": "left", "sExpanded": true, "pExpanded": true }, { "text": "Idea", "isGroup": true, "layout": "left", "sExpanded": true, "pExpanded": true, "key": -2, "loc": "101.5 -78.5" }, { "text": "Idea", "isGroup": true, "layout": "left", "sExpanded": true, "pExpanded": true, "key": -3, "loc": "530.5 -77.5" }], "linkDataArray": [{ "type": "noArrows", "from": -2, "to": 1, "labelKeys": [], "fromPort": "P", "toPort": "P", "category": "P" }, { "type": "noArrows", "from": -2, "to": -3, "labelKeys": [], "fromPort": "R", "toPort": "R" }] }, "stateData": { "showNavigator": false, "currentTab": null, "perspectivePointKey": null, "distinctionThingKey": null }, "editorOptions": { "defaultRelationshipDirection": "noArrows", "defaultThingLayout": "left", "perspectiveMode": "lines" }, "analytics": { "COUNT_THINGS": "3.0", "COUNT_SYSTEMS": "0.0", "COUNT_RELATIONSHIPS": "1.0", "COUNT_RTHINGS": "0.0", "COUNT_SYSTEM_RTHINGS": "0.0", "COUNT_PERSPECTIVES": "1.0", "COUNT_DISTINCTIONS": "0.0", "COUNT_SYSTEM_PERSPECTIVES": "0.0" }, "versions": [] } }
         var data = $scope.mapData.data;
         _diagram.model = go.Model.fromJson(data);
-        _ui.setStateData(data.map.stateData);
-        _ui.setMapEditorOptions(data.map.editorOptions);
+        _ui.setStateData($scope.mapData.state_data);
+        _ui.setMapEditorOptions($scope.mapData.editor_options);
 
         self.checkModel();
         _diagram.updateAllTargetBindings();
@@ -485,7 +489,7 @@ SandbankEditor.Map = function($scope, $http, $resource, $timeout, $modal, $log) 
         _diagram.isReadOnly = !$scope.canEdit;
         $scope.updateEditStatus($scope.canEdit ? $scope.LAST_UPDATED : $scope.READ_ONLY);
         _ui.resetZoom();
-        self.loadMapExtraData(data.map);
+        self.loadMapExtraData($scope.mapData);
 
         // if no nodes OR in thinkquery mode, launch generator
         if ($scope.thinkquery || !_diagram.model.nodeDataArray.length) {
