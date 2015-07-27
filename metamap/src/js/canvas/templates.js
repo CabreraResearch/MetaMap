@@ -863,7 +863,7 @@ SandbankEditor.Templates = function($scope, map) {
                 routing: go.Link.Normal,
                 relinkableFrom: true,
                 relinkableTo: true,
-                curve: go.Link.Bezier, 
+                curve: go.Link.Bezier,
                 adjusting: go.Link.Stretch, 
                 reshapable: true,
                 mouseEnter: function(event, target, obj2) {
@@ -896,7 +896,9 @@ SandbankEditor.Templates = function($scope, map) {
                         console.log(linkInfo(target));
                     }
                 }
-            },
+        },
+        new go.Binding("points").makeTwoWay(),
+        new go.Binding("curviness", "curviness"),
             mk(go.Shape,
                 new go.Binding('stroke', '', getRLinkSelectionStroke).ofObject(),
                 new go.Binding("strokeWidth", "", map.getLayouts().getLinkStrokeWidth).ofObject(), {
@@ -941,12 +943,22 @@ SandbankEditor.Templates = function($scope, map) {
 
     this.pLinkTemplate =
         mk(go.Link,
-            new go.Binding('opacity', '', function(obj) {
+        {
+            curve: go.Link.Bezier,
+            adjusting: go.Link.Stretch,
+            reshapable: true
+        },
+        new go.Binding("points").makeTwoWay(),
+        new go.Binding("curviness", "curviness"),
+            new go.Binding('opacity', '', function (obj) {
                 return (self.showPLink(obj) ? 1 : 0);
             }).ofObject(), {
                 selectionAdorned: false,
                 layerName: 'Background', // make P links fall behind R links
                 routing: go.Link.Normal,
+                curve: go.Link.Bezier,
+                adjusting: go.Link.Stretch,
+                reshapable: true,
                 contextClick: function(event, target) {
                     if (event.control) {
                         console.log(linkInfo(target));

@@ -1,4 +1,3 @@
-let LinkLabelDraggingTool = require('./extensions/LinkLabelDraggingTool.js');
 let NodeLabelDraggingTool = require('./extensions/NodeLabelDraggingTool.js');
 
 // functions for creating and manipulating the map (i.e. Diagram)
@@ -116,7 +115,6 @@ SandbankEditor.Map = function($scope, $http, $resource, $timeout, $modal, $log) 
         _diagram.hasVerticalScrollbar = false;
         _diagram.padding = 500;
         _diagram.layout = _layouts.getFreehandDiagramLayout();
-        _diagram.toolManager.mouseMoveTools.insertAt(0, new LinkLabelDraggingTool());
         _diagram.toolManager.mouseMoveTools.insertAt(0, new NodeLabelDraggingTool());
 
         initTools();
