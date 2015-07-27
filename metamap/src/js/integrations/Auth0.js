@@ -47,7 +47,7 @@ class Auth0 {
 
     linkAccount() {
         this.lock.show({
-            callbackURL: window.location.href,
+            callbackURL: location.href.replace(location.hash, ''),
             dict: {
                 signin: {
                     title: 'Link with another account'
