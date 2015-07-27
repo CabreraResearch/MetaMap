@@ -863,6 +863,9 @@ SandbankEditor.Templates = function($scope, map) {
                 routing: go.Link.Normal,
                 relinkableFrom: true,
                 relinkableTo: true,
+                curve: go.Link.Bezier, 
+                adjusting: go.Link.Stretch, 
+                reshapable: true,
                 mouseEnter: function(event, target, obj2) {
                     map.getUi().mouseOverLink = target;
                     map.getDiagram().updateAllTargetBindings();
