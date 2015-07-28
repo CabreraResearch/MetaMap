@@ -1,14 +1,15 @@
-var Auth0 = require('./js/integrations/auth0');
-var usersnap = require('./js/integrations/usersnap');
+var Auth0 = require('./js/app/auth0');
 var User = require('./js/app/user.js');
-var Editor = require('./js/canvas/editor.js');
+var Router = require('./js/app/Router.js');
+var Eventer = require('./js/app/Eventer.js');
 
 class MetaMap {
 
     constructor() {
         this.MetaFire = FrontEnd.MetaFire;
+        this.Eventer = new Eventer(this);
+        
         this.onReady();
-        usersnap();
     }
 
     onReady() {
@@ -29,9 +30,12 @@ class MetaMap {
         this.onReady().then(() => {
             this.Auth0.login().then((profile) => {
                 this.User = new User(profile);
-
                 this.MetaFire.login();
-                window.FrontEnd.init();
+                
+                riot.mount('*');
+                
+                this.Router = new Router(this);
+
                 _.delay(() => {
                     Metronic.init(); // init metronic core componets
                     Layout.init(); // init layout
