@@ -1150,7 +1150,7 @@ SandbankEditor.Templates = function($scope, map) {
                 stroke: null
             }),
             mk(go.Picture, {
-                source: '/assets/metamap-logo-50.png',
+                source: 'metamap/assets/img/metamap-logo-50.png',
                 alignment: go.Spot.TopLeft,
                 alignmentFocus: go.Spot.TopLeft,
                 width: 195,

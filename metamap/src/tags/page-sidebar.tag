@@ -27,13 +27,12 @@
 
     <script>
        
-       this.click = function() {console.log('foo')}
+        this.click = function() {console.log('foo')}
        
-        var that = this;
-        that.data = [];
-        that.MetaMap = MetaMap;
-        that.MetaMap.MetaFire.getData('metamap/sidebar').then(function(data){
-            that.data = _.filter(_.sortBy(data, 'order'), (d) => { 
+        this.data = [];
+        
+        MetaMap.MetaFire.getData('metamap/sidebar').then((data) => {
+            this.data = _.filter(_.sortBy(data, 'order'), (d) => { 
                 var include = d.archive != true
                 if(include && d.menu && d.menu) {
                     d.menu = _.filter(_.sortBy(d.menu, 'order'), (m) => { 
@@ -42,7 +41,7 @@
                 }
                 return include;  
             });
-            that.update();
+            this.update();
         })
 
     </script>

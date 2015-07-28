@@ -7,8 +7,8 @@
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
                     <h4 class="modal-title">Maps</h4>
                 </div>
-                <div class="modal-body">
-                    <meta-table></meta-table>
+                <div id="modal_content" class="modal-body">
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn default" data-dismiss="modal">Close</button>
@@ -18,15 +18,22 @@
         </div>
         <!-- /.modal-dialog -->
     </div>
-    
+
     <script type="es6">
-        
-        this.on('update', () => {
-            $(this.full).modal();
-        
+
+        this.visible = false;
+        this.load = _.once(()=>{
+            riot.mount(this.modal_content, 'meta-table');
+        })
+
+        MetaMap.Eventer.every('mymaps', () => {
+            if(!this.visible) {
+                this.load();
+            }
+            $(this.full).modal('toggle');
         });
-        
-        
+
+
     </script>
-    
+
 </meta-dialog>

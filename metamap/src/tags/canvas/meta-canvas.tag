@@ -6,7 +6,7 @@
     <script type="es6">
 
         MetaMap.Eventer.every('map', (opts) => {
-            debugger;
+            
             var x = {
                 ccsTagging: {},
                 safeApply: function (fn, ...params) {
@@ -20,9 +20,7 @@
             }
             FrontEnd.MetaFire.getData(`maps/data/${opts.id}`).then((map)=>{
                 this.update();
-
-                $('#full').modal('toggle');
-                
+        
                 x.mapData = map;
                 map.metadata = {
                     sandbox: null,
