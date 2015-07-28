@@ -172,7 +172,7 @@
         });
 
         this.logout = () => {
-            MetaMap.Auth0.logout();
+            MetaMap.logout();
         }
         
         this.linkAccount = () => {

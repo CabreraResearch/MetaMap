@@ -12,27 +12,35 @@ class MetaFire {
     login() {
         if (!this._login) {
             this._login = new Promise((fulfill, reject) => {
-                localforage.getItem('id_token').then((id_token) => {
-                    window.MetaMap.Auth0.getSession().then((profile) => {
+                window.MetaMap.Auth0.getSession()
+                    .then((profile) => {
 
                         window.MetaMap.Auth0.lock.getClient().getDelegationToken({
-                            target: profile.clientID,
-                            id_token: id_token,
+                            target: this.config.site.auth0.api,
+                            id_token: profile.id_token,
                             api_type: 'firebase'
                         }, (err, delegationResult) => {
-                            this.firebase_token = delegationResult.id_token;
-                            localforage.setItem('firebase_token', this.firebase_token);
-                            this.fb.authWithCustomToken(this.firebase_token, (error, authData) => {
-                                if (error) {
-                                    window.FrontEnd.error(error);
-                                    reject(error);
-                                } else {
-                                    fulfill(authData);
-                                }
-                            });
+                            if (err) {
+                                reject(err);
+                            } else {
+                                profile.firebase_token = delegationResult.id_token;
+                                this.firebase_token = delegationResult.id_token;
+                                localforage.setItem('firebase_token', this.firebase_token);
+                                this.fb.authWithCustomToken(this.firebase_token, (error, authData, ...params) => {
+                                    if (error) {
+                                        window.FrontEnd.error(error);
+                                        reject(error);
+                                    } else {
+                                        fulfill(authData);
+                                    }
+                                });
+                            }
                         });
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                        debugger;
                     });
-                });
             });
             this._onReady = this._login;
         }
@@ -102,6 +110,9 @@ class MetaFire {
     }
 
     logout () {
+        this._login = null;
+        this._onReady = null;
+        localforage.removeItem('firebase_token');
         this.fb.unauth();
     }
 }

@@ -13,32 +13,36 @@ class Auth0 {
     login() {
         if (!this._login) {
             this._login = new Promise((fulfill, reject) => {
+                let showLogin = () => {
+                    this.lock.show({
+                        closable: false,
+                        loginAfterSignup: true,
+                        authParams: {
+                            scope: 'openid offline_access'
+                        }
+                    }, (err, profile, id_token, ctoken, opt, refresh_token) => {
+                        if (err) {
+                            this.onFail(err, reject);
+                        } else {
+                            localforage.setItem('id_token', id_token);
+                            localforage.setItem('profile', profile);
+
+                            this.ctoken = profile.ctoken = ctoken;
+                            this.id_token = profile.id_token = id_token;
+                            this.profile = profile;
+                            this.refresh_token = profile.refresh_token = refresh_token;
+                            this._getSession = fulfill(profile);
+                        }
+                    });
+                }
                 this.getSession().then((profile) => {
                     if (profile) {
                         fulfill(profile);
                     } else {
-                        this.lock.show({
-                            closable: false,
-                            loginAfterSignup: true,
-                            authParams: {
-                                scope: 'openid offline_access'
-                            }
-                        }, (err, profile, id_token, ctoken, opt, refresh_token) => {
-                            if (err) {
-                                this.logout();
-                                reject(err);
-                            } else {
-                                localforage.setItem('id_token', id_token);
-                                localforage.setItem('profile', profile);
-
-                                this.ctoken = ctoken;
-                                this.id_token = id_token;
-                                this.profile = profile;
-                                this.refresh_token = refresh_token;
-                                fulfill(profile);
-                            }
-                        });
+                        showLogin();
                     }
+                }).catch((err) => {
+                    showLogin();
                 });
             });
         }
@@ -59,36 +63,56 @@ class Auth0 {
         });
     }
 
+    onFail(err, reject) {
+        FrontEnd.error(err);
+        if (reject) {
+            reject(err);
+            this.logout();
+        }
+    }
+
     getSession() {
-        if (!this._getSession) {
+        if (this.profile) {
             this._getSession = new Promise((fulfill, reject) => {
-                localforage.getItem('id_token').then((id_token) => {
+                fulfill(this.profile);
+            });
+        }
+        else if (!this._getSession) {
+            this._getSession = new Promise((fulfill, reject) => {
+                return localforage.getItem('id_token').then((id_token) => {
                     if (id_token) {
                         return this.lock.getProfile(id_token, (err, profile) => {
                             if (err) {
-                                this.logout();
-                                reject(err);
+                                this.onFail(err, reject);
                             } else {
                                 localforage.setItem('id_token', id_token);
                                 localforage.setItem('profile', profile);
-                                this.id_token = id_token;
+                                this.id_token = profile.id_token = id_token;
                                 this.profile = profile;
-                                fulfill(profile, id_token);
+                                return fulfill(profile);
                             }
                         });
                     } else {
-                        fulfill(null);
+                        return reject(new Error('No session'));
                     }
                 });
             });
         }
         return this._getSession;
     }
+
     logout() {
-        localforage.removeItem('id_token');
-        localforage.removeItem('profile');
-        this.profile = null;
-        window.location.reload();
+        localforage.removeItem('id_token').then(() => {
+            return localforage.removeItem('profile');
+        }).then(() => {
+            this.profile = null;
+            this.ctoken = null;
+            this.id_token = null;
+            this.refresh_token = null;
+            this._login = null;
+            this._getSession = null;
+            window.location.reload();
+        });
     }
 }
 module.exports = Auth0;

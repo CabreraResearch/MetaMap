@@ -1,4 +1,4 @@
-﻿var browserify = require('browserify');
+var browserify = require('browserify');
 var Logger = require('../util/bundleLogger');
 var notify = require('../util/notify');
 var gulp = require('gulp');
@@ -40,7 +40,7 @@ var runbrowserify = function (app) {
     for (module in pkg['optionalDependencies']) {
         bundler.require(module);
     }
-
+    
     bundleLogger.start();
     //bundler.transform();
     return bundler.bundle()
