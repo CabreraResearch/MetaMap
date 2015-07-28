@@ -8,8 +8,9 @@
 
         <page-container></page-container>
 
-        <page-footer></page-footer>
     </div>
 
     <meta-dialog></meta-dialog>
+
+    <page-footer></page-footer>
 </page-body>

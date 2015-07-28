@@ -1,12 +1,13 @@
 <meta-canvas>
-    <div id="diagram" style="position:absolute; background-color: white; height: 100%; width: 85%; "></div>
-
+    <div class="portlet light">
+        <div class="portlet-body" id="diagram"></div>
+    </div>
     <div id="overview-diagram" style="display: none;"></div>
 
     <script type="es6">
 
         MetaMap.Eventer.every('map', (opts) => {
-            
+
             var x = {
                 ccsTagging: {},
                 safeApply: function (fn, ...params) {
@@ -20,7 +21,7 @@
             }
             FrontEnd.MetaFire.getData(`maps/data/${opts.id}`).then((map)=>{
                 this.update();
-        
+
                 x.mapData = map;
                 map.metadata = {
                     sandbox: null,
@@ -36,17 +37,24 @@
                      "defaultRelationshipDirection":"noArrows",
                      "defaultThingLayout":"left",
                      "perspectiveMode":"lines"
-                  }  
-                  
+                  }
+
                 window._mapEditorCtrl = MapEditorCtrl(x, x, x, x, x);
             });
         })
 
-        this.on('update', ()=>{
-            
+       this.on('update', () => {
+            $(this.diagram).css({
+                height: window.innerHeight-154+'px'
+            });
         });
 
-        var foo = ''
+        $(window).resize(() => {
+            $(this.diagram).css({
+                height: window.innerHeight-154+'px'
+            });
+
+        });
 
     </script>
 

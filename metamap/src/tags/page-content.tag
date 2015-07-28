@@ -7,12 +7,12 @@
 
             </div>
 
+
             <div id="app-container">
 
             </div>
         </div>
     </div>
-
     <script>
 
 
@@ -32,11 +32,7 @@
 
         });
 
-        this.on('update', () => {
-            $(this['page-content']).css({height: window.innerHeight-154+'px'});
-        });
-
-
+        
     </script>
 
 </page-content>
