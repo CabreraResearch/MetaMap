@@ -1,8 +1,13 @@
 class User {
-    constructor(profile) {
+    constructor(profile, auth) {
+        this.auth = auth;
         this.profile = profile;
         this.params = URI(window.location).query(true);
         this.thinkquery = (this.params.thinkquery ? true : false);
+
+        FrontEnd.MetaFire.on(`users/${auth.uid}`, (user) => {
+            this.profile = user;
+        });
     }
 
     get userId() {

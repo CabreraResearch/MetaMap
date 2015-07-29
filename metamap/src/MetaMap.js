@@ -29,8 +29,9 @@ class MetaMap {
     init() {
         this.onReady().then(() => {
             this.Auth0.login().then((profile) => {
-                this.User = new User(profile);
-                this.MetaFire.login();
+                this.MetaFire.login().then((auth) => {
+                    this.User = new User(profile, auth);
+                });
                 
                 riot.mount('*');
                 NProgress.configure({ parent: '#meta_progress' });

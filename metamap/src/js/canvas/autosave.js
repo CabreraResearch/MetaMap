@@ -52,10 +52,9 @@ SandbankEditor.Autosave = function($scope, $http, map) {
 
         //console.log('autosave, changeList: ' + changeList + ', descriptionList: ' + descriptionList);
         var postData = {
-            "name": $scope.mapTitle,
-            "data": map.getDiagram().model.toJson(),
-            "state_data": JSON.stringify(map.getUi().getStateData()),
-            "editor_options": JSON.stringify(map.getUi().getMapEditorOptions()),
+            "data": JSON.parse(map.getDiagram().model.toJson()),
+            "state_data": map.getUi().getStateData(),
+            "editor_options": map.getUi().getMapEditorOptions(),
             "presenter_slides": map.getPresenter().getSlideCount(),
             "activity_slides": map.getPresenter().getActivitySlideCount(),
             "change_type": changeList.join(';'),
@@ -65,17 +64,16 @@ SandbankEditor.Autosave = function($scope, $http, map) {
         var url = $scope.mapUrl + '.json';
 
         $scope.updateEditStatus($scope.SAVING);
-        
-                changeTypes = [];
-                $scope.updateEditStatus($scope.SAVE_OK);
-                // load returned data for analytics, points, badges, versions
-               // $scope.map.loadMapExtraData(response.data.map);
-            
+
+        changeTypes = [];
+        $scope.updateEditStatus($scope.SAVE_OK);
+        // load returned data for analytics, points, badges, versions
+        // $scope.map.loadMapExtraData(response.data.map);
+        MetaMap.MetaFire.setData(postData, `maps/data/${$scope.mapId}`);
     }
 
 
-
-    // -------------- handle model changes - trigger autosave ------------------
+// -------------- handle model changes - trigger autosave ------------------
 
     var changeDescriptions = {
         move: 'Moved Objects',

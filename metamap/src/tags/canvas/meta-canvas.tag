@@ -9,6 +9,7 @@
         MetaMap.Eventer.every('map', (opts) => {
             NProgress.start()
             var x = {
+                mapId: opts.id,
                 ccsTagging: {},
                 safeApply: function (fn, ...params) {
                     if (fn) {

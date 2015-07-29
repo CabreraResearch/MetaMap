@@ -68,7 +68,7 @@ class MetaFire {
             }
             return new Promise((resolve, reject) => {
 
-                child.orderByChild('order').on('value',
+                child.orderByChild('order').once('value',
                 (snapshot) => {
                     let data = snapshot.val();
                     try {
