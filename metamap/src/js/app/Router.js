@@ -29,9 +29,11 @@ let track = (path) => {
 
 class Router {
     constructor(metaMap) {
+        this.history = [];
         riot.route.start();
-        riot.route((target, id, action, ...params) => {
+        riot.route((target, id = '', action = '', ...params) => {
             let path = this.getPath(target);
+            this.history.push(window.location.hash);
             if (!staticRoutes[path]) {
                 toggleMain(true, path);
                 switch (path) {
@@ -78,6 +80,15 @@ class Router {
 
     to(path) {
         return route.to(path);
+    }
+
+    back() {
+        let path = 'home';
+        let pageCnt = this.history.length;
+        if (pageCnt > 1) {
+            path = this.history[pageCnt - 2];
+        }
+        return this.to(path);
     }
 }
 

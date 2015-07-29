@@ -16,17 +16,25 @@ class Eventer {
         //        reaction(...params);
         //    }
         //}
-        this.events[event] = reaction;
-        this.on(event, reaction);
+        let events = event.split(' ');
+        _.each(events, () => {
+            this.events[event] = reaction;
+            this.on(event, reaction);
+        });
     }
 
     forget(event) {
-        delete this.events[event];
-        this.off(event);
+        let events = event.split(' ');
+        _.each(events, () => {
+            delete this.events[event];
+            this.off(event);
+        });
     }
-
     do(event, ...params) {
-        this.trigger(event, ...params);
+        let events = event.split(' ');
+        _.each(events, () => {
+            this.trigger(event, ...params);
+        });
     }
 
 }

@@ -26,12 +26,42 @@
             riot.mount(this.modal_content, 'meta-table');
         })
 
-        MetaMap.Eventer.every('mymaps', () => {
+        $(this.full).on('hide.bs.modal', () => {
+            this.visible = false;
+            MetaMap.Router.back()
+        })
+
+        this.show = () => {
             if(!this.visible) {
                 this.load();
+                $(this.full).modal('show');
+                this.visible = true;
             }
-            $(this.full).modal('toggle');
-        });
+        }
+
+        this.hide = () => {
+            if(this.visible) {
+                $(this.full).modal('hide');
+                this.visible = false;
+            }
+        }
+
+        this.toggle = () => {
+            if(this.visible) {
+                this.hide();
+            } else {
+                this.show();
+            }
+        }
+
+
+        MetaMap.Eventer.every('nav mymaps', (event) => {
+            if(event == 'nav') {
+                this.hide();
+            } else {
+                this.show();
+            }
+        })
 
 
     </script>
