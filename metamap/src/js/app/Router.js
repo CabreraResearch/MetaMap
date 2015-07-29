@@ -28,12 +28,11 @@ let track = (path) => {
 }
 
 class Router {
-    constructor(metaMap) {
-        this.history = [];
+    constructor(metaMap, user) {
+        this.history = metaMap.User.history;
         riot.route.start();
         riot.route((target, id = '', action = '', ...params) => {
             let path = this.getPath(target);
-            this.history.push(window.location.hash);
             if (!staticRoutes[path]) {
                 toggleMain(true, path);
                 switch (path) {
@@ -48,12 +47,17 @@ class Router {
             } else {
                 toggleMain(false, path);
             }
+            metaMap.Eventer.do('history', window.location.hash);
         });
-        this.to(window.location.hash || 'home');
+        this.to(this.currentPage);
     }
     
     get currentPage() {
-        return this.history[this.history.length - 1] || 'home';
+        let page = 'mymaps';
+        if (this.history.length > 0) {
+            page = this.history[this.history.length - 1];
+        }
+        return page;
     }
 
     static getPath(path) {
@@ -87,10 +91,10 @@ class Router {
     }
 
     back() {
-        let path = 'home';
+        let path = 'mymaps';
         let pageCnt = this.history.length;
         if (pageCnt > 1) {
-            path = this.history[pageCnt - 2];
+            path = this.getPath(this.history[pageCnt - 2]);
         }
         return this.to(path);
     }
