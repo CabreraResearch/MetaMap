@@ -101,7 +101,7 @@
         }
         
         this.on('mount', () => {
-
+            NProgress.start()
             FrontEnd.MetaFire.getData('maps/list').then( (data) => {
             
                 try {                
@@ -163,9 +163,10 @@
 
                     tableWrapper.find('.dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
     
-                
+                    NProgress.done()
                 
                 } catch(e) {
+                    NProgress.done()
                     window.FrontEnd.error(e);
                 }
             })

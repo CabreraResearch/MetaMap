@@ -5,7 +5,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                    <h4 class="modal-title">Maps</h4>
+                    <h4 if="{title}" class="modal-title">{title}</h4>
                 </div>
                 <div id="modal_content" class="modal-body">
 
@@ -20,7 +20,7 @@
     </div>
 
     <script type="es6">
-
+        this.title = ''
         this.visible = false;
         this.load = _.once(()=>{
             riot.mount(this.modal_content, 'meta-table');

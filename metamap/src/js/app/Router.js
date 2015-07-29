@@ -28,14 +28,21 @@ let track = (path) => {
 }
 
 class Router {
-
     constructor(metaMap) {
         riot.route.start();
         riot.route((target, id, action, ...params) => {
             let path = this.getPath(target);
             if (!staticRoutes[path]) {
                 toggleMain(true, path);
-                metaMap.Eventer.do('nav', path, { id: id, action: action }, ...params);
+                switch (path) {
+                case 'mymaps':
+                    metaMap.Eventer.do(path, { id: id, action: action }, ...params);
+                    break;
+                default:
+                    metaMap.Eventer.do('nav', path, { id: id, action: action }, ...params);
+                    break;
+                }
+
             } else {
                 toggleMain(false, path);
             }

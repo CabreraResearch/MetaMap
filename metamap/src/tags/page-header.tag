@@ -1,7 +1,7 @@
 <page-header>
 
     <div id="header-top" class="page-header navbar navbar-fixed-top">
-
+        <div id="meta_progress" style="overflow: inherit;"></div>
         <div id="header-content" class="page-header-inner">
 
             <page-logo></page-logo>

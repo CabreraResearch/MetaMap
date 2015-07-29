@@ -20,7 +20,7 @@ class Eventer {
         this.on(event, reaction);
     }
 
-    never(event) {
+    forget(event) {
         delete this.events[event];
         this.off(event);
     }

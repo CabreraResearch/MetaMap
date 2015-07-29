@@ -7,7 +7,7 @@
     <script type="es6">
 
         MetaMap.Eventer.every('map', (opts) => {
-
+            NProgress.start()
             var x = {
                 ccsTagging: {},
                 safeApply: function (fn, ...params) {
@@ -40,6 +40,8 @@
                   }
 
                 window._mapEditorCtrl = MapEditorCtrl(x, x, x, x, x);
+                
+                NProgress.done()
             });
         })
 

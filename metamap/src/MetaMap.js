@@ -33,6 +33,7 @@ class MetaMap {
                 this.MetaFire.login();
                 
                 riot.mount('*');
+                NProgress.configure({ parent: '#meta_progress' });
                 
                 this.Router = new Router(this);
 
@@ -42,8 +43,7 @@ class MetaMap {
                     Demo.init(); // init demo features
                     Index.init(); // init index page
                     Tasks.initDashboardWidget(); // init tash dashboard widget
-
-
+                
                 }, 250);
             });
         });

@@ -1,5 +1,5 @@
 <page-body>
-    <div class="page-header-fixed page-sidebar-closed-hide-logo page-sidebar-closed-hide-logo">
+    <div id="page_body" class="page-header-fixed page-sidebar-closed-hide-logo page-sidebar-closed-hide-logo">
         
         <page-header></page-header>
 
