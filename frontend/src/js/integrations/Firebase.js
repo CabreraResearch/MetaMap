@@ -101,12 +101,35 @@ class MetaFire {
         }
     }
 
+    off(path, method='value',callback) {
+        if (path) {
+            this.onReady().then(() => {
+                let child = this.getChild(path);
+                if (callback) {
+                    child.off(method, callback);
+                } else {
+                    child.off(method);
+                }
+            });
+        }
+    }
+
     setData (data, path) {
         var child = this.fb;
         if (path) {
             child = this.getChild(path);
         }
         return child.set(data);
+    }
+
+    setDataInTransaction (data, path, callback) {
+        var child = this.fb;
+        if (path) {
+            child = this.getChild(path);
+        }
+        return child.transaction((currentValue) => {
+            return data;
+        });
     }
 
     logout () {

@@ -472,9 +472,14 @@ SandbankEditor.Map = function($scope, $http, $resource, $timeout, $modal, $log) 
 
     // ------------ load and initialize model -------------
 
-    this.load = function() {
+    this.reload = function(data) {
+        _diagram.model = go.Model.fromJson(data);
+        _diagram.model.addChangedListener(_autosave.modelChanged);
+    }
+
+    this.load = function(data) {
        
-        var data = $scope.mapData.data;
+        data = data || $scope.mapData.data;
         _diagram.model = go.Model.fromJson(data);
         _ui.setStateData($scope.mapData.state_data);
         _ui.setMapEditorOptions($scope.mapData.editor_options);
@@ -486,7 +491,7 @@ SandbankEditor.Map = function($scope, $http, $resource, $timeout, $modal, $log) 
         _autosave.saveOnModelChanged = true;
         _diagram.isReadOnly = !$scope.canEdit;
         $scope.updateEditStatus($scope.canEdit ? $scope.LAST_UPDATED : $scope.READ_ONLY);
-        _ui.resetZoom();
+        //_ui.resetZoom();
         self.loadMapExtraData($scope.mapData);
 
         // if no nodes OR in thinkquery mode, launch generator

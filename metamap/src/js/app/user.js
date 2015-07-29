@@ -1,9 +1,12 @@
+let uuid = require('../tools/uuid.js');
+
 class User {
     constructor(profile, auth) {
         this.auth = auth;
         this.profile = profile;
         this.params = URI(window.location).query(true);
         this.thinkquery = (this.params.thinkquery ? true : false);
+        this.userKey = uuid();
 
         FrontEnd.MetaFire.on(`users/${auth.uid}`, (user) => {
             this.profile = user;

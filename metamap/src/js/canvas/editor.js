@@ -283,6 +283,8 @@ window.MapEditorCtrl = function($rootScope, $scope, $http, $resource, $timeout, 
     }
 
     init();
+
+    return $scope;
 };
 
 window.MapEditorCtrl.$inject = ['$rootScope', '$scope', '$http', '$resource', '$timeout', '$modal', '$log'];

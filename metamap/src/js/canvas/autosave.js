@@ -52,14 +52,15 @@ SandbankEditor.Autosave = function($scope, $http, map) {
 
         //console.log('autosave, changeList: ' + changeList + ', descriptionList: ' + descriptionList);
         var postData = {
-            "data": JSON.parse(map.getDiagram().model.toJson()),
-            "state_data": map.getUi().getStateData(),
-            "editor_options": map.getUi().getMapEditorOptions(),
-            "presenter_slides": map.getPresenter().getSlideCount(),
-            "activity_slides": map.getPresenter().getActivitySlideCount(),
-            "change_type": changeList.join(';'),
-            "change_description": descriptionList.join('; '),
-            "thumbnail_png": map.getPresenter().getMapThumbnail()
+            data: JSON.parse(map.getDiagram().model.toJson()),
+            state_data: map.getUi().getStateData(),
+            editor_options: map.getUi().getMapEditorOptions(),
+            presenter_slides: map.getPresenter().getSlideCount(),
+            activity_slides: map.getPresenter().getActivitySlideCount(),
+            change_type: changeList.join(';'),
+            change_description: descriptionList.join('; '),
+            thumbnail_png: map.getPresenter().getMapThumbnail(),
+            changed_by: MetaMap.User.userKey
         };
         var url = $scope.mapUrl + '.json';
 
@@ -69,7 +70,7 @@ SandbankEditor.Autosave = function($scope, $http, map) {
         $scope.updateEditStatus($scope.SAVE_OK);
         // load returned data for analytics, points, badges, versions
         // $scope.map.loadMapExtraData(response.data.map);
-        MetaMap.MetaFire.setData(postData, `maps/data/${$scope.mapId}`);
+        MetaMap.MetaFire.setDataInTransaction(postData, `maps/data/${$scope.mapId}`);
     }
 
 

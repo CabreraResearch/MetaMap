@@ -7,16 +7,15 @@
     <script type="es6">
 
         this.mapId = null
-
-        this.build = (opts) => {
-            if(opts.id != this.mapId) {
-                this.mapId = opts.id
-                NProgress.start()
+        this.canvas = null
+        
+        this.buildCanvas = (map) => {
+            if(!this.canvas) {
                 $(this.diagram).empty()
                 $(this['overview-diagram']).empty()
             
                 var x = {
-                    mapId: opts.id,
+                    mapId: this.mapId,
                     ccsTagging: {},
                     safeApply: function (fn, ...params) {
                         if (fn) {
@@ -27,30 +26,45 @@
                     get: function () { return { then: function () { } } },
                     isTouchDevice: function () { return false; }
                 }
-                FrontEnd.MetaFire.getData(`maps/data/${opts.id}`).then((map)=>{
-                    this.update();
+            
+                this.update();
 
-                    x.mapData = map;
-                    map.metadata = {
-                        sandbox: null,
-                        canEdit: true
-                    };
-                    map.state_data = {
-                         "showNavigator":false,
-                         "currentTab":null,
-                         "perspectivePointKey":null,
-                         "distinctionThingKey":null
-                      }
-                    map.editor_options = {
-                         "defaultRelationshipDirection":"noArrows",
-                         "defaultThingLayout":"left",
-                         "perspectiveMode":"lines"
-                      }
+                x.mapData = map;
+                map.metadata = {
+                    sandbox: null,
+                    canEdit: true
+                };
+                map.state_data = {
+                        "showNavigator":false,
+                        "currentTab":null,
+                        "perspectivePointKey":null,
+                        "distinctionThingKey":null
+                    }
+                map.editor_options = {
+                        "defaultRelationshipDirection":"noArrows",
+                        "defaultThingLayout":"left",
+                        "perspectiveMode":"lines"
+                    }
 
-                    window._mapEditorCtrl = MapEditorCtrl(x, x, x, x, x);
+                this.canvas = MapEditorCtrl(x, x, x, x, x);
+            } else {
+                if(map.changed_by != MetaMap.User.userKey) {
+                    this.canvas.map.load(map.data)
+                }
+            }
+            NProgress.done()
+        }
+
+        this.build = (opts) => {
+            if(opts.id != this.mapId) {
+                this.canvas = null
+                if(this.mapId) {
+                    FrontEnd.MetaFire.off(`maps/data/${this.mapId}`)
+                }
+                this.mapId = opts.id
+                NProgress.start()
                 
-                    NProgress.done()
-                });
+                FrontEnd.MetaFire.on(`maps/data/${opts.id}`, this.buildCanvas);
                 MetaMap.Eventer.forget('map',this.build);
             }    
         }
