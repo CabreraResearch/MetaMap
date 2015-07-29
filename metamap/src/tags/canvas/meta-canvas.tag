@@ -6,47 +6,58 @@
 
     <script type="es6">
 
-        MetaMap.Eventer.every('map', (opts) => {
-            NProgress.start()
-            var x = {
-                mapId: opts.id,
-                ccsTagging: {},
-                safeApply: function (fn, ...params) {
-                    if (fn) {
-                        fn(...params);
-                    }
-                },
-                $watch: function () { },
-                get: function () { return { then: function () { } } },
-                isTouchDevice: function () { return false; }
-            }
-            FrontEnd.MetaFire.getData(`maps/data/${opts.id}`).then((map)=>{
-                this.update();
+        this.mapId = null
 
-                x.mapData = map;
-                map.metadata = {
-                    sandbox: null,
-                    canEdit: true
-                };
-                map.state_data = {
-                     "showNavigator":false,
-                     "currentTab":null,
-                     "perspectivePointKey":null,
-                     "distinctionThingKey":null
-                  }
-                map.editor_options = {
-                     "defaultRelationshipDirection":"noArrows",
-                     "defaultThingLayout":"left",
-                     "perspectiveMode":"lines"
-                  }
+        this.build = (opts) => {
+            if(opts.id != this.mapId) {
+                this.mapId = opts.id
+                NProgress.start()
+                $(this.diagram).empty()
+                $(this['overview-diagram']).empty()
+            
+                var x = {
+                    mapId: opts.id,
+                    ccsTagging: {},
+                    safeApply: function (fn, ...params) {
+                        if (fn) {
+                            fn(...params);
+                        }
+                    },
+                    $watch: function () { },
+                    get: function () { return { then: function () { } } },
+                    isTouchDevice: function () { return false; }
+                }
+                FrontEnd.MetaFire.getData(`maps/data/${opts.id}`).then((map)=>{
+                    this.update();
 
-                window._mapEditorCtrl = MapEditorCtrl(x, x, x, x, x);
+                    x.mapData = map;
+                    map.metadata = {
+                        sandbox: null,
+                        canEdit: true
+                    };
+                    map.state_data = {
+                         "showNavigator":false,
+                         "currentTab":null,
+                         "perspectivePointKey":null,
+                         "distinctionThingKey":null
+                      }
+                    map.editor_options = {
+                         "defaultRelationshipDirection":"noArrows",
+                         "defaultThingLayout":"left",
+                         "perspectiveMode":"lines"
+                      }
+
+                    window._mapEditorCtrl = MapEditorCtrl(x, x, x, x, x);
                 
-                NProgress.done()
-            });
-        })
+                    NProgress.done()
+                });
+                MetaMap.Eventer.forget('map',this.build);
+            }    
+        }
 
-       this.on('update', () => {
+        MetaMap.Eventer.every('map', this.build)
+
+        this.on('update', () => {
             $(this.diagram).css({
                 height: window.innerHeight-154+'px'
             });

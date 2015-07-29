@@ -51,6 +51,10 @@ class Router {
         });
         this.to(window.location.hash || 'home');
     }
+    
+    get currentPage() {
+        return this.history[this.history.length - 1] || 'home';
+    }
 
     static getPath(path) {
         if (path) {

@@ -28,7 +28,9 @@
 
         $(this.full).on('hide.bs.modal', () => {
             this.visible = false;
-            MetaMap.Router.back()
+            if(MetaMap.Router.currentPage == 'mymaps') {
+                MetaMap.Router.back()
+            }
         })
 
         this.show = () => {
