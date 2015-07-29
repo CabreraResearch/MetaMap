@@ -35,12 +35,18 @@
 </head>
 
 <body>
+
     <!--[if IE]>
         <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
 
 
     <script src="//cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.js"></script>
+    <div id="meta_progress" style="overflow: inherit;"></div>
+    <script>
+        NProgress.configure({ parent: '#meta_progress' });
+        NProgress.start();
+    </script>
     <page-body></page-body>
 
     <script src="frontend/dist/vendor.js"></script>
