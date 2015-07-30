@@ -23,11 +23,15 @@ class Eventer {
         });
     }
 
-    forget(event) {
+    forget(event, callback) {
         let events = event.split(' ');
         _.each(events, () => {
-            delete this.events[event];
-            this.off(event);
+            if (!callback) {
+                delete this.events[event];
+                this.off(event);
+            } else {
+                this.off(event, callback);
+            }
         });
     }
     do(event, ...params) {

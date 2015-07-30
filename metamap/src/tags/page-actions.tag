@@ -36,15 +36,20 @@
         this.data = []
         this.mapName = ''
         this.url = FrontEnd.config.site.db+'.firebaseio.com'
+        this.loaded = false;
         
         this.bindToMapName = _.once(()=>{
             MetaMap.MetaFire.on(`maps/list/${this.mapId}/name`, (name) => { 
                 this.mapName = name;
                 this.update();
             });
+            this.loaded = true
         });
         
         MetaMap.Eventer.every('map', (opts) => {
+            if(this.loaded) {
+                $(this.map_name).editable('destroy');
+            }
             if(this.mapId) {
                 MetaMap.MetaFire.off(`maps/list/${this.mapId}/name`);
             }
