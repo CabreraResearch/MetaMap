@@ -75,7 +75,7 @@
                                     <input type="checkbox" class="checkboxes" value="1"/>
                                 </td>
                                 <td>{ user_id }</td>
-                                <td>{ name }</td>
+                                <td class="meta-editable" data-pk="{ id }" data-title="Edit Map Name">{ name }</td>
                                 <td class="center">
                                     { created_at }
                                 </td>
@@ -103,7 +103,7 @@
         
         this.on('mount', () => {
             NProgress.start()
-            FrontEnd.MetaFire.getData('maps/list').then( (data) => {
+            FrontEnd.MetaFire.on('maps/list', (data) => {
             
                 try {                
                     this.data = _.map(data, (obj, key) => {
@@ -112,57 +112,66 @@
                     });
                     this.update();
                 
-                    var table = $(this.sample_1);
+                    if(!this.table) {
+                        this.table = $(this.sample_1);
+                        this.table.dataTable({
 
-                    // begin first table
-                    table.dataTable({
+                            // Uncomment below line("dom" parameter) to fix the dropdown overflow issue in the datatable cells. The default datatable layout
+                            // setup uses scrollable div(table-scrollable) with overflow:auto to enable vertical scroll(see: assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.js). 
+                            // So when dropdowns used the scrollable div should be removed. 
+                            //"dom": "<'row'<'col-md-6 col-sm-12'l><'col-md-6 col-sm-12'f>r>t<'row'<'col-md-5 col-sm-12'i><'col-md-7 col-sm-12'p>>",
 
-                        // Uncomment below line("dom" parameter) to fix the dropdown overflow issue in the datatable cells. The default datatable layout
-                        // setup uses scrollable div(table-scrollable) with overflow:auto to enable vertical scroll(see: assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.js). 
-                        // So when dropdowns used the scrollable div should be removed. 
-                        //"dom": "<'row'<'col-md-6 col-sm-12'l><'col-md-6 col-sm-12'f>r>t<'row'<'col-md-5 col-sm-12'i><'col-md-7 col-sm-12'p>>",
+                            //"bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
 
-                        //"bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
-
-                        "columns": [{
-                            visible: false
-                        },{
-                            "orderable": false
-                        }, {
-                            "orderable": true
-                        }, {
-                            "orderable": true
-                        }, {
-                            "orderable": true
-                        }, {
-                            "orderable": false
-                        }, {
-                            "orderable": false
-                        }]
-                    });
-
-                    var tableWrapper = table.parent().parent().parent().find('#sample_1_wrapper');
-
-                    table.find('.group-checkable').change(function () {
-                        var set = jQuery(this).attr("data-set");
-                        var checked = jQuery(this).is(":checked");
-                        jQuery(set).each(function () {
-                            if (checked) {
-                                $(this).attr("checked", true);
-                                $(this).parents('tr').addClass("active");
-                            } else {
-                                $(this).attr("checked", false);
-                                $(this).parents('tr').removeClass("active");
-                            }
+                            "columns": [{
+                                visible: false
+                            },{
+                                "orderable": false
+                            }, {
+                                "orderable": true
+                            }, {
+                                "orderable": true
+                            }, {
+                                "orderable": true
+                            }, {
+                                "orderable": false
+                            }, {
+                                "orderable": false
+                            }]
                         });
-                        jQuery.uniform.update(set);
-                    });
+                        
+                        $('.meta-editable').editable('destroy')
+                         
+                        var tableWrapper = this.table.parent().parent().parent().find('#sample_1_wrapper');
 
-                    table.on('change', 'tbody tr .checkboxes', function () {
-                        $(this).parents('tr').toggleClass("active");
-                    });
+                        this.table.find('.group-checkable').change(function () {
+                            var set = jQuery(this).attr("data-set");
+                            var checked = jQuery(this).is(":checked");
+                            jQuery(set).each(function () {
+                                if (checked) {
+                                    $(this).attr("checked", true);
+                                    $(this).parents('tr').addClass("active");
+                                } else {
+                                    $(this).attr("checked", false);
+                                    $(this).parents('tr').removeClass("active");
+                                }
+                            });
+                            jQuery.uniform.update(set);
+                        });
 
-                    tableWrapper.find('.dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
+                        this.table.on('change', 'tbody tr .checkboxes', function () {
+                            $(this).parents('tr').toggleClass("active");
+                        });
+
+                        tableWrapper.find('.dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
+                    } else {
+                        this.table.dataTable();
+                    }
+                    
+                    $('.meta-editable').editable().on('save', function(event, params) {
+                        var id = this.dataset.pk
+                        MetaMap.MetaFire.setData(params.newValue, `maps/list/${id}/name`);
+                    });
     
                     NProgress.done()
                 
