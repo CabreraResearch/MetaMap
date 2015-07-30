@@ -89,10 +89,10 @@ var OrganizationCtrl = function($scope, $http, $interpolate) {
     //             stopSpinner();
     //             if (_.has(data, 'password')) {
     //                 $scope.profileEditStatus = 'Profile and password saved';
-    //                 console.log($scope.profileEditStatus);
+    //                 //console.log($scope.profileEditStatus);
     //             } else {
     //                 $scope.profileEditStatus = 'Profile saved';
-    //                 console.log($scope.profileEditStatus);
+    //                 //console.log($scope.profileEditStatus);
     //             }
     //         },
     //         function() {

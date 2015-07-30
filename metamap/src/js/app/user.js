@@ -1,9 +1,11 @@
-let uuid = require('../tools/uuid.js');
+const uuid = require('../tools/uuid.js');
+const MetaMap = window.MetaMap;
 
 class User {
-    constructor(profile, auth, eventer) {
+    constructor(profile, auth, eventer, metaFire) {
         this.auth = auth;
         this.eventer = eventer;
+        this.metaFire = metaFire;
         this.params = URI(window.location).query(true);
         this.thinkquery = (this.params.thinkquery ? true : false);
         this.userKey = uuid();
@@ -16,12 +18,12 @@ class User {
                 this.eventer.every('history', (page) => {
                     if (this.history.length == 0 || page != this.history[this.history.length - 1]) {
                         this.history.push(page);
-                        FrontEnd.MetaFire.setData(this.history, `users/${this.auth.uid}/history`);
+                        this.metaFire.setData(this.history, `users/${this.auth.uid}/history`);
                     }
                 });
             });
             this._onReady = new Promise((fulfill, reject) => {
-                FrontEnd.MetaFire.on(`users/${this.auth.uid}`, (user) => {
+                this.metaFire.on(`users/${this.auth.uid}`, (user) => {
                     if (!user.history) {
                         user.history = [];
                     }
@@ -36,39 +38,49 @@ class User {
         return this._onReady;
     }
 
+    get displayName() {
+        let ret = '';
+        if (this.profile && this.profile.identity) {
+            if (this.profile.identity.name) {
+                ret = this.profile.identity.name.split(' ')[0];
+            }
+            if (!ret) {
+                ret = this.profile.identity.nickname;
+            }
+        }
+
+        return ret;
+    }
+
+    get picture() {
+        let ret = '';
+        if (this.profile && this.profile.identity) {
+            ret = this.profile.identity.picture;
+        }
+        return ret;
+    }
+
     get userId() {
         return this.auth.uid;
     }
 
     get isAdmin() {
-        return this.profile.roles.indexOf('admin') !== -1;
-    }
-
-    get name() {
-        return this.profile.name;
+        let ret = false;
+        if (this.profile && this.profile.identity) {
+            ret = this.profile.identity.roles.indexOf('admin') !== -1;
+        }
+        return ret;
     }
 
     get history() {
         return this.profile.history;
     }
-
     saveUserEditorOptions(options) {
         let data = {
             user: {
                 editor_options: JSON.stringify(options)
             }
         };
-
-        //startSpinner();
-        //$http.put('/users/' + $scope.userId + '.json', data).then(
-        //    function (response) {
-        //        stopSpinner();
-        //    },
-        //    function () {
-        //        stopSpinner();
-        //        $scope.profileEditStatus = 'Could not save editor options';
-        //    }
-        //);
     }
 }
 

@@ -12,7 +12,10 @@ window.moment = require('moment');
 window.URI = require('URIjs');
 window.localforage = require('localforage');
 
-
+require('./tags/menu/meta-help.js');
+require('./tags/menu/meta-user.js');
+require('./tags/menu/meta-points.js');
+require('./tags/menu/meta-notifications.js');
 require('./tags/canvas/meta-canvas.tag');
 require('./tags/components/meta-dialog.tag');
 require('./tags/components/meta-table.tag');

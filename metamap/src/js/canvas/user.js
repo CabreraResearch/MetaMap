@@ -100,7 +100,7 @@ window.UserCtrl = function($rootScope, $scope, $http, $modal, $upload) {
             allowRememberMe: false,
             email: $scope.userProfile.user.email,
             token: function(token, args) {
-                console.log('token: ', token);
+                //console.log('token: ', token);
                 window.startSpinner();
                 $http.post('/charges/subscribe', {
                     plan_id: plan.code,
@@ -212,7 +212,7 @@ window.UserCtrl = function($rootScope, $scope, $http, $modal, $upload) {
             allowRememberMe: false,
             email: $scope.userProfile.user.email,
             token: function(token, args) {
-                console.log('token: ', token);
+                //console.log('token: ', token);
                 window.startSpinner();
                 $http.post('/charges/buy_course', {
                     course_code: course.code,
@@ -231,7 +231,7 @@ window.UserCtrl = function($rootScope, $scope, $http, $modal, $upload) {
                     function(response) {
                         $scope.loadUserProfile(function() {
                             alertify.error('Course purchase could not be completed');
-                            console.log('stripe error: ', response);
+                            //console.log('stripe error: ', response);
                         });
                     });
             }
@@ -328,7 +328,7 @@ window.UserCtrl = function($rootScope, $scope, $http, $modal, $upload) {
                 alert('Thank you for your feedback!');
             },
             error: function() {
-                console.error('error sending feedback: ', arguments);
+                //console.error('error sending feedback: ', arguments);
             }
         });
 
@@ -592,10 +592,10 @@ window.UserCtrl = function($rootScope, $scope, $http, $modal, $upload) {
                 stopSpinner();
                 if (_.has(data, 'password')) {
                     $scope.profileEditStatus = 'Profile and password saved';
-                    console.log($scope.profileEditStatus);
+                    //console.log($scope.profileEditStatus);
                 } else {
                     $scope.profileEditStatus = 'Profile saved';
-                    console.log($scope.profileEditStatus);
+                    //console.log($scope.profileEditStatus);
                 }
             },
             function() {
@@ -646,10 +646,10 @@ window.UserCtrl = function($rootScope, $scope, $http, $modal, $upload) {
     $scope.getEventTime = function(t, now) {
         var time = moment(t, 'YYYY-MM-DD HH:mm:ss.SSS');
         var nowtime = moment(now, 'YYYY-MM-DD HH:mm:ss.SSS');
-        // console.log('t:       ' + t);
-        // console.log('now:     ' + now);
-        // console.log('time:    ' + time.format()); // + ' ' + time.isValid());
-        // console.log('nowtime: ' + nowtime.format()); // + ' ' + nowtime.isValid());
+        // //console.log('t:       ' + t);
+        // //console.log('now:     ' + now);
+        // //console.log('time:    ' + time.format()); // + ' ' + time.isValid());
+        // //console.log('nowtime: ' + nowtime.format()); // + ' ' + nowtime.isValid());
         return time.from(nowtime);
     };
 

@@ -210,7 +210,7 @@ SandbankEditor.Perspectives = function($scope, map) {
         while (adds.next()) {
             map.getDiagram().model.startTransaction('add link');
             var to = adds.value;
-            console.log('updateLinks: adding link from ' + pOrDThing + ' to ' + to);
+            //console.log('updateLinks: adding link from ' + pOrDThing + ' to ' + to);
             if (category == "D" && pOrDThing.data.key == to.data.key) {
                 pOrDThing.isSelected = false;
                 alert("You can't distinguish a thing from itself!");
@@ -228,7 +228,7 @@ SandbankEditor.Perspectives = function($scope, map) {
         var removes = removeLinks.iterator;
         while (removes.next()) {
             var remove = removes.value;
-            console.log('updateLinks: removing link from ' + remove.fromNode + ' to ' + remove.toNode);
+            //console.log('updateLinks: removing link from ' + remove.fromNode + ' to ' + remove.toNode);
             map.getDiagram().model.startTransaction('remove link');
             map.getDiagram().remove(remove);
             map.getDiagram().model.removeLinkData(remove.data);

@@ -81,7 +81,7 @@ SandbankEditor.Attachments = function ($scope, $http, $resource, map) {
 
     this.saveAttachments = function() {
         $scope.safeApply(function() {
-            console.log('saveAttachments, selected: ' + self.selectedThing);
+            //console.log('saveAttachments, selected: ' + self.selectedThing);
             if (self.selectedThing) {
                 map.getDiagram().model.setDataProperty(self.selectedThing.data, 'attachments', self.attachments);
                 self.selectedThing.updateTargetBindings();
@@ -150,7 +150,7 @@ SandbankEditor.Attachments = function ($scope, $http, $resource, map) {
     };
 
     this.otherMapSelected = function(viewValue, modelValue) {
-        console.log('otherMapSelected, viewValue: ' + viewValue.id + ', modelValue: ' + modelValue);
+        //console.log('otherMapSelected, viewValue: ' + viewValue.id + ', modelValue: ' + modelValue);
     };
 
     this.formatOtherMap = function (model) {

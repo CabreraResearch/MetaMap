@@ -244,7 +244,7 @@ SandbankEditor.Tests = function ($scope, map) {
                 
                 var rThing1 = map.createRLinkWithRThing(thing1, thing2, 'Rthing 1-2');
                 var rThing11 = map.createRLinkWithRThing(child11, child21, 'Rthing 1.1 - 2.1');
-                console.log('Rchannel, rThing11: ' + rThing11);
+                //console.log('Rchannel, rThing11: ' + rThing11);
 
                 diagram.clearSelection();
                 rThing11.isSelected = true;
@@ -352,8 +352,8 @@ SandbankEditor.Tests = function ($scope, map) {
                 var rThing = map.createRLinkWithRThing(subpart11, subpart12, 'Rthing');
                 rThing.desiredSize = new go.Size(30,30);
                 map.refresh();
-                console.log('rThing actualBounds: ' + rThing.actualBounds + ', scale: ' + rThing.scale + ', desiredSize: ' + rThing.desiredSize);
-                console.log('Whole desiredSize: ' + whole.desiredSize);
+                //console.log('rThing actualBounds: ' + rThing.actualBounds + ', scale: ' + rThing.scale + ', desiredSize: ' + rThing.desiredSize);
+                //console.log('Whole desiredSize: ' + whole.desiredSize);
                 diagram.clearSelection();
             }
         },

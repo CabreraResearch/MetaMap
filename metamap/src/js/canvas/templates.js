@@ -33,7 +33,7 @@ SandbankEditor.Templates = function($scope, map) {
             var from = part.findAdornment('RelinkFrom');
             var to = part.findAdornment('RelinkTo');
             // if (from)
-            //     console.log('relinkfrom: ' + from.part.width);
+            //     //console.log('relinkfrom: ' + from.part.width);
         };
 
         diagram.toolManager.linkingTool.linkValidation = self.validateLink;
@@ -459,7 +459,7 @@ SandbankEditor.Templates = function($scope, map) {
                 stroke: '#000',
                 fill: '#000',
                 click: function(event, target) {
-                    console.log('clip clicked');
+                    //console.log('clip clicked');
                     map.getUi().toggleTab(map.getUi().TAB_ID_ATTACHMENTS);
                 }
             }
@@ -742,7 +742,7 @@ SandbankEditor.Templates = function($scope, map) {
                     click: groupClickHandler,
                     contextClick: function(event, target) {
                         if (event.control) {
-                            console.log(groupInfo(target.part));
+                            //console.log(groupInfo(target.part));
                         }
                     }
                 }
@@ -821,7 +821,7 @@ SandbankEditor.Templates = function($scope, map) {
                         // show debug info
                         contextClick: function(event, target) {
                             if (event.control) {
-                                console.log(groupInfo(target.part));
+                                //console.log(groupInfo(target.part));
                             }
                         }
                     }),
@@ -893,7 +893,7 @@ SandbankEditor.Templates = function($scope, map) {
                 },
                 contextClick: function(event, target) {
                     if (event.control) {
-                        console.log(linkInfo(target));
+                        //console.log(linkInfo(target));
                     }
                 }
         },
@@ -961,7 +961,7 @@ SandbankEditor.Templates = function($scope, map) {
                 reshapable: true,
                 contextClick: function(event, target) {
                     if (event.control) {
-                        console.log(linkInfo(target));
+                        //console.log(linkInfo(target));
                     }
                 }
             },
@@ -1028,7 +1028,7 @@ SandbankEditor.Templates = function($scope, map) {
 
     // change color and portId of temporary link templates based on the type of link being created/relinked
     this.handlePortTargeted = function(tool, realnode, realport, tempnode, tempport, toend) {
-        // console.log('portTargeted, realport: ' + (realport ? realport.name : '') + ', tempport: ' + (tempport ? tempport.name : '') 
+        // //console.log('portTargeted, realport: ' + (realport ? realport.name : '') + ', tempport: ' + (tempport ? tempport.name : '') 
         //     + ', originalFromPort: ' + (ltool.originalFromPort ? ltool.originalFromPort.name : '') + ', originalToPort: ' + ltool.originalToPort);
 
         var linkShape = tool.temporaryLink.findObject('linkshape');
@@ -1117,7 +1117,7 @@ SandbankEditor.Templates = function($scope, map) {
                 ),
                 padding: 0,
                 contextClick: function(event, target) {
-                    console.log(nodeInfo(target.part));
+                    //console.log(nodeInfo(target.part));
                 }
             },
 

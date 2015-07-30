@@ -32,7 +32,7 @@ SandbankEditor.Autosave = function($scope, $http, map) {
         }
 
         if (!changeTypes.length) {
-            console.log('autosave: nothing to save!'); // shouldn't happen
+            //console.log('autosave: nothing to save!'); // shouldn't happen
             return;
         }
 
@@ -200,14 +200,14 @@ SandbankEditor.Autosave = function($scope, $http, map) {
             changeType = 'undo_redo';
             map.refresh();
         } else if (e.change != go.ChangedEvent.Transaction) {
-            console.log('modelChanged, modelChange: ' + e.modelChange +
-                ', change: ' + e.change +
-                ', oldParam: ' + e.oldParam +
-                ', oldValue: [' + _.pairs(e.oldValue) + '] ' +
-                ', newParam: ' + e.newParam +
-                ', newValue: [' + _.pairs(e.newValue) + '] ' +
-                ', propertyName: ' + e.propertyName
-            );
+            //console.log('modelChanged, modelChange: ' + e.modelChange +
+            //    ', change: ' + e.change +
+            //    ', oldParam: ' + e.oldParam +
+            //    ', oldValue: [' + _.pairs(e.oldValue) + '] ' +
+            //    ', newParam: ' + e.newParam +
+            //    ', newValue: [' + _.pairs(e.newValue) + '] ' +
+            //    ', propertyName: ' + e.propertyName
+            //);
         }
 
         if (changeType) {

@@ -32,7 +32,7 @@ class MetaMap {
         this.onReady().then(() => {
             this.Auth0.login().then((profile) => {
                 this.MetaFire.login().then((auth) => {
-                    this.User = new User(profile, auth, this.Eventer);
+                    this.User = new User(profile, auth, this.Eventer, this.MetaFire);
                     this.User.onReady().then(() => {
                         this.PageFactory = new PageFactory(this.Eventer);
                         this.Router = new Router(this);

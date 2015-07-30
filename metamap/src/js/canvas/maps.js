@@ -145,7 +145,7 @@ window.MapsCtrl = function($scope, $http, $resource, $modal, $log) {
     // ------------- star a map -----------------
 
     $scope.toggleStar = function(map) {
-        console.log('toggleStar');
+        //console.log('toggleStar');
         $http.post('/maps/' + map.id + '/toggle_star').then(function(response) {
                 $scope.loadMaps(); // reload to update total in TOC
             },

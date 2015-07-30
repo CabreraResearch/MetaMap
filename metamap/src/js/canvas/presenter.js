@@ -165,7 +165,7 @@ SandbankEditor.Presenter = function ($scope, map) {
         else if (newValue == map.getUi().TAB_ID_PRESENTER) { // opening tab
             // show slides (see layouts.slideTemplate, binding of visible attr)
             self.diagramAspectRatio = $('#diagram').width() / $('#diagram').height();        
-            console.log('diagramAspectRatio: ' + self.diagramAspectRatio);
+            //console.log('diagramAspectRatio: ' + self.diagramAspectRatio);
 
             $scope.map.getDiagram().updateAllTargetBindings();
             updateIdeaList();
@@ -320,7 +320,7 @@ SandbankEditor.Presenter = function ($scope, map) {
 
     this.addSlide = function (typeName) {
         $scope.safeApply(function() {
-            console.log('addSlide: ' + typeName);
+            //console.log('addSlide: ' + typeName);
             var diagram = map.getDiagram();
 
             var db = map.computeMapBounds();
@@ -454,7 +454,7 @@ SandbankEditor.Presenter = function ($scope, map) {
             var wScale = thumbWidth / sb.width;
             var hScale = thumbHeight / sb.height;
             var thumbScale = Math.min(wScale, hScale);
-            console.log('scale: ' + wScale + ',' + hScale);
+            //console.log('scale: ' + wScale + ',' + hScale);
 
             var w = thumbScale * sb.width;
             var h = thumbScale * sb.height;
@@ -645,7 +645,7 @@ SandbankEditor.Presenter = function ($scope, map) {
         // NB: we calculate the aspect ratio when the tab is opened, 
         // rather than each time as the diagram size might be changing...
         var dar = (halfWidth ? self.diagramAspectRatio / 2 : self.diagramAspectRatio);
-        console.log('rect: ' + rect + ', dar: ' + dar);
+        //console.log('rect: ' + rect + ', dar: ' + dar);
 
         var rectAspectRatio = rect.width / rect.height;
 

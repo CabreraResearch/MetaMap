@@ -115,7 +115,7 @@ window.MapsFeedCtrl = function($scope, $http, $resource, $modal, $log) {
     // -------------- infinite scrolling ------------------
 
     $scope.moreEvents = function() {
-        console.log('moreEvents!');
+        //console.log('moreEvents!');
         if (!$scope.loadingFeed) {
             $scope.loadFeed(10);
         }
@@ -178,7 +178,7 @@ window.MapsFeedCtrl = function($scope, $http, $resource, $modal, $log) {
     };
 
     $scope.deleteComment = function(eventIndex, commentId) {
-        // console.log('eventIndex: ' + eventIndex);
+        // //console.log('eventIndex: ' + eventIndex);
         var event = $scope.events[eventIndex];
         var mapId = event.map.id;
         $http.delete('/comments/' + commentId).then(function(response) {

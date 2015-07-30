@@ -131,7 +131,7 @@ SandbankEditor.Map = function($scope, $http, $resource, $timeout, $modal, $log) 
 
     // this is called by a $scope.$watch in init()
     this.currentTabChanged = function(newValue, oldValue) {
-        // console.log('currentTabChanged, newValue: ' + newValue + ', oldValue: ' + oldValue);
+        // //console.log('currentTabChanged, newValue: ' + newValue + ', oldValue: ' + oldValue);
         // notify any interested components
         _.each(getComponents(), function(component) {
             if (component && component.currentTabChanged) {
@@ -294,7 +294,7 @@ SandbankEditor.Map = function($scope, $http, $resource, $timeout, $modal, $log) 
     // so both P and R links get the toPort set to P by default.
     function linkDrawn(e) {
         var link = e.subject;
-        console.log('linkDrawn, link: ' + link + ', fromPort: ' + link.fromPortId + ', toPort: ' + link.toPortId);
+        //console.log('linkDrawn, link: ' + link + ', fromPort: ' + link.fromPortId + ', toPort: ' + link.toPortId);
         if (link.fromPortId == 'P') {
             _diagram.model.startTransaction("change link category");
             _diagram.model.setDataProperty(link.data, 'toPort', 'P');
@@ -334,20 +334,20 @@ SandbankEditor.Map = function($scope, $http, $resource, $timeout, $modal, $log) 
         while (parts.next()) {
             var part = parts.value;
             if (part instanceof go.Group) {
-                console.log('clipboardChanged: part ' + part + ', mainpanel scale: ' + part.findObject('mainpanel').scale);
+                //console.log('clipboardChanged: part ' + part + ', mainpanel scale: ' + part.findObject('mainpanel').scale);
             }
         }
     }
 
     // NB: this is called when parts are copied by control-drag, NOT when the copy button is clicked
     function selectionCopied(e) {
-        console.log('selectionCopied');
+        //console.log('selectionCopied');
         var parts = e.subject.iterator;
         while (parts.next()) {
             var part = parts.value;
             if (part instanceof go.Group && part.isTopLevel) {
                 var loc = go.Point.parse(part.data.loc);
-                console.log('selectionCopied: updating loc of part ' + part + ' = ' + loc + ', scale: ' + part.scale);
+                //console.log('selectionCopied: updating loc of part ' + part + ' = ' + loc + ', scale: ' + part.scale);
                 _diagram.model.setDataProperty(part.data, 'loc', (loc.x + 50) + ' ' + (loc.y + 50));
                 part.updateTargetBindings('loc');
             }
@@ -541,7 +541,7 @@ SandbankEditor.Map = function($scope, $http, $resource, $timeout, $modal, $log) 
             var badLabelKeys = [];
             _.each(linkData.labelKeys, function(key, index2, list2) {
                 if (key == linkData.from || key == linkData.to) {
-                    console.log('labelKey same as from or to of link: ' + key);
+                    //console.log('labelKey same as from or to of link: ' + key);
                     badLabelKeys.push(key);
                 }
             });
@@ -580,7 +580,7 @@ SandbankEditor.Map = function($scope, $http, $resource, $timeout, $modal, $log) 
                     _diagram.isReadOnly = true;
                 } catch (e) {
                     alert('Could not load MetaMap version');
-                    console.error(e.message);
+                    //console.error(e.message);
                 }
             }
         });
@@ -689,10 +689,10 @@ SandbankEditor.Map = function($scope, $http, $resource, $timeout, $modal, $log) 
             return null;
         }
 
-        // console.log('createRThing, link: ' + link + ', name: ' + name);
+        // //console.log('createRThing, link: ' + link + ', name: ' + name);
         // don't allow multiple R-things
         if (link.isLabeledLink) {
-            // console.log('cannot create RThing, link is already labeled');
+            // //console.log('cannot create RThing, link is already labeled');
             return;
         }
 
@@ -838,10 +838,10 @@ SandbankEditor.Map = function($scope, $http, $resource, $timeout, $modal, $log) 
     // side is LEFT or RIGHT
     this.moveSiblingNextTo = function(sibling, group, side) {
         var parent = group.containingGroup;
-        console.log('moveSiblingNextTo, sibling: ' + sibling + ', group: ' + group + ', parent: ' + parent + ', sibling.containingGroup: ' + sibling.containingGroup);
+        //console.log('moveSiblingNextTo, sibling: ' + sibling + ', group: ' + group + ', parent: ' + parent + ', sibling.containingGroup: ' + sibling.containingGroup);
 
         if (!parent || sibling.containingGroup != parent) {
-            console.error('Cannot do moveSiblingNextTo on non-siblings or top-level groups');
+            //console.error('Cannot do moveSiblingNextTo on non-siblings or top-level groups');
         }
 
         // create new member order

@@ -64,7 +64,7 @@ SandbankEditor.Layouts = function($scope, map) {
                     parentX = part.containingGroup.location.x;
                     parentY = part.containingGroup.location.y;
                 }
-                console.log('moving group, subject: ' + e.subject + ', part: ' + part + ', height: ' + part.part.desiredSize.height + ', location: ' + part.part.location);
+                //console.log('moving group, subject: ' + e.subject + ', part: ' + part + ', height: ' + part.part.desiredSize.height + ', location: ' + part.part.location);
                 if (!isNaN(part.location.x)) {
                     diagram.model.setDataProperty(part.data, 'loc', (part.location.x - parentX) + ' ' + (part.location.y - parentY));
                 }
@@ -339,7 +339,7 @@ SandbankEditor.Layouts = function($scope, map) {
             rect.grow(h / 10, w / 10, h / 10, w / 10);
             var parts = diagram.findObjectsIn(rect, null, self.isGroup);
             if (parts.count) {
-                console.log('getNewSisterLocation: overlapping part found in ' + rect);
+                //console.log('getNewSisterLocation: overlapping part found in ' + rect);
                 if (withR) {
                     x += w / 10;
                     y += h / 10;
@@ -348,7 +348,7 @@ SandbankEditor.Layouts = function($scope, map) {
                     y += h / 10 * (inGroup ? 1 : -1); // move down if in group, else up
                 }
             } else {
-                console.log('getNewSisterLocation: no overlapping part found in ' + rect);
+                //console.log('getNewSisterLocation: no overlapping part found in ' + rect);
                 break;
             }
         }
@@ -384,7 +384,7 @@ SandbankEditor.Layouts = function($scope, map) {
                 newRect = new go.Rect(x, y, w, h);
                 newRect.grow(h / 5, w / 5, h / 5, w / 5);
                 overlaps = newRect.containsRect(memberRect);
-                console.log('getNewChildLocation for ' + member + ': newRect = ' + newRect + ', memberRect = ' + memberRect + ', overlaps: ' + overlaps);
+                //console.log('getNewChildLocation for ' + member + ': newRect = ' + newRect + ', memberRect = ' + memberRect + ', overlaps: ' + overlaps);
                 if (overlaps) {
                     break;
                 }
@@ -426,8 +426,7 @@ SandbankEditor.Layouts = function($scope, map) {
         var oldBounds = map.getDiagram().computePartsBounds(newMembers);
         var oldOrigin = new go.Point(oldBounds.x, oldBounds.y);
         var newOrigin = new go.Point(0, systemBounds.height * 1.2);
-        console.log('layoutNewMembersRelativeTo, systemBounds: ' + systemBounds + ', oldBounds: ' + oldBounds +
-            ', oldOrigin: ' + oldOrigin + ', newOrigin: ' + newOrigin);
+        //console.log('layoutNewMembersRelativeTo, systemBounds: ' + systemBounds + ', oldBounds: ' + oldBounds +  ', oldOrigin: ' + oldOrigin + ', newOrigin: ' + newOrigin);
 
         // figure out new scaled locations
         // NB: we can assume newMembers are all one level down from parent (see map.addSelectedThingsAsChildrenOf), 
@@ -439,7 +438,7 @@ SandbankEditor.Layouts = function($scope, map) {
             var newX = newOrigin.x + (groupBounds.x - oldOrigin.x) * 0.45;
             var newY = newOrigin.y + (groupBounds.y - oldOrigin.y) * 0.45;
             var newLoc = go.Point.stringify(new go.Point(newX, newY));
-            console.log('layoutNewMembersRelativeTo, groupBounds: ' + groupBounds + ', newLoc: ' + newLoc);
+            //console.log('layoutNewMembersRelativeTo, groupBounds: ' + groupBounds + ', newLoc: ' + newLoc);
             map.getDiagram().model.setDataProperty(group.data, 'loc', newLoc);
         }
     };
@@ -449,7 +448,7 @@ SandbankEditor.Layouts = function($scope, map) {
     this.layoutOldMembersOutsideOf = function(oldMembers, parent, oldMembersBounds, oldMembersLevel) {
         // figure out scale factor (members can be dragged up multiple levels, unlike dragging into S)
         var scaleFactor = Math.pow(0.45, oldMembersLevel - self.computeLevel(parent));
-        console.log('layoutOldMembersOutsideOf, scaleFactor: ' + scaleFactor);
+        //console.log('layoutOldMembersOutsideOf, scaleFactor: ' + scaleFactor);
 
         // figure out old/new origins - place new origin above parent, with vertical space for scaled-up oldMembers
         var parentBounds = parent.actualBounds;
@@ -464,8 +463,7 @@ SandbankEditor.Layouts = function($scope, map) {
             var newX = newOrigin.x + (groupBounds.x - oldOrigin.x) / scaleFactor;
             var newY = newOrigin.y + (groupBounds.y - oldOrigin.y) / scaleFactor;
             var newLoc = go.Point.stringify(new go.Point(newX, newY));
-            console.log('layoutOldMembersOutsideOf, parentBounds: ' + parentBounds + ', oldMembersBounds: ' + oldMembersBounds +
-                ', newOrigin: ' + newOrigin + ', groupBounds: ' + groupBounds + ', newLoc: ' + newLoc);
+            //console.log('layoutOldMembersOutsideOf, parentBounds: ' + parentBounds + ', oldMembersBounds: ' + oldMembersBounds + ', newOrigin: ' + newOrigin + ', groupBounds: ' + groupBounds + ', newLoc: ' + newLoc);
             map.getDiagram().model.setDataProperty(group.data, 'loc', go.Point.stringify(newLoc));
         }
     };
@@ -551,10 +549,10 @@ SandbankEditor.Layouts = function($scope, map) {
         while (links.next()) {
             var link = links.value;
             // if (isNaN(link.location.x)) {
-            //     console.log('link location isNaN');
+            //     //console.log('link location isNaN');
             //     link.move(new go.Point(0,0));
             // }
-            // console.log('link location: ' + link.location);
+            // //console.log('link location: ' + link.location);
             adjustLinkLayout(link);
         }
 
@@ -747,9 +745,9 @@ SandbankEditor.Layouts = function($scope, map) {
         // var loc = link.location;
         // if (isNaN(loc.x) || isNaN(loc.y)) {
         //     link.location = new go.Point(10, 10);
-        //     console.log('adjustLinkLayout, link.location: ' + link.location);
+        //     //console.log('adjustLinkLayout, link.location: ' + link.location);
         // }
-        // console.log('adjustLinkLayout, link.location: ' + link.location);
+        // //console.log('adjustLinkLayout, link.location: ' + link.location);
 
         // see if link is within a stacked or inventory layout, or if it's a hidden P link
         var inventoryAncestor = getCommonAncestorWithLayout(link.fromNode, link.toNode, ['left', 'right']);
@@ -852,7 +850,7 @@ SandbankEditor.Layouts = function($scope, map) {
         var rangeStart = 0 - rangeSize / 2;
 
         link.curviness = (rangeStart + rangeIncrement * snpos.index) * snpos.orientation;
-        // console.log('applyMultilinkCurveRouting, link: ' + link + ', curviness: ' + link.curviness); 
+        // //console.log('applyMultilinkCurveRouting, link: ' + link + ', curviness: ' + link.curviness); 
     }
 
     // do normal straight lines for freehand layout, or links between descendants of things with different layouts
