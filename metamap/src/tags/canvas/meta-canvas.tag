@@ -71,17 +71,18 @@
 
         MetaMap.Eventer.every('map', this.build)
 
-        this.on('update', () => {
+        this.correctHeight = () => {
             $(this.diagram).css({
                 height: window.innerHeight-154+'px'
             });
+        }
+
+        this.on('update', () => {
+            this.correctHeight();
         });
 
-        $(window).resize(() => {
-            $(this.diagram).css({
-                height: window.innerHeight-154+'px'
-            });
-
+        $(window).resize( () => {
+            this.correctHeight();
         });
 
     </script>

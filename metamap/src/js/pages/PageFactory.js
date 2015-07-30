@@ -4,9 +4,6 @@ const NProgress = window.NProgress;
 class PageFactory {
     constructor(eventer) {
         this.eventer = eventer;
-        eventer.every('nav', (type, obj) => {
-            this.navigate(type, obj);
-        });
         this.onReady();
     }
 
@@ -30,18 +27,28 @@ class PageFactory {
         return this._onReady;
     }
 
-    navigate(type, obj) {
+    navigate(path, id, action, ...params) {
         let tag = '';
-        switch (type) {
-            case 'map':
-                tag = 'meta-canvas';
-                break;
-        }
 
-        if (tag) {
+        switch (path) {
+        case 'mymaps':
+            this.eventer.do(path, { id: id, action: action }, ...params);
+            break;
+
+        case 'map':
+            tag = 'meta-canvas';
             $('#app-container').empty();
             riot.mount(document.getElementById('app-container'), tag);
-            this.eventer.do(type, obj);
+            MetaMap.MetaFire.getData(`maps/list/${id}`).then((map) => {
+                map.id = id;
+                this.eventer.do('nav', path, map, ...params);
+                this.eventer.do('map', map, ...params);
+            });
+            break;
+
+        default:
+            this.eventer.do(path, path, { id: id, action: action }, ...params);
+            break;
         }
     }
 }

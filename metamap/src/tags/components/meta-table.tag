@@ -97,6 +97,7 @@
     <script type="es6">
         
         this.onOpen = (event, ...o) => {
+            localforage.setItem('currentMap', event.item)
             MetaMap.Router.to(`map/${event.item.id}`)
         }
         

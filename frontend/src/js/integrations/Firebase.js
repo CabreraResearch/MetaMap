@@ -119,7 +119,11 @@ class MetaFire {
         if (path) {
             child = this.getChild(path);
         }
-        return child.set(data);
+        try {
+            return child.set(data);
+        } catch (e) {
+            window.FrontEnd.error(e);
+        }
     }
 
     setDataInTransaction (data, path, callback) {
@@ -127,9 +131,17 @@ class MetaFire {
         if (path) {
             child = this.getChild(path);
         }
-        return child.transaction((currentValue) => {
-            return data;
-        });
+        try {
+            return child.transaction((currentValue) => {
+                try {
+                    return data;
+                } catch (e) {
+                    window.FrontEnd.error(e);
+                }
+            });
+        } catch (e) {
+            window.FrontEnd.error(e);
+        }
     }
 
     logout () {
