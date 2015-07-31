@@ -208,7 +208,7 @@ SandbankEditor.UI = function($scope, $timeout, $http, $resource, $modal, $log, m
         // this flag is set by the toolbar button
         if (self.zoomingToRegion) {
             self.zoomingToRegion = false;
-            console.log('zoomToRegion, selection count: ' + diagram.selection.count);
+            //console.log('zoomToRegion, selection count: ' + diagram.selection.count);
             var rect = diagram.computePartsBounds(diagram.selection);
             diagram.zoomToRect(rect);
         }
@@ -338,7 +338,7 @@ SandbankEditor.UI = function($scope, $timeout, $http, $resource, $modal, $log, m
         // already clicked, so it's a double click; change handler
         if (_cornerClicked == corner) {
             _cornerFunction = getCornerFunction(corner, 2);
-            console.log('handleCornerClick: double click on ' + corner);
+            //console.log('handleCornerClick: double click on ' + corner);
             return;
         }
         // remember that at least one click has happened for the current corner
@@ -371,7 +371,7 @@ SandbankEditor.UI = function($scope, $timeout, $http, $resource, $modal, $log, m
             return (clicks == 1 ? self.showCornerTip : editText);
         } else {
             return function() {
-                console.log('getCornerFunction: no function found for corner: ' + corner + '!');
+                //console.log('getCornerFunction: no function found for corner: ' + corner + '!');
             };
         }
     }
@@ -382,10 +382,10 @@ SandbankEditor.UI = function($scope, $timeout, $http, $resource, $modal, $log, m
             return null;
         }
 
-        console.log('editText, thing: ' + thing);
+        //console.log('editText, thing: ' + thing);
         if (thing instanceof go.Panel) { // outline layout
             var part = thing.part;
-            console.log('editText, part: ' + part);
+            //console.log('editText, part: ' + part);
             if (part instanceof go.Group && part.data && (part.data.layout == 'left' || part.data.layout == 'right')) {
                 var textBlockName = 'externaltext-' + part.data.layout;
                 var text = thing.part.findObject(textBlockName);

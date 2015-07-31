@@ -1,8 +1,11 @@
 const riot = window.riot;
 const NProgress = window.NProgress;
+const pageBody = require('../../tags/page-body.js');
+const metaCanvas = require('../../tags/canvas/meta-canvas.js');
 
 class PageFactory {
-    constructor(eventer) {
+    constructor(eventer, metaFire) {
+        this.metaFire = metaFire;
         this.eventer = eventer;
         this.onReady();
     }
@@ -39,7 +42,7 @@ class PageFactory {
             tag = 'meta-canvas';
             $('#app-container').empty();
             riot.mount(document.getElementById('app-container'), tag);
-            MetaMap.MetaFire.getData(`maps/list/${id}`).then((map) => {
+            this.metaFire.getData(`maps/list/${id}`).then((map) => {
                 map.id = id;
                 this.eventer.do('nav', path, map, ...params);
                 this.eventer.do('map', map, ...params);

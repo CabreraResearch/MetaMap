@@ -8,6 +8,7 @@ const NProgress = window.NProgress;
 class MetaMap {
 
     constructor() {
+        this.config = FrontEnd.config;
         this.MetaFire = FrontEnd.MetaFire;
         this.Eventer = new Eventer(this);
         
@@ -34,7 +35,7 @@ class MetaMap {
                 this.MetaFire.login().then((auth) => {
                     this.User = new User(profile, auth, this.Eventer, this.MetaFire);
                     this.User.onReady().then(() => {
-                        this.PageFactory = new PageFactory(this.Eventer);
+                        this.PageFactory = new PageFactory(this.Eventer, this.MetaFire);
                         this.Router = new Router(this);
                     });
                 });

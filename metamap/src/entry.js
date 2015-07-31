@@ -12,23 +12,6 @@ window.moment = require('moment');
 window.URI = require('URIjs');
 window.localforage = require('localforage');
 
-require('./tags/menu/meta-help.js');
-require('./tags/menu/meta-user.js');
-require('./tags/menu/meta-points.js');
-require('./tags/menu/meta-notifications.js');
-require('./tags/canvas/meta-canvas.tag');
-require('./tags/components/meta-dialog.tag');
-require('./tags/components/meta-table.tag');
-require('./tags/page-actions.tag');
-require('./tags/page-container.tag');
-require('./tags/page-content.tag');
-require('./tags/page-footer.tag');
-require('./tags/page-header.tag');
-require('./tags/page-logo.tag');
-require('./tags/page-search.tag');
-require('./tags/page-sidebar.tag');
-require('./tags/page-topmenu.tag');
-require('./tags/page-body.tag');
 
 require('./js/canvas/editor.js');
 require('./js/canvas/user.js');
