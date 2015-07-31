@@ -34,6 +34,7 @@ class Router {
         riot.route.start();
         riot.route((target, id = '', action = '', ...params) => {
             let path = this.getPath(target);
+           
             if (!staticRoutes[path]) {
                 toggleMain(true, path);
                 this.PageFactory.navigate(path, id, action, ...params);
@@ -46,9 +47,19 @@ class Router {
     }
     
     get currentPage() {
-        let page = 'mymaps';
-        if (this.history.length > 0) {
-            page = this.history[this.history.length - 1];
+        let page = 'home';
+        let pageCnt = this.history.length;
+        if (pageCnt > 0) {
+            page = this.getPath(this.history[pageCnt - 1]);
+        }
+        return page;
+    }
+
+    get previousPage() {
+        let page = 'home';
+        let pageCnt = this.history.length;
+        if (pageCnt > 0) {
+            page = this.getPath(this.history[pageCnt - 2]);
         }
         return page;
     }
@@ -84,10 +95,10 @@ class Router {
     }
 
     back() {
-        let path = 'mymaps';
+        let path = 'home';
         let pageCnt = this.history.length;
-        if (pageCnt > 1) {
-            path = this.getPath(this.history[pageCnt - 2]);
+        if (pageCnt > 1 && (this.currentPage != 'mymaps' || this.currentPage != this.previousPage)) {
+            path = this.previousPage;
         }
         return this.to(path);
     }
