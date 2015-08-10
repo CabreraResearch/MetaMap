@@ -12,7 +12,7 @@ class NewMap extends ActionBase {
         this.metaFire.getData(`${ROUTES.MAPS_NEW_MAP}`).then((blankMap) => {
             let newMap = {
                 created_at: new Date(),
-                user_id: this.metaMap.User.userId,
+                owner: this.metaMap.User.userId,
                 name: 'Untitled Map'
             }
             let pushState = this.metaFire.pushData(newMap, `${ROUTES.MAPS_LIST}`);

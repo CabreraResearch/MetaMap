@@ -97,8 +97,11 @@ class MetaFire {
             this.onReady().then(() => {
                 let child = this.getChild(path);
                 child.on(event, (snapshot) => {
-                    let data = snapshot.val();
                     try {
+                        if (!snapshot.exists()) {
+                            throw new Error(`There is no data at ${path}`);
+                        }
+                        let data = snapshot.val();
                         callback(data);
                     } catch (e) {
                         this.metaMap.error(e);
@@ -147,7 +150,11 @@ class MetaFire {
             child = this.getChild(path);
         }
         try {
-            return child.push(data);
+            return child.push(data, (e) => {
+                if (e) {
+                    this.metaMap.error(e);
+                }
+            });
         } catch (e) {
             this.metaMap.error(e);
         }

@@ -140,7 +140,7 @@ module.exports = riot.tag('meta-table', html, function(opts) {
                 if (this.table) {
                     $('.meta-editable').editable('destroy');
                     this.dataTable.destroy();
-                    this.table.empty();
+                    //this.table.empty();
                 }
 
                 this.update();
@@ -197,9 +197,10 @@ module.exports = riot.tag('meta-table', html, function(opts) {
 
                 tableWrapper.find('.dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
                 
-                $('.meta-editable').editable().on('save', function(event, params) {
+                $('.meta-editable').editable({ unsavedclass: null }).on('save', function (event, params) {
                     var id = this.dataset.pk;
                     MetaMap.MetaFire.setData(params.newValue, `maps/list/${id}/name`);
+                    return true;
                 });
 
                 NProgress.done();
