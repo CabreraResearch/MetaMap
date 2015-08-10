@@ -56,6 +56,10 @@ module.exports = riot.tag('page-actions', html, function(opts) {
         }
         if (this.mapId) {
             MetaMap.MetaFire.off(`maps/list/${this.mapId}/name`);
+            MetaMap.MetaFire.on(`maps/list/${this.mapId}/name`, (name) => {
+                this.mapName = name;
+                this.update();
+            });
         }
         this.mapName = opts.name;
         this.mapId = opts.id;

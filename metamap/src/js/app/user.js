@@ -75,7 +75,7 @@ class User {
     }
 
     get history() {
-        return this.profile.history;
+        return this.profile.history || [];
     }
     saveUserEditorOptions(options) {
         let data = {

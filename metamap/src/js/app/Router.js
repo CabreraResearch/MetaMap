@@ -29,7 +29,7 @@ let track = (path) => {
 
 class Router {
     constructor(metaMap) {
-        this.history = metaMap.User.history;
+        this.user = metaMap.User;
         this.PageFactory = metaMap.PageFactory;
         riot.route.start();
         riot.route((target, id = '', action = '', ...params) => {
@@ -48,18 +48,18 @@ class Router {
     
     get currentPage() {
         let page = 'home';
-        let pageCnt = this.history.length;
+        let pageCnt = this.user.history.length;
         if (pageCnt > 0) {
-            page = this.getPath(this.history[pageCnt - 1]);
+            page = this.getPath(this.user.history[pageCnt - 1]);
         }
         return page;
     }
 
     get previousPage() {
         let page = 'home';
-        let pageCnt = this.history.length;
+        let pageCnt = this.user.history.length;
         if (pageCnt > 0) {
-            page = this.getPath(this.history[pageCnt - 2]);
+            page = this.getPath(this.user.history[pageCnt - 2]);
         }
         return page;
     }
@@ -96,7 +96,7 @@ class Router {
 
     back() {
         let path = 'home';
-        let pageCnt = this.history.length;
+        let pageCnt = this.user.history.length;
         if (pageCnt > 1 && (this.currentPage != 'mymaps' || this.currentPage != this.previousPage)) {
             path = this.previousPage;
         }
