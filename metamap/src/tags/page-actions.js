@@ -60,7 +60,7 @@ module.exports = riot.tag('page-actions', html, function(opts) {
         this.mapName = opts.name;
         this.mapId = opts.id;
         this.update();
-        $(this.map_name).editable().on('save', (event, params) => {
+        $(this.map_name).editable({ unsavedclass: null }).on('save', (event, params) => {
             MetaMap.MetaFire.setData(params.newValue, `maps/list/${this.mapId}/name`);
         });
         this.bindToMapName();
