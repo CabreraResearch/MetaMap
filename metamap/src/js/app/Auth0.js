@@ -2,8 +2,9 @@ let Auth0Lock = require('auth0-lock');
 
 class Auth0 {
 
-    constructor(config) {
+    constructor(config, metaMap) {
         this.config = config;
+        this.metaMap = metaMap;
         this.lock = new Auth0Lock(config.api, config.app);
         this.lock.on('loading ready', (...e) => {
             
@@ -64,7 +65,7 @@ class Auth0 {
     }
 
     onFail(err, reject) {
-        FrontEnd.error(err);
+        this.metaMap.error(err);
         if (reject) {
             reject(err);
             this.logout();

@@ -40,8 +40,8 @@ const html = `
                             <th class="table-checkbox">
                                 <input type="checkbox" class="group-checkable" data-set="#mymaps_table .checkboxes"/>
                             </th>
-                            <th>
-                                User ID
+                            <th style="display: none;">
+                                UserId
                             </th>
                             <th>
                                 Name
@@ -65,7 +65,9 @@ const html = `
                             <td>
                                 <input type="checkbox" class="checkboxes" value="1"/>
                             </td>
-                            <td>{ user_id }</td>
+                            <td style="display: none;">
+                                { user_id }
+                            </td>
                             <td class="meta-editable" data-pk="{ id }" data-title="Edit Map Name">{ name }</td>
                             <td class="center">
                                 { created_at }
@@ -102,7 +104,7 @@ module.exports = riot.tag('meta-table', html, function(opts) {
 
     this.on('mount', () => {
         NProgress.start();
-        FrontEnd.MetaFire.on('metamap/mymaps', (data) => {
+        MetaMap.MetaFire.on('metamap/mymaps', (data) => {
             this.menu = {
                 buttons: _.sortBy(data.buttons, 'order'),
                 menu: _.sortBy(data.menu, 'order')
@@ -110,11 +112,12 @@ module.exports = riot.tag('meta-table', html, function(opts) {
             this.update();
         });
 
-        FrontEnd.MetaFire.on('maps/list', (data) => {
-
+        MetaMap.MetaFire.getChild('maps/list').orderByChild('owner').equalTo(MetaMap.User.userId).on('value', (val) => {
+            const data = val.val();
             try {
                 this.data = _.map(data, (obj, key) => {
                     obj.id = key;
+                    obj.created_at = moment(obj.created_at).format('YYYY-MM-DD');
                     return obj;
                 });
                 this.update();
@@ -185,7 +188,7 @@ module.exports = riot.tag('meta-table', html, function(opts) {
 
             } catch (e) {
                 NProgress.done();
-                window.FrontEnd.error(e);
+                MetaMap.error(e);
             }
         });
     });

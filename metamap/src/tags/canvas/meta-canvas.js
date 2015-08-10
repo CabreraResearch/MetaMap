@@ -65,12 +65,12 @@ module.exports = riot.tag('meta-canvas', html, function(opts) {
         if (opts.id != this.mapId) {
             this.canvas = null
             if (this.mapId) {
-                FrontEnd.MetaFire.off(`maps/data/${this.mapId}`);
+                MetaMap.MetaFire.off(`maps/data/${this.mapId}`);
             }
             this.mapId = opts.id;
             NProgress.start();
 
-            FrontEnd.MetaFire.on(`maps/data/${opts.id}`, this.buildCanvas);
+            MetaMap.MetaFire.on(`maps/data/${opts.id}`, this.buildCanvas);
             MetaMap.Eventer.forget('map', this.build);
         }
     }

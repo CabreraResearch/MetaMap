@@ -4,12 +4,15 @@ const Router = require('./js/app/Router.js');
 const Eventer = require('./js/app/Eventer.js');
 const PageFactory = require('./js/pages/PageFactory.js');
 const NProgress = window.NProgress;
+const Config = require('./js/app//Config.js');
+const ga = require('./js/integrations/google.js');
 
 class MetaMap {
 
     constructor() {
-        this.config = FrontEnd.config;
-        this.MetaFire = FrontEnd.MetaFire;
+        this._config = new Config();
+        this.config = this._config.config;
+        this.MetaFire = this._config.MetaFire;
         this.Eventer = new Eventer(this);
         
         this.onReady();
@@ -18,7 +21,7 @@ class MetaMap {
     onReady() {
         if (!this._onReady) {
             this._onReady = new Promise((fulfill, reject) => {
-                FrontEnd.onReady().then((config) => {
+                this._config.onReady().then((config) => {
                     this.Auth0 = new Auth0(config.auth0);
                     fulfill();
                 }).catch((err) => {
@@ -41,6 +44,23 @@ class MetaMap {
                 });
             });
         });
+    }
+    
+    log(val) {
+        if (window.ga) {
+            window.ga('send', 'event', 'log', 'label', val);
+        }
+        console.log(val);
+    }
+
+    error(val) {
+        if (window.ga) {
+            window.ga('send', 'exception', {
+                'exDescription': val.message,
+                'exFatal': true
+            });
+        }
+        console.error(val);
     }
 
     logout() {

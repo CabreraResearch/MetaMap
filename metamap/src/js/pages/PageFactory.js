@@ -1,21 +1,23 @@
 const riot = window.riot;
 const NProgress = window.NProgress;
 const pageBody = require('../../tags/page-body.js');
-const metaCanvas = require('../../tags/canvas/meta-canvas.js');
+const ELEMENTS = require('../constants/elements.js');
+const Actions = require('../actions/Action.js');
 
 class PageFactory {
     constructor(eventer, metaFire) {
         this.metaFire = metaFire;
         this.eventer = eventer;
+        this.actions = new Actions(metaFire, eventer, this);
         this.onReady();
     }
 
     onReady() {
         if (!this._onReady) {
             this._onReady = new Promise((fulfill, reject) => {
-                $('#meta_progress').remove();
+                $(`#${ELEMENTS.META_PROGRESS}`).remove();
                 riot.mount('*');
-                NProgress.configure({ parent: '#meta_progress_next' });
+                NProgress.configure({ parent: `#${ELEMENTS.META_PROGRESS_NEXT}` });
 
                 _.delay(() => {
                     Metronic.init(); // init metronic core componets
@@ -31,27 +33,17 @@ class PageFactory {
     }
 
     navigate(path, id, action, ...params) {
-        let tag = '';
+        let act = this.actions.act(path, id, action, ...params);
+        if (!act) {
+            switch (path) {
+            case 'mymaps':
+                this.eventer.do(path, { id: id, action: action }, ...params);
+                break;
 
-        switch (path) {
-        case 'mymaps':
-            this.eventer.do(path, { id: id, action: action }, ...params);
-            break;
-
-        case 'map':
-            tag = 'meta-canvas';
-            $('#app-container').empty();
-            riot.mount(document.getElementById('app-container'), tag);
-            this.metaFire.getData(`maps/list/${id}`).then((map) => {
-                map.id = id;
-                this.eventer.do('nav', path, map, ...params);
-                this.eventer.do('map', map, ...params);
-            });
-            break;
-
-        default:
-            this.eventer.do(path, path, { id: id, action: action }, ...params);
-            break;
+            default:
+                this.eventer.do(path, path, { id: id, action: action }, ...params);
+                break;
+            }
         }
     }
 }
