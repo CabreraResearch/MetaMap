@@ -1,5 +1,6 @@
 const riot = require('riot');
 const NProgress = window.NProgress;
+const _ = require('lodash');
 
 const html = `
 <div class="row">
@@ -10,7 +11,7 @@ const html = `
                     <i class="fa fa-icon-th-large"></i>My Maps
                 </div>
                 <div if="{ menu }" class="actions">
-                    <a each="{ menu.buttons }" href="{ link }" class="btn btn-default btn-sm">
+                    <a each="{ menu.buttons }" href="{ link }" onclick="{ parent.onActionClick }" class="btn btn-default btn-sm">
                         <i class="{ icon }"></i> { title }
                     </a>
                     <div class="btn-group">
@@ -18,7 +19,7 @@ const html = `
                             <i class="fa fa-cogs"></i> Tools <i class="fa fa-angle-down"></i>
                         </a>
                         <ul class="dropdown-menu pull-right">
-                            <li each="{ menu.menu }">
+                            <li each="{ menu.menu }" onclick="{ parent.onMenuClick }">
                                 <a href="{ link }">
                                     <i class="{ icon }"></i> { title }
                                 </a>
@@ -59,19 +60,13 @@ const html = `
                     </thead>
                     <tbody>
                         <tr each="{ data }" class="odd gradeX">
-                            <td style="display: none;">
-                                { id }
-                            </td>
+                            <td style="display: none;" ><span data-selector="id" class ="mapid">{ id }</span></td>
                             <td>
                                 <input type="checkbox" class="checkboxes" value="1"/>
                             </td>
-                            <td style="display: none;">
-                                { user_id }
-                            </td>
+                            <td style="display: none;">{ user_id }</td>
                             <td class="meta-editable" data-pk="{ id }" data-title="Edit Map Name">{ name }</td>
-                            <td class="center">
-                                { created_at }
-                            </td>
+                            <td class="center">{ created_at }</td>
                             <td>
                                 <span class="label label-sm label-success">
                                     Private
@@ -102,14 +97,36 @@ module.exports = riot.tag('meta-table', html, function(opts) {
         MetaMap.Router.to(`map/${event.item.id}`);
     }
 
+    this.onActionClick = (event, tag) => {
+        debugger;
+    }
+
+    this.onMenuClick = (event, tag) => {
+        debugger;
+        switch (event.item.title.toLowerCase()) {
+        case 'delete':
+            const deleteMaps = require('../../js/actions/DeleteMap.js');
+            let selected = this.table.find('.active').find('.mapid');
+            let ids = [];
+            _.each(selected, (cell) => {
+                ids.push(cell.innerHTML);
+            });
+            deleteMaps.deleteAll(ids);
+            break;
+        }
+        
+    }
+
     this.on('mount', () => {
         NProgress.start();
         MetaMap.MetaFire.on('metamap/mymaps', (data) => {
-            this.menu = {
-                buttons: _.sortBy(data.buttons, 'order'),
-                menu: _.sortBy(data.menu, 'order')
-            };
-            this.update();
+            if (data) {
+                this.menu = {
+                    buttons: _.sortBy(data.buttons, 'order'),
+                    menu: _.sortBy(data.menu, 'order')
+                };
+                this.update();
+            }
         });
 
         MetaMap.MetaFire.getChild('maps/list').orderByChild('owner').equalTo(MetaMap.User.userId).on('value', (val) => {
@@ -120,65 +137,66 @@ module.exports = riot.tag('meta-table', html, function(opts) {
                     obj.created_at = moment(obj.created_at).format('YYYY-MM-DD');
                     return obj;
                 });
-                this.update();
-
-                if (!this.table) {
-                    this.table = $(this.mymaps_table);
-                    this.table.dataTable({
-
-                        // Uncomment below line("dom" parameter) to fix the dropdown overflow issue in the datatable cells. The default datatable layout
-                        // setup uses scrollable div(table-scrollable) with overflow:auto to enable vertical scroll(see: assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.js). 
-                        // So when dropdowns used the scrollable div should be removed. 
-                        //"dom": "<'row'<'col-md-6 col-sm-12'l><'col-md-6 col-sm-12'f>r>t<'row'<'col-md-5 col-sm-12'i><'col-md-7 col-sm-12'p>>",
-
-                        //"bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
-                        "columns": [
-                            {
-                                visible: false
-                            }, {
-                                "orderable": false
-                            }, {
-                                "orderable": true
-                            }, {
-                                "orderable": true
-                            }, {
-                                "orderable": true
-                            }, {
-                                "orderable": false
-                            }, {
-                                "orderable": false
-                            }
-                        ]
-                    });
-
+                if (this.table) {
                     $('.meta-editable').editable('destroy');
-
-                    var tableWrapper = this.table.parent().parent().parent().find('#mymaps_table_wrapper');
-
-                    this.table.find('.group-checkable').change(function() {
-                        var set = jQuery(this).attr("data-set");
-                        var checked = jQuery(this).is(":checked");
-                        jQuery(set).each(function() {
-                            if (checked) {
-                                $(this).attr("checked", true);
-                                $(this).parents('tr').addClass("active");
-                            } else {
-                                $(this).attr("checked", false);
-                                $(this).parents('tr').removeClass("active");
-                            }
-                        });
-                        jQuery.uniform.update(set);
-                    });
-
-                    this.table.on('change', 'tbody tr .checkboxes', function() {
-                        $(this).parents('tr').toggleClass("active");
-                    });
-
-                    tableWrapper.find('.dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
-                } else {
-                    this.table.dataTable();
+                    this.dataTable.destroy();
+                    this.table.empty();
                 }
 
+                this.update();
+                
+                this.table = $(this.mymaps_table);
+                this.dataTable = this.table.DataTable({
+
+                    // Uncomment below line("dom" parameter) to fix the dropdown overflow issue in the datatable cells. The default datatable layout
+                    // setup uses scrollable div(table-scrollable) with overflow:auto to enable vertical scroll(see: assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.js). 
+                    // So when dropdowns used the scrollable div should be removed. 
+                    //"dom": "<'row'<'col-md-6 col-sm-12'l><'col-md-6 col-sm-12'f>r>t<'row'<'col-md-5 col-sm-12'i><'col-md-7 col-sm-12'p>>",
+
+                    //"bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
+                    "columns": [
+                        {
+                            orderable: false
+                        }, {
+                            "orderable": false
+                        }, {
+                            "orderable": true
+                        }, {
+                            "orderable": true
+                        }, {
+                            "orderable": true
+                        }, {
+                            "orderable": false
+                        }, {
+                            "orderable": false
+                        }
+                    ]
+                });
+                //this.tableTools = new $.fn.dataTable.TableTools(this.dataTable, {});
+                
+                var tableWrapper = this.table.parent().parent().parent().find('#mymaps_table_wrapper');
+
+                this.table.find('.group-checkable').change(function() {
+                    var set = jQuery(this).attr("data-set");
+                    var checked = jQuery(this).is(":checked");
+                    jQuery(set).each(function() {
+                        if (checked) {
+                            $(this).attr("checked", true);
+                            $(this).parents('tr').addClass("active");
+                        } else {
+                            $(this).attr("checked", false);
+                            $(this).parents('tr').removeClass("active");
+                        }
+                    });
+                    jQuery.uniform.update(set);
+                });
+
+                this.table.on('change', 'tbody tr .checkboxes', function() {
+                    $(this).parents('tr').toggleClass("active");
+                });
+
+                tableWrapper.find('.dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
+                
                 $('.meta-editable').editable().on('save', function(event, params) {
                     var id = this.dataset.pk;
                     MetaMap.MetaFire.setData(params.newValue, `maps/list/${id}/name`);

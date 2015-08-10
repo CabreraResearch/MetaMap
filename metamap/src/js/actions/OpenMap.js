@@ -12,11 +12,13 @@ class OpenMap extends ActionBase {
     act(id, ...params) {
         super.act(id, ...params);
         $(`#${ELEMENTS.APP_CONTAINER}`).empty();
-        riot.mount(document.getElementById(ELEMENTS.APP_CONTAINER), TAGS.META_CANVAS);
         this.metaFire.getData(`${ROUTES.MAPS_LIST}${id}`).then((map) => {
-            map.id = id;
-            this.eventer.do('nav', 'map', map, ...params);
-            this.eventer.do('map', map, ...params);
+            if (map) {
+                riot.mount(document.getElementById(ELEMENTS.APP_CONTAINER), TAGS.META_CANVAS);
+                map.id = id;
+                this.eventer.do('nav', 'map', map, ...params);
+                this.eventer.do('map', map, ...params);
+            }
         });
         return true;
     }

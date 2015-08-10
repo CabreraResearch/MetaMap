@@ -24,12 +24,14 @@ class User {
             });
             this._onReady = new Promise((fulfill, reject) => {
                 this.metaFire.on(`users/${this.auth.uid}`, (user) => {
-                    if (!user.history) {
-                        user.history = [];
+                    if (user) {
+                        if (!user.history) {
+                            user.history = [];
+                        }
+                        this.profile = user;
+                        trackHistory();
+                        fulfill(user);
                     }
-                    this.profile = user;
-                    trackHistory();
-                    fulfill(user);
                 });
 
                 

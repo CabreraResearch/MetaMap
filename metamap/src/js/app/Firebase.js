@@ -127,10 +127,18 @@ class MetaFire {
             child = this.getChild(path);
         }
         try {
-            return child.set(data);
+            return child.set(data, (e) => {
+                if (e) {
+                    this.metaMap.error(e);
+                }
+            });
         } catch (e) {
             this.metaMap.error(e);
         }
+    }
+
+    deleteData (path) {
+        return this.setData(null, path);
     }
 
     pushData (data, path) {
