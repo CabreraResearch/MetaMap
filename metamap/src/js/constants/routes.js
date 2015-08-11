@@ -1,7 +1,9 @@
 const ROUTES = {
     MAPS_LIST: 'maps/list/',
     MAPS_DATA: 'maps/data/',
-    MAPS_NEW_MAP: 'maps/new-map/'
+    MAPS_NEW_MAP: 'maps/new-map/',
+    TERMS_AND_CONDITIONS: 'metamap/terms-and-conditions/',
+    HOME: 'metamap/home/'
 };
 
 Object.freeze(ROUTES);

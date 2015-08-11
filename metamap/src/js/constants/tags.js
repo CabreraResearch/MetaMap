@@ -1,6 +1,7 @@
 const TAGS = {
     META_CANVAS: 'meta-canvas',
-    HOME: 'home'
+    HOME: 'home',
+    TERMS: 'terms'
 };
 
 Object.freeze(TAGS);

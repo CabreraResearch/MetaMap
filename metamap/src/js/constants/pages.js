@@ -6,7 +6,8 @@ const PAGES = {
     NEW_MAP: 'new_map',
     COPY_MAP: 'copy_map',
     DELETE_MAP: 'delete_map',
-    MY_MAPS: 'mymaps'
+    MY_MAPS: 'mymaps',
+    TERMS_AND_CONDITIONS: 'terms'
 };
 
 _.extend()

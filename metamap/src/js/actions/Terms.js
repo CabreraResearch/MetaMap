@@ -3,9 +3,9 @@ const ActionBase = require('./ActionBase.js');
 const ROUTES = require('../constants/routes.js');
 const ELEMENTS = require('../constants/elements.js');
 const TAGS = require('../constants/tags.js');
-const home = require('../../tags/pages/home');
+const terms = require('../../tags/pages/terms');
 
-class Home extends ActionBase {
+class Terms extends ActionBase {
     constructor(...params) {
         super(...params);
     }
@@ -13,10 +13,10 @@ class Home extends ActionBase {
     act(id, ...params) {
         super.act(id, ...params);
         $(`#${ELEMENTS.APP_CONTAINER}`).empty();
-        riot.mount(document.getElementById(ELEMENTS.APP_CONTAINER), TAGS.HOME);
-        this.eventer.do('pageName', { name: 'Home' }, ...params);
+        riot.mount(document.getElementById(ELEMENTS.APP_CONTAINER), TAGS.TERMS);
+        this.eventer.do('pageName', { name: 'Terms and Conditions' }, ...params);
         return true;
     }
 }
 
-module.exports = Home;
+module.exports = Terms;
