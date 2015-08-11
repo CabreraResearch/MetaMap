@@ -15,6 +15,7 @@ class Terms extends ActionBase {
         $(`#${ELEMENTS.APP_CONTAINER}`).empty();
         riot.mount(document.getElementById(ELEMENTS.APP_CONTAINER), TAGS.TERMS);
         this.eventer.do('pageName', { name: 'Terms and Conditions' }, ...params);
+        this.closeSidebar();
         return true;
     }
 }

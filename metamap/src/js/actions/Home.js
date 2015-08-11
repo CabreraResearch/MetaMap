@@ -15,6 +15,7 @@ class Home extends ActionBase {
         $(`#${ELEMENTS.APP_CONTAINER}`).empty();
         riot.mount(document.getElementById(ELEMENTS.APP_CONTAINER), TAGS.HOME);
         this.eventer.do('pageName', { name: 'Home' }, ...params);
+        this.closeSidebar();
         return true;
     }
 }

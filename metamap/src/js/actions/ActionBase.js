@@ -1,3 +1,5 @@
+const EVENTS = require('../constants/events');
+
 class ActionBase {
     constructor(metaFire, eventer, pageFactory) {
         this.metaFire = metaFire;
@@ -8,6 +10,24 @@ class ActionBase {
 
     act() {
         
+    }
+    
+    toggleSidebar() {
+        if(this.sidebarOpen) {
+            this.openSidebar();
+        } else {
+            this.closeSidebar();
+        }
+    }
+    
+    openSidebar() {
+        this.sidebarOpen = true;
+        this.eventer.do(EVENTS.SIDEBAR_OPEN);
+    }
+    
+    closeSidebar() {
+        this.sidebarOpen = false;
+        this.eventer.do(EVENTS.SIDEBAR_CLOSE);
     }
 }
 

@@ -1,7 +1,8 @@
 const riot = require('riot');
+const EVENTS = require('../js/constants/events');
 
 const html = `
-<div class="page-sidebar-wrapper">
+<div class="page-sidebar-wrapper" style="{ getDisplay() }">
     <div class="page-sidebar navbar-collapse collapse">
         <ul class="page-sidebar-menu " data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
 
@@ -32,7 +33,7 @@ module.exports = riot.tag('page-sidebar', html, function(opts) {
     const MetaMap = require('../entry.js');
 
     this.click = function() { console.log('foo') }
-
+    this.display = true;
     this.data = [];
 
     MetaMap.MetaFire.getData('metamap/sidebar').then((data) => {
@@ -45,6 +46,25 @@ module.exports = riot.tag('page-sidebar', html, function(opts) {
             }
             return include;
         });
+        this.update();
+    });
+    
+    this.getDisplay = () => {
+        if(!this.display) {
+            return 'display: none;';
+        } else {
+            return '';
+        }
+    }
+    
+    MetaMap.Eventer.on(EVENTS.SIDEBAR_CLOSE, () => {
+        this.display = false;
+        this.update();
+    });
+    
+    
+    MetaMap.Eventer.on(EVENTS.SIDEBAR_OPEN, () => {
+        this.display = true;
         this.update();
     });
 });

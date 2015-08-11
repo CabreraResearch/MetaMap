@@ -33,7 +33,7 @@ var Metronic = function() {
     // initializes main settings
     var handleInit = function() {
 
-        if ($('body').css('direction') === 'rtl') {
+        if ($(document.getElementById('page_body')).css('direction') === 'rtl') {
             isRTL = true;
         }
 
@@ -91,12 +91,12 @@ var Metronic = function() {
     // Handles portlet tools & actions
     var handlePortletTools = function() {
         // handle portlet remove
-        $('body').on('click', '.portlet > .portlet-title > .tools > a.remove', function(e) {
+        $(document.getElementById('page_body')).on('click', '.portlet > .portlet-title > .tools > a.remove', function(e) {
             e.preventDefault();
             var portlet = $(this).closest(".portlet");
 
-            if ($('body').hasClass('page-portlet-fullscreen')) {
-                $('body').removeClass('page-portlet-fullscreen');
+            if ($(document.getElementById('page_body')).hasClass('page-portlet-fullscreen')) {
+                $(document.getElementById('page_body')).removeClass('page-portlet-fullscreen');
             }
 
             portlet.find('.portlet-title .fullscreen').tooltip('destroy');
@@ -109,13 +109,13 @@ var Metronic = function() {
         });
 
         // handle portlet fullscreen
-        $('body').on('click', '.portlet > .portlet-title .fullscreen', function(e) {
+        $(document.getElementById('page_body')).on('click', '.portlet > .portlet-title .fullscreen', function(e) {
             e.preventDefault();
             var portlet = $(this).closest(".portlet");
             if (portlet.hasClass('portlet-fullscreen')) {
                 $(this).removeClass('on');
                 portlet.removeClass('portlet-fullscreen');
-                $('body').removeClass('page-portlet-fullscreen');
+                $(document.getElementById('page_body')).removeClass('page-portlet-fullscreen');
                 portlet.children('.portlet-body').css('height', 'auto');
             } else {
                 var height = Metronic.getViewPort().height -
@@ -125,12 +125,12 @@ var Metronic = function() {
 
                 $(this).addClass('on');
                 portlet.addClass('portlet-fullscreen');
-                $('body').addClass('page-portlet-fullscreen');
+                $(document.getElementById('page_body')).addClass('page-portlet-fullscreen');
                 portlet.children('.portlet-body').css('height', height);
             }
         });
 
-        $('body').on('click', '.portlet > .portlet-title > .tools > a.reload', function(e) {
+        $(document.getElementById('page_body')).on('click', '.portlet > .portlet-title > .tools > a.reload', function(e) {
             e.preventDefault();
             var el = $(this).closest(".portlet").children(".portlet-body");
             var url = $(this).attr("data-url");
@@ -182,7 +182,7 @@ var Metronic = function() {
         // load ajax data on page init
         $('.portlet .portlet-title a.reload[data-load="true"]').click();
 
-        $('body').on('click', '.portlet > .portlet-title > .tools > .collapse, .portlet .portlet-title > .tools > .expand', function(e) {
+        $(document.getElementById('page_body')).on('click', '.portlet > .portlet-title > .tools > .collapse, .portlet .portlet-title > .tools > .expand', function(e) {
             e.preventDefault();
             var el = $(this).closest(".portlet").children(".portlet-body");
             if ($(this).hasClass("collapse")) {
@@ -215,7 +215,7 @@ var Metronic = function() {
     var handleMaterialDesign = function() {
 
         // Material design ckeckbox and radio effects
-        $('body').on('click', '.md-checkbox > label, .md-radio > label', function() {
+        $(document.getElementById('page_body')).on('click', '.md-checkbox > label, .md-radio > label', function() {
             var the = $(this);
             // find the first span which is our circle/bubble
             var el = $(this).children('span:first-child');
@@ -233,11 +233,11 @@ var Metronic = function() {
             $("." + el.attr("class") + ":last", the).remove();
         }); 
 
-        if ($('body').hasClass('page-md')) { 
+        if ($(document.getElementById('page_body')).hasClass('page-md')) { 
             // Material design click effect
             // credit where credit's due; http://thecodeplayer.com/walkthrough/ripple-click-effect-google-material-design       
             var element, circle, d, x, y;
-            $('body').on('click', 'a.btn, button.btn, input.btn, label.btn', function(e) { 
+            $(document.getElementById('page_body')).on('click', 'a.btn, button.btn, input.btn, label.btn', function(e) { 
                 element = $(this);
       
                 if(element.find(".md-click-circle").length == 0) {
@@ -272,10 +272,10 @@ var Metronic = function() {
             }
         } 
 
-        $('body').on('keydown', '.form-md-floating-label .form-control', function(e) { 
+        $(document.getElementById('page_body')).on('keydown', '.form-md-floating-label .form-control', function(e) { 
             handleInput($(this));
         });
-        $('body').on('blur', '.form-md-floating-label .form-control', function(e) { 
+        $(document.getElementById('page_body')).on('blur', '.form-md-floating-label .form-control', function(e) { 
             handleInput($(this));
         });        
 
@@ -324,12 +324,12 @@ var Metronic = function() {
         if (!$().confirmation) {
             return;
         }
-        $('[data-toggle=confirmation]').confirmation({ container: 'body', btnOkClass: 'btn btn-sm btn-success', btnCancelClass: 'btn btn-sm btn-danger'});
+        $('[data-toggle=confirmation]').confirmation({ container: document.getElementById('page_body'), btnOkClass: 'btn btn-sm btn-success', btnCancelClass: 'btn btn-sm btn-danger'});
     }
     
     // Handles Bootstrap Accordions.
     var handleAccordions = function() {
-        $('body').on('shown.bs.collapse', '.accordion.scrollable', function(e) {
+        $(document.getElementById('page_body')).on('shown.bs.collapse', '.accordion.scrollable', function(e) {
             Metronic.scrollTo($(e.target));
         });
     };
@@ -356,7 +356,7 @@ var Metronic = function() {
     // Handles Bootstrap Modals.
     var handleModals = function() {        
         // fix stackable modal issue: when 2 or more modals opened, closing one of modal will remove .modal-open class. 
-        $('body').on('hide.bs.modal', function() {
+        $(document.getElementById('page_body')).on('hide.bs.modal', function() {
             if ($('.modal:visible').size() > 1 && $('html').hasClass('modal-open') === false) {
                 $('html').addClass('modal-open');
             } else if ($('.modal:visible').size() <= 1) {
@@ -365,19 +365,19 @@ var Metronic = function() {
         });
 
         // fix page scrollbars issue
-        $('body').on('show.bs.modal', '.modal', function() {
+        $(document.getElementById('page_body')).on('show.bs.modal', '.modal', function() {
             if ($(this).hasClass("modal-scroll")) {
-                $('body').addClass("modal-open-noscroll");
+                $(document.getElementById('page_body')).addClass("modal-open-noscroll");
             }
         });
 
         // fix page scrollbars issue
-        $('body').on('hide.bs.modal', '.modal', function() {
-            $('body').removeClass("modal-open-noscroll");
+        $(document.getElementById('page_body')).on('hide.bs.modal', '.modal', function() {
+            $(document.getElementById('page_body')).removeClass("modal-open-noscroll");
         });
 
         // remove ajax content and remove cache on modal closed 
-        $('body').on('hidden.bs.modal', '.modal:not(.modal-cached)', function () {
+        $(document.getElementById('page_body')).on('hidden.bs.modal', '.modal:not(.modal-cached)', function () {
             $(this).removeData('bs.modal');
         });
     };
@@ -389,23 +389,23 @@ var Metronic = function() {
 
         // portlet tooltips
         $('.portlet > .portlet-title .fullscreen').tooltip({
-            container: 'body',
+            container: document.getElementById('page_body'),
             title: 'Fullscreen'
         });
         $('.portlet > .portlet-title > .tools > .reload').tooltip({
-            container: 'body',
+            container: document.getElementById('page_body'),
             title: 'Reload'
         });
         $('.portlet > .portlet-title > .tools > .remove').tooltip({
-            container: 'body',
+            container: document.getElementById('page_body'),
             title: 'Remove'
         });
         $('.portlet > .portlet-title > .tools > .config').tooltip({
-            container: 'body',
+            container: document.getElementById('page_body'),
             title: 'Settings'
         });
         $('.portlet > .portlet-title > .tools > .collapse, .portlet > .portlet-title > .tools > .expand').tooltip({
-            container: 'body',
+            container: document.getElementById('page_body'),
             title: 'Collapse/Expand'
         });
     };
@@ -415,24 +415,24 @@ var Metronic = function() {
         /*
           Hold dropdown on click  
         */
-        $('body').on('click', '.dropdown-menu.hold-on-click', function(e) {
+        $(document.getElementById('page_body')).on('click', '.dropdown-menu.hold-on-click', function(e) {
             e.stopPropagation();
         });
     };
 
     var handleAlerts = function() {
-        $('body').on('click', '[data-close="alert"]', function(e) {
+        $(document.getElementById('page_body')).on('click', '[data-close="alert"]', function(e) {
             $(this).parent('.alert').hide();
             $(this).closest('.note').hide();
             e.preventDefault();
         });
 
-        $('body').on('click', '[data-close="note"]', function(e) {
+        $(document.getElementById('page_body')).on('click', '[data-close="note"]', function(e) {
             $(this).closest('.note').hide();
             e.preventDefault();
         });
 
-        $('body').on('click', '[data-remove="note"]', function(e) {
+        $(document.getElementById('page_body')).on('click', '[data-remove="note"]', function(e) {
             $(this).closest('.note').remove();
             e.preventDefault();
         });
@@ -647,11 +647,11 @@ var Metronic = function() {
             var pos = (el && el.size() > 0) ? el.offset().top : 0;
 
             if (el) {
-                if ($('body').hasClass('page-header-fixed')) {
+                if ($(document.getElementById('page_body')).hasClass('page-header-fixed')) {
                     pos = pos - $('.page-header').height();
-                } else if ($('body').hasClass('page-header-top-fixed')) {
+                } else if ($(document.getElementById('page_body')).hasClass('page-header-top-fixed')) {
                     pos = pos - $('.page-header-top').height();
-                } else if ($('body').hasClass('page-header-menu-fixed')) {
+                } else if ($(document.getElementById('page_body')).hasClass('page-header-menu-fixed')) {
                     pos = pos - $('.page-header-menu').height();
                 }
                 pos = pos + (offeset ? offeset : -1 * el.height());
@@ -809,10 +809,10 @@ var Metronic = function() {
         startPageLoading: function(options) {
             if (options && options.animate) {
                 $('.page-spinner-bar').remove();
-                $('body').append('<div class="page-spinner-bar"><div class="bounce1"></div><div class="bounce2"></div><div class="bounce3"></div></div>');
+                $(document.getElementById('page_body')).append('<div class="page-spinner-bar"><div class="bounce1"></div><div class="bounce2"></div><div class="bounce3"></div></div>');
             } else {
                 $('.page-loading').remove();
-                $('body').append('<div class="page-loading"><img src="' + this.getGlobalImgPath() + 'loading-spinner-grey.gif"/>&nbsp;&nbsp;<span>' + (options && options.message ? options.message : 'Loading...') + '</span></div>');
+                $(document.getElementById('page_body')).append('<div class="page-loading"><img src="' + this.getGlobalImgPath() + 'loading-spinner-grey.gif"/>&nbsp;&nbsp;<span>' + (options && options.message ? options.message : 'Loading...') + '</span></div>');
             }
         },
 
@@ -843,7 +843,7 @@ var Metronic = function() {
             }
 
             if (!options.container) {
-                if ($('body').hasClass("page-container-bg-solid")) {
+                if ($(document.getElementById('page_body')).hasClass("page-container-bg-solid")) {
                     $('.page-title').after(html);
                 } else {
                     if ($('.page-bar').size() > 0) {

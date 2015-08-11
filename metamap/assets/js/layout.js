@@ -118,8 +118,8 @@ var Layout = function() {
                 $('.arrow', $(this)).removeClass("open");
                 $(this).parent().removeClass("open");
                 sub.slideUp(slideSpeed, function() {
-                    if (autoScroll === true && $('body').hasClass('page-sidebar-closed') === false) {
-                        if ($('body').hasClass('page-sidebar-fixed')) {
+                    if (autoScroll === true && $(document.getElementById('page_body')).hasClass('page-sidebar-closed') === false) {
+                        if ($(document.getElementById('page_body')).hasClass('page-sidebar-fixed')) {
                             menu.slimScroll({
                                 'scrollTo': (the.position()).top
                             });
@@ -132,8 +132,8 @@ var Layout = function() {
                 $('.arrow', $(this)).addClass("open");
                 $(this).parent().addClass("open");
                 sub.slideDown(slideSpeed, function() {
-                    if (autoScroll === true && $('body').hasClass('page-sidebar-closed') === false) {
-                        if ($('body').hasClass('page-sidebar-fixed')) {
+                    if (autoScroll === true && $(document.getElementById('page_body')).hasClass('page-sidebar-closed') === false) {
+                        if ($(document.getElementById('page_body')).hasClass('page-sidebar-fixed')) {
                             menu.slimScroll({
                                 'scrollTo': (the.position()).top
                             });
@@ -239,7 +239,7 @@ var Layout = function() {
     // Helper function to calculate sidebar height for fixed sidebar layout.
     var _calculateFixedSidebarViewportHeight = function() {
         var sidebarHeight = Metronic.getViewPort().height - $('.page-header').outerHeight() - 30;
-        if ($('body').hasClass("page-footer-fixed")) {
+        if ($(document.getElementById('page_body')).hasClass("page-footer-fixed")) {
             sidebarHeight = sidebarHeight - $('.page-footer').outerHeight();
         }
 
@@ -264,7 +264,7 @@ var Layout = function() {
 
     // Handles sidebar toggler to close/hide the sidebar.
     var handleFixedSidebarHoverEffect = function () {
-        var body = $('body');
+        var body = $(document.getElementById('page_body'));
         if (body.hasClass('page-sidebar-fixed')) {
             $('.page-sidebar').on('mouseenter', function () {
                 if (body.hasClass('page-sidebar-closed')) {
@@ -280,14 +280,14 @@ var Layout = function() {
 
     // Hanles sidebar toggler
     var handleSidebarToggler = function() {
-        var body = $('body');
+        var body = $(document.getElementById('page_body'));
         if ($.cookie && $.cookie('sidebar_closed') === '1' && Metronic.getViewPort().width >= resBreakpointMd) {
-            $('body').addClass('page-sidebar-closed');
+            $(document.getElementById('page_body')).addClass('page-sidebar-closed');
             $('.page-sidebar-menu').addClass('page-sidebar-menu-closed');
         }
 
         // handle sidebar show/hide
-        $('body').on('click', '.sidebar-toggler', function(e) {
+        $(document.getElementById('page_body')).on('click', '.sidebar-toggler', function(e) {
             var sidebar = $('.page-sidebar');
             var sidebarMenu = $('.page-sidebar-menu');
             $(".sidebar-search", sidebar).removeClass("open");
@@ -331,7 +331,7 @@ var Layout = function() {
         // handle the search submit(for sidebar search and responsive mode of the header search)
         $('.sidebar-search .submit').on('click', function(e) {
             e.preventDefault();
-            if ($('body').hasClass("page-sidebar-closed")) {
+            if ($(document.getElementById('page_body')).hasClass("page-sidebar-closed")) {
                 if ($('.sidebar-search').hasClass('open') === false) {
                     if ($('.page-sidebar-fixed').size() === 1) {
                         $('.page-sidebar .sidebar-toggler').click(); //trigger sidebar toggle button
@@ -351,7 +351,7 @@ var Layout = function() {
                 e.stopPropagation();
             });
 
-            $('body').on('click', function() {
+            $(document.getElementById('page_body')).on('click', function() {
                 if ($('.sidebar-search').hasClass('open')) {
                     $('.sidebar-search').removeClass("open");
                 }

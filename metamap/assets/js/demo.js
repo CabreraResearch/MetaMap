@@ -8,7 +8,7 @@ var Demo = function () {
 
         var panel = $('.theme-panel');
 
-        if ($('body').hasClass('page-boxed') === false) {
+        if ($(document.getElementById('page_body')).hasClass('page-boxed') === false) {
             $('.layout-option', panel).val("fluid");
         }
 
@@ -21,7 +21,7 @@ var Demo = function () {
 
         //handle theme layout
         var resetLayout = function () {
-            $("body").
+            $(document.getElementById('page_body')).
             removeClass("page-boxed").
             removeClass("page-footer-fixed").
             removeClass("page-sidebar-fixed").
@@ -71,7 +71,7 @@ var Demo = function () {
             resetLayout(); // reset layout to default state
 
             if (layoutOption === "boxed") {
-                $("body").addClass("page-boxed");
+                $(document.getElementById('page_body')).addClass("page-boxed");
 
                 // set header
                 $('.page-header > .page-header-inner').addClass("container");
@@ -96,22 +96,22 @@ var Demo = function () {
 
             //header
             if (headerOption === 'fixed') {
-                $("body").addClass("page-header-fixed");
+                $(document.getElementById('page_body')).addClass("page-header-fixed");
                 $(".page-header").removeClass("navbar-static-top").addClass("navbar-fixed-top");
             } else {
-                $("body").removeClass("page-header-fixed");
+                $(document.getElementById('page_body')).removeClass("page-header-fixed");
                 $(".page-header").removeClass("navbar-fixed-top").addClass("navbar-static-top");
             }
 
             //sidebar
-            if ($('body').hasClass('page-full-width') === false) {
+            if ($(document.getElementById('page_body')).hasClass('page-full-width') === false) {
                 if (sidebarOption === 'fixed') {
-                    $("body").addClass("page-sidebar-fixed");
+                    $(document.getElementById('page_body')).addClass("page-sidebar-fixed");
                     $("page-sidebar-menu").addClass("page-sidebar-menu-fixed");
                     $("page-sidebar-menu").removeClass("page-sidebar-menu-default");
                     Layout.initFixedSidebarHoverEffect();
                 } else {
-                    $("body").removeClass("page-sidebar-fixed");
+                    $(document.getElementById('page_body')).removeClass("page-sidebar-fixed");
                     $("page-sidebar-menu").addClass("page-sidebar-menu-default");
                     $("page-sidebar-menu").removeClass("page-sidebar-menu-fixed");
                     $('.page-sidebar-menu').unbind('mouseenter').unbind('mouseleave');
@@ -127,9 +127,9 @@ var Demo = function () {
 
             //footer 
             if (footerOption === 'fixed') {
-                $("body").addClass("page-footer-fixed");
+                $(document.getElementById('page_body')).addClass("page-footer-fixed");
             } else {
-                $("body").removeClass("page-footer-fixed");
+                $(document.getElementById('page_body')).removeClass("page-footer-fixed");
             }
 
             //sidebar style
@@ -154,24 +154,24 @@ var Demo = function () {
             //sidebar position
             if (Metronic.isRTL()) {
                 if (sidebarPosOption === 'left') {
-                    $("body").addClass("page-sidebar-reversed");
+                    $(document.getElementById('page_body')).addClass("page-sidebar-reversed");
                     $('#frontend-link').tooltip('destroy').tooltip({
                         placement: 'right'
                     });
                 } else {
-                    $("body").removeClass("page-sidebar-reversed");
+                    $(document.getElementById('page_body')).removeClass("page-sidebar-reversed");
                     $('#frontend-link').tooltip('destroy').tooltip({
                         placement: 'left'
                     });
                 }
             } else {
                 if (sidebarPosOption === 'right') {
-                    $("body").addClass("page-sidebar-reversed");
+                    $(document.getElementById('page_body')).addClass("page-sidebar-reversed");
                     $('#frontend-link').tooltip('destroy').tooltip({
                         placement: 'left'
                     });
                 } else {
-                    $("body").removeClass("page-sidebar-reversed");
+                    $(document.getElementById('page_body')).removeClass("page-sidebar-reversed");
                     $('#frontend-link').tooltip('destroy').tooltip({
                         placement: 'right'
                     });
@@ -204,23 +204,23 @@ var Demo = function () {
 
         // set default theme options:
 
-        if ($("body").hasClass("page-boxed")) {
+        if ($(document.getElementById('page_body')).hasClass("page-boxed")) {
             $('.layout-option', panel).val("boxed");
         }
 
-        if ($("body").hasClass("page-sidebar-fixed")) {
+        if ($(document.getElementById('page_body')).hasClass("page-sidebar-fixed")) {
             $('.sidebar-option', panel).val("fixed");
         }
 
-        if ($("body").hasClass("page-header-fixed")) {
+        if ($(document.getElementById('page_body')).hasClass("page-header-fixed")) {
             $('.page-header-option', panel).val("fixed");
         }
 
-        if ($("body").hasClass("page-footer-fixed")) {
+        if ($(document.getElementById('page_body')).hasClass("page-footer-fixed")) {
             $('.page-footer-option', panel).val("fixed");
         }
 
-        if ($("body").hasClass("page-sidebar-reversed")) {
+        if ($(document.getElementById('page_body')).hasClass("page-sidebar-reversed")) {
             $('.sidebar-pos-option', panel).val("right");
         }
 

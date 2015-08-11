@@ -1,6 +1,7 @@
 const ActionBase = require('./ActionBase.js');
 const ROUTES = require('../constants/routes.js');
 const _ = require('lodash');
+const PAGES = require('../constants/pages.js');
 
 class DeleteMap extends ActionBase {
     constructor(...params) {
@@ -17,6 +18,7 @@ class DeleteMap extends ActionBase {
         _.each(ids, (id) => {
             this.metaMap.MetaFire.deleteData(`${ROUTES.MAPS_DATA}${id}`);
             this.metaMap.MetaFire.deleteData(`${ROUTES.MAPS_LIST}${id}`);
+            this.eventer.do(PAGES.HOME);
         });
     }
 }
