@@ -21,6 +21,7 @@ class OpenMap extends ActionBase {
                 map.id = id;
                 this.eventer.do('nav', 'map', map, ...params);
                 this.eventer.do('pageName', map, ...params);
+                this.eventer.do('map', map, ...params);
             }
         });
         return true;
