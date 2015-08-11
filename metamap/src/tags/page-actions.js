@@ -9,7 +9,7 @@ const html = `
         </button>
         <ul class="dropdown-menu" role="menu">
             <li each="{ val, i in data }" class="{ start: i == 0, active: i == 0 }">
-                <a href="{ val.link }">
+                <a href="{ parent.getActionLink(val) }">
                     <i class="{ val.icon }"></i> { val.title }
                 </a>
             </li>
@@ -42,6 +42,18 @@ module.exports = riot.tag('page-actions', html, function(opts) {
     this.url = MetaMap.config.site.db + '.firebaseio.com';
     this.loaded = false;
 
+    this.getActionLink = (obj) => {
+        let ret = obj.link;
+        if (obj.url_params) {
+            let args = [];
+            _.each(obj.url_params, (prm) => {
+                args.push(this[prm.name]);
+            });
+            ret = obj.link.format.call(obj.link, args);
+        }
+        return ret;
+    }
+
     this.bindToMapName = _.once(() => {
         MetaMap.MetaFire.on(`maps/list/${this.mapId}/name`, (name) => {
             this.mapName = name;
@@ -56,7 +68,7 @@ module.exports = riot.tag('page-actions', html, function(opts) {
         }
         if (this.mapId) {
             MetaMap.MetaFire.off(`maps/list/${this.mapId}/name`);
-            MetaMap.MetaFire.on(`maps/list/${this.mapId}/name`, (name) => {
+            MetaMap.MetaFire.on(`maps/list/${opts.id}/name`, (name) => {
                 this.mapName = name;
                 this.update();
             });

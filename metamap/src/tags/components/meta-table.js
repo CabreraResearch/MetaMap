@@ -102,7 +102,6 @@ module.exports = riot.tag('meta-table', html, function(opts) {
     }
 
     this.onMenuClick = (event, tag) => {
-        debugger;
         switch (event.item.title.toLowerCase()) {
         case 'delete':
             const deleteMaps = require('../../js/actions/DeleteMap.js');

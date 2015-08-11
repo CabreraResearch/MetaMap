@@ -6,6 +6,7 @@ const PageFactory = require('./js/pages/PageFactory.js');
 const NProgress = window.NProgress;
 const Config = require('./js/app//Config.js');
 const ga = require('./js/integrations/google.js');
+const shims = require('./js/tools/shims.js');
 
 class MetaMap {
 
