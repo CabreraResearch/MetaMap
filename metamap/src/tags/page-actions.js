@@ -9,7 +9,7 @@ const html = `
         </button>
         <ul class="dropdown-menu" role="menu">
             <li each="{ val, i in data }" class="{ start: i == 0, active: i == 0 }">
-                <a href="{ parent.getActionLink(val) }">
+                <a if="{ parent.getLinkAllowed(val) }" href="{ parent.getActionLink(val) }">
                     <i class="{ val.icon }"></i> { val.title }
                 </a>
             </li>
@@ -50,6 +50,15 @@ module.exports = riot.tag('page-actions', html, function (opts) {
                 args.push(this[prm.name]);
             });
             ret = obj.link.format.call(obj.link, args);
+        }
+        return ret;
+    }
+
+    this.getLinkAllowed = (obj) => {
+        let ret = true == obj['allowed-on']['*'];
+        if(!ret) {
+            let currentPage = MetaMap.Router.currentPath;
+            ret = true == obj['allowed-on'][currentPage];
         }
         return ret;
     }

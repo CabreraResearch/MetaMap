@@ -30,10 +30,10 @@ class Router {
 
         riot.route.start();
         riot.route((target, id = '', action = '', ...params) => {
-            let path = this.getPath(target);
+            this.path = this.getPath(target);
 
-            toggleMain(true, path);
-            this.PageFactory.navigate(path, id, action, ...params);
+            toggleMain(true, this.path);
+            this.PageFactory.navigate(this.path, id, action, ...params);
 
             metaMap.Eventer.do('history', window.location.hash);
         });
@@ -47,6 +47,10 @@ class Router {
             page = this.getPath(this.user.history[pageCnt - 1]);
         }
         return page;
+    }
+    
+    get currentPath() {
+        return this.path;
     }
 
     getPreviousPage(pageNo = 2) {
