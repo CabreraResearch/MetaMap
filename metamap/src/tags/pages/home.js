@@ -21,6 +21,7 @@ const html = `
 								<p>{ quote.text }</p>
 								<small>{ quote.by }</small>
 							</blockquote>
+                            <div class="addthis_horizontal_follow_toolbox"></div>
 						</div>
 						<div class ="col-md-6">
                           <iframe if="{ header.youtubeid }"
@@ -33,7 +34,6 @@ const html = `
                             />
 							</iframe>
 						</div>
-                        <div class="addthis_horizontal_follow_toolbox"></div>
 					</div>
                     <div class="headline">
 						<h3>{ userName }{ vision.title }</h3>
@@ -66,5 +66,7 @@ module.exports = riot.tag('home', html, function(opts) {
         this.update();
         
         NProgress.done();
+        
+        window.addthis.layers.refresh();
     });
 });
