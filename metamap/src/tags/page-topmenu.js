@@ -32,6 +32,7 @@ const html = `
 module.exports = riot.tag('page-topmenu', html, function(opts) {
     this.onClick = (event, params) => {
         console.log(event, params);
+        return true;
     }
 
     this.on('mount', () => {

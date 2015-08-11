@@ -1,3 +1,6 @@
+/// <reference path="../../../../typings/riotjs/riotjs.d.ts" />
+
+const riot = require('riot');
 const ActionBase = require('./ActionBase.js');
 const ELEMENTS = require('../constants/elements.js');
 const TAGS = require('../constants/tags.js');
@@ -17,7 +20,7 @@ class OpenMap extends ActionBase {
                 riot.mount(document.getElementById(ELEMENTS.APP_CONTAINER), TAGS.META_CANVAS);
                 map.id = id;
                 this.eventer.do('nav', 'map', map, ...params);
-                this.eventer.do('map', map, ...params);
+                this.eventer.do('pageName', map, ...params);
             }
         });
         return true;

@@ -77,7 +77,7 @@ class Config {
                         document.title = this.config.site.title;
                         let favico = document.getElementById('favico');
                         favico.setAttribute('href', `${this.config.site.imageUrl}favicon.ico`);
-
+                        this.init();
                         fulfill(this.config.site);
                     } catch (e) {
                         reject(e);
@@ -94,7 +94,7 @@ class Config {
             ga(this.config.site.google);
             //this.socialFeatures.push(twitter());
             //this.socialFeatures.push(facebook());
-            //this.socialFeatures.push(addThis(this.config.site.addthis.pubid));
+            this.socialFeatures.push(addThis(this.config.site.addthis.pubid));
             usersnap();
         });
     }

@@ -1,22 +1,9 @@
-const staticRoutes = {
-    'contact': true,
-    'home': true,
-    'explore': true
-}
+/// <reference path="../../../../typings/riotjs/riotjs.d.ts" />
+
+const riot = require('riot')
+const ACTIONS = require('../constants/actions')
 
 let isHidden = false;
-let toggleMain = (hide, path) => {
-    track(path);
-    if (hide) {
-        isHidden = true;
-        
-
-    } else {
-        isHidden = false;
-        
-        
-    }
-}
 
 let track = (path) => {
     if (window.ga) {
@@ -27,25 +14,32 @@ let track = (path) => {
     }
 }
 
+let toggleMain = (hide, path) => {
+    track(path);
+    if (hide) {
+        isHidden = true;
+    } else {
+        isHidden = false;
+    }
+}
+
 class Router {
     constructor(metaMap) {
         this.user = metaMap.User;
         this.PageFactory = metaMap.PageFactory;
+
         riot.route.start();
         riot.route((target, id = '', action = '', ...params) => {
             let path = this.getPath(target);
-           
-            if (!staticRoutes[path]) {
-                toggleMain(true, path);
-                this.PageFactory.navigate(path, id, action, ...params);
-            } else {
-                toggleMain(false, path);
-            }
+
+            toggleMain(true, path);
+            this.PageFactory.navigate(path, id, action, ...params);
+
             metaMap.Eventer.do('history', window.location.hash);
         });
         this.to(this.currentPage);
     }
-    
+
     get currentPage() {
         let page = 'home';
         let pageCnt = this.user.history.length;
@@ -55,13 +49,17 @@ class Router {
         return page;
     }
 
-    get previousPage() {
+    getPreviousPage(pageNo = 2) {
         let page = 'home';
         let pageCnt = this.user.history.length;
         if (pageCnt > 0) {
-            page = this.getPath(this.user.history[pageCnt - 2]);
+            page = this.getPath(this.user.history[pageCnt - pageNo]);
         }
         return page;
+    }
+
+    get previousPage() {
+        return this.getPreviousPage(2);
     }
 
     static getPath(path) {
@@ -80,13 +78,8 @@ class Router {
     static to(path) {
         path = route.getPath(path);
         if (path) {
-            if (staticRoutes[path]) {
-                toggleMain(false, path);
-                riot.route(path);
-            } else {
-                toggleMain(true, path);
-                riot.route(`!${path}`);
-            }
+            toggleMain(true, path);
+            riot.route(`${path}`);
         }
     }
 
@@ -99,6 +92,14 @@ class Router {
         let pageCnt = this.user.history.length;
         if (pageCnt > 1 && (this.currentPage != 'mymaps' || this.currentPage != this.previousPage)) {
             path = this.previousPage;
+            let backNo = 2;
+            while (path.startsWith(ACTIONS.DELETE_MAP) ||
+                path.startsWith(ACTIONS.COPY_MAP) ||
+                path.startsWith(ACTIONS.NEW_MAP)) {
+
+                backNo += 1;
+                path = this.getPreviousPage(backNo);
+            }
         }
         return this.to(path);
     }

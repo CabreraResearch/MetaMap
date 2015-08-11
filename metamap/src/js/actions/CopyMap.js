@@ -4,7 +4,6 @@ const ROUTES = require('../constants/routes.js');
 class CopyMap extends ActionBase {
     constructor(...params) {
         super(...params);
-        this.metaMap = require('../../entry.js');
     }
 
     act(id, ...params) {

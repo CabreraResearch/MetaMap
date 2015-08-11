@@ -1,4 +1,5 @@
 const ActionBase = require('./ActionBase.js');
+const ACTIONS = require('../constants/actions');
 
 class Action extends ActionBase {
     constructor(...params) {
@@ -11,17 +12,23 @@ class Action extends ActionBase {
         if (!ret) {
             let Method = null;
             switch(action) {
-                case 'map':
+                case ACTIONS.MAP:
                     Method = require('./OpenMap.js');
                     break;
-                case 'new_map':
+                case ACTIONS.NEW_MAP:
                     Method = require('./NewMap.js');
                     break;
-                case 'copy_map':
+                case ACTIONS.COPY_MAP:
                     Method = require('./CopyMap.js');
                     break;
-                case 'delete_map':
+                case ACTIONS.DELETE_MAP:
                     Method = require('./DeleteMap.js');
+                    break;
+                case ACTIONS.MY_MAPS:
+                    Method = require('./MyMaps.js');
+                    break;
+                default:
+                    Method = require('./Home.js');
                     break;
             }
             if (Method) {

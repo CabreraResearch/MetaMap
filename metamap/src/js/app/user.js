@@ -41,16 +41,26 @@ class User {
     }
 
     get displayName() {
-        let ret = '';
+        let ret = this.fullName;
         if (this.profile && this.profile.identity) {
-            if (this.profile.identity.name) {
-                ret = this.profile.identity.name.split(' ')[0];
+            if (ret) {
+                ret = ret.split(' ')[0];
             }
             if (!ret) {
                 ret = this.profile.identity.nickname;
             }
         }
 
+        return ret;
+    }
+    
+    get fullName() {
+        let ret = '';
+        if (this.profile && this.profile.identity) {
+            if (this.profile.identity.name) {
+                ret = this.profile.identity.name;
+            }
+        }
         return ret;
     }
 

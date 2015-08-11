@@ -23,22 +23,22 @@ const html = `
     </div>
 
     <span style="padding-left: 5px;">
-        <span if="{ mapName }"
+        <span if="{ pageName }"
                 id="map_name"
                 data-type="text"
                 data-title="Enter map name">
-            { mapName }
+            { pageName }
         </span>
     </span>
 </div>
 `;
 
-module.exports = riot.tag('page-actions', html, function(opts) {
+module.exports = riot.tag('page-actions', html, function (opts) {
 
     const MetaMap = require('../entry.js');
 
     this.data = [];
-    this.mapName = '';
+    this.pageName = 'Home';
     this.url = MetaMap.config.site.db + '.firebaseio.com';
     this.loaded = false;
 
@@ -54,32 +54,34 @@ module.exports = riot.tag('page-actions', html, function(opts) {
         return ret;
     }
 
-    this.bindToMapName = _.once(() => {
+    this.bindTopageName = _.once(() => {
         MetaMap.MetaFire.on(`maps/list/${this.mapId}/name`, (name) => {
-            this.mapName = name;
+            this.pageName = name || '';
             this.update();
         });
         this.loaded = true;
     });
 
-    MetaMap.Eventer.every('map', (opts) => {
+    MetaMap.Eventer.every('pageName', (opts) => {
         if (this.loaded) {
             $(this.map_name).editable('destroy');
         }
         if (this.mapId) {
             MetaMap.MetaFire.off(`maps/list/${this.mapId}/name`);
             MetaMap.MetaFire.on(`maps/list/${opts.id}/name`, (name) => {
-                this.mapName = name;
+                this.pageName = name;
                 this.update();
             });
         }
-        this.mapName = opts.name;
+        this.pageName = opts.name || 'Home';
         this.mapId = opts.id;
         this.update();
-        $(this.map_name).editable({ unsavedclass: null }).on('save', (event, params) => {
-            MetaMap.MetaFire.setData(params.newValue, `maps/list/${this.mapId}/name`);
-        });
-        this.bindToMapName();
+        if (this.mapId) {
+            $(this.map_name).editable({ unsavedclass: null }).on('save', (event, params) => {
+                MetaMap.MetaFire.setData(params.newValue, `maps/list/${this.mapId}/name`);
+            });
+            this.bindTopageName();
+        }
     });
 
     MetaMap.MetaFire.on('metamap/actions', (data) => {

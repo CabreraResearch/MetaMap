@@ -35,15 +35,7 @@ class PageFactory {
     navigate(path, id, action, ...params) {
         let act = this.actions.act(path, id, action, ...params);
         if (!act) {
-            switch (path) {
-            case 'mymaps':
-                this.eventer.do(path, { id: id, action: action }, ...params);
-                break;
-
-            default:
-                this.eventer.do(path, path, { id: id, action: action }, ...params);
-                break;
-            }
+            this.eventer.do(path, path, { id: id, action: action }, ...params);
         }
     }
 }
