@@ -22,7 +22,7 @@ class OpenMap extends ActionBase {
                 this.eventer.do('nav', 'map', map, ...params);
                 this.eventer.do('pageName', map, ...params);
                 this.eventer.do('map', map, ...params);
-                this.eventer.do('sidebar-open');
+                this.openSidebar();
             }
         });
         return true;

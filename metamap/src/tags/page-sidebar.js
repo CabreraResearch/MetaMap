@@ -36,7 +36,7 @@ module.exports = riot.tag('page-sidebar', html, function(opts) {
     this.display = true;
     this.data = [];
 
-    MetaMap.MetaFire.getData('metamap/sidebar').then((data) => {
+    MetaMap.MetaFire.on('metamap/sidebar', (data) => {
         this.data = _.filter(_.sortBy(data, 'order'), (d) => {
             var include = d.archive != true;
             if (include && d.menu && d.menu) {
