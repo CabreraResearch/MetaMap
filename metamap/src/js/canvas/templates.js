@@ -856,6 +856,22 @@ SandbankEditor.Templates = function($scope, map) {
 
     // ------------------- link template ---------------------------
 
+    this.shapes = ['to', 'from', 'toFrom', 'noArrows']
+
+    this.getNextRShape = function() {
+        let current = self._currentRShape;
+        let next = self.shapes[0];
+        if(current) {
+            let idx = self.shapes.indexOf(current)+1;
+            if(idx >= self.shapes.length) {
+                idx = 0;
+            }
+            next = self.shapes[idx];
+        }
+        self._currentRShape = next;
+        return next;
+    }
+
     this.linkTemplate =
         mk(go.Link, {
                 selectionAdorned: false,
@@ -887,6 +903,10 @@ SandbankEditor.Templates = function($scope, map) {
                     if (parts && parts.count == 1 && parts.first() instanceof go.Group) {
                         map.addThingAsRThing(parts.first(), dropTarget);
                     }
+                },
+                click: function(event, target) {
+                    let shape = self.getNextRShape();
+                    map.getUi().setSelectedRelationshipsDirection(shape);    
                 },
                 doubleClick: function(event, target) {
                     map.createRThing(target);
