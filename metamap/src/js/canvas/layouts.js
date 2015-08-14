@@ -753,7 +753,7 @@ SandbankEditor.Layouts = function($scope, map) {
         var inventoryAncestor = getCommonAncestorWithLayout(link.fromNode, link.toNode, ['left', 'right']);
         var stackedAncestor = getCommonAncestorWithLayout(link.fromNode, link.toNode, ['stacked']);
         var hidePLink = (link.data && link.data.category == 'P' && !map.getTemplates().showPLink(link));
-        var crowdedRThing = hasCrowdedRThing(link);
+        //var crowdedRThing = hasCrowdedRThing(link);
 
         // see if this is one of multiple links between the same two nodes
         var snpos = self.getSameNodesLinkPosition(link);
@@ -762,10 +762,8 @@ SandbankEditor.Layouts = function($scope, map) {
 
         if (inventoryAncestor) {
             applyInventoryCurveRouting(link, snpos, inventoryAncestor.data.layout);
-        } else if (isMultiLink) {
+        } else if(isMultiLink) {
             applyMultilinkCurveRouting(link, snpos);
-        } else if (crowdedRThing) {
-            applyInventoryCurveRouting(link, snpos, 'left');
         } else {
             applyStraightRouting(link);
         }
@@ -858,8 +856,8 @@ SandbankEditor.Layouts = function($scope, map) {
         link.fromSpot = go.Spot.Default;
         link.toSpot = go.Spot.Default;
         link.routing = go.Link.Normal;
-        link.curve = go.Link.None;
-        link.curviness = 0;
+        link.curve = go.Link.Bezier;
+        link.curviness = 25;
     }
 
     // --------------- calculate how many links there are between a link's nodes ---------------
