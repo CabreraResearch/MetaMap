@@ -1,6 +1,8 @@
 const riot = require('riot');
 const NProgress = window.NProgress;
 const _ = require('lodash');
+const ROUTES = require('../../js/constants/routes');
+const PAGES = require('../../js/constants/pages');
 
 const html = `
 <div class="row">
@@ -8,7 +10,7 @@ const html = `
         <div class="portlet box grey-cascade">
             <div class="portlet-title">
                 <div class="caption">
-                    <i class="fa fa-icon-th-large"></i>My Maps
+                    <i class="fa fa-icon-th-large"></i>MetaMaps
                 </div>
                 <div if="{ menu }" class="actions">
                     <a each="{ menu.buttons }" href="{ link }" onclick="{ parent.onActionClick }" class="btn btn-default btn-sm">
@@ -29,72 +31,94 @@ const html = `
                 </div>
             </div>
             <div class="portlet-body">
+               <ul class="nav nav-tabs portlet-tabs">
+                    <li onclick="{ parent.onTabSwitch }" each="{ val, i in tabs }" class="{ active: i == 0 }">
+                        <a href="#mymaps_1_{ i }" data-toggle="tab" aria-expanded="{ true: i == 0 }">
+                        { val.title }</a>
+                    </li>
+                </ul>
                 <div class="table-toolbar">
 
                 </div>
-                <table class="table table-striped table-bordered table-hover" id="mymaps_table">
-                    <thead>
-                        <tr>
-                            <th style="display: none;">
-                                MapId
-                            </th>
-                            <th class="table-checkbox">
-                                <input type="checkbox" class="group-checkable" data-set="#mymaps_table .checkboxes"/>
-                            </th>
-                            <th style="display: none;">
-                                UserId
-                            </th>
-                            <th>
-                                Name
-                            </th>
-                            <th>
-                                Created On
-                            </th>
-                            <th>
-                                Status
-                            </th>
-                            <th>
-                                Action
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr each="{ data }" class="odd gradeX">
-                            <td style="display: none;" ><span data-selector="id" class ="mapid">{ id }</span></td>
-                            <td>
-                                <input type="checkbox" class="checkboxes" value="1"/>
-                            </td>
-                            <td style="display: none;">{ user_id }</td>
-                            <td class="meta-editable" data-pk="{ id }" data-title="Edit Map Name">{ name }</td>
-                            <td class="center">{ created_at }</td>
-                            <td>
-                                <span class="label label-sm label-success">
-                                    Private
-                                </span>
-                            </td>
-                            <td>
-                                <button class="btn btn-sm blue filter-submit" onclick="{ parent.onOpen }">
-                                    <i class="fa fa-icon-eye-open"></i> Open
-                                </button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="tab-content">
+                    <div each="{ val, i in tabs }" class="tab-pane fase in { active: i == 0 }" id="mymaps_1_{ i }">
+                        <table class="table table-striped table-bordered table-hover" id="mymaps_table_{ i }">
+                            <thead>
+                                <tr>
+                                    <th style="display: none;">
+                                        MapId
+                                    </th>
+                                    <th class="table-checkbox">
+                                        <input if="{ parent.currentTab == 'My Maps' }" type="checkbox" class="group-checkable" data-set="#mymaps_table_{ i } .checkboxes"/>
+                                    </th>
+                                    <th style="display: none;">
+                                        UserId
+                                    </th>
+                                    <th>
+                                        Name
+                                    </th>
+                                    <th>
+                                        Created On
+                                    </th>
+                                    <th>
+                                        Status
+                                    </th>
+                                    <th>
+                                        Action
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr if="{ parent.data && parent.data[i] }" each="{ parent.data[i] }" class="odd gradeX">
+                                    <td style="display: none;" ><span data-selector="id" class ="mapid">{ id }</span></td>
+                                    <td>
+                                        <input if="{ parent.currentTab == 'My Maps' }" type="checkbox" class="checkboxes" value="1"/>
+                                    </td>
+                                    <td style="display: none;">{ user_id }</td>
+                                    <td if="{ val.editable }" class="meta_editable_{ i }" data-pk="{ id }" data-title="Edit Map Name">{ name }</td>
+                                    <td if="{ !val.editable }">{ name }</td>
+                                    <td class="center">{ created_at }</td>
+                                    <td>
+                                        <span class="label label-sm label-success">
+                                            Private
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-sm blue filter-submit" onclick="{ parent.onOpen }">
+                                            <i class="fa fa-icon-eye-open"></i> Open
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
 `;
 
-module.exports = riot.tag('meta-table', html, function(opts) {
+module.exports = riot.tag('meta-table', html, function (opts) {
 
     const MetaMap = require('../../entry.js');
 
     this.data = null;
     this.menu = null;
-
+    this.tabs = _.sortBy([{ title: 'My Maps', order: 0, editable: true }, { title: 'Shared with Me', order: 1, editable: false }], 'order');
+    this.currentTab = 'My Maps';
+    
     this.onOpen = (event, ...o) => {
         MetaMap.Router.to(`map/${event.item.id}`);
+    }
+    
+    this.onTabSwitch = (event, ...o) => {
+        this.currentTab = event.item.val.title;
+        switch(this.currentTab) {
+            case 'My Maps': 
+            
+                break;
+        }
     }
 
     this.onActionClick = (event, tag) => {
@@ -102,18 +126,25 @@ module.exports = riot.tag('meta-table', html, function(opts) {
     }
 
     this.onMenuClick = (event, tag) => {
-        switch (event.item.title.toLowerCase()) {
-        case 'delete':
-            const deleteMaps = require('../../js/actions/DeleteMap.js');
-            let selected = this.table.find('.active').find('.mapid');
-            let ids = [];
-            _.each(selected, (cell) => {
-                ids.push(cell.innerHTML);
-            });
-            deleteMaps.deleteAll(ids);
-            break;
+        if(this.currentTab == 'My Maps') {
+            switch (event.item.title.toLowerCase()) {
+                case 'delete':
+                    const deleteMaps = require('../../js/actions/DeleteMap.js');
+                    let selected = this[`table0`].find('.active').find('.mapid');
+                    let ids = [];
+                    _.each(selected, (cell) => {
+                        ids.push(cell.innerHTML);
+                    });
+                    deleteMaps.deleteAll(ids, PAGES.MY_MAPS);
+                    var set = $('tbody > tr > td:nth-child(1) input[type="checkbox"]', this[`table0`]);
+                    var checked = $(this).is(":checked");
+                    $(set).each(function() {
+                        $(this).attr("checked", checked);
+                    });
+                    $.uniform.update(set);
+                    break;
+            }
         }
-        
     }
 
     this.on('mount', () => {
@@ -128,24 +159,19 @@ module.exports = riot.tag('meta-table', html, function(opts) {
             }
         });
 
-        MetaMap.MetaFire.getChild('maps/list').orderByChild('owner').equalTo(MetaMap.User.userId).on('value', (val) => {
-            const data = val.val();
+        const buildTable = (idx, list, editable) => {
             try {
-                this.data = _.map(data, (obj, key) => {
-                    obj.id = key;
-                    obj.created_at = moment(obj.created_at).format('YYYY-MM-DD');
-                    return obj;
-                });
-                if (this.table) {
-                    $('.meta-editable').editable('destroy');
-                    this.dataTable.destroy();
-                    //this.table.empty();
+                this.data = this.data || {};
+                this.data[idx] = list;
+                if (this[`table${idx}`]) {
+                    $(`.meta_editable_${idx}`).editable('destroy');
+                    this[`dataTable${idx}`].destroy();
                 }
 
                 this.update();
-                
-                this.table = $(this.mymaps_table);
-                this.dataTable = this.table.DataTable({
+
+                this[`table${idx}`] = $(this[`mymaps_table_${idx}`]);
+                this[`dataTable${idx}`] = this[`table${idx}`].DataTable({
 
                     // Uncomment below line("dom" parameter) to fix the dropdown overflow issue in the datatable cells. The default datatable layout
                     // setup uses scrollable div(table-scrollable) with overflow:auto to enable vertical scroll(see: assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.js). 
@@ -171,14 +197,14 @@ module.exports = riot.tag('meta-table', html, function(opts) {
                         }
                     ]
                 });
-                //this.tableTools = new $.fn.dataTable.TableTools(this.dataTable, {});
-                
-                var tableWrapper = this.table.parent().parent().parent().find('#mymaps_table_wrapper');
+                //this[`table${idx}`]Tools = new $.fn.dataTable.TableTools(this[`dataTable${idx}`], {});
 
-                this.table.find('.group-checkable').change(function() {
+                var tableWrapper = this[`table${idx}`].parent().parent().parent().find(`#mymaps_${idx}_table_wrapper`);
+
+                this[`table${idx}`].find('.group-checkable').change(function () {
                     var set = jQuery(this).attr("data-set");
                     var checked = jQuery(this).is(":checked");
-                    jQuery(set).each(function() {
+                    jQuery(set).each(function () {
                         if (checked) {
                             $(this).attr("checked", true);
                             $(this).parents('tr').addClass("active");
@@ -190,24 +216,50 @@ module.exports = riot.tag('meta-table', html, function(opts) {
                     jQuery.uniform.update(set);
                 });
 
-                this.table.on('change', 'tbody tr .checkboxes', function() {
+                this[`table${idx}`].on('change', 'tbody tr .checkboxes', function () {
                     $(this).parents('tr').toggleClass("active");
                 });
 
                 tableWrapper.find('.dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
-                
-                $('.meta-editable').editable({ unsavedclass: null }).on('save', function (event, params) {
-                    var id = this.dataset.pk;
-                    MetaMap.MetaFire.setData(params.newValue, `maps/list/${id}/name`);
-                    return true;
-                });
 
+                if (editable) {
+                    $(`.meta_editable_${idx}`).editable({ unsavedclass: null }).on('save', function (event, params) {
+                        var id = this.dataset.pk;
+                        MetaMap.MetaFire.setData(params.newValue, `maps/list/${id}/name`);
+                        return true;
+                    });
+                }
                 NProgress.done();
 
             } catch (e) {
                 NProgress.done();
                 MetaMap.error(e);
             }
+        };
+
+        MetaMap.MetaFire.getChild(ROUTES.MAPS_LIST).orderByChild('owner').equalTo(MetaMap.User.userId).on('value', (val) => {
+            const list = val.val();
+            const maps = _.map(list, (obj, key) => {
+                obj.id = key;
+                obj.created_at = moment(obj.created_at).format('YYYY-MM-DD');
+                return obj;
+            });
+            buildTable(0, maps);
+        });
+
+        MetaMap.MetaFire.getChild(ROUTES.MAPS_LIST).on('value', (val) => {
+            const list = val.val();
+            const maps = _.map(list, (obj, key) => {
+                if (obj.owner == MetaMap.User.userId || obj.shared_with[MetaMap.User.userId] != true) {
+                    return false;
+                } else {
+                    obj.id = key;
+                    obj.created_at = moment(obj.created_at).format('YYYY-MM-DD');
+                    return obj;
+                }
+            });
+
+            buildTable(1, maps);
         });
     });
 });

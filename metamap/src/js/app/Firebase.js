@@ -104,6 +104,7 @@ class MetaFire {
                         let data = snapshot.val();
                         callback(data);
                     } catch (e) {
+                        this.metaMap.error({ message: `Permission denied to ${path}` });
                         this.metaMap.error(e);
                     }
                 });
@@ -132,10 +133,12 @@ class MetaFire {
         try {
             return child.set(data, (e) => {
                 if (e) {
+                    this.metaMap.error({ message: `Permission denied to ${path}` });
                     this.metaMap.error(e);
                 }
             });
         } catch (e) {
+            this.metaMap.error({ message: `Permission denied to ${path}` });
             this.metaMap.error(e);
         }
     }
@@ -152,10 +155,12 @@ class MetaFire {
         try {
             return child.push(data, (e) => {
                 if (e) {
+                    this.metaMap.error({ message: `Permission denied to ${path}` });
                     this.metaMap.error(e);
                 }
             });
         } catch (e) {
+            this.metaMap.error({ message: `Permission denied to ${path}` });
             this.metaMap.error(e);
         }
     }
@@ -170,10 +175,12 @@ class MetaFire {
                 try {
                     return data;
                 } catch (e) {
+                    this.metaMap.error({ message: `Permission denied to ${path}` });
                     this.metaMap.error(e);
                 }
             });
         } catch (e) {
+            this.metaMap.error({ message: `Permission denied to ${path}` });
             this.metaMap.error(e);
         }
     }

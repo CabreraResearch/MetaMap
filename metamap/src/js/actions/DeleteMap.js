@@ -14,11 +14,12 @@ class DeleteMap extends ActionBase {
         return true;
     }
 
-    static deleteAll(ids) {
+    static deleteAll(ids, path = PAGES.HOME) {
+        const metaMap = require('../../entry.js');
         _.each(ids, (id) => {
-            this.metaMap.MetaFire.deleteData(`${ROUTES.MAPS_DATA}${id}`);
-            this.metaMap.MetaFire.deleteData(`${ROUTES.MAPS_LIST}${id}`);
-            this.eventer.do(PAGES.HOME);
+            metaMap.MetaFire.deleteData(`${ROUTES.MAPS_DATA}${id}`);
+            metaMap.MetaFire.deleteData(`${ROUTES.MAPS_LIST}${id}`);
+            metaMap.Eventer.do(path);
         });
     }
 }
