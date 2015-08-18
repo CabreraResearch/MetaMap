@@ -5,6 +5,7 @@ const ActionBase = require('./ActionBase.js');
 const ELEMENTS = require('../constants/elements.js');
 const TAGS = require('../constants/tags.js');
 const ROUTES = require('../constants/routes.js');
+const EVENTS = require('../constants/events.js');
 const metaCanvas = require('../../tags/canvas/meta-canvas.js');
 
 class OpenMap extends ActionBase {
@@ -19,9 +20,9 @@ class OpenMap extends ActionBase {
             if (map) {
                 riot.mount(document.getElementById(ELEMENTS.APP_CONTAINER), TAGS.META_CANVAS);
                 map.id = id;
-                this.eventer.do('nav', 'map', map, ...params);
-                this.eventer.do('pageName', map, ...params);
-                this.eventer.do('map', map, ...params);
+                this.eventer.do(EVENTS.NAV, 'map', map, ...params);
+                this.eventer.do(EVENTS.PAGE_NAME, map, ...params);
+                this.eventer.do(EVENTS.MAP, map, ...params);
                 this.openSidebar();
             }
         });

@@ -4,6 +4,7 @@ const ROUTES = require('../constants/routes.js');
 const ELEMENTS = require('../constants/elements.js');
 const TAGS = require('../constants/tags.js');
 const home = require('../../tags/pages/home');
+const EVENTS = require('../constants/events.js');
 
 class Home extends ActionBase {
     constructor(...params) {
@@ -14,7 +15,7 @@ class Home extends ActionBase {
         super.act(id, ...params);
         $(`#${ELEMENTS.APP_CONTAINER}`).empty();
         riot.mount(document.getElementById(ELEMENTS.APP_CONTAINER), TAGS.HOME);
-        this.eventer.do('pageName', { name: 'Home' }, ...params);
+        this.eventer.do(EVENTS.PAGE_NAME, { name: 'Home' }, ...params);
         this.closeSidebar();
         return true;
     }

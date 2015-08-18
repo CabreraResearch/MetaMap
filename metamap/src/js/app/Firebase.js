@@ -4,7 +4,7 @@ let localforage = window.localforage;
 
 class MetaFire {
 
-    constructor (config) {
+    constructor(config) {
         this.config = config;
         this.fb = new Firebase(`https://${this.config.site.db}.firebaseio.com`);
     }
@@ -67,7 +67,7 @@ class MetaFire {
         return this.fb.child(path);
     }
 
-    getData (path) {
+    getData(path) {
         return this.onReady().then(() => {
             var child = this.fb;
             if (path) {
@@ -76,43 +76,45 @@ class MetaFire {
             return new Promise((resolve, reject) => {
 
                 child.once('value',
-                (snapshot) => {
-                    let data = snapshot.val();
-                    try {
-                        resolve(data);
-                    } catch (e) {
-                        this.metaMap.error(e);
-                    }
-                },
-                (error) => {
-                    this.metaMap.error({ message: `Cannot access ${path}` });
-                    reject(error);
-                });
+                    (snapshot) => {
+                        let data = snapshot.val();
+                        try {
+                            resolve(data);
+                        } catch (e) {
+                            this.metaMap.error(e);
+                        }
+                    },
+                    (error) => {
+                        this.error(e, path);
+                        reject(error);
+                    });
             });
         });
     }
 
-    on (path, callback, event = 'value' ) {
+    on(path, callback, event = 'value') {
         if (path) {
             this.onReady().then(() => {
                 let child = this.getChild(path);
-                child.on(event, (snapshot) => {
+                let method = (snapshot) => {
                     try {
                         if (!snapshot.exists()) {
+                            child.off(event, method);
                             throw new Error(`There is no data at ${path}`);
                         }
                         let data = snapshot.val();
                         callback(data);
                     } catch (e) {
-                        this.metaMap.error({ message: `Permission denied to ${path}` });
-                        this.metaMap.error(e);
+                        child.off(event, method);
+                        this.error(e, path);
                     }
-                });
+                };
+                child.on(event, method);
             });
         }
     }
 
-    off(path, method='value',callback) {
+    off(path, method = 'value', callback) {
         if (path) {
             this.onReady().then(() => {
                 let child = this.getChild(path);
@@ -125,7 +127,7 @@ class MetaFire {
         }
     }
 
-    setData (data, path) {
+    setData(data, path) {
         var child = this.fb;
         if (path) {
             child = this.getChild(path);
@@ -133,21 +135,19 @@ class MetaFire {
         try {
             return child.set(data, (e) => {
                 if (e) {
-                    this.metaMap.error({ message: `Permission denied to ${path}` });
-                    this.metaMap.error(e);
+                    this.error(e, path);
                 }
             });
         } catch (e) {
-            this.metaMap.error({ message: `Permission denied to ${path}` });
-            this.metaMap.error(e);
+            this.error(e, path);
         }
     }
 
-    deleteData (path) {
+    deleteData(path) {
         return this.setData(null, path);
     }
 
-    pushData (data, path) {
+    pushData(data, path) {
         var child = this.fb;
         if (path) {
             child = this.getChild(path);
@@ -155,17 +155,15 @@ class MetaFire {
         try {
             return child.push(data, (e) => {
                 if (e) {
-                    this.metaMap.error({ message: `Permission denied to ${path}` });
-                    this.metaMap.error(e);
+                    this.error(e, path);
                 }
             });
         } catch (e) {
-            this.metaMap.error({ message: `Permission denied to ${path}` });
-            this.metaMap.error(e);
+            this.error(e, path);
         }
     }
 
-    setDataInTransaction (data, path, callback) {
+    setDataInTransaction(data, path, callback) {
         var child = this.fb;
         if (path) {
             child = this.getChild(path);
@@ -175,17 +173,24 @@ class MetaFire {
                 try {
                     return data;
                 } catch (e) {
-                    this.metaMap.error({ message: `Permission denied to ${path}` });
-                    this.metaMap.error(e);
+                    this.error(e, path);
                 }
             });
         } catch (e) {
-            this.metaMap.error({ message: `Permission denied to ${path}` });
-            this.metaMap.error(e);
+            this.error(e, path);
         }
     }
 
-    logout () {
+    error(e, path) {
+        if (e) {
+            this.metaMap.error(e);
+        }
+        if (path) {
+            this.metaMap.error({ message: `Permission denied to ${path}` });
+        }
+    }
+
+    logout() {
         this._login = null;
         this._onReady = null;
         localforage.removeItem('firebase_token');
