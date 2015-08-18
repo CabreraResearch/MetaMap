@@ -115,15 +115,15 @@ SandbankEditor.Templates = function ($scope, map) {
             else if (map.getPerspectives().isInDEditorMode())
                 return colorD;
             else
-                return "#000";
+                return "#C0CDDC";
         } else {
-            return "#000";
+            return "#C0CDDC";
         }
     }
 
     // OK, this isn't about colors, but it wants to be near the one above...
     function getGroupSelectionStrokeWidth(obj) {
-        return (obj.isSelected ? 3 : 1);
+        return (obj.isSelected ? 5 : 3);
     }
 
     function getRLinkSelectionStroke(obj) {
@@ -730,7 +730,7 @@ SandbankEditor.Templates = function ($scope, map) {
                 //alignment: go.Spot.Center,
                 //textAlign: 'center',
                 cursor: "move",
-                font: '10px sans-serif',
+                font: '14px sans-serif',
                 isMultiline: true,
                 wrap: go.TextBlock.WrapDesiredSize,
                 mouseDragEnter: getGroupMouseDragEnterHandler(null),
@@ -763,7 +763,7 @@ SandbankEditor.Templates = function ($scope, map) {
                 name: 'externaltext-' + textAlign, // NB: this screws up layouts for some reason - ??
                 textAlign: textAlign,
                 margin: 5,
-                font: '10px sans-serif',
+                font: '14px sans-serif',
                 isMultiline: true,
                 click: groupClickHandler
             }
@@ -856,7 +856,7 @@ SandbankEditor.Templates = function ($scope, map) {
             //alignment: go.Spot.Center,
             //textAlign: 'center',
             cursor: "move",
-            font: '10px sans-serif',
+            font: '14px sans-serif',
             isMultiline: true,
             wrap: go.TextBlock.WrapDesiredSize,
             mouseDragEnter: getGroupMouseDragEnterHandler(null),
