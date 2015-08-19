@@ -4,8 +4,11 @@ SandbankEditor.Templates = function ($scope, map) {
 
     var self = this;
 
+    const metaMap = require('../../entry');
+    const config = metaMap.config.canvas;
+    
     // constants
-    this.groupFillColor = "#f9f9f9";
+    //this.groupFillColor = "#f9f9f9";
 
     this.init = function () { };
 
@@ -115,9 +118,9 @@ SandbankEditor.Templates = function ($scope, map) {
             else if (map.getPerspectives().isInDEditorMode())
                 return colorD;
             else
-                return "#C0CDDC";
+                return config.shapes.box.borderColor;
         } else {
-            return "#C0CDDC";
+            return config.shapes.box.borderColor;
         }
     }
 
@@ -817,7 +820,7 @@ SandbankEditor.Templates = function ($scope, map) {
                     position: new go.Point(0, 0),
                     width: 100,
                     height: 100,
-                    fill: self.groupFillColor,
+                    fill: config.shapes.box.fillColor,
                     stroke: null,
                     cursor: "move",
                     // show debug info
