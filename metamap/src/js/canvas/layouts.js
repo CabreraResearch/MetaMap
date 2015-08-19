@@ -4,6 +4,10 @@ SandbankEditor.Layouts = function($scope, map) {
 
     var self = this;
 
+    const metaMap = require('../../entry');
+    const config = metaMap.config.canvas;
+    const CONSTANTS = require('../constants/constants');
+
     this.init = function() {};
 
     this.handleDiagramEvent = function(eventName, e) {
@@ -286,7 +290,7 @@ SandbankEditor.Layouts = function($scope, map) {
     this.getLinkStrokeWidth = function(link) {
         var fromScale = self.getScale(link.fromNode);
         var toScale = self.getScale(link.toNode);
-        return (link.isSelected ? 4 : 2) * Math.min(fromScale, toScale); // 2, .9, ...
+        return (link.isSelected ? config.shapes.line.borderHighlightWidth : config.shapes.line.borderWidth) * Math.min(fromScale, toScale); // 2, .9, ...
     };
 
     // scale arrowheads based on the smallest to/from node, 
@@ -296,7 +300,7 @@ SandbankEditor.Layouts = function($scope, map) {
         var toScale = self.getScale(link.toNode);
         var minScale = Math.min(fromScale, toScale);
         //console.log("getArrowheadScale, fromScale: ", fromScale, ', toScale: ', toScale, ', minScale: ', minScale);
-        if (link.data.category == 'P') {
+        if (link.data.category == CONSTANTS.DSRP.P) {
             minScale = toScale;
         }
         if (minScale >= 1) {
@@ -673,7 +677,7 @@ SandbankEditor.Layouts = function($scope, map) {
         //this.diagram.startTransaction("Inventory Layout");
         var startX = this.group.location.x + this.group.actualBounds.width;
         var startY = this.group.location.y + (this.group.part.actualBounds.height + getInventoryMargin(this.group));
-        layoutMembersForInventory(this.group, startX, startY, 'R');
+        layoutMembersForInventory(this.group, startX, startY, CONSTANTS.DSRP.R);
         //this.diagram.commitTransaction("Inventory Layout");
     };
 
@@ -701,12 +705,12 @@ SandbankEditor.Layouts = function($scope, map) {
     // shared stuff for Left/Right Inventory layouts...
 
     // returns the max y value after laying out the last part
-    // side is 'L' or 'R'
+    // side is 'L' or CONSTANTS.DSRP.R
     function layoutMembersForInventory(group, startX, startY, side) {
         var members = getOrderedMembers(group);
         _.each(members, function(part) {
             var x = startX; // for left, just use x
-            if (side == 'R')
+            if (side == CONSTANTS.DSRP.R)
                 x = startX - part.actualBounds.width; // for right, right-align parts to startX
             //console.log('layoutMembersForInventory, part: ' + part + ' to location: ' + x + ',' + startY);
             part.move(new go.Point(x, startY));
@@ -752,7 +756,7 @@ SandbankEditor.Layouts = function($scope, map) {
         // see if link is within a stacked or inventory layout, or if it's a hidden P link
         var inventoryAncestor = getCommonAncestorWithLayout(link.fromNode, link.toNode, ['left', 'right']);
         var stackedAncestor = getCommonAncestorWithLayout(link.fromNode, link.toNode, ['stacked']);
-        var hidePLink = (link.data && link.data.category == 'P' && !map.getTemplates().showPLink(link));
+        var hidePLink = (link.data && link.data.category == CONSTANTS.DSRP.P && !map.getTemplates().showPLink(link));
         //var crowdedRThing = hasCrowdedRThing(link);
 
         // see if this is one of multiple links between the same two nodes
@@ -955,11 +959,11 @@ SandbankEditor.Layouts = function($scope, map) {
     };
 
     this.isDLink = function(link) {
-        return link instanceof go.Link && link.data && link.data.category == 'D';
+        return link instanceof go.Link && link.data && link.data.category == CONSTANTS.DSRP.D;
     };
 
     this.isPLink = function(link) {
-        return link instanceof go.Link && link.data && link.data.category == 'P';
+        return link instanceof go.Link && link.data && link.data.category == CONSTANTS.DSRP.P;
     };
 
     this.isGroup = function(obj) {
