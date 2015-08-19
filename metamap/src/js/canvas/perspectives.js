@@ -12,16 +12,16 @@ SandbankEditor.Perspectives = function($scope, map) {
     // called when a tab is opened or closed
     this.currentTabChanged = function(newValue, oldValue) {
         //console.log('Perspectives, currentTabChanged');
-        if (newValue == map.getUi().TAB_ID_PERSPECTIVES) { // opening perspectives
+        if (newValue == map.ui.TAB_ID_PERSPECTIVES) { // opening perspectives
             setPorDThing('P');
             map.setEditingBlocked(true);
-        } else if (oldValue == map.getUi().TAB_ID_PERSPECTIVES) { // closing perspectives
+        } else if (oldValue == map.ui.TAB_ID_PERSPECTIVES) { // closing perspectives
             saveLinks('P');
             map.setEditingBlocked(false);
-        } else if (newValue == map.getUi().TAB_ID_DISTINCTIONS) { // opening distinctions
+        } else if (newValue == map.ui.TAB_ID_DISTINCTIONS) { // opening distinctions
             setPorDThing('D');
             map.setEditingBlocked(true);
-        } else if (oldValue == map.getUi().TAB_ID_DISTINCTIONS) { // closing distinctions
+        } else if (oldValue == map.ui.TAB_ID_DISTINCTIONS) { // closing distinctions
             saveLinks('D');
             map.setEditingBlocked(false);
         }
@@ -29,7 +29,7 @@ SandbankEditor.Perspectives = function($scope, map) {
 
     this.handleDiagramEvent = function(eventName, e) {
         if (eventName == 'ChangedSelection') {
-            if (map.getUi().currentTabIs(map.getUi().TAB_ID_PERSPECTIVES) || map.getUi().currentTabIs(map.getUi().TAB_ID_DISTINCTIONS)) {
+            if (map.ui.currentTabIs(map.ui.TAB_ID_PERSPECTIVES) || map.ui.currentTabIs(map.ui.TAB_ID_DISTINCTIONS)) {
                 updateLinks();
             }
         }
@@ -38,29 +38,29 @@ SandbankEditor.Perspectives = function($scope, map) {
     // ---------- P/D Editor state
 
     this.isInPOrDEditorMode = function() {
-        return map.getUi().state.perspectivePointKey !== null || map.getUi().state.distinctionThingKey !== null;
+        return map.ui.state.perspectivePointKey !== null || map.ui.state.distinctionThingKey !== null;
     };
 
     this.isInPEditorMode = function() {
-        return map.getUi().state.perspectivePointKey !== null;
+        return map.ui.state.perspectivePointKey !== null;
     };
 
     this.isInDEditorMode = function() {
-        return map.getUi().state.distinctionThingKey !== null;
+        return map.ui.state.distinctionThingKey !== null;
     };
 
     this.isPEditorPoint = function(group) {
-        return map.getUi().state.perspectivePointKey == group.data.key;
+        return map.ui.state.perspectivePointKey == group.data.key;
     };
 
     this.isDEditorThing = function(group) {
-        return map.getUi().state.distinctionThingKey == group.data.key;
+        return map.ui.state.distinctionThingKey == group.data.key;
     };
 
     // NB: this is called via map.getCornerFunction, so we get the extra corner arg, which we can ignore
     this.setPEditorPoint = function(thing, corner) {
         if ($scope.canEdit) {
-            map.getUi().openTab(map.getUi().TAB_ID_PERSPECTIVES);
+            map.ui.openTab(map.ui.TAB_ID_PERSPECTIVES);
         }
     };
 
@@ -68,9 +68,9 @@ SandbankEditor.Perspectives = function($scope, map) {
         if ($scope.canEdit) {
             // NB: need to select only this thing, since this is invoked
             // by a control-click, which will not automatically select just it
-            map.getDiagram().clearSelection();
+            map.diagram.clearSelection();
             thing.isSelected = true;
-            map.getUi().openTab(map.getUi().TAB_ID_DISTINCTIONS);
+            map.ui.openTab(map.ui.TAB_ID_DISTINCTIONS);
         }
     };
 
@@ -113,7 +113,7 @@ SandbankEditor.Perspectives = function($scope, map) {
         var links = group.findLinksInto();
         while (links.next()) {
             var link = links.value;
-            if (link.data.category == 'P' && link.fromNode == map.getUi().mouseOverGroup) {
+            if (link.data.category == 'P' && link.fromNode == map.ui.mouseOverGroup) {
                 return true;
             }
         }
@@ -121,7 +121,7 @@ SandbankEditor.Perspectives = function($scope, map) {
     };
 
     this.getPerspectiveViewWeight = function(group) {
-        var mode = map.getUi().getMapEditorOptions().perspectiveMode;
+        var mode = map.ui.getMapEditorOptions().perspectiveMode;
         if (mode == 'spotlight' || mode == 'both') {
             return (self.isSelectedPerspectiveView(group) ? 1 : 0) +
                 (self.isToggledPerspectiveView(group) ? 1 : 0) +
@@ -136,17 +136,17 @@ SandbankEditor.Perspectives = function($scope, map) {
     // category is "P" or "D" (perspectives or distinctions)
     function setPorDThing(category) {
         // if already set, must do save perspectives or save distinctions
-        if (map.getUi().state.perspectivePointKey || map.getUi().state.distinctionThingKey)
+        if (map.ui.state.perspectivePointKey || map.ui.state.distinctionThingKey)
             return;
 
-        var thing = map.getDiagram().selection.first();
+        var thing = map.diagram.selection.first();
         //console.log('setPorDThing: ' + thing);
         if (thing instanceof go.Group) {
             var key = thing.data.key;
             if (category == "P") {
-                map.getUi().state.perspectivePointKey = key;
+                map.ui.state.perspectivePointKey = key;
             } else if (category == "D") {
-                map.getUi().state.distinctionThingKey = key;
+                map.ui.state.distinctionThingKey = key;
             }
 
             // select views/others
@@ -163,11 +163,11 @@ SandbankEditor.Perspectives = function($scope, map) {
 
         var pOrDThing = null;
         var category = null;
-        if (map.getUi().state.perspectivePointKey) {
-            pOrDThing = map.getDiagram().findNodeForKey(map.getUi().state.perspectivePointKey);
+        if (map.ui.state.perspectivePointKey) {
+            pOrDThing = map.diagram.findNodeForKey(map.ui.state.perspectivePointKey);
             category = "P";
-        } else if (map.getUi().state.distinctionThingKey) {
-            pOrDThing = map.getDiagram().findNodeForKey(map.getUi().state.distinctionThingKey);
+        } else if (map.ui.state.distinctionThingKey) {
+            pOrDThing = map.diagram.findNodeForKey(map.ui.state.distinctionThingKey);
             category = "D";
         }
 
@@ -176,7 +176,7 @@ SandbankEditor.Perspectives = function($scope, map) {
 
         // iterate through all things
         if (category) {
-            var layers = map.getDiagram().layers;
+            var layers = map.diagram.layers;
             while (layers.next()) {
                 var layer = layers.value;
                 var parts = layer.parts;
@@ -208,7 +208,7 @@ SandbankEditor.Perspectives = function($scope, map) {
         // do the adding/removing of links
         var adds = addLinksTo.iterator;
         while (adds.next()) {
-            map.getDiagram().model.startTransaction('add link');
+            map.diagram.model.startTransaction('add link');
             var to = adds.value;
             //console.log('updateLinks: adding link from ' + pOrDThing + ' to ' + to);
             if (category == "D" && pOrDThing.data.key == to.data.key) {
@@ -216,46 +216,46 @@ SandbankEditor.Perspectives = function($scope, map) {
                 alert("You can't distinguish a thing from itself!");
                 continue;
             }
-            map.getDiagram().model.addLinkData({
+            map.diagram.model.addLinkData({
                 from: pOrDThing.data.key,
                 to: to.data.key,
                 fromPort: category,
                 toPort: category,
                 category: category
             });
-            map.getDiagram().model.commitTransaction('add link');
+            map.diagram.model.commitTransaction('add link');
         }
         var removes = removeLinks.iterator;
         while (removes.next()) {
             var remove = removes.value;
             //console.log('updateLinks: removing link from ' + remove.fromNode + ' to ' + remove.toNode);
-            map.getDiagram().model.startTransaction('remove link');
-            map.getDiagram().remove(remove);
-            map.getDiagram().model.removeLinkData(remove.data);
-            map.getDiagram().model.commitTransaction('remove link');
+            map.diagram.model.startTransaction('remove link');
+            map.diagram.remove(remove);
+            map.diagram.model.removeLinkData(remove.data);
+            map.diagram.model.commitTransaction('remove link');
         }
 
         // show links
-        map.getDiagram().updateAllTargetBindings();
+        map.diagram.updateAllTargetBindings();
     }
 
     function saveLinks(category) {
         var pOrDThing = null;
         if (category == "P") {
-            pOrDThing = map.getDiagram().findNodeForKey(map.getUi().state.perspectivePointKey);
-            map.getUi().state.perspectivePointKey = null;
+            pOrDThing = map.diagram.findNodeForKey(map.ui.state.perspectivePointKey);
+            map.ui.state.perspectivePointKey = null;
         } else if (category == "D") {
-            pOrDThing = map.getDiagram().findNodeForKey(map.getUi().state.distinctionThingKey);
-            map.getUi().state.distinctionThingKey = null;
+            pOrDThing = map.diagram.findNodeForKey(map.ui.state.distinctionThingKey);
+            map.ui.state.distinctionThingKey = null;
         }
 
-        map.getDiagram().clearSelection();
-        map.getDiagram().updateAllTargetBindings();
+        map.diagram.clearSelection();
+        map.diagram.updateAllTargetBindings();
     }
 
     function selectLinkedThingsFor(group, category) {
         selectingLinkedThings = true;
-        map.getDiagram().clearSelection();
+        map.diagram.clearSelection();
 
         var links = group.findLinksOutOf();
         while (links.next()) {

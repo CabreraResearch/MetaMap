@@ -16,11 +16,16 @@ class DeleteMap extends ActionBase {
 
     static deleteAll(ids, path = PAGES.HOME) {
         const metaMap = require('../../entry.js');
-        _.each(ids, (id) => {
-            metaMap.MetaFire.deleteData(`${ROUTES.MAPS_DATA}${id}`);
-            metaMap.MetaFire.deleteData(`${ROUTES.MAPS_LIST}${id}`);
-            metaMap.Eventer.do(path);
-        });
+        try {
+            _.each(ids, (id) => {
+                metaMap.MetaFire.deleteData(`${ROUTES.MAPS_DATA}${id}`);
+                metaMap.MetaFire.deleteData(`${ROUTES.MAPS_LIST}${id}`);
+            });
+        } catch(e) {
+            
+        } finally {
+            metaMap.Router.to(path);
+        }        
     }
 }
 

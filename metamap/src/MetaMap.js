@@ -41,6 +41,7 @@ class MetaMap {
                     this.User.onReady().then(() => {
                         this.PageFactory = new PageFactory(this.Eventer, this.MetaFire);
                         this.Router = new Router(this);
+                        this.Router.init();
                     });
                 });
             });

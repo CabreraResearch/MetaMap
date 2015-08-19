@@ -213,7 +213,7 @@ declare module NodeJS {
         getgid(): number;
         setgid(id: number): void;
         setgid(id: string): void;
-        getuid(): number;
+        uid(): number;
         setuid(id: number): void;
         setuid(id: string): void;
         version: string;

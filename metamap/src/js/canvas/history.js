@@ -14,14 +14,14 @@ SandbankEditor.History = function($scope, $http, map) {
 
     // called when a tab is opened or closed
     this.currentTabChanged = function(newValue, oldValue) {
-        if (newValue == map.getUi().TAB_ID_HISTORY) { // opening tab
+        if (newValue == map.ui().TAB_ID_HISTORY) { // opening tab
             // load current version, but in read-only mode
             var version = _.last(self.versionList);
             if (version) {
                 self.loadVersion(version);
             }
         }
-        if (oldValue == map.getUi().TAB_ID_HISTORY) { // closing tab
+        if (oldValue == map.ui().TAB_ID_HISTORY) { // closing tab
             // reload map
             map.load();
         }

@@ -9,7 +9,7 @@ SandbankEditor.Analytics = function ($scope, $http, map) {
 
     this.handleDiagramEvent = function (eventName, e) {
         if (eventName == 'ChangedSelection') {
-            if (map.getUi().currentTabIs(map.getUi().TAB_ID_ANALYTICS_THING)) {
+            if (map.ui.currentTabIs(map.ui.TAB_ID_ANALYTICS_THING)) {
                 self.updateContextualAnalytics();
             }
         }
@@ -17,7 +17,7 @@ SandbankEditor.Analytics = function ($scope, $http, map) {
 
     // called when a tab is opened or closed
     this.currentTabChanged = function(newValue, oldValue) {
-        if (newValue == map.getUi().TAB_ID_ANALYTICS_THING) { // opening thing analytics tab
+        if (newValue == map.ui.TAB_ID_ANALYTICS_THING) { // opening thing analytics tab
             self.updateContextualAnalytics();
         }
     };
@@ -53,11 +53,11 @@ SandbankEditor.Analytics = function ($scope, $http, map) {
 
     this.updateContextualAnalytics = function () {
         //console.log('updateContextualAnalytics');
-        if (!map.getUi().currentTabIs(map.getUi().TAB_ID_ANALYTICS_THING)) {
+        if (!map.ui.currentTabIs(map.ui.TAB_ID_ANALYTICS_THING)) {
             return ;
         }
 
-        var diagram = map.getDiagram();
+        var diagram = map.diagram;
         var part = diagram.selection.first();
         var a = self.contextualAnalytics;
 

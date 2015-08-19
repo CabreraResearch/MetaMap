@@ -27,7 +27,10 @@ class Router {
     constructor(metaMap) {
         this.user = metaMap.User;
         this.PageFactory = metaMap.PageFactory;
+        this.eventer = metaMap.Eventer;
+    }
 
+    init() {
         riot.route.start();
         riot.route((target, id = '', action = '', ...params) => {
             this.path = this.getPath(target);
@@ -35,7 +38,7 @@ class Router {
             toggleMain(true, this.path);
             this.PageFactory.navigate(this.path, id, action, ...params);
 
-            metaMap.Eventer.do('history', window.location.hash);
+            this.eventer.do('history', window.location.hash);
         });
         this.to(this.currentPage);
     }

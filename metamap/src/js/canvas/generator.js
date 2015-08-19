@@ -3,7 +3,7 @@
 var GeneratorCtrl = function ($scope) {
 
     var map = $scope.map;
-    var diagram = $scope.map.getDiagram();
+    var diagram = $scope.map.diagram;
 
     $scope.concept1 = '';
     $scope.concept2 = '';
@@ -25,8 +25,8 @@ var GeneratorCtrl = function ($scope) {
 
     $scope.mapIt = function(question) {
         startSpinner();
-        diagram = map.getDiagram();
-        map.getAutosave().saveOnModelChanged = false;
+        diagram = map.diagram;
+        map.autosave.saveOnModelChanged = false;
 
         if ($scope.sandbox) {
             diagram.clear();
@@ -48,10 +48,10 @@ var GeneratorCtrl = function ($scope) {
         diagram.updateAllTargetBindings();
         diagram.layoutDiagram(true);
         
-        map.getUi().resetZoom();
+        map.ui.resetZoom();
 
-        map.getAutosave().saveOnModelChanged = true;
-        map.getAutosave().save('edit_generator');
+        map.autosave.saveOnModelChanged = true;
+        map.autosave.save('edit_generator');
         stopSpinner();
     };
 
@@ -283,10 +283,10 @@ SandbankEditor.Generator = function ($scope, map) {
 
     // called when a tab is opened or closed
     this.currentTabChanged = function(newValue, oldValue) {
-        if (oldValue == map.getUi().TAB_ID_GENERATOR) { // closing tab
+        if (oldValue == map.ui.TAB_ID_GENERATOR) { // closing tab
             map.setEditingBlocked(false);
         }
-        else if (newValue == map.getUi().TAB_ID_GENERATOR) { // opening tab
+        else if (newValue == map.ui.TAB_ID_GENERATOR) { // opening tab
             map.setEditingBlocked(true);
         }
     };

@@ -11,13 +11,13 @@ SandbankEditor.Layouts = function($scope, map) {
     this.init = function() {};
 
     this.handleDiagramEvent = function(eventName, e) {
-        var diagram = map.getDiagram();
+        var diagram = map.diagram;
         if (eventName == 'InitialLayoutCompleted') {
             diagram.updateAllTargetBindings();
             diagram.layoutDiagram(true);
         } else if (eventName == 'SelectionMoved') {
             updateSelectedPartLocationData(e);
-            map.getDiagram().layoutDiagram(true);
+            map.diagram.layoutDiagram(true);
         } else if (eventName == 'SelectionDeleted') {
             diagram.updateAllTargetBindings();
         } else if (eventName == 'PartCreated') {
@@ -36,7 +36,7 @@ SandbankEditor.Layouts = function($scope, map) {
 
     // only update w/h for slides, as all other node types have fixed dimensions according to the templates
     function setResizedPartDimensionData(e) {
-        var diagram = map.getDiagram();
+        var diagram = map.diagram;
         var node = e.subject;
         if (node && node.category == 'slide') {
             //console.log('PartResized: ' + node.part.actualBounds);
@@ -50,14 +50,14 @@ SandbankEditor.Layouts = function($scope, map) {
         var node = e.subject;
         if (node && node.part) {
             if (node instanceof go.Group) {
-                map.getDiagram().model.setDataProperty(node.data, 'loc', node.part.location.x + ' ' + node.part.location.y);
+                map.diagram.model.setDataProperty(node.data, 'loc', node.part.location.x + ' ' + node.part.location.y);
             }
         }
     };
 
     // updates the 'loc' attribute for each selected part, to support freehand layout (does not apply to slides)
     function updateSelectedPartLocationData(e) {
-        var diagram = map.getDiagram();
+        var diagram = map.diagram;
         var it = diagram.selection.iterator;
         while (it.next()) {
             if (it.value instanceof go.Group) { // thing
@@ -203,7 +203,7 @@ SandbankEditor.Layouts = function($scope, map) {
     };
 
     this.disableLayoutForSelectedThings = function(layoutName) {
-        var it = map.getDiagram().selection.iterator;
+        var it = map.diagram.selection.iterator;
         if (!it.count) {
             return true;
         }
@@ -318,7 +318,7 @@ SandbankEditor.Layouts = function($scope, map) {
     // or relative to the parent otherwise - suitable for use with FreehandDiagramLayout
     // or FreehandLayout, resp.
     this.getNewSisterLocation = function(group, withR) {
-        var diagram = map.getDiagram();
+        var diagram = map.diagram;
         // if we are within another group, things are in absolute coordinates
         // and sisters are placed above the thing; otherwise relative and below...
         var inGroup = (group.containingGroup !== null);
@@ -408,7 +408,7 @@ SandbankEditor.Layouts = function($scope, map) {
     // a simpler version of getNewChildLocation that places the child outside the bounds of the existing children
     this.getNewChildLocation2 = function(group) {
         var groupBounds = group.actualBounds;
-        var childBounds = map.safeRect(map.getDiagram().computePartsBounds(group.memberParts));
+        var childBounds = map.safeRect(map.diagram.computePartsBounds(group.memberParts));
         var x = 0;
         var y = 0;
         if (!group.memberParts.count) {
@@ -427,7 +427,7 @@ SandbankEditor.Layouts = function($scope, map) {
         var systemBounds = parent.actualBounds.unionRect(oldMemberBounds);
 
         // figure out old/new origins - place new origin below existing system
-        var oldBounds = map.getDiagram().computePartsBounds(newMembers);
+        var oldBounds = map.diagram.computePartsBounds(newMembers);
         var oldOrigin = new go.Point(oldBounds.x, oldBounds.y);
         var newOrigin = new go.Point(0, systemBounds.height * 1.2);
         //console.log('layoutNewMembersRelativeTo, systemBounds: ' + systemBounds + ', oldBounds: ' + oldBounds +  ', oldOrigin: ' + oldOrigin + ', newOrigin: ' + newOrigin);
@@ -443,7 +443,7 @@ SandbankEditor.Layouts = function($scope, map) {
             var newY = newOrigin.y + (groupBounds.y - oldOrigin.y) * 0.45;
             var newLoc = go.Point.stringify(new go.Point(newX, newY));
             //console.log('layoutNewMembersRelativeTo, groupBounds: ' + groupBounds + ', newLoc: ' + newLoc);
-            map.getDiagram().model.setDataProperty(group.data, 'loc', newLoc);
+            map.diagram.model.setDataProperty(group.data, 'loc', newLoc);
         }
     };
 
@@ -468,7 +468,7 @@ SandbankEditor.Layouts = function($scope, map) {
             var newY = newOrigin.y + (groupBounds.y - oldOrigin.y) / scaleFactor;
             var newLoc = go.Point.stringify(new go.Point(newX, newY));
             //console.log('layoutOldMembersOutsideOf, parentBounds: ' + parentBounds + ', oldMembersBounds: ' + oldMembersBounds + ', newOrigin: ' + newOrigin + ', groupBounds: ' + groupBounds + ', newLoc: ' + newLoc);
-            map.getDiagram().model.setDataProperty(group.data, 'loc', go.Point.stringify(newLoc));
+            map.diagram.model.setDataProperty(group.data, 'loc', go.Point.stringify(newLoc));
         }
     };
 
@@ -533,7 +533,7 @@ SandbankEditor.Layouts = function($scope, map) {
 
     FreehandDiagramLayout.prototype.doLayout = function(coll) {
         //console.log('FreehandDiagramLayout.doLayout');
-        var diagram = map.getDiagram();
+        var diagram = map.diagram;
         // diagram.startTransaction("Freehand Diagram Layout");
 
         //validateGroupLocations(diagram.findTopLevelGroups());
@@ -583,7 +583,7 @@ SandbankEditor.Layouts = function($scope, map) {
     };
 
     FreehandLayout.prototype.doLayout = function(coll) {
-        var diagram = map.getDiagram();
+        var diagram = map.diagram;
         diagram.startTransaction("Freehand Layout");
 
         var x = this.group.location.x;
@@ -756,7 +756,7 @@ SandbankEditor.Layouts = function($scope, map) {
         // see if link is within a stacked or inventory layout, or if it's a hidden P link
         var inventoryAncestor = getCommonAncestorWithLayout(link.fromNode, link.toNode, ['left', 'right']);
         var stackedAncestor = getCommonAncestorWithLayout(link.fromNode, link.toNode, ['stacked']);
-        var hidePLink = (link.data && link.data.category == CONSTANTS.DSRP.P && !map.getTemplates().showPLink(link));
+        var hidePLink = (link.data && link.data.category == CONSTANTS.DSRP.P && !map.templates.showPLink(link));
         //var crowdedRThing = hasCrowdedRThing(link);
 
         // see if this is one of multiple links between the same two nodes
@@ -909,7 +909,7 @@ SandbankEditor.Layouts = function($scope, map) {
         //console.log('getLinksByNodes');
         if (!self._linksByNodes || refresh) {
             self._linksByNodes = [];
-            var diagram = map.getDiagram();
+            var diagram = map.diagram;
             var links = diagram.links.iterator;
             while (links.next()) {
                 var link = links.value;
@@ -931,7 +931,7 @@ SandbankEditor.Layouts = function($scope, map) {
     // so that these will all be routed by the same rules. A null key is returned for any other 
     // links, indicating that no grouping is required.
     function getSameNodesLinkKey(link) {
-        //        if (self.isRLink(link) || (self.isPLink(link) && map.getTemplates().showPLink(link))) {
+        //        if (self.isRLink(link) || (self.isPLink(link) && map.templates.showPLink(link))) {
         if (self.isRLink(link)) {
             var key = [link.fromNode.toString(), link.toNode.toString()].sort().join('|');
             //console.log('key: ' + key);

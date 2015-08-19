@@ -21,7 +21,7 @@ SandbankEditor.Attachments = function ($scope, $http, $resource, map) {
 
     this.handleDiagramEvent = function (eventName, e) {
         if (eventName == 'ChangedSelection') {
-            if (map.getUi().currentTabIs(map.getUi().TAB_ID_ATTACHMENTS)) {
+            if (map.ui.currentTabIs(map.ui.TAB_ID_ATTACHMENTS)) {
                 self.stopEditingAll();
                 self.saveAttachments();
                 self.loadSelectedThingAttachments();
@@ -31,10 +31,10 @@ SandbankEditor.Attachments = function ($scope, $http, $resource, map) {
 
     // called when a tab is opened or closed
     this.currentTabChanged = function(newValue, oldValue) {
-        if (newValue == map.getUi().TAB_ID_ATTACHMENTS) { // opening tab
+        if (newValue == map.ui.TAB_ID_ATTACHMENTS) { // opening tab
             self.loadSelectedThingAttachments();
         }
-        if (oldValue == map.getUi().TAB_ID_ATTACHMENTS) { // closing tab
+        if (oldValue == map.ui.TAB_ID_ATTACHMENTS) { // closing tab
             self.saveAttachments();
         }
     };
@@ -83,10 +83,10 @@ SandbankEditor.Attachments = function ($scope, $http, $resource, map) {
         $scope.safeApply(function() {
             //console.log('saveAttachments, selected: ' + self.selectedThing);
             if (self.selectedThing) {
-                map.getDiagram().model.setDataProperty(self.selectedThing.data, 'attachments', self.attachments);
+                map.diagram.model.setDataProperty(self.selectedThing.data, 'attachments', self.attachments);
                 self.selectedThing.updateTargetBindings();
             }
-            map.getAutosave().saveNow('edit_attachments');
+            map.autosave.saveNow('edit_attachments');
         });
     };
 

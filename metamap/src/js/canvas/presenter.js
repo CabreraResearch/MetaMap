@@ -24,7 +24,7 @@ SandbankEditor.Presenter = function ($scope, map) {
     };
 
     this.autosave = function() {
-        map.getAutosave().save('edit_presenter'); 
+        map.autosave.save('edit_presenter'); 
     };
 
     // ---------- editing functions for different slide types -------------
@@ -76,7 +76,7 @@ SandbankEditor.Presenter = function ($scope, map) {
 
     // only call this occasionally, as they won't be editing the map while presenter is open
     function updateIdeaList() {
-        var nodes = map.getDiagram().nodes;
+        var nodes = map.diagram.nodes;
         var list = [];
         while (nodes.next()) {
             if ((nodes.value instanceof go.Group)) {
@@ -87,7 +87,7 @@ SandbankEditor.Presenter = function ($scope, map) {
 
         // filter out placeholder names - see map.js:getNewThingData, createSister, etc.
         list = _.difference(_.uniq(list, true), 
-            map.getGenerator().getPlaceholderIdeaNames(), 
+            map.generator.getPlaceholderIdeaNames(), 
             ['New Idea', 'New Distinguished Idea', 'New Related Idea', 'New Relationship Idea', 'New Part Idea',
              'Idea', 'Part', 'Relationship Idea'] // newer simplified names
         );
@@ -153,21 +153,21 @@ SandbankEditor.Presenter = function ($scope, map) {
                     }
                 )
             );
-            map.getDiagram().add(self.slideBlocker);
+            map.diagram.add(self.slideBlocker);
         }
     }
 
     // called when a tab is opened or closed
     this.currentTabChanged = function(newValue, oldValue) {
-        if (oldValue == map.getUi().TAB_ID_PRESENTER) { // closing tab
+        if (oldValue == map.ui.TAB_ID_PRESENTER) { // closing tab
             self.stopPresenting();
         }
-        else if (newValue == map.getUi().TAB_ID_PRESENTER) { // opening tab
+        else if (newValue == map.ui.TAB_ID_PRESENTER) { // opening tab
             // show slides (see layouts.slideTemplate, binding of visible attr)
             self.diagramAspectRatio = $('#diagram').width() / $('#diagram').height();        
             //console.log('diagramAspectRatio: ' + self.diagramAspectRatio);
 
-            $scope.map.getDiagram().updateAllTargetBindings();
+            $scope.map.diagram.updateAllTargetBindings();
             updateIdeaList();
             if (!self.currentSlideIndex && self.getSlideNodeDatas().length > 0) {
                 self.currentSlideIndex = 1;
@@ -177,7 +177,7 @@ SandbankEditor.Presenter = function ($scope, map) {
     };
 
     this.handleDiagramEvent = function (eventName, e) {
-        if (!map.getUi().currentTabIs(map.getUi().TAB_ID_PRESENTER)) {
+        if (!map.ui.currentTabIs(map.ui.TAB_ID_PRESENTER)) {
             return;
         }
 
@@ -211,18 +211,18 @@ SandbankEditor.Presenter = function ($scope, map) {
     }, 1000);
 
     this.showSidebar = function() {
-        return map.getUi().currentTabIs(map.getUi().TAB_ID_PRESENTER) && (!self.isPresenting || self.showTOC);
+        return map.ui.currentTabIs(map.ui.TAB_ID_PRESENTER) && (!self.isPresenting || self.showTOC);
     };
 
     this.disableMapToolbarButtons = function() {
-        return !map.getUi().currentTabIs(map.getUi().TAB_ID_PRESENTER) 
+        return !map.ui.currentTabIs(map.ui.TAB_ID_PRESENTER) 
             || self.isPresenting 
             || !self.getCurrentSlideType().hasMapRegion;
     }
 
     // returns an array of node data objects (not the slide nodes themselves)
     this.getSlideNodeDatas = function () {
-        var diagram = map.getDiagram();
+        var diagram = map.diagram;
         var nodes = diagram.model.nodeDataArray;
         var nodeDatas = _.filter(nodes, function (node) {
             return node.category == 'slide';
@@ -257,7 +257,7 @@ SandbankEditor.Presenter = function ($scope, map) {
     };
 
     function findSlideByIndex(index) {
-        var diagram = map.getDiagram();
+        var diagram = map.diagram;
         var slideData = _.find(self.getSlideNodeDatas(), function (slideData) {
             return slideData.index == index;
         });
@@ -272,7 +272,7 @@ SandbankEditor.Presenter = function ($scope, map) {
     // increment is -1 or +1
     this.moveSlide = function (index, increment) {
         $scope.safeApply(function() {
-            var diagram = map.getDiagram();
+            var diagram = map.diagram;
             var slide = findSlideByIndex(index);
             var neighbor = findSlideByIndex(index + increment);
             if (slide && neighbor) {
@@ -290,7 +290,7 @@ SandbankEditor.Presenter = function ($scope, map) {
         $scope.safeApply(function() {
             //console.log('compactSlideIndexes');
             var slidesData = self.getSlideNodeDatas();
-            var diagram = map.getDiagram();
+            var diagram = map.diagram;
             var newIndex = 1;
             diagram.startTransaction("compact slide indexes");
             _.each(slidesData, function (slideData) {
@@ -303,7 +303,7 @@ SandbankEditor.Presenter = function ($scope, map) {
     }
 
     function getNewSlideKey() {
-        var diagram = map.getDiagram();
+        var diagram = map.diagram;
         var i = 1;
         while (diagram.model.findNodeDataForKey('slide-' + i)) {
             i++;
@@ -321,7 +321,7 @@ SandbankEditor.Presenter = function ($scope, map) {
     this.addSlide = function (typeName) {
         $scope.safeApply(function() {
             //console.log('addSlide: ' + typeName);
-            var diagram = map.getDiagram();
+            var diagram = map.diagram;
 
             var db = map.computeMapBounds();
             db.inflate(db.width / 20, db.height / 10);
@@ -358,7 +358,7 @@ SandbankEditor.Presenter = function ($scope, map) {
 
     this.duplicateSlide = function (index) {
         $scope.safeApply(function() {
-            var diagram = map.getDiagram();
+            var diagram = map.diagram;
             var newIndex = getNewSlideIndex();
             var slide = findSlideByIndex(index); 
             if (slide) {
@@ -399,7 +399,7 @@ SandbankEditor.Presenter = function ($scope, map) {
     this.removeSlide = function (index) {
         $scope.safeApply(function() {
             //console.log('removeSlide: ' + index);
-            var diagram = map.getDiagram();
+            var diagram = map.diagram;
             var slide = findSlideByIndex(index); 
             if (slide) {
                 diagram.startTransaction("remove slide");
@@ -429,7 +429,7 @@ SandbankEditor.Presenter = function ($scope, map) {
 
         var thumbWidth = 1000;
         var thumbHeight = 600;
-        var diagram = map.getDiagram();
+        var diagram = map.diagram;
 
         var slide = findSlideByIndex(index);
         if (!slide) {
@@ -484,7 +484,7 @@ SandbankEditor.Presenter = function ($scope, map) {
     // gets a thumbnail of the whole map, for saving (see autosave.js)
     this.getMapThumbnail = function () {
 
-        var diagram = map.getDiagram();
+        var diagram = map.diagram;
         var sb = map.safeRect(map.computeMapBounds());
         sb.grow(10,10,10,10);
         var w = 150;
@@ -510,7 +510,7 @@ SandbankEditor.Presenter = function ($scope, map) {
     // called via ng-click on thumbnail
     this.slideThumbnailSelected = function (index) {
         //console.log('slideThumbnailSelected: ' + index);
-        var diagram = map.getDiagram();
+        var diagram = map.diagram;
         var slide = findSlideByIndex(index);
 
         $scope.safeApply(function() {
@@ -531,7 +531,7 @@ SandbankEditor.Presenter = function ($scope, map) {
 
     this.needsNarrowCanvas = function() {
         var slide = findSlideByIndex(self.currentSlideIndex);
-        return map.getUi().currentTabIs(map.getUi().TAB_ID_PRESENTER) && 
+        return map.ui.currentTabIs(map.ui.TAB_ID_PRESENTER) && 
            slide != null && 
            (slide.data.type == 'TITLE_BODY_MAP' || slide.data.type == 'ACTIVITY_MAP' || slide.data.type == 'MAP_SUMMARY');
     };
@@ -540,7 +540,7 @@ SandbankEditor.Presenter = function ($scope, map) {
     function selectSlide(index) {
         $scope.safeApply(function() {
             //console.log('select slide: ' + index);
-            var diagram = map.getDiagram();
+            var diagram = map.diagram;
             diagram.clearSelection();
             if (index) {
                 var slide = findSlideByIndex(index);
@@ -553,8 +553,8 @@ SandbankEditor.Presenter = function ($scope, map) {
     }
 
     this.playSlide = function (index) {
-        var diagram = map.getDiagram();
-        map.getUi().openTab(map.getUi().TAB_ID_PRESENTER); 
+        var diagram = map.diagram;
+        map.ui.openTab(map.ui.TAB_ID_PRESENTER); 
 
         var slides = self.getSlideNodeDatas();
         if (slides.length) {
@@ -580,7 +580,7 @@ SandbankEditor.Presenter = function ($scope, map) {
     function presentSlide(index) {
         //console.log('presentSlide');
         $scope.safeApply(function() {
-            var diagram = map.getDiagram();
+            var diagram = map.diagram;
             var slide = findSlideByIndex(index);
             if (!slide) {
                 return;
@@ -613,21 +613,21 @@ SandbankEditor.Presenter = function ($scope, map) {
                 self.slideBlocker.visible = false;
             }
             else {
-                map.getUi().resetZoom();
+                map.ui.resetZoom();
                 self.slideBlocker.visible = false;
             }
 
             self.isPresenting = true;
             $('body').addClass('presenter-playing');
 
-            map.getDiagram().updateAllTargetBindings(); // hide slide nodes - see templates.js: slideTemplate
+            map.diagram.updateAllTargetBindings(); // hide slide nodes - see templates.js: slideTemplate
         });        
     }
 
     // zoom the diagram to show the given slide in the center of the canvas
     function zoomToSlideInCenter(slide)
     {
-        var diagram = map.getDiagram();
+        var diagram = map.diagram;
 
         window.setTimeout(function () {
 
@@ -664,7 +664,7 @@ SandbankEditor.Presenter = function ($scope, map) {
     this.stopPresenting = function () {
         $scope.safeApply(function() {
             //console.log('stopPresenting, currentSlideIndex: ' + self.currentSlideIndex);
-            var diagram = map.getDiagram();
+            var diagram = map.diagram;
 
             if (self.slideBlocker) {
                 self.slideBlocker.visible = false;
@@ -674,11 +674,11 @@ SandbankEditor.Presenter = function ($scope, map) {
             self.isPresenting = false;
             $('body').removeClass('presenter-playing');
 
-            map.getDiagram().updateAllTargetBindings(); // show slide nodes
+            map.diagram.updateAllTargetBindings(); // show slide nodes
 
             diagram.clearSelection();
             map.setEditingBlocked(false);
-            //map.getUi().resetZoom();
+            //map.ui.resetZoom();
         });
     };
 

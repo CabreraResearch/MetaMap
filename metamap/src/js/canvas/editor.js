@@ -38,7 +38,7 @@ window.MapEditorCtrl = function($rootScope, $scope, $http, $resource, $timeout, 
     $scope.doneEditingTitle = function() {
         //console.log('doneEditingTitle');
         $scope.editingTitle = false;
-        $scope.map.getAutosave().save('edit_title');
+        $scope.map.autosave.save('edit_title');
     };
 
     $scope.editingTitleKeypress = function(e) {
@@ -80,8 +80,8 @@ window.MapEditorCtrl = function($rootScope, $scope, $http, $resource, $timeout, 
         $scope.map = map;
         $scope.userProfile = userProfile;
 
-        $scope.mapData = map.getDiagram().model.toJson();
-        $scope.thumbnailPng = map.getPresenter().getMapThumbnail();
+        $scope.mapData = map.diagram.model.toJson();
+        $scope.thumbnailPng = map.presenter.getMapThumbnail();
 
         function getDefaultLoginData() {
             return {
@@ -193,7 +193,7 @@ window.MapEditorCtrl = function($rootScope, $scope, $http, $resource, $timeout, 
             if (!$scope.sandbox) {
                 // overview diagram
                 var overview = go.GraphObject.make(go.Overview, "overview-diagram", {
-                    observed: $scope.map.getDiagram(),
+                    observed: $scope.map.diagram,
                     contentAlignment: go.Spot.Center
                 });
                 var outline = overview.box.elements.first();

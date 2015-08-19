@@ -107,7 +107,7 @@ SandbankEditor.Tests = function ($scope, map) {
                 map.createChild(group);
                 // diagram.model.setDataProperty(group.data, 'layout', 'freehand');
                 group.isSelected = true;
-                map.getUi().setSelectedThingsLayout('freehand');
+                map.ui().setSelectedThingsLayout('freehand');
             },
             check: function(diagram) {
                 if (diagram.findTopLevelGroups().count != 1) {
@@ -161,7 +161,7 @@ SandbankEditor.Tests = function ($scope, map) {
                 var part2 = map.createChild(whole, 'Part 2');
                 var rThing = map.createRLinkWithRThing(part1, part2, 'Rthing');
                 whole.isSelected = true;
-                map.getUi().setSelectedThingsLayout('freehand');
+                map.ui().setSelectedThingsLayout('freehand');
                 //diagram.model.setDataProperty(whole.data, 'layout', 'freehand');
                 //map.refresh();
                 diagram.clearSelection();

@@ -73,7 +73,7 @@ SandbankEditor.Templates = function ($scope, map) {
             'position: ' + parseInt(obj.position.x, 10) + ', ' + parseInt(obj.position.y, 10) + "\n" +
             'freehand position (data.loc): ' + go.Point.parse(obj.data.loc) + "\n" +
             'width/height: ' + parseInt(obj.actualBounds.width, 10) + '/' + parseInt(obj.actualBounds.height, 10) + "\n" +
-            'getScale(): ' + map.getLayouts().getScale(obj) + "\n" +
+            'getScale(): ' + map.layouts.getScale(obj) + "\n" +
             'isLinkLabel: ' + obj.data.isLinkLabel + "\n" +
             'labeledLink: ' + obj.labeledLink + "\n";
     }
@@ -86,25 +86,25 @@ SandbankEditor.Templates = function ($scope, map) {
     }
 
     function linkInfo(obj) {
-        var snpos = map.getLayouts().getSameNodesLinkPosition(obj);
+        var snpos = map.layouts.getSameNodesLinkPosition(obj);
         return '' +
             'object: ' + obj + "\n" +
             'fromNode: ' + obj.fromNode + "\n" +
             'toNode: ' + obj.toNode + "\n" +
             'labelNodes: ' + obj.labelNodes.count + "\n" +
-            'labelNodeIsVisible: ' + map.getLayouts().labelNodeIsVisible(obj) + "\n" +
+            'labelNodeIsVisible: ' + map.layouts.labelNodeIsVisible(obj) + "\n" +
             'fromPortId: ' + obj.fromPortId + "\n" +
             'toPortId: ' + obj.toPortId + "\n" +
             'category: ' + (obj.data ? obj.data.category : '') + "\n" +
             'containingGroup: ' + obj.containingGroup + "\n" +
-            'fromAndToNodesAreVisible: ' + map.getLayouts().fromAndToNodesAreVisible(obj) + "\n" +
+            'fromAndToNodesAreVisible: ' + map.layouts.fromAndToNodesAreVisible(obj) + "\n" +
             'curve: ' + obj.curve + "\n" +
             'curviness: ' + obj.curviness + "\n" +
             'fromEndSegmentLength: ' + Math.round(obj.fromEndSegmentLength) + "\n" +
             'toEndSegmentLength: ' + Math.round(obj.toEndSegmentLength) + "\n" +
             'sameNodesLinkPosition: ' + snpos.index + ' of ' + snpos.count + "\n" +
         //+ 'geometry: ' + obj.geometry + "\n" +
-            'getLinkStrokeWidth: ' + map.getLayouts().getLinkStrokeWidth(obj) + "\n";
+            'getLinkStrokeWidth: ' + map.layouts.getLinkStrokeWidth(obj) + "\n";
     }
 
     // -----------------------------------------------------------------------------
@@ -113,9 +113,9 @@ SandbankEditor.Templates = function ($scope, map) {
     // similar functions that are scale-related are in layouts.js...
     function getGroupSelectionStroke(obj) {
         if (obj.isSelected) {
-            if (map.getPerspectives().isInPEditorMode())
+            if (map.perspectives.isInPEditorMode())
                 return config.colors.DSRP.P;
-            else if (map.getPerspectives().isInDEditorMode())
+            else if (map.perspectives.isInDEditorMode())
                 return config.colors.DSRP.D;
             else
                 return config.shapes.box.borderColor;
@@ -130,7 +130,7 @@ SandbankEditor.Templates = function ($scope, map) {
     }
 
     function getRLinkSelectionStroke(obj) {
-        if (obj.isSelected || obj == map.getUi().mouseOverLink) {
+        if (obj.isSelected || obj == map.ui.mouseOverLink) {
             return config.shapes.line.highlightColor; // TODO: can P links be selected?
         } else {
             return config.shapes.line.color;
@@ -142,55 +142,55 @@ SandbankEditor.Templates = function ($scope, map) {
     // callbacks to determine when the corners should be visible
 
     function showDCorner(group) {
-        if (map.getPerspectives().isDEditorThing(group)) { // mark distinction thing
+        if (map.perspectives.isDEditorThing(group)) { // mark distinction thing
             return true;
-        } else if (map.getPerspectives().isInPOrDEditorMode()) { // don't show any corners if in P/D editor mode
+        } else if (map.perspectives.isInPOrDEditorMode()) { // don't show any corners if in P/D editor mode
             return false;
-        } else if (map.getPresenter().isCreatingThumbnail) { // don't show any corners if capturing thumbnail
+        } else if (map.presenter.isCreatingThumbnail) { // don't show any corners if capturing thumbnail
             return false;
         } else {
-            return (group == map.getUi().mouseOverGroup) || // show corners on mouseover
+            return (group == map.ui.mouseOverGroup) || // show corners on mouseover
                 ($scope.isTouchDevice() && group.isSelected) ||
                 (canDragSelectionToBecomeSistersOf(group, false) && // drag to D (make it sisters)
-                    (map.getUi().dragTargetPosition === null ||
+                    (map.ui.dragTargetPosition === null ||
                         cannotDragSelectionToBecomeOrderedSisterOf(group))); // not showing drag above/below indicators
         }
     }
 
     function showSCorner(group) {
-        if (map.getPerspectives().isInPOrDEditorMode()) { // don't show any corners if in P/D editor mode
+        if (map.perspectives.isInPOrDEditorMode()) { // don't show any corners if in P/D editor mode
             return false;
-        } else if (map.getPresenter().isCreatingThumbnail) { // don't show any corners if capturing thumbnail
+        } else if (map.presenter.isCreatingThumbnail) { // don't show any corners if capturing thumbnail
             return false;
         } else {
-            return (group == map.getUi().mouseOverGroup) || // show corners on mouseover
+            return (group == map.ui.mouseOverGroup) || // show corners on mouseover
                 ($scope.isTouchDevice() && group.isSelected) ||
                 (canDragSelectionToBecomeChildrenOf(group, false) && // drag to S (make it children)
-                    (map.getUi().dragTargetPosition === null ||
+                    (map.ui.dragTargetPosition === null ||
                         cannotDragSelectionToBecomeOrderedSisterOf(group))); // not showing drag above/below indicators
         }
     }
 
     function showRCorner(group) {
-        if (map.getPerspectives().isInPOrDEditorMode()) { // don't show any corners if in P/D editor mode
+        if (map.perspectives.isInPOrDEditorMode()) { // don't show any corners if in P/D editor mode
             return false;
-        } else if (map.getPresenter().isCreatingThumbnail) { // don't show any corners if capturing thumbnail
+        } else if (map.presenter.isCreatingThumbnail) { // don't show any corners if capturing thumbnail
             return false;
         } else {
-            return group == map.getUi().mouseOverGroup ||
+            return group == map.ui.mouseOverGroup ||
                 ($scope.isTouchDevice() && group.isSelected); // show corners on mouseover
         }
     }
 
     function showPCorner(group) {
-        if (map.getPerspectives().isPEditorPoint(group)) {
+        if (map.perspectives.isPEditorPoint(group)) {
             return true; // mark perspective point
-        } else if (map.getPerspectives().isInPOrDEditorMode()) { // don't show any corners if in P/D editor mode
+        } else if (map.perspectives.isInPOrDEditorMode()) { // don't show any corners if in P/D editor mode
             return false;
-        } else if (map.getPresenter().isCreatingThumbnail) { // don't show any corners if capturing thumbnail
+        } else if (map.presenter.isCreatingThumbnail) { // don't show any corners if capturing thumbnail
             return false;
         } else {
-            return group == map.getUi().mouseOverGroup ||
+            return group == map.ui.mouseOverGroup ||
                 ($scope.isTouchDevice() && group.isSelected); // show corners on mouseover
         }
     }
@@ -198,33 +198,33 @@ SandbankEditor.Templates = function ($scope, map) {
     // when a P link should be visible
 
     this.showPLink = function (link) {
-        var mode = map.getUi().getMapEditorOptions().perspectiveMode;
-        if (map.getPerspectives().isPEditorPoint(link.fromNode)) { // show P's when this link is from the current Point
+        var mode = map.ui.getMapEditorOptions().perspectiveMode;
+        if (map.perspectives.isPEditorPoint(link.fromNode)) { // show P's when this link is from the current Point
             return true;
-        } else if (map.getPerspectives().isInPOrDEditorMode()) { // don't show P's for non-Point things, even on mouseover
+        } else if (map.perspectives.isInPOrDEditorMode()) { // don't show P's for non-Point things, even on mouseover
             return false;
         } else {
-            return (mode == 'lines' || mode == 'both') && (link.fromNode == map.getUi().mouseOverGroup || map.pIsExpanded(link.fromNode));
+            return (mode == 'lines' || mode == 'both') && (link.fromNode == map.ui.mouseOverGroup || map.pIsExpanded(link.fromNode));
         }
     };
 
     this.showPDot = function (link) {
-        return true; // map.getUi().getMapEditorOptions().perspectiveMode != 'both';
+        return true; // map.ui.getMapEditorOptions().perspectiveMode != 'both';
     };
 
     // these functions are used in two modes:
-    // 1. with isDropping == false, to highlight drop targets based on map.getUi().dragTargetGroup and map.getUi().dragTargetPosition,
+    // 1. with isDropping == false, to highlight drop targets based on map.ui.dragTargetGroup and map.ui.dragTargetPosition,
     //    which are set on mouseDragEnter/mouseDragleave
     // 2. with isDropping == true, on drop, when the above indicators have gone away, but we know what the dropped
     //    and target groups are, and we want to know what the drop should do.
 
     function canDragSelectionToBecomeSistersOf(group, isDropping) {
-        return (group == map.getUi().dragTargetGroup || isDropping) &&
+        return (group == map.ui.dragTargetGroup || isDropping) &&
             map.thingsSelectedAreDescendantsOf(group);
     }
 
     function canDragSelectionToBecomeChildrenOf(group, isDropping) {
-        return (group == map.getUi().dragTargetGroup || isDropping) &&
+        return (group == map.ui.dragTargetGroup || isDropping) &&
             !map.thingsSelectedIncludeSlide() &&
             !map.thingsSelectedAreDescendantsOf(group);
     }
@@ -238,9 +238,9 @@ SandbankEditor.Templates = function ($scope, map) {
         }
 
         // dragged and target must be Sisters in inventory layout
-        return (targetGroup == map.getUi().dragTargetGroup || isDropping) &&
-            (map.getUi().dragTargetPosition == side || isDropping) &&
-            map.getLayouts().areSistersInInventoryLayout(draggedGroup, targetGroup);
+        return (targetGroup == map.ui.dragTargetGroup || isDropping) &&
+            (map.ui.dragTargetPosition == side || isDropping) &&
+            map.layouts.areSistersInInventoryLayout(draggedGroup, targetGroup);
     }
 
     function cannotDragSelectionToBecomeOrderedSisterOf(targetGroup) {
@@ -263,7 +263,7 @@ SandbankEditor.Templates = function ($scope, map) {
 
     // when to show the R-thing knob on a link
     function showKnob(link) {
-        return link == map.getUi().mouseOverLink;
+        return link == map.ui.mouseOverLink;
     }
 
     // ---------------- components for main group template ------------------
@@ -307,10 +307,10 @@ SandbankEditor.Templates = function ($scope, map) {
                     if (event.alt) {
                         // NB: a side effect of this will be to select just this group,
                         // which would not happen otherwise via control-click
-                        map.getPerspectives().setDEditorThing(target.part);
+                        map.perspectives.setDEditorThing(target.part);
                     } else {
                         // handle single or double click
-                        map.getUi().handleCornerClick(CONSTANTS.DSRP.D, target.part);
+                        map.ui.handleCornerClick(CONSTANTS.DSRP.D, target.part);
                     }
                 },
                 contextClick: function (event, target) {
@@ -348,7 +348,7 @@ SandbankEditor.Templates = function ($scope, map) {
                 cursor: 'pointer',
                 click: function (event, target) {
                     // handle single or double click
-                    map.getUi().handleCornerClick(CONSTANTS.DSRP.S, target.part);
+                    map.ui.handleCornerClick(CONSTANTS.DSRP.S, target.part);
                 }
             }),
             // expansion indicator
@@ -433,7 +433,7 @@ SandbankEditor.Templates = function ($scope, map) {
                 toLinkableDuplicates: true,
                 click: function (event, target) {
                     // handle single or double click
-                    map.getUi().handleCornerClick(CONSTANTS.DSRP.R, target.part);
+                    map.ui.handleCornerClick(CONSTANTS.DSRP.R, target.part);
                 }
             }),
             mk(go.TextBlock, {
@@ -463,7 +463,7 @@ SandbankEditor.Templates = function ($scope, map) {
                 fill: config.colors.black,
                 click: function (event, target) {
                     //console.log('clip clicked');
-                    map.getUi().toggleTab(map.getUi().TAB_ID_ATTACHMENTS);
+                    map.ui.toggleTab(map.ui.TAB_ID_ATTACHMENTS);
                 }
             }
             );
@@ -472,7 +472,7 @@ SandbankEditor.Templates = function ($scope, map) {
     function pEyeball() {
         return mk(go.Shape,
             new go.Binding('visible', '', function (obj) {
-                return map.getPerspectives().isPerspectivePoint(obj);
+                return map.perspectives.isPerspectivePoint(obj);
             }).ofObject(),
             new go.Binding('geometry', '', function (obj) {
                 return go.Geometry.parse(map.pIsExpanded(obj) ? config.shapes.eye.svg : config.shapes.eye.svgBlocked, true);
@@ -512,7 +512,7 @@ SandbankEditor.Templates = function ($scope, map) {
     }
 
     function getViewMarkerFill(obj) {
-        var weight = map.getPerspectives().getPerspectiveViewWeight(obj);
+        var weight = map.perspectives.getPerspectiveViewWeight(obj);
 
         if (weight == 3) {
             return config.colors.P.dark;
@@ -562,7 +562,7 @@ SandbankEditor.Templates = function ($scope, map) {
                 toMaxLinks: 1,
                 click: function (event, target) {
                     // handle single or double click
-                    map.getUi().handleCornerClick(CONSTANTS.DSRP.P, target.part);
+                    map.ui.handleCornerClick(CONSTANTS.DSRP.P, target.part);
                 }
             }),
             pEyeball(), // P expansion indicator
@@ -603,16 +603,16 @@ SandbankEditor.Templates = function ($scope, map) {
     function getGroupMouseDragEnterHandler(position) {
         return function (event, target, obj2) {
             //console.log('mouseDragEnter, e.dp: ' + event.documentPoint + ', target.part: ' + target.part + ', target bounds: ' + target.actualBounds);
-            map.getUi().dragTargetGroup = target.part;
-            map.getUi().dragTargetPosition = position;
-            map.getDiagram().updateAllTargetBindings();
+            map.ui.dragTargetGroup = target.part;
+            map.ui.dragTargetPosition = position;
+            map.diagram.updateAllTargetBindings();
         };
     }
 
     var groupMouseDragLeaveHandler = function (event, target, obj2) {
-        map.getUi().dragTargetGroup = null;
-        map.getUi().dragTargetPosition = null;
-        map.getDiagram().updateAllTargetBindings();
+        map.ui.dragTargetGroup = null;
+        map.ui.dragTargetPosition = null;
+        map.diagram.updateAllTargetBindings();
     };
 
     function getGroupMouseDropHandler(position) {
@@ -623,7 +623,7 @@ SandbankEditor.Templates = function ($scope, map) {
 
     var groupClickHandler = function (event, target) {
         // handle single or double click
-        map.getUi().handleCornerClick("", target);
+        map.ui.handleCornerClick("", target);
     };
 
     // --------------- targets for dragging to D or S -----------------
@@ -749,8 +749,8 @@ SandbankEditor.Templates = function ($scope, map) {
                 new go.Binding("text", "text").makeTwoWay(),
                 new go.Binding("visible", "", function (group) {
                     // always show text inside box for R-things, because external text will throw off layout
-                    return map.getLayouts().isNotWithinInventoryLayout(group) ||
-                        map.getLayouts().isRThingWithinInventoryLayout(group);
+                    return map.layouts.isNotWithinInventoryLayout(group) ||
+                        map.layouts.isRThingWithinInventoryLayout(group);
                 }))
             );
     }
@@ -762,7 +762,7 @@ SandbankEditor.Templates = function ($scope, map) {
         return mk(go.TextBlock,
             new go.Binding("text", "text").makeTwoWay(),
             new go.Binding("visible", "", visibleFn).ofObject(),
-            new go.Binding("scale", "", map.getLayouts().getExternalTextScale).ofObject(), {
+            new go.Binding("scale", "", map.layouts.getExternalTextScale).ofObject(), {
                 name: 'externaltext-' + textAlign, // NB: this screws up layouts for some reason - ??
                 textAlign: textAlign,
                 margin: 5,
@@ -778,7 +778,7 @@ SandbankEditor.Templates = function ($scope, map) {
     this.groupTemplate =
     mk(go.Group, go.Panel.Vertical,
         new go.Binding("layout", "layout", function (layoutName) {
-            return map.getLayouts().getLayout(layoutName);
+            return map.layouts.getLayout(layoutName);
         }),
         new go.Binding("movable", "", function (obj) {
             return !obj.isLinkLabel;
@@ -786,7 +786,7 @@ SandbankEditor.Templates = function ($scope, map) {
         new go.Binding("isSubGraphExpanded", "sExpanded"),
         // dim the thing if it's being dragged over another thing (drop to sister/child)
         new go.Binding('opacity', '', function (obj) {
-            return (obj.isSelected && map.getUi().dragTargetGroup ? 0.25 : 1);
+            return (obj.isSelected && map.ui.dragTargetGroup ? 0.25 : 1);
         }).ofObject(), {
             locationObjectName: "mainpanel",
             locationSpot: go.Spot.TopLeft,
@@ -795,25 +795,25 @@ SandbankEditor.Templates = function ($scope, map) {
             layerName: 'Foreground',
             // highlight corners
             mouseEnter: function (event, target, obj2) {
-                map.getUi().mouseOverGroup = target;
-                map.getDiagram().updateAllTargetBindings();
+                map.ui.mouseOverGroup = target;
+                map.diagram.updateAllTargetBindings();
             },
             // unhighlight corners
             mouseLeave: function (event, target, obj2) {
-                map.getUi().mouseOverGroup = null;
-                map.getDiagram().updateAllTargetBindings();
+                map.ui.mouseOverGroup = null;
+                map.diagram.updateAllTargetBindings();
             }
             // containingGroupChanged: function(part, oldgroup, newgroup) { 
-            //     map.getDiagram().model.setDataProperty(part.data, 'level', map.computeLevel(part)); 
+            //     map.diagram.model.setDataProperty(part.data, 'level', map.computeLevel(part)); 
             //     //part.updateTargetBindings();   
             // }
         },
         mk(go.Panel, go.Panel.Horizontal,
-            groupExternalTextBlock(map.getLayouts().showLeftTextBlock, 'right'),
+            groupExternalTextBlock(map.layouts.showLeftTextBlock, 'right'),
             mk(go.Panel, go.Panel.Position, {
                 name: "mainpanel"
             },
-                new go.Binding("scale", "", map.getLayouts().getScale).ofObject(),
+                new go.Binding("scale", "", map.layouts.getScale).ofObject(),
                 // drag area
                 mk(go.Shape, "Rectangle", {
                     name: "dragarea",
@@ -847,7 +847,7 @@ SandbankEditor.Templates = function ($scope, map) {
                     mainBorder()
                     )
                 ),
-            groupExternalTextBlock(map.getLayouts().showRightTextBlock, 'left')
+            groupExternalTextBlock(map.layouts.showRightTextBlock, 'left')
             ),
         mk(go.TextBlock, {
             width: 80,
@@ -875,8 +875,8 @@ SandbankEditor.Templates = function ($scope, map) {
             new go.Binding("text", "text").makeTwoWay(),
             new go.Binding("visible", "", function (group) {
                 // always show text inside box for R-things, because external text will throw off layout
-                return map.getLayouts().isNotWithinInventoryLayout(group) ||
-                    map.getLayouts().isRThingWithinInventoryLayout(group);
+                return map.layouts.isNotWithinInventoryLayout(group) ||
+                    map.layouts.isRThingWithinInventoryLayout(group);
             })),
         // the placeholder normally holds the child nodes, but we just use a dummy placeholder
         mk(go.Shape, {
@@ -918,23 +918,23 @@ SandbankEditor.Templates = function ($scope, map) {
         adjusting: go.Link.Stretch,
         reshapable: true,
         mouseEnter: function (event, target, obj2) {
-            map.getUi().mouseOverLink = target;
-            map.getDiagram().updateAllTargetBindings();
+            map.ui.mouseOverLink = target;
+            map.diagram.updateAllTargetBindings();
         },
         mouseLeave: function (event, target, obj2) {
-            map.getUi().mouseOverLink = null;
-            map.getDiagram().updateAllTargetBindings();
+            map.ui.mouseOverLink = null;
+            map.diagram.updateAllTargetBindings();
         },
         mouseDragEnter: function (event, target, dragObject) {
-            map.getUi().mouseOverLink = target;
-            map.getDiagram().updateAllTargetBindings();
+            map.ui.mouseOverLink = target;
+            map.diagram.updateAllTargetBindings();
         },
         mouseDragLeave: function (event, dropTarget, dragObject) {
-            map.getUi().mouseOverLink = null;
-            map.getDiagram().updateAllTargetBindings();
+            map.ui.mouseOverLink = null;
+            map.diagram.updateAllTargetBindings();
         },
         mouseDrop: function (event, dropTarget) {
-            var parts = map.getDiagram().selection;
+            var parts = map.diagram.selection;
             if (parts && parts.count == 1 && parts.first() instanceof go.Group) {
                 map.addThingAsRThing(parts.first(), dropTarget);
             }
@@ -942,7 +942,7 @@ SandbankEditor.Templates = function ($scope, map) {
         click: function (event, target) {
             if(self._currentSelectedLink == target.position) {
                 let shape = self.getNextRShape();
-                map.getUi().setSelectedRelationshipsDirection(shape);
+                map.ui.setSelectedRelationshipsDirection(shape);
             } else {
                 self._currentSelectedLink = target.position;
             }
@@ -960,7 +960,7 @@ SandbankEditor.Templates = function ($scope, map) {
         new go.Binding("curviness", "curviness"),
         mk(go.Shape,
             new go.Binding('stroke', '', getRLinkSelectionStroke).ofObject(),
-            new go.Binding("strokeWidth", "", map.getLayouts().getLinkStrokeWidth).ofObject(), {
+            new go.Binding("strokeWidth", "", map.layouts.getLinkStrokeWidth).ofObject(), {
                 name: "LINKSHAPE"
             }
             ),
@@ -969,7 +969,7 @@ SandbankEditor.Templates = function ($scope, map) {
             fromArrow: "Backward"
         },
             new go.Binding('stroke', '', getRLinkSelectionStroke).ofObject(),
-            new go.Binding("scale", "", map.getLayouts().getArrowheadScale).ofObject(),
+            new go.Binding("scale", "", map.layouts.getArrowheadScale).ofObject(),
             new go.Binding('visible', 'type', function (t) {
                 return t == 'from' || t == 'toFrom';
             })
@@ -978,7 +978,7 @@ SandbankEditor.Templates = function ($scope, map) {
             toArrow: "Standard"
         },
             new go.Binding('stroke', '', getRLinkSelectionStroke).ofObject(),
-            new go.Binding("scale", "", map.getLayouts().getArrowheadScale).ofObject(),
+            new go.Binding("scale", "", map.layouts.getArrowheadScale).ofObject(),
             new go.Binding('visible', 'type', function (t) {
                 return t == 'to' || t == 'toFrom';
             })
@@ -988,7 +988,7 @@ SandbankEditor.Templates = function ($scope, map) {
             new go.Binding('opacity', '', function (obj) {
                 return (showKnob(obj) ? 1 : 0);
             }).ofObject(),
-            new go.Binding("scale", "", map.getLayouts().getArrowheadScale).ofObject(),
+            new go.Binding("scale", "", map.layouts.getArrowheadScale).ofObject(),
             mk(go.Shape, {
                 figure: "Ellipse",
                 fill: config.colors.DSRP.D,
@@ -1024,7 +1024,7 @@ SandbankEditor.Templates = function ($scope, map) {
             }
         },
         mk(go.Shape,
-            new go.Binding("strokeWidth", "", map.getLayouts().getLinkStrokeWidth).ofObject(), {
+            new go.Binding("strokeWidth", "", map.layouts.getLinkStrokeWidth).ofObject(), {
                 name: "LINKSHAPE",
                 stroke: config.colors.P.light,
                 fill: config.colors.P.light
@@ -1034,7 +1034,7 @@ SandbankEditor.Templates = function ($scope, map) {
             // new go.Binding('visible', '', function(obj) {
             //     return (self.showPDot(obj) ? 1 : 0);
             // }).ofObject(),
-            new go.Binding("scale", "", map.getLayouts().getArrowheadScale).ofObject(), {
+            new go.Binding("scale", "", map.layouts.getArrowheadScale).ofObject(), {
                 toArrow: "Circle",
                 stroke: config.colors.P.light,
                 fill: config.colors.P.light
@@ -1107,7 +1107,7 @@ SandbankEditor.Templates = function ($scope, map) {
             fromBorder.portId = CONSTANTS.DSRP.R;
             toBorder.portId = CONSTANTS.DSRP.R;
         }
-        tempnode.scale = map.getLayouts().getScale(realnode);
+        tempnode.scale = map.layouts.getScale(realnode);
     };
 
     // prevent duplicate CONSTANTS.DSRP.P links in the same direction between the same two things
@@ -1155,10 +1155,10 @@ SandbankEditor.Templates = function ($scope, map) {
         new go.Binding("height", "height").makeTwoWay(),
         new go.Binding("visible", "", function (obj) {
             return obj.data.hasRegion &&
-                map.getUi().currentTabIs(map.getUi().TAB_ID_PRESENTER) &&
-                !map.getPresenter().isPresenting &&
-                !map.getPresenter().isCreatingThumbnail &&
-                map.getPresenter().currentSlideIndex == obj.data.index;
+                map.ui.currentTabIs(map.ui.TAB_ID_PRESENTER) &&
+                !map.presenter.isPresenting &&
+                !map.presenter.isCreatingThumbnail &&
+                map.presenter.currentSlideIndex == obj.data.index;
         }).ofObject(), {
             locationSpot: go.Spot.TopLeft,
             selectionAdorned: false,
@@ -1244,7 +1244,7 @@ SandbankEditor.Templates = function ($scope, map) {
     this.addExportFooter = function () {
         if (!_exportFooter) {
             _exportFooter = createExportFooter();
-            map.getDiagram().add(_exportFooter);
+            map.diagram.add(_exportFooter);
         }
     };
 

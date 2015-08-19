@@ -75,7 +75,7 @@ SandbankEditor.UI = function($scope, $timeout, $http, $resource, $modal, $log, m
             },
             function(options) { // onUpdate
                 mapEditorOptions = options;
-                map.getAutosave().saveNow('edit_options');
+                map.autosave.saveNow('edit_options');
             }
         );
     };
@@ -178,15 +178,15 @@ SandbankEditor.UI = function($scope, $timeout, $http, $resource, $modal, $log, m
     // ----------------- zooming functions -------------------
 
     this.canZoomIn = function() {
-        return map.getDiagram().scale < 32;
+        return map.diagram.scale < 32;
     };
 
     this.canZoomOut = function() {
-        return map.getDiagram().scale > 0.25;
+        return map.diagram.scale > 0.25;
     };
 
     this.zoomIn = function() {
-        var diagram = map.getDiagram();
+        var diagram = map.diagram;
         if (diagram.scale < 32) {
             var vb = diagram.viewportBounds.copy();
             diagram.scale = diagram.scale * 2;
@@ -195,7 +195,7 @@ SandbankEditor.UI = function($scope, $timeout, $http, $resource, $modal, $log, m
     };
 
     this.zoomOut = function() {
-        var diagram = map.getDiagram();
+        var diagram = map.diagram;
         if (diagram.scale > 0.25) {
             var vb = diagram.viewportBounds.copy();
             diagram.scale = diagram.scale / 2;
@@ -204,7 +204,7 @@ SandbankEditor.UI = function($scope, $timeout, $http, $resource, $modal, $log, m
     };
 
     this.maybeZoomToRegion = function() {
-        var diagram = map.getDiagram();
+        var diagram = map.diagram;
         // this flag is set by the toolbar button
         if (self.zoomingToRegion) {
             self.zoomingToRegion = false;
@@ -216,7 +216,7 @@ SandbankEditor.UI = function($scope, $timeout, $http, $resource, $modal, $log, m
     };
 
     this.resetZoom = function() {
-        var diagram = map.getDiagram();
+        var diagram = map.diagram;
         //var rect = diagram.computePartsBounds(diagram.nodes).copy();
         var rect = map.safeRect(map.computeMapBounds());
         //console.log('resetZoom, bounds: ' + rect);
@@ -243,7 +243,7 @@ SandbankEditor.UI = function($scope, $timeout, $http, $resource, $modal, $log, m
 
     // returns a non-null value only if all selected items are groups with the same layout
     this.getSelectedThingsLayout = function() {
-        var diagram = map.getDiagram();
+        var diagram = map.diagram;
         if (diagram === null || diagram.selection.count < 1)
             return null;
 
@@ -266,13 +266,13 @@ SandbankEditor.UI = function($scope, $timeout, $http, $resource, $modal, $log, m
 
     // sets the layout of all selected things to the given layout
     this.setSelectedThingsLayout = function(layoutName) {
-        var diagram = map.getDiagram();
+        var diagram = map.diagram;
         var it = diagram.selection.iterator;
         while (it.next()) {
             if (it.value instanceof go.Group) {
                 var group = it.value;
                 diagram.model.setDataProperty(group.data, 'layout', layoutName);
-                map.getLayouts().setDescendantLayouts(group, group.data.layout);
+                map.layouts.setDescendantLayouts(group, group.data.layout);
                 map.refresh();
             }
         }
@@ -291,7 +291,7 @@ SandbankEditor.UI = function($scope, $timeout, $http, $resource, $modal, $log, m
 
     // returns a non-null value only if all selected items are relationships with the same direction
     this.getSelectedRelationshipsDirection = function() {
-        var diagram = map.getDiagram();
+        var diagram = map.diagram;
         if (diagram === null || diagram.selection.count < 1)
             return null;
 
@@ -312,7 +312,7 @@ SandbankEditor.UI = function($scope, $timeout, $http, $resource, $modal, $log, m
 
     // sets the direction of all selected relationships to the given direction
     this.setSelectedRelationshipsDirection = function(direction) {
-        var diagram = map.getDiagram();
+        var diagram = map.diagram;
         //diagram.model.startTransaction("change relationship direction");
         var it = diagram.selection.iterator;
         while (it.next()) {
@@ -366,7 +366,7 @@ SandbankEditor.UI = function($scope, $timeout, $http, $resource, $modal, $log, m
         } else if (corner == "R") {
             return (clicks == 1 ? self.showCornerTip : map.createRToSister);
         } else if (corner == "P") {
-            return (clicks == 1 ? map.togglePExpansion : map.getPerspectives().setPEditorPoint);
+            return (clicks == 1 ? map.togglePExpansion : map.perspectives.setPEditorPoint);
         } else if (corner === "") { // click on text
             return (clicks == 1 ? self.showCornerTip : editText);
         } else {
@@ -394,7 +394,7 @@ SandbankEditor.UI = function($scope, $timeout, $http, $resource, $modal, $log, m
                 }
             }
         }
-        map.getDiagram().commandHandler.editTextBlock(thing);
+        map.diagram.commandHandler.editTextBlock(thing);
     }
 
 
@@ -439,7 +439,7 @@ SandbankEditor.UI = function($scope, $timeout, $http, $resource, $modal, $log, m
             [$scope.mapId],
             true, // show description field
             function() {
-                map.getAutosave().saveNow('edit_usertags');
+                map.autosave.saveNow('edit_usertags');
             } // on update
         );
     };
@@ -459,7 +459,7 @@ SandbankEditor.UI = function($scope, $timeout, $http, $resource, $modal, $log, m
 
     this.printSlides = function() {
         startSpinner();
-        map.getPresenter().createSlideThumbnails();
+        map.presenter.createSlideThumbnails();
         stopSpinner();
         setTimeout(function() {
             window.print();
@@ -472,9 +472,9 @@ SandbankEditor.UI = function($scope, $timeout, $http, $resource, $modal, $log, m
 
         $scope.imageExportLoading = true;
         $('#export-image img').remove();
-        map.getTemplates().showExportFooter();
+        map.templates.showExportFooter();
 
-        var rect = map.getDiagram().computePartsBounds(map.getDiagram().nodes).copy();
+        var rect = map.diagram.computePartsBounds(map.diagram.nodes).copy();
 
         var imageMB = rect.width * rect.height * 4 / MILLION; // 4 bytes/pixel
         //console.log('imageMB: ' + imageMB);
@@ -497,12 +497,12 @@ SandbankEditor.UI = function($scope, $timeout, $http, $resource, $modal, $log, m
         $scope.showImageExport = true;
 
         var partsToExport = new go.List();
-        partsToExport.addAll(map.getDiagram().nodes);
-        partsToExport.addAll(map.getDiagram().links);
-        partsToExport.remove(map.getPresenter().slideBlocker);
+        partsToExport.addAll(map.diagram.nodes);
+        partsToExport.addAll(map.diagram.links);
+        partsToExport.remove(map.presenter.slideBlocker);
 
         var doImage = $timeout(function() {
-            var img = map.getDiagram().makeImage({
+            var img = map.diagram.makeImage({
                 parts: partsToExport,
                 maxSize: new go.Size((rect.width + 200) * scale, (rect.height + 200) * scale),
                 scale: scale,
@@ -513,7 +513,7 @@ SandbankEditor.UI = function($scope, $timeout, $http, $resource, $modal, $log, m
             $('#export-image').append(img);
             $scope.imageExportLoading = false;
 
-            map.getTemplates().hideExportFooter();
+            map.templates.hideExportFooter();
         }, 100);
     };
 
