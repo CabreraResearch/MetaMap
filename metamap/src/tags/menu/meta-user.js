@@ -35,11 +35,6 @@ riot.tag('meta-user', html, function (opts) {
 
     this.onClick = (event, params) => {
         switch(event.item.link) {
-            case '#logout':
-                this.logout();
-                return false;
-                break;
-
             case '#link-social-accounts':
                 this.linkAccount();
                 return false;

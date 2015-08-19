@@ -27,6 +27,9 @@ class Action extends ActionBase {
                 case ACTIONS.MY_MAPS:
                     Method = require('./MyMaps.js');
                     break;
+                case ACTIONS.LOGOUT:
+                    Method = require('./Logout.js');
+                    break;
                 case ACTIONS.TERMS_AND_CONDITIONS:
                     Method = require('./Terms.js');
                     break;

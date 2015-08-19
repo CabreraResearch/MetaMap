@@ -5,7 +5,8 @@ const ACTIONS = {
     DELETE_MAP: 'delete_map',
     HOME: 'home',
     MY_MAPS: 'mymaps',
-    TERMS_AND_CONDITIONS: 'terms'
+    TERMS_AND_CONDITIONS: 'terms',
+    LOGOUT: 'logout'
 };
 
 Object.freeze(ACTIONS);

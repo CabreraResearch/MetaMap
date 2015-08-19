@@ -99,6 +99,7 @@ class Router {
             let backNo = 2;
             while (path.startsWith(ACTIONS.DELETE_MAP) ||
                 path.startsWith(ACTIONS.COPY_MAP) ||
+                path.startsWith(ACTIONS.LOGOUT) ||
                 path.startsWith(ACTIONS.NEW_MAP)) {
 
                 backNo += 1;
