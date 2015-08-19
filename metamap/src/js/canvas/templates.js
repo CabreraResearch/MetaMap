@@ -769,8 +769,7 @@ SandbankEditor.Templates = function ($scope, map) {
                 font: '14px sans-serif',
                 isMultiline: true,
                 click: groupClickHandler
-            }
-            );
+            });
     }
 
     // -------------- group/Thing template --------------------
