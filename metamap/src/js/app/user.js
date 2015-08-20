@@ -32,40 +32,52 @@ class User {
                     }
                 });
 
-                
+
             });
         }
         return this._onReady;
     }
 
+    get _identity() {
+        let ret = {};
+        if (this.profile && this.profile.identity) {
+            ret = this.profile.identity;
+        }
+        return ret;
+    }
+
     get displayName() {
         let ret = this.fullName;
-        if (this.profile && this.profile.identity) {
-            if (ret) {
-                ret = ret.split(' ')[0];
-            }
-            if (!ret) {
-                ret = this.profile.identity.nickname;
-            }
+        if (ret) {
+            ret = ret.split(' ')[0];
+        }
+        if (!ret && this._identity.nickname) {
+            ret = this._identity.nickname;
         }
 
         return ret;
     }
-    
+
     get fullName() {
         let ret = '';
-        if (this.profile && this.profile.identity) {
-            if (this.profile.identity.name) {
-                ret = this.profile.identity.name;
-            }
+        if (this._identity.name) {
+            ret = this._identity.name;
+        }
+        return ret;
+    }
+
+    get email() {
+        let ret = '';
+        if (this._identity.email) {
+            ret = this._identity.email;
         }
         return ret;
     }
 
     get picture() {
         let ret = '';
-        if (this.profile && this.profile.identity) {
-            ret = this.profile.identity.picture;
+        if (this._identity.picture) {
+            ret = this._identity.picture;
         }
         return ret;
     }
@@ -76,8 +88,8 @@ class User {
 
     get isAdmin() {
         let ret = false;
-        if (this.profile && this.profile.identity) {
-            ret = this.profile.identity.roles.indexOf('admin') !== -1;
+        if (this._identity.roles) {
+            ret = this._identity.roles.indexOf('admin') !== -1;
         }
         return ret;
     }
@@ -85,6 +97,7 @@ class User {
     get history() {
         return this.profile.history || [];
     }
+
     saveUserEditorOptions(options) {
         let data = {
             user: {
