@@ -1,9 +1,10 @@
-let MetaFire = require('./Firebase.js');
-let usersnap = require('../integrations/usersnap');
-let ga = require('../integrations/google.js');
-let twitter = require('../integrations/twitter.js');
-let facebook = require('../integrations/facebook.js');
-let addThis = require('../integrations/addthis.js');
+const MetaFire = require('./Firebase.js');
+const usersnap = require('../integrations/usersnap');
+const uservoice = require('../integrations/uservoice');
+const ga = require('../integrations/google.js');
+const twitter = require('../integrations/twitter.js');
+const facebook = require('../integrations/facebook.js');
+const addThis = require('../integrations/addthis.js');
 const _ = require('lodash')
 
 const config = () => {
@@ -100,6 +101,7 @@ class Config {
             //this.socialFeatures.push(facebook());
             this.socialFeatures.push(addThis(this.config.site.addthis.pubid));
             usersnap(this.config.site.usersnap);
+            uservoice()
         });
     }
 }
