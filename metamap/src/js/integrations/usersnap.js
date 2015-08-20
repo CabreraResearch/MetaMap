@@ -1,16 +1,17 @@
 
-var userSnap = function (config) {
-    var apiKey = '032baf87-8545-4ebc-a557-934859371fa5.js', s, x;
+const userSnap = function (config) {
+    let apiKey, s, x;
     if (config == null) {
         config = {};
     }
-    apiKey = config.USER_SNAP_API_KEY;
+    apiKey = config.api;
     if (apiKey && window.location.hostname !== 'localhost') {
         window.usersnapconfig = {
             mode: 'report',
             shortcut: true,
             beforeOpen: function (obj) {
-                return UserSnap.setEmailBox(Doc.app.user.userName);
+                const metaMap = require('../../MetaMap')               
+                return window.UserSnap.setEmailBox(metaMap.User.email);
             }
         };
         s = document.createElement('script');
@@ -23,5 +24,3 @@ var userSnap = function (config) {
 };
 
 module.exports = userSnap;
-
-

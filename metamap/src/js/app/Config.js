@@ -99,7 +99,7 @@ class Config {
             //this.socialFeatures.push(twitter());
             //this.socialFeatures.push(facebook());
             this.socialFeatures.push(addThis(this.config.site.addthis.pubid));
-            usersnap();
+            usersnap(this.config.site.usersnap);
         });
     }
 }

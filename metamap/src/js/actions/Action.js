@@ -33,6 +33,10 @@ class Action extends ActionBase {
                 case ACTIONS.TERMS_AND_CONDITIONS:
                     Method = require('./Terms.js');
                     break;
+                    break;
+                case ACTIONS.FEEDBACK:
+                    Method = require('./Feedback');
+                    break;
                 default:
                     Method = require('./Home.js');
                     break;

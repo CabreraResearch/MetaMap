@@ -6,7 +6,8 @@ const ACTIONS = {
     HOME: 'home',
     MY_MAPS: 'mymaps',
     TERMS_AND_CONDITIONS: 'terms',
-    LOGOUT: 'logout'
+    LOGOUT: 'logout',
+    FEEDBACK: 'feedback'
 };
 
 Object.freeze(ACTIONS);
