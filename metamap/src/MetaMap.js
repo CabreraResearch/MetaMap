@@ -1,3 +1,12 @@
+require('babel/polyfill');
+require('core-js');
+window.$ = window.jQuery = require('jquery');
+require('jquery-ui');
+require('bootstrap');
+window.riot = require('riot');
+window._ = require('lodash');
+window.Promise = require('bluebird');
+
 const Auth0 = require('./js/app/auth0');
 const User = require('./js/app/user.js');
 const Router = require('./js/app/Router.js');
@@ -71,4 +80,5 @@ class MetaMap {
     }
 }
 
-module.exports = MetaMap;
+const mm = new MetaMap();
+module.exports = mm;

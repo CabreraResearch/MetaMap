@@ -1,3 +1,4 @@
+const SandbankEditor = require('./sbEditor');
 // common core standards tab -
 // this is delegated to the SandbankCcsTagging module, which handles CCS 
 // for a map OR the user profile - see tagging_ccs.js

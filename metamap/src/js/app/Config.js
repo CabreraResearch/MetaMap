@@ -4,6 +4,7 @@ let ga = require('../integrations/google.js');
 let twitter = require('../integrations/twitter.js');
 let facebook = require('../integrations/facebook.js');
 let addThis = require('../integrations/addthis.js');
+const _ = require('lodash')
 
 const config = () => {
     const SITES = {

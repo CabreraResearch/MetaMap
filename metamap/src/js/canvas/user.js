@@ -1,5 +1,5 @@
 window.Sandbank = {};
-
+const moment = require('moment');
 // the topmost controller for the app
 
 window.UserCtrl = function($rootScope, $scope, $http, $modal, $upload) {

@@ -1,3 +1,4 @@
+const SandbankEditor = require('./sbEditor');
 // functions for the presenter/slides
 
 SandbankEditor.Presenter = function ($scope, map) {

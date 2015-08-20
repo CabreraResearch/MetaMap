@@ -1,3 +1,8 @@
+const _ = require('lodash')
+
+const SandbankEditor = require('./sbEditor');
+const SandbankEditorOptions = require('./editor_options');
+
 SandbankEditor.UI = function($scope, $timeout, $http, $resource, $modal, $log, map) {
 
     var self = this;

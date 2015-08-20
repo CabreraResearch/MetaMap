@@ -23,7 +23,7 @@ var config = function (app) {
     }
     return {
         dev: {
-            entries: '.' + path + '/src/entry.js',
+            entries: '.' + path + '/src/MetaMap.js',
             export: {
                 glob: '.' + path + '/src/tags/**/*.tag',
                 cwd: '.' + path + '/src/tag'
@@ -35,7 +35,7 @@ var config = function (app) {
             fullPaths: true
         },
         release: {
-            entries: '.' + path + '/src/entry.js',
+            entries: '.' + path + '/src/MetaMap.js',
             export: {
                 glob: '.' + path + '/src/tags/**/*.tag',
                 cwd: '.' + path + '/src/tags'
@@ -50,15 +50,7 @@ var config = function (app) {
 };
 
 var runbrowserify = function (name, app) {
-    var standalone = '';
-    switch (app) {
-        case 'metamap':
-            standalone = 'MetaMap';
-            break;
-        case 'frontend':
-            standalone = 'FrontEnd';
-            break;
-    }
+    var standalone = 'MetaMap';
 
     var module;
     var bundleLogger = new Logger(name);
@@ -67,7 +59,8 @@ var runbrowserify = function (name, app) {
     var bundleCfg = {
         entries: cfg.entries,
         fullPaths: false,
-        extensions: ['.tag'],
+        extensions: ['.js'],
+        builtins: false,
         debug: true,
         bundleExternal: false,
         standalone: standalone
@@ -98,6 +91,7 @@ var runbrowserify = function (name, app) {
     for (module in pkg['browser']) {
         bundler.external(module);
     }
+    
     var bundle = function () {
         bundleLogger.start();
         return bundler.bundle()

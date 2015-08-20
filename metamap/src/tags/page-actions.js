@@ -35,7 +35,7 @@ const html = `
 
 module.exports = riot.tag('page-actions', html, function (opts) {
 
-    const MetaMap = require('../entry.js');
+    const MetaMap = require('../MetaMap.js');
 
     this.data = [];
     this.pageName = 'Home';

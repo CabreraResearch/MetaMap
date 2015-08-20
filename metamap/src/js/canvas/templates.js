@@ -1,10 +1,11 @@
+const SandbankEditor = require('./sbEditor');
 // goJS templates used in the editor
 
 SandbankEditor.Templates = function ($scope, map) {
 
     var self = this;
 
-    const metaMap = require('../../entry');
+    const metaMap = require('../../MetaMap');
     const config = metaMap.config.canvas;
     const CONSTANTS = require('../constants/constants');
     // constants

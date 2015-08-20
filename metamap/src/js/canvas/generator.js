@@ -1,3 +1,4 @@
+const SandbankEditor = require('./sbEditor');
 // functions for the generator (aka ThinkQuery)
 
 var GeneratorCtrl = function ($scope) {

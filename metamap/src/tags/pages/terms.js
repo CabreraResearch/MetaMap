@@ -33,7 +33,7 @@ const html = `
 
 module.exports = riot.tag('terms', html, function(opts) {
 
-    const MetaMap = require('../../entry.js');
+    const MetaMap = require('../../MetaMap.js');
     
     this.areas = []
     this.header = {}

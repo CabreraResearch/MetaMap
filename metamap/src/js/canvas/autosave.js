@@ -1,3 +1,4 @@
+const SandbankEditor = require('./sbEditor');
 // functions handling editor autosave function
 
 SandbankEditor.Autosave = function($scope, $http, map) {

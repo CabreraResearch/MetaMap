@@ -21,7 +21,7 @@ const html = `<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdo
 
 riot.tag('meta-help', html, function (opts) {
 
-    const MetaMap = require('../../entry.js');
+    const MetaMap = require('../../MetaMap.js');
 
     this.onClick = (event, params) => {
         console.log(event, params);

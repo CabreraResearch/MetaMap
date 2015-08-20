@@ -11,7 +11,7 @@ const html = `
 
 module.exports = riot.tag('page-container', html, function(opts) {
 
-    const MetaMap = require('../entry.js');
+    const MetaMap = require('../MetaMap.js');
 
     this.on('mount', () => {
         riot.mount(this.meta_page_sidebar, 'page-sidebar');

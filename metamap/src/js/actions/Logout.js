@@ -6,7 +6,7 @@ const PAGES = require('../constants/pages.js');
 class Logout extends ActionBase {
     constructor(...params) {
         super(...params);
-        this.metaMap = require('../../entry.js');
+        this.metaMap = require('../../MetaMap.js');
     }
 
     act(id, ...params) {

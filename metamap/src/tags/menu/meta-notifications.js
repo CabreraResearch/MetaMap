@@ -35,7 +35,7 @@ const html = `<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdo
 
 riot.tag('meta-notifications', html, function (opts) {
 
-    const MetaMap = require('../../entry.js');
+    const MetaMap = require('../../MetaMap.js');
 
     this.notifications = [];
 

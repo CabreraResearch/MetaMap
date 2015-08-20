@@ -55,6 +55,9 @@
     },
     "nprogress/NProgress.d.ts": {
       "commit": "3b0f362204ea965952dafdb682a5274d527ef9d0"
+    },
+    "browserify/browserify.d.ts": {
+      "commit": "38fb591c6eba840e0b53d1110302b8e4fb04651c"
     }
   }
 }

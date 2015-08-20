@@ -1,4 +1,5 @@
 const riot = require('riot');
+const moment = require('moment');
 const NProgress = window.NProgress;
 const _ = require('lodash');
 const ROUTES = require('../../js/constants/routes');
@@ -97,7 +98,7 @@ const html = `
 
 module.exports = riot.tag('my-maps', html, function (opts) {
 
-    const MetaMap = require('../../entry.js');
+    const MetaMap = require('../../MetaMap.js');
 
     this.data = null;
     this.menu = null;

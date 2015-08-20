@@ -1,6 +1,7 @@
+const SandbankEditor = require('./sbEditor');
 // controller for public maps
 
-window.MapsFeedCtrl = function($scope, $http, $resource, $modal, $log) {
+const MapsFeedCtrl = function($scope, $http, $resource, $modal, $log) {
 
     $scope.showAdvancedSearch = true;
     $scope.loadingFeed = false;
@@ -222,5 +223,3 @@ window.MapsFeedCtrl = function($scope, $http, $resource, $modal, $log) {
     };
 
 };
-
-window.MapsFeedCtrl.$inject = ['$scope', '$http', '$resource', '$modal', '$log'];

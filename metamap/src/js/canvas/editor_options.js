@@ -1,6 +1,6 @@
-window.SandbankEditorOptions = {};
+const SandbankEditor = require('./sbEditor');
 
-SandbankEditorOptions = function($scope, $http, $resource, $modal, $log) {
+const SandbankEditorOptions = function($scope, $http, $resource, $modal, $log) {
 
     this.openModal = function(options, onSaveDefaults, onUpdate) {
         var modalInstance = $modal.open({
@@ -50,3 +50,5 @@ SandbankEditorOptions = function($scope, $http, $resource, $modal, $log) {
 
     optionsModalCtrl.$inject = ['$scope', '$modalInstance', 'options', 'onSaveDefaults', 'onUpdate'];
 };
+
+module.exports = SandbankEditorOptions;

@@ -1,4 +1,5 @@
 let NodeLabelDraggingTool = require('./extensions/NodeLabelDraggingTool.js');
+const SandbankEditor = require('./sbEditor');
 
 // functions for creating and manipulating the map (i.e. Diagram)
 

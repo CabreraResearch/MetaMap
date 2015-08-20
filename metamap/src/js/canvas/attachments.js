@@ -1,3 +1,5 @@
+const SandbankEditor = require('./sbEditor');
+
 // functions handling attachments
 
 SandbankEditor.Attachments = function ($scope, $http, $resource, map) {

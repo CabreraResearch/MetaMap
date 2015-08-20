@@ -1,3 +1,4 @@
+const SandbankEditor = require('./sbEditor');
 // functions for editing perspectives AND distinctions, which work similarly in the UI
 
 SandbankEditor.Perspectives = function($scope, map) {

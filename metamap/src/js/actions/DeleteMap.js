@@ -15,7 +15,7 @@ class DeleteMap extends ActionBase {
     }
 
     static deleteAll(ids, path = PAGES.HOME) {
-        const metaMap = require('../../entry.js');
+        const metaMap = require('../../MetaMap.js');
         try {
             _.each(ids, (id) => {
                 metaMap.MetaFire.deleteData(`${ROUTES.MAPS_DATA}${id}`);

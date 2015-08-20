@@ -1,3 +1,4 @@
+const SandbankEditor = require('./sbEditor');
 // functions handling history display
 
 SandbankEditor.History = function($scope, $http, map) {

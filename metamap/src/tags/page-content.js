@@ -20,7 +20,7 @@ const html = `
 
 module.exports = riot.tag('page-content', html, function (opts) {
 
-    const MetaMap = require('../entry.js');
+    const MetaMap = require('../MetaMap.js');
 
     MetaMap.Eventer.on(EVENTS.SIDEBAR_CLOSE, () => {
         let width = window.innerWidth;

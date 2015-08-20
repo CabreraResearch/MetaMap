@@ -30,7 +30,7 @@ const html = `
 
 module.exports = riot.tag('page-sidebar', html, function(opts) {
 
-    const MetaMap = require('../entry.js');
+    const MetaMap = require('../MetaMap.js');
 
     this.click = function() { console.log('foo') }
     this.display = true;

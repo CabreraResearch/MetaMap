@@ -1,6 +1,22 @@
-// main controller class
+require('./user.js');
+require('./editor_options.js');
+require('./analytics.js');
+require('./attachments.js');
+require('./autosave.js');
+require('./generator.js');
+require('./layouts.js');
+require('./map.js');
+require('./perspectives.js');
+require('./presenter.js');
+require('./sharing.js');
+require('./standards.js');
+require('./tagging.js');
+require('./templates.js');
+require('./tests.js');
+require('./ui.js');
 
-window.SandbankEditor = {};
+const SandbankEditor = require('./sbEditor');
+const moment = require('moment');
 
 window.MapEditorCtrl = function($rootScope, $scope, $http, $resource, $timeout, $modal, $log) {
 

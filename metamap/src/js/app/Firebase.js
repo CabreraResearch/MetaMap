@@ -1,6 +1,6 @@
-let Firebase = window.Firebase; //require('firebase');
-let Promise = window.Promise;
-let localforage = window.localforage;
+let Firebase = window.Firebase;
+let Promise = require('bluebird')
+let localforage = require('localforage')
 
 class MetaFire {
 
@@ -11,7 +11,7 @@ class MetaFire {
 
     get metaMap() {
         if (!this._metaMap) {
-            this._metaMap = require('../../entry.js');
+            this._metaMap = require('../../MetaMap.js');
         }
         return this._metaMap;
     }

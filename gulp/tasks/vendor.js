@@ -29,7 +29,11 @@ var runconcat = function () {
 var runbrowserify = function (app) {
     var module;
     var bundleLogger = new Logger('vendor-browserify');
-    var bundler = browserify();
+    var bundler = browserify(
+    {
+       builtins: true
+    });
+
 
     for (module in pkg['dependencies']) {
         bundler.require(module);

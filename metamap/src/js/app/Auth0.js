@@ -1,4 +1,7 @@
-let Auth0Lock = require('auth0-lock');
+const Auth0Lock = window.Auth0Lock; //require('auth0-lock');
+const localforage = require('localforage')
+const _ = require('lodash')
+const Promise = require('bluebird')
 
 class Auth0 {
 

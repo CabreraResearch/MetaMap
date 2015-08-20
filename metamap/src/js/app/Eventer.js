@@ -1,3 +1,6 @@
+const riot = require('riot')
+const _ = require('lodash')
+
 class Eventer {
 
     constructor(metaMap) {

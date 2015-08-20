@@ -16,7 +16,7 @@ const html = `
 
 module.exports = riot.tag('page-logo', html, function(opts) {
 
-    const MetaMap = require('../entry.js');
+    const MetaMap = require('../MetaMap.js');
     this.display = true;
     
     this.getDisplay = (el) => {

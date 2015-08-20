@@ -1,10 +1,12 @@
+const SandbankEditor = require('./sbEditor');
+
 // layouts used in the editor, for the diagram or individual Groups, plus layout-related functions
 
 SandbankEditor.Layouts = function($scope, map) {
 
     var self = this;
 
-    const metaMap = require('../../entry');
+    const metaMap = require('../../MetaMap');
     const config = metaMap.config.canvas;
     const CONSTANTS = require('../constants/constants');
 

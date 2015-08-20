@@ -1,3 +1,5 @@
+const SandbankEditor = require('./sbEditor');
+
 SandbankEditor.Tutorial = function () {
 
     /** like jQuery $() but starting from #tutorial */

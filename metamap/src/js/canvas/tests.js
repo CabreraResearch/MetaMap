@@ -1,3 +1,4 @@
+const SandbankEditor = require('./sbEditor');
 
 SandbankEditor.Tests = function ($scope, map) {
 

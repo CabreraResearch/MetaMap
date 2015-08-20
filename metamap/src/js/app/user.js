@@ -6,8 +6,6 @@ class User {
         this.auth = auth;
         this.eventer = eventer;
         this.metaFire = metaFire;
-        this.params = URI(window.location).query(true);
-        this.thinkquery = (this.params.thinkquery ? true : false);
         this.userKey = uuid();
         this.onReady();
     }

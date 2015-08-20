@@ -5,7 +5,7 @@ class ActionBase {
         this.metaFire = metaFire;
         this.eventer = eventer;
         this.pageFactory = pageFactory;
-        this.metaMap = require('../../entry.js');
+        this.metaMap = require('../../MetaMap.js');
     }
 
     act() {
