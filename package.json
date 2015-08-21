@@ -122,13 +122,14 @@
     "yargs": "^3.20.0"
   },
   "optionalDependencies": {
+    "airbrake-js": "^0.5.2",
     "bluebird": "^2.9.34",
     "bootstrap": "^3.3.5",
     "core-js": "^1.1.1",
     "humanize-plus": "^1.5.0",
     "jquery": "^2.1.4",
-    "jquery.easing": "^1.3.2",
     "jquery-ui": "^1.10.5",
+    "jquery.easing": "^1.3.2",
     "localforage": "^1.2.7",
     "lodash": "^3.10.1",
     "moment": "^2.10.6",

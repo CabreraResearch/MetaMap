@@ -16,22 +16,28 @@ const NProgress = window.NProgress;
 const Config = require('./js/app//Config.js');
 const ga = require('./js/integrations/google.js');
 const shims = require('./js/tools/shims.js');
+const AirbrakeClient = require('airbrake-js')
 
 class MetaMap {
 
     constructor() {
-        this._config = new Config();
-        this.config = this._config.config;
-        this.MetaFire = this._config.MetaFire;
+        this.Config = new Config();
+        this.config = this.Config.config;
+        this.MetaFire = this.Config.MetaFire;
         this.Eventer = new Eventer(this);
-        
+        this.airbrake = new AirbrakeClient({projectId: 114900, projectKey: 'dc9611db6f77120ccecd1a273745a5ae'});
         this.onReady();
+        const that = this;
+        Promise.onPossiblyUnhandledRejection(function(error){
+            that.error(error);
+            return this;
+        });
     }
 
     onReady() {
         if (!this._onReady) {
             this._onReady = new Promise((fulfill, reject) => {
-                this._config.onReady().then((config) => {
+                this.Config.onReady().then((config) => {
                     this.Auth0 = new Auth0(config.auth0);
                     fulfill();
                 }).catch((err) => {
@@ -71,6 +77,7 @@ class MetaMap {
                 'exFatal': true
             });
         }
+        this.airbrake.notify(val);
         console.error(val);
     }
 

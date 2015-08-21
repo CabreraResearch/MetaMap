@@ -1,5 +1,4 @@
 const uuid = require('../tools/uuid.js');
-const MetaMap = window.MetaMap;
 
 class User {
     constructor(profile, auth, eventer, metaFire) {
@@ -8,6 +7,7 @@ class User {
         this.metaFire = metaFire;
         this.userKey = uuid();
         this.onReady();
+        this.metaMap = require('../../MetaMap');
     }
 
     onReady() {
@@ -23,11 +23,25 @@ class User {
             this._onReady = new Promise((fulfill, reject) => {
                 this.metaFire.on(`users/${this.auth.uid}`, (user) => {
                     if (user) {
-                        if (!user.history) {
-                            user.history = [];
+                        try {
+                            if (!user.history) {
+                                user.history = [];
+                            }
+                            this.profile = user;
+                            trackHistory();
+
+                            if(window.zE) {
+                                if(!window.zE.identify) {
+                                    window.zE(() => {
+                                        window.zE.identify({ name: this.fullName, email: this.email });    
+                                    })
+                                } else {
+                                    window.zE.identify({ name: this.fullName, email: this.email });    
+                                }
+                            }
+                        } catch (e) {
+                            this.metaMap.error(e);
                         }
-                        this.profile = user;
-                        trackHistory();
                         fulfill(user);
                     }
                 });

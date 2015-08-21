@@ -21,6 +21,7 @@ const userSnap = function (config) {
         x = document.getElementsByTagName('head')[0];
         return x.appendChild(s);
     }
+    return window.UserSnap;
 };
 
 module.exports = userSnap;

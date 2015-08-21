@@ -1,6 +1,6 @@
 const MetaFire = require('./Firebase.js');
 const usersnap = require('../integrations/usersnap');
-const uservoice = require('../integrations/uservoice');
+const zenDesk = require('../integrations/zendesk');
 const ga = require('../integrations/google.js');
 const twitter = require('../integrations/twitter.js');
 const facebook = require('../integrations/facebook.js');
@@ -62,7 +62,7 @@ class Config {
 
     initSocial() {
         _.each(this.socialFeatures, (feature) => {
-            if(feature) feature();
+            if (feature) feature();
         });
     }
 
@@ -95,14 +95,17 @@ class Config {
     }
 
     init() {
-        return this.onReady().then((config) => {
-            ga(this.config.site.google);
-            //this.socialFeatures.push(twitter());
-            //this.socialFeatures.push(facebook());
-            this.socialFeatures.push(addThis(this.config.site.addthis.pubid));
-            usersnap(this.config.site.usersnap);
-            uservoice()
-        });
+        if (!this._init) {
+            this._init = this.onReady().then((config) => {
+                this.ga = ga(this.config.site.google);
+                //this.socialFeatures.push(twitter());
+                //this.socialFeatures.push(facebook());
+                this.socialFeatures.push(addThis(this.config.site.addthis.pubid));
+                this.userSnap = usersnap(this.config.site.usersnap);
+                this.zenDesk = zenDesk()
+            });
+        }
+        return this._init;
     }
 }
 
