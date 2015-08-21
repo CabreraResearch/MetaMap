@@ -30,13 +30,14 @@ class User {
                             this.profile = user;
                             trackHistory();
 
-                            if(window.zE) {
-                                if(!window.zE.identify) {
+                            if (window.zE) {
+                                let identify = () => { window.zE.identify({ name: this.fullName, email: this.email }); }
+                                if (!window.zE.identify) {
                                     window.zE(() => {
-                                        window.zE.identify({ name: this.fullName, email: this.email });    
+                                        identify();
                                     })
                                 } else {
-                                    window.zE.identify({ name: this.fullName, email: this.email });    
+                                    identify();
                                 }
                             }
                         } catch (e) {
