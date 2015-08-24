@@ -306,9 +306,9 @@ SandbankEditor.Layouts = function($scope, map) {
             minScale = toScale;
         }
         if (minScale >= 1) {
-            return 1 * minScale;
+            return config.shapes.line.arrowSize * minScale;
         } else {
-            return 1.5 * minScale;
+            return (config.shapes.line.arrowSize+0.5) * minScale;
         }
     };
 
