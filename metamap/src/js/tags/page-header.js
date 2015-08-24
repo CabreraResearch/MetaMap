@@ -26,7 +26,7 @@ const html = `
 
 module.exports = riot.tag('page-header', html, function(opts) {
 
-    const MetaMap = require('../MetaMap.js');
+    const MetaMap = require('../../MetaMap');
 
     this.on('mount', () => {
         riot.mount(this.meta_page_logo, 'page-logo');

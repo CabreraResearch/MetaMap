@@ -2,8 +2,8 @@ const riot = require('riot');
 const moment = require('moment');
 const NProgress = window.NProgress;
 const _ = require('lodash');
-const ROUTES = require('../../js/constants/routes');
-const PAGES = require('../../js/constants/pages');
+const ROUTES = require('../../constants/routes');
+const PAGES = require('../../constants/pages');
 
 const html = `
 <div class="portlet box grey-cascade">
@@ -98,7 +98,7 @@ const html = `
 
 module.exports = riot.tag('my-maps', html, function (opts) {
 
-    const MetaMap = require('../../MetaMap.js');
+    const MetaMap = require('../../../MetaMap.js');
 
     this.data = null;
     this.menu = null;
@@ -126,7 +126,7 @@ module.exports = riot.tag('my-maps', html, function (opts) {
         if(this.currentTab == 'My Maps') {
             switch (event.item.title.toLowerCase()) {
                 case 'delete':
-                    const deleteMaps = require('../../js/actions/DeleteMap.js');
+                    const deleteMaps = require('../../actions/DeleteMap.js');
                     let selected = this[`table0`].find('.active').find('.mapid');
                     let ids = [];
                     _.each(selected, (cell) => {
@@ -238,7 +238,7 @@ module.exports = riot.tag('my-maps', html, function (opts) {
             const list = val.val();
             const maps = _.map(list, (obj, key) => {
                 obj.id = key;
-                obj.created_at = moment(obj.created_at).format('YYYY-MM-DD');
+                obj.created_at = moment(obj.created_at, 'YYYY-MM-DD');
                 return obj;
             });
             buildTable(0, maps);

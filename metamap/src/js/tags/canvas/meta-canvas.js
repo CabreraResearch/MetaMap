@@ -1,6 +1,6 @@
 const riot = require('riot');
 const NProgress = window.NProgress;
-const editor = require('../../js/canvas/editor');
+const editor = require('../../canvas/editor');
 const html = `
 <div class="portlet light">
     <div class="portlet-body" id="diagram"></div>
@@ -10,7 +10,7 @@ const html = `
 
 module.exports = riot.tag('meta-canvas', html, function(opts) {
 
-    const MetaMap = require('../../MetaMap.js');
+    const MetaMap = require('../../../MetaMap.js');
 
     this.mapId = null;
     this.canvas = null;

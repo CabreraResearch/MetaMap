@@ -1,6 +1,6 @@
 const riot = window.riot;
 const NProgress = window.NProgress;
-const pageBody = require('../../tags/page-body.js');
+const pageBody = require('../tags/page-body.js');
 const ELEMENTS = require('../constants/elements.js');
 const Actions = require('../actions/Action.js');
 

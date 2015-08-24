@@ -1,5 +1,5 @@
 const riot = require('riot');
-const EVENTS = require('../js/constants/events');
+const EVENTS = require('../constants/events');
 
 const html = `
 <div class="page-sidebar-wrapper" style="{ getDisplay() }">
@@ -30,7 +30,7 @@ const html = `
 
 module.exports = riot.tag('page-sidebar', html, function(opts) {
 
-    const MetaMap = require('../MetaMap.js');
+    const MetaMap = require('../../MetaMap');
 
     this.click = function() { console.log('foo') }
     this.display = true;

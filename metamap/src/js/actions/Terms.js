@@ -4,7 +4,7 @@ const ROUTES = require('../constants/routes.js');
 const EVENTS = require('../constants/events.js');
 const ELEMENTS = require('../constants/elements.js');
 const TAGS = require('../constants/tags.js');
-const terms = require('../../tags/pages/terms');
+const terms = require('../tags/pages/terms');
 
 class Terms extends ActionBase {
     constructor(...params) {

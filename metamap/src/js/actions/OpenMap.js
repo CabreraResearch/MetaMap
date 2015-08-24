@@ -6,7 +6,7 @@ const ELEMENTS = require('../constants/elements.js');
 const TAGS = require('../constants/tags.js');
 const ROUTES = require('../constants/routes.js');
 const EVENTS = require('../constants/events.js');
-const metaCanvas = require('../../tags/canvas/meta-canvas.js');
+const metaCanvas = require('../tags/canvas/meta-canvas.js');
 
 class OpenMap extends ActionBase {
     constructor(...params) {

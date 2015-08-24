@@ -5,7 +5,7 @@ const PAGES = require('../constants/pages.js');
 const TAGS = require('../constants/tags.js');
 const ELEMENTS = require('../constants/elements.js');
 const EVENTS = require('../constants/events.js');
-const home = require('../../tags/pages/my-maps');
+const home = require('../tags/pages/my-maps');
 
 class MyMaps extends ActionBase {
     constructor(...params) {

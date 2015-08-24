@@ -1,5 +1,5 @@
 const riot = require('riot');
-const EVENTS = require('../js/constants/events');
+const EVENTS = require('../constants/events');
 
 const html = `
 <div class ="page-logo">
@@ -16,7 +16,7 @@ const html = `
 
 module.exports = riot.tag('page-logo', html, function(opts) {
 
-    const MetaMap = require('../MetaMap.js');
+    const MetaMap = require('../../MetaMap');
     this.display = true;
     
     this.getDisplay = (el) => {

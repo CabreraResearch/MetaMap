@@ -19,7 +19,7 @@ const html = `<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdo
 
 riot.tag('meta-user', html, function (opts) {
 
-    const MetaMap = require('../../MetaMap.js');
+    const MetaMap = require('../../../MetaMap.js');
 
     this.menu = [];
     this.username = '';

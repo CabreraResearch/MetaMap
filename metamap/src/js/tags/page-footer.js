@@ -10,5 +10,5 @@ const html = `
 
 module.exports = riot.tag('page-footer', html, function(opts) {
 
-    const MetaMap = require('../MetaMap.js');
+    const MetaMap = require('../../MetaMap');
 });

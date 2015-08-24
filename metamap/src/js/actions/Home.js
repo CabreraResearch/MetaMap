@@ -3,7 +3,7 @@ const ActionBase = require('./ActionBase.js');
 const ROUTES = require('../constants/routes.js');
 const ELEMENTS = require('../constants/elements.js');
 const TAGS = require('../constants/tags.js');
-const home = require('../../tags/pages/home');
+const home = require('../tags/pages/home');
 const EVENTS = require('../constants/events.js');
 
 class Home extends ActionBase {

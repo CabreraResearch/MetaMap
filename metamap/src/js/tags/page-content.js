@@ -1,5 +1,5 @@
 const riot = require('riot');
-const EVENTS = require('../js/constants/events');
+const EVENTS = require('../constants/events');
 const _ = require('lodash');
 
 const html = `
@@ -20,7 +20,7 @@ const html = `
 
 module.exports = riot.tag('page-content', html, function (opts) {
 
-    const MetaMap = require('../MetaMap.js');
+    const MetaMap = require('../../MetaMap');
 
     MetaMap.Eventer.on(EVENTS.SIDEBAR_CLOSE, () => {
         let width = window.innerWidth;

@@ -37,13 +37,18 @@ class Google extends IntegrationsBase {
 
   init() {
     super.init();
-    this.integration('create', this.config.analytics, 'auto');
+    let mode = 'auto';
+    let domain = window.location.host;
+    if(domain.startsWith('localhost')) {
+      mode = 'none';
+    }
+    this.integration('create', this.config.analytics, mode);
     this.integration('send', 'pageview');
   }
 
   setUser() {
     super.setUser();
-    this.integration('set', '&uid', this.user.userId);
+    this.integration('set', 'userId', this.user.userId);
   }
 
   static sendSocial(network, targetUrl, type = 'send') {

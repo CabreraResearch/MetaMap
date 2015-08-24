@@ -3,7 +3,7 @@
 
 const riot = require('riot');
 const NProgress = window.NProgress;
-const ROUTES = require('../../js/constants/routes');
+const ROUTES = require('../../constants/routes');
 
 const html = `
 <div class="portlet light">
@@ -48,7 +48,7 @@ const html = `
 
 module.exports = riot.tag('home', html, function(opts) {
 
-    const MetaMap = require('../../MetaMap.js');
+    const MetaMap = require('../../../MetaMap');
     
     this.areas = []
     this.header = {}

@@ -3,7 +3,7 @@ const pageHeader = require('./page-header');
 const pageContainer = require('./page-container');
 //const metaDialog = require('./components/meta-dialog');
 const pageFooter = require('./page-footer');
-const EVENTS = require('../js/constants/events');
+const EVENTS = require('../constants/events');
 
 const html = `
 <div id="page_body" class="page-header-fixed page-sidebar-closed-hide-logo page-sidebar-closed-hide-logo">
@@ -21,7 +21,7 @@ const html = `
 
 module.exports = riot.tag('page-body', html, function(opts) {
 
-    const MetaMap = require('../MetaMap.js');
+    const MetaMap = require('../../MetaMap');
 
     this.on('mount', () => {
         riot.mount(this.meta_page_header, 'page-header');

@@ -27,7 +27,7 @@ const html = `
 
 module.exports = riot.tag('meta-dialog', html, function(opts) {
 
-    const MetaMap = require('../../MetaMap.js');
+    const MetaMap = require('../../../MetaMap.js');
     
     this.title = ''
     this.visible = false;

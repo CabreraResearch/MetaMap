@@ -1,4 +1,5 @@
 const riot = require('riot');
+require('../tools/shims');
 
 const html = `
 <div class="page-actions">
@@ -35,7 +36,7 @@ const html = `
 
 module.exports = riot.tag('page-actions', html, function (opts) {
 
-    const MetaMap = require('../MetaMap.js');
+    const MetaMap = require('../../MetaMap');
 
     this.data = [];
     this.pageName = 'Home';
