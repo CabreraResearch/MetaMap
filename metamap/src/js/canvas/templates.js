@@ -721,39 +721,37 @@ SandbankEditor.Templates = function ($scope, map) {
     // Returns the TextBlock for the group title, for use in the main group template, inside the box.
     function groupInternalTextBlock() {
         return mk(go.Panel, go.Panel.Horizontal, {
-            alignment: go.Spot.Left,
-            alignmentFocus: go.Spot.Right,
-            position: new go.Point(0, -50),
-            desiredSize: new go.Size(100, 100)
-        },
-            mk(go.TextBlock, {
-                width: 80,
-                margin: 10,
-                alignment: go.Spot.Left,
-                alignmentFocus: go.Spot.Right,
-                //alignment: go.Spot.Center,
-                //textAlign: 'center',
-                cursor: "move",
-                font: '14px sans-serif',
-                isMultiline: true,
-                wrap: go.TextBlock.WrapDesiredSize,
-                mouseDragEnter: getGroupMouseDragEnterHandler(null),
-                mouseDragLeave: groupMouseDragLeaveHandler,
-                mouseDrop: getGroupMouseDropHandler(null),
-                click: groupClickHandler,
-                contextClick: function (event, target) {
-                    if (event.control) {
-                        //console.log(groupInfo(target.part));
+                position: new go.Point(0, 0),
+                desiredSize: new go.Size(100, 100)
+            },
+            mk(go.TextBlock,
+                new go.Binding("text", "text").makeTwoWay(),
+                new go.Binding("visible", "", function(group) {
+                    // always show text inside box for R-things, because external text will throw off layout
+                    return map.getLayouts().isNotWithinInventoryLayout(group) ||
+                        map.getLayouts().isRThingWithinInventoryLayout(group);
+                }).ofObject(), {
+                    width: 80,
+                    margin: 10,
+                    alignment: go.Spot.Center,
+                    textAlign: 'center',
+                    cursor: "move",
+                    font: '10px sans-serif',
+                    isMultiline: true,
+                    wrap: go.TextBlock.WrapDesiredSize,
+
+                    mouseDragEnter: getGroupMouseDragEnterHandler(null),
+                    mouseDragLeave: groupMouseDragLeaveHandler,
+                    mouseDrop: getGroupMouseDropHandler(null),
+                    click: groupClickHandler,
+                    contextClick: function(event, target) {
+                        if (event.control) {
+                            //console.log(groupInfo(target.part));
+                        }
                     }
                 }
-            },
-                new go.Binding("text", "text").makeTwoWay(),
-                new go.Binding("visible", "", function (group) {
-                    // always show text inside box for R-things, because external text will throw off layout
-                    return map.layouts.isNotWithinInventoryLayout(group) ||
-                        map.layouts.isRThingWithinInventoryLayout(group);
-                }))
-            );
+            )
+        );
     }
 
     // Returns a TextBlock for the group title, for use in the main group template, on the left or right.
@@ -835,7 +833,7 @@ SandbankEditor.Templates = function ($scope, map) {
                     dragAboveTarget(),
                     dragIntoTarget(),
                     dragBelowTarget(),
-                    //groupInternalTextBlock(),
+                    groupInternalTextBlock(),
                     cornerD(),
                     dFlagMarker(),
                     cornerS(),
@@ -849,35 +847,6 @@ SandbankEditor.Templates = function ($scope, map) {
                 ),
             groupExternalTextBlock(map.layouts.showRightTextBlock, 'left')
             ),
-        mk(go.TextBlock, {
-            width: 80,
-            margin: 10,
-            alignment: go.Spot.Left,
-            alignmentFocus: go.Spot.Right,
-            _isNodeLabel: true,
-            editable: true,
-            //alignment: go.Spot.Center,
-            //textAlign: 'center',
-            cursor: "move",
-            font: '14px sans-serif',
-            isMultiline: true,
-            wrap: go.TextBlock.WrapDesiredSize,
-            mouseDragEnter: getGroupMouseDragEnterHandler(null),
-            mouseDragLeave: groupMouseDragLeaveHandler,
-            mouseDrop: getGroupMouseDropHandler(null),
-            click: groupClickHandler,
-            contextClick: function (event, target) {
-                if (event.control) {
-                    //console.log(groupInfo(target.part));
-                }
-            }
-        },
-            new go.Binding("text", "text").makeTwoWay(),
-            new go.Binding("visible", "", function (group) {
-                // always show text inside box for R-things, because external text will throw off layout
-                return map.layouts.isNotWithinInventoryLayout(group) ||
-                    map.layouts.isRThingWithinInventoryLayout(group);
-            })),
         // the placeholder normally holds the child nodes, but we just use a dummy placeholder
         mk(go.Shape, {
             name: "placeholder",
