@@ -937,6 +937,7 @@ SandbankEditor.Templates = function ($scope, map) {
         mk(go.Shape, {
             fromArrow: "Backward"
         },
+            new go.Binding('fill', '', getRLinkSelectionStroke).ofObject(),
             new go.Binding('stroke', '', getRLinkSelectionStroke).ofObject(),
             new go.Binding("scale", "", map.layouts.getArrowheadScale).ofObject(),
             new go.Binding('visible', 'type', function (t) {
@@ -946,6 +947,7 @@ SandbankEditor.Templates = function ($scope, map) {
         mk(go.Shape, {
             toArrow: "Standard"
         },
+            new go.Binding('fill', '', getRLinkSelectionStroke).ofObject(),
             new go.Binding('stroke', '', getRLinkSelectionStroke).ofObject(),
             new go.Binding("scale", "", map.layouts.getArrowheadScale).ofObject(),
             new go.Binding('visible', 'type', function (t) {
