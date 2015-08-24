@@ -33,6 +33,14 @@ class Common {
         return (('ontouchstart' in window) || (navigator.MaxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0));
     }
 
+    static getTicksFromDate(date) {
+        let ret = null;
+        if(date && date.getTime) {
+            ret = date.getTime()/1000;
+        }
+        return ret;
+    }
+
 }
 
 module.exports = Common;

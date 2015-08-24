@@ -1,4 +1,6 @@
 const uuid = require('../tools/uuid.js');
+const Integrations = require('./Integrations')
+const Common = require('../tools/Common');
 
 class User {
     constructor(profile, auth, eventer, metaFire) {
@@ -8,6 +10,7 @@ class User {
         this.userKey = uuid();
         this.onReady();
         this.metaMap = require('../../MetaMap');
+        this.integrations = new Integrations(this.metaMap, this);
     }
 
     onReady() {
@@ -29,17 +32,7 @@ class User {
                             }
                             this.profile = user;
                             trackHistory();
-
-                            if (window.zE) {
-                                let identify = () => { window.zE.identify({ name: this.fullName, email: this.email }); }
-                                if (!window.zE.identify) {
-                                    window.zE(() => {
-                                        identify();
-                                    })
-                                } else {
-                                    identify();
-                                }
-                            }
+                            this.integrations.init();
                         } catch (e) {
                             this.metaMap.error(e);
                         }
@@ -59,6 +52,19 @@ class User {
             ret = this.profile.identity;
         }
         return ret;
+    }
+
+    get createdOn() {
+        if (null == this._createdOn) {
+            if (this._identity.created_at) {
+                let dt = new Date(this._identity.created_at);
+                this._createdOn = {
+                    date: dt,
+                    ticks: Common.getTicksFromDate(dt)
+                }
+            }
+        }
+        return this._createdOn || { date: null, ticks: null };
     }
 
     get displayName() {

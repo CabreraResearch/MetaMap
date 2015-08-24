@@ -1,10 +1,4 @@
-const MetaFire = require('./Firebase.js');
-const usersnap = require('../integrations/usersnap');
-const zenDesk = require('../integrations/zendesk');
-const ga = require('../integrations/google.js');
-const twitter = require('../integrations/twitter.js');
-const facebook = require('../integrations/facebook.js');
-const addThis = require('../integrations/addthis.js');
+const MetaFire = require('./Firebase');
 const _ = require('lodash')
 
 const config = () => {
@@ -55,15 +49,7 @@ class Config {
     constructor(tags) {
         this.tags = tags;
         this.config = config();
-
         this.MetaFire = new MetaFire(this.config);
-        this.socialFeatures = [];
-    }
-
-    initSocial() {
-        _.each(this.socialFeatures, (feature) => {
-            if (feature) feature();
-        });
     }
 
     get site() {
@@ -95,17 +81,7 @@ class Config {
     }
 
     init() {
-        if (!this._init) {
-            this._init = this.onReady().then((config) => {
-                this.ga = ga(this.config.site.google);
-                //this.socialFeatures.push(twitter());
-                //this.socialFeatures.push(facebook());
-                this.socialFeatures.push(addThis(this.config.site.addthis.pubid));
-                this.userSnap = usersnap(this.config.site.usersnap);
-                this.zenDesk = zenDesk()
-            });
-        }
-        return this._init;
+        return this.onReady();
     }
 }
 

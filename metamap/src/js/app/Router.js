@@ -44,10 +44,12 @@ class Router {
     }
 
     get currentPage() {
-        let page = 'home';
-        let pageCnt = this.user.history.length;
-        if (pageCnt > 0) {
-            page = this.getPath(this.user.history[pageCnt - 1]);
+        let page = window.location.hash;
+        if(!route.isTracked(page)) {
+            let pageCnt = this.user.history.length;
+            if (pageCnt > 0) {
+                page = this.getPath(this.user.history[pageCnt - 1]);
+            }
         }
         return page;
     }
@@ -100,16 +102,23 @@ class Router {
         if (pageCnt > 1 && (this.currentPage != 'mymaps' || this.currentPage != this.previousPage)) {
             path = this.previousPage;
             let backNo = 2;
-            while (path.startsWith(ACTIONS.DELETE_MAP) ||
-                path.startsWith(ACTIONS.COPY_MAP) ||
-                path.startsWith(ACTIONS.LOGOUT) ||
-                path.startsWith(ACTIONS.NEW_MAP)) {
-
+            while (!route.isTracked(path) && this.user.history[backNo]) {
                 backNo += 1;
                 path = this.getPreviousPage(backNo);
             }
         }
         return this.to(path);
+    }
+    
+    static get doNotTrack() {
+        return [ACTIONS.DELETE_MAP, ACTIONS.COPY_MAP, ACTIONS.LOGOUT, ACTIONS.NEW_MAP, ACTIONS.FEEDBACK];
+    }
+    
+    static isTracked(path) {
+        let pth = route.getPath(path);
+        return _.any(route.doNotTrack, (p) => {
+            return !pth.startsWith(p);
+        });
     }
 }
 

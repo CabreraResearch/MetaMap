@@ -247,11 +247,11 @@ module.exports = riot.tag('my-maps', html, function (opts) {
         MetaMap.MetaFire.getChild(ROUTES.MAPS_LIST).on('value', (val) => {
             const list = val.val();
             const maps = _.map(list, (obj, key) => {
-                if (obj.owner == MetaMap.User.userId || obj.shared_with[MetaMap.User.userId] != true) {
+                if (obj.owner == MetaMap.User.userId || !obj.shared_with || obj.shared_with[MetaMap.User.userId] != true) {
                     return;
                 } else {
                     obj.id = key;
-                    obj.created_at = moment(obj.created_at).format('YYYY-MM-DD');
+                    obj.created_at = moment(new Date(obj.created_at), 'YYYY-MM-DD');
                     return obj;
                 }
             });
