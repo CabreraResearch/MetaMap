@@ -72,9 +72,9 @@ class MetaMap {
     }
 
     error(val) {
+        window.console.error(val);
         this.Integrations.sendEvent(val, 'exception')
         this.airbrake.notify(val);
-        window.console.error(val);
     }
 
     logout() {

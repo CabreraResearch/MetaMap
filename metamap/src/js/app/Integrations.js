@@ -20,6 +20,7 @@ class Integrations {
 		this._features.usersnap = UserSnap;
 		this._features.intercom = Intercom;
 		this._features.zendesk = ZenDesk;
+		this._features.addthis = AddThis;
 	}
 
 	init() {
