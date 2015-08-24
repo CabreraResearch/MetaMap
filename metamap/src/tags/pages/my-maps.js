@@ -246,7 +246,7 @@ module.exports = riot.tag('my-maps', html, function (opts) {
 
         MetaMap.MetaFire.getChild(ROUTES.MAPS_LIST).on('value', (val) => {
             const list = val.val();
-            const maps = _.map(list, (obj, key) => {
+            let maps = _.map(list, (obj, key) => {
                 if (obj.owner == MetaMap.User.userId || !obj.shared_with || obj.shared_with[MetaMap.User.userId] != true) {
                     return;
                 } else {
@@ -255,7 +255,7 @@ module.exports = riot.tag('my-maps', html, function (opts) {
                     return obj;
                 }
             });
-
+            maps = _.filter(maps, (map) => { return map && map.id })
             buildTable(1, maps);
         });
     });
