@@ -728,15 +728,15 @@ SandbankEditor.Templates = function ($scope, map) {
                 new go.Binding("text", "text").makeTwoWay(),
                 new go.Binding("visible", "", function(group) {
                     // always show text inside box for R-things, because external text will throw off layout
-                    return map.getLayouts().isNotWithinInventoryLayout(group) ||
-                        map.getLayouts().isRThingWithinInventoryLayout(group);
+                    return map.layouts.isNotWithinInventoryLayout(group) ||
+                        map.layouts.isRThingWithinInventoryLayout(group);
                 }).ofObject(), {
                     width: 80,
                     margin: 10,
                     alignment: go.Spot.Center,
-                    textAlign: 'center',
-                    cursor: "move",
-                    font: '10px sans-serif',
+                    textAlign: config.shapes.label.textAlign,
+                    cursor: config.shapes.label.cursor,
+                    font: config.shapes.label.font,
                     isMultiline: true,
                     wrap: go.TextBlock.WrapDesiredSize,
 
