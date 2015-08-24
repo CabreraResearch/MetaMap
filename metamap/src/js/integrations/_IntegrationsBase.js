@@ -20,6 +20,10 @@ class IntegrationsBase {
 		
 	}
 	
+	updatePath() {
+		
+	}
+	
 }
 
 module.exports = IntegrationsBase;

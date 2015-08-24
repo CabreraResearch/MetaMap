@@ -44,17 +44,36 @@ class Google extends IntegrationsBase {
   setUser() {
     super.setUser();
     this.integration('set', '&uid', this.user.userId);
-  }  
+  }
 
-  static sendSocial(network, targetUrl, type='send') {
-    if(window.ga) {
-        window.ga('send', 'social', network, type, targetUrl);
+  static sendSocial(network, targetUrl, type = 'send') {
+    if (window.ga) {
+      window.ga('send', 'social', network, type, targetUrl);
+    }
+  }
+
+  sendEvent(val, event, source, type) {
+    if (this.integration) {
+      if (source && type) {
+        this.integration('send', event, source, type, val);
+      } else {
+        this.integration('send', event, val);
+      }
     }
   }
   
+  updatePath(path) {
+    if (this.integration) {
+        this.integration('set', {
+            page: path
+        });
+        this.integration('send', 'pageview');
+    }
+  }
+
   static sendEvent(event, source, type, url) {
-    if(window.ga) {
-        window.ga('send', event, source, type, url);
+    if (window.ga) {
+      window.ga('send', event, source, type, url);
     }
   }
 

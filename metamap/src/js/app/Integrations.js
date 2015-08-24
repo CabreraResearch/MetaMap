@@ -44,6 +44,19 @@ class Integrations {
 			}
         });
 	}
+	
+	sendEvent(val, ...params) {
+		_.each(this._features, (Feature, name) => {
+            if (name) {
+				this[name].sendEvent(val, ...params);
+			}
+        });
+		window.console.log(val);
+	}
+
+	updatePath() {
+		
+	}
 
 }
 

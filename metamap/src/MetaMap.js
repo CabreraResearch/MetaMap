@@ -67,21 +67,12 @@ class MetaMap {
     }
 
     log(val) {
-        if (window.ga) {
-            window.ga('send', 'event', 'log', 'label', val);
-        }
-        console.log(val);
+        this.Integrations.sendEvent(val, 'event', 'log', 'label')
     }
 
     error(val) {
-        if (window.ga) {
-            window.ga('send', 'exception', {
-                'exDescription': val.message,
-                'exFatal': true
-            });
-        }
+        this.Integrations.sendEvent(val, 'exception')
         this.airbrake.notify(val);
-        console.error(val);
     }
 
     logout() {

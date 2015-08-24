@@ -56,9 +56,13 @@ class Intercom extends IntegrationsBase {
         this.sendEvent('update');
     }
 
-    sendEvent(event) {
+    sendEvent(event='update') {
         super.sendEvent(event);
-        this.integration(event);
+        this.integration('update');
+    }
+    
+    updatePath(path) {
+        this.integration('update');
     }
 
 }
