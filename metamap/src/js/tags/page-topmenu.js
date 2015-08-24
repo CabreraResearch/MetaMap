@@ -8,18 +8,18 @@ const html = `
 <div class="top-menu">
     <ul class="nav navbar-nav pull-right">
         <li class="separator hide"></li>
-        <li class="dropdown dropdown-extended dropdown-notification dropdown" id="header_notification_bar"></li>
-
-        <li class="separator hide"></li>
-        <li class="dropdown dropdown-extended dropdown-notification dropdown" id="header_points_bar"></li>
-
-        <li class="separator hide"></li>
         <li class="dropdown" id="header_dashboard_bar" onclick="{ onClick }">
             <a class="dropdown-toggle" href="#home">
                 <i class="fa fa-home"></i>
             </a>
         </li>
-            
+        
+        <li class="separator hide"></li>
+        <li class="dropdown dropdown-extended dropdown-notification dropdown" id="header_notification_bar"></li>
+
+        <li class="separator hide"></li>
+        <li class="dropdown dropdown-extended dropdown-notification dropdown" id="header_points_bar"></li>
+                   
         <li class="separator hide"></li>
         <li id="header_help_bar" class="dropdown dropdown-extended dropdown-notification dropdown"></li>
             

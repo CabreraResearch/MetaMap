@@ -1,4 +1,5 @@
 const riot = require('riot');
+const CONSTANTS = require('../constants/constants')
 require('../tools/shims');
 
 const html = `
@@ -57,7 +58,7 @@ module.exports = riot.tag('page-actions', html, function (opts) {
 
     this.getLinkAllowed = (obj) => {
         let ret = true == obj['allowed-on']['*'];
-        if(!ret) {
+        if (!ret) {
             let currentPage = MetaMap.Router.currentPath;
             ret = true == obj['allowed-on'][currentPage];
         }
@@ -65,10 +66,12 @@ module.exports = riot.tag('page-actions', html, function (opts) {
     }
 
     this.bindTopageName = _.once(() => {
-        MetaMap.MetaFire.on(`maps/list/${this.mapId}/name`, (name) => {
-            this.pageName = name || '';
-            this.update();
-        });
+        if (this.mapId) {
+            MetaMap.MetaFire.on(`${CONSTANTS.ROUTES.MAPS_LIST}/${this.mapId}/name`, (name) => {
+                this.pageName = name || '';
+                this.update();
+            });
+        }
         this.loaded = true;
     });
 
@@ -77,18 +80,20 @@ module.exports = riot.tag('page-actions', html, function (opts) {
             $(this.map_name).editable('destroy');
         }
         if (this.mapId) {
-            MetaMap.MetaFire.off(`maps/list/${this.mapId}/name`);
-            MetaMap.MetaFire.on(`maps/list/${opts.id}/name`, (name) => {
-                this.pageName = name;
-                this.update();
-            });
+            MetaMap.MetaFire.off(`${CONSTANTS.ROUTES.MAPS_LIST}/${this.mapId}/name`);
+            if (opts.id) {
+                MetaMap.MetaFire.on(`${CONSTANTS.ROUTES.MAPS_LIST}/${opts.id}/name`, (name) => {
+                    this.pageName = name;
+                    this.update();
+                });
+            }
         }
         this.pageName = opts.name || 'Home';
         this.mapId = opts.id;
         this.update();
         if (this.mapId) {
             $(this.map_name).editable({ unsavedclass: null }).on('save', (event, params) => {
-                MetaMap.MetaFire.setData(params.newValue, `maps/list/${this.mapId}/name`);
+                MetaMap.MetaFire.setData(params.newValue, `${CONSTANTS.ROUTES.MAPS_LIST}/${this.mapId}/name`);
             });
             this.bindTopageName();
         }

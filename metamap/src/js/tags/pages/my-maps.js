@@ -2,8 +2,7 @@ const riot = require('riot');
 const moment = require('moment');
 const NProgress = window.NProgress;
 const _ = require('lodash');
-const ROUTES = require('../../constants/routes');
-const PAGES = require('../../constants/pages');
+const CONSTANTS = require('../../constants/constants');
 
 const html = `
 <div class="portlet box grey-cascade">
@@ -104,16 +103,16 @@ module.exports = riot.tag('my-maps', html, function (opts) {
     this.menu = null;
     this.tabs = _.sortBy([{ title: 'My Maps', order: 0, editable: true }, { title: 'Shared with Me', order: 1, editable: false }], 'order');
     this.currentTab = 'My Maps';
-    
+
     this.onOpen = (event, ...o) => {
         MetaMap.Router.to(`map/${event.item.id}`);
     }
-    
+
     this.onTabSwitch = (event, ...o) => {
         this.currentTab = event.item.val.title;
-        switch(this.currentTab) {
-            case 'My Maps': 
-            
+        switch (this.currentTab) {
+            case 'My Maps':
+
                 break;
         }
     }
@@ -123,7 +122,7 @@ module.exports = riot.tag('my-maps', html, function (opts) {
     }
 
     this.onMenuClick = (event, tag) => {
-        if(this.currentTab == 'My Maps') {
+        if (this.currentTab == 'My Maps') {
             switch (event.item.title.toLowerCase()) {
                 case 'delete':
                     const deleteMaps = require('../../actions/DeleteMap.js');
@@ -134,7 +133,7 @@ module.exports = riot.tag('my-maps', html, function (opts) {
                     });
                     deleteMaps.deleteAll(ids, PAGES.MY_MAPS);
                     let find = this[`table0`].find('tbody tr .checkboxes');
-                    find.each(function(){
+                    find.each(function () {
                         $(this).attr('checked', false);
                         $(this).parents('tr').removeClass('active');
                     });
@@ -221,8 +220,10 @@ module.exports = riot.tag('my-maps', html, function (opts) {
 
                 if (editable) {
                     $(`.meta_editable_${idx}`).editable({ unsavedclass: null }).on('save', function (event, params) {
-                        var id = this.dataset.pk;
-                        MetaMap.MetaFire.setData(params.newValue, `maps/list/${id}/name`);
+                        if (this.dataset && this.dataset.pk) {
+                            var id = this.dataset.pk;
+                            MetaMap.MetaFire.setData(params.newValue, `${CONSTANTS.ROUTES.MAPS_LIST}/${id}/name`);
+                        }
                         return true;
                     });
                 }
@@ -234,7 +235,7 @@ module.exports = riot.tag('my-maps', html, function (opts) {
             }
         };
 
-        MetaMap.MetaFire.getChild(ROUTES.MAPS_LIST).orderByChild('owner').equalTo(MetaMap.User.userId).on('value', (val) => {
+        MetaMap.MetaFire.getChild(CONSTANTS.ROUTES.MAPS_LIST).orderByChild('owner').equalTo(MetaMap.User.userId).on('value', (val) => {
             const list = val.val();
             const maps = _.map(list, (obj, key) => {
                 obj.id = key;
@@ -244,7 +245,7 @@ module.exports = riot.tag('my-maps', html, function (opts) {
             buildTable(0, maps);
         });
 
-        MetaMap.MetaFire.getChild(ROUTES.MAPS_LIST).on('value', (val) => {
+        MetaMap.MetaFire.getChild(CONSTANTS.ROUTES.MAPS_LIST).on('value', (val) => {
             const list = val.val();
             let maps = _.map(list, (obj, key) => {
                 if (obj.owner == MetaMap.User.userId || !obj.shared_with || obj.shared_with[MetaMap.User.userId] != true) {
