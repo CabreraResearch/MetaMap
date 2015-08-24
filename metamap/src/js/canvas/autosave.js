@@ -5,6 +5,8 @@ SandbankEditor.Autosave = function($scope, $http, map) {
 
     var self = this;
 
+    const MetaMap = require('../../MetaMap');
+
     var changeTypes = [];
 
     this.saveOnModelChanged = true;
@@ -72,6 +74,7 @@ SandbankEditor.Autosave = function($scope, $http, map) {
         // load returned data for analytics, points, badges, versions
         // $scope.map.loadMapExtraData(response.data.map);
         MetaMap.MetaFire.setDataInTransaction(postData, `maps/data/${$scope.mapId}`);
+        MetaMap.Integrations.sendEvent($scope.mapId, 'event', 'autosave', 'autosave')
     }
 
 

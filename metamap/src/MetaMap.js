@@ -68,11 +68,13 @@ class MetaMap {
 
     log(val) {
         this.Integrations.sendEvent(val, 'event', 'log', 'label')
+        window.console.info(val);
     }
 
     error(val) {
         this.Integrations.sendEvent(val, 'exception')
         this.airbrake.notify(val);
+        window.console.error(val);
     }
 
     logout() {

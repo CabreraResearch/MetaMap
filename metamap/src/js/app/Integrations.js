@@ -51,7 +51,6 @@ class Integrations {
 				this[name].sendEvent(val, ...params);
 			}
         });
-		window.console.log(val);
 	}
 
 	updatePath() {
