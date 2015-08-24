@@ -16,6 +16,10 @@ class IntegrationsBase {
 		
 	}
 	
+	sendEvent() {
+		
+	}
+	
 }
 
 module.exports = IntegrationsBase;

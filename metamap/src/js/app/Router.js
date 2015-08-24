@@ -44,7 +44,7 @@ class Router {
     }
 
     get currentPage() {
-        let page = window.location.hash;
+        let page = window.location.hash || 'home';
         if(!route.isTracked(page)) {
             let pageCnt = this.user.history.length;
             if (pageCnt > 0) {
