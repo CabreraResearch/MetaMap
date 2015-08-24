@@ -127,7 +127,7 @@ SandbankEditor.Templates = function ($scope, map) {
 
     // OK, this isn't about colors, but it wants to be near the one above...
     function getGroupSelectionStrokeWidth(obj) {
-        return (obj.isSelected ? config.shapes.box.borderWidth : config.shapes.box.borderHighlightWidth);
+        return (obj.isSelected ? config.shapes.box.borderHighlightWidth : config.shapes.box.borderWidth);
     }
 
     function getRLinkSelectionStroke(obj) {

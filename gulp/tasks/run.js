@@ -2,7 +2,7 @@ var run = require('gulp-run');
 var gulp = require('gulp');
 var argv = require('yargs').argv;
 var _slack = require('node-slack');
-var slack = new _slack('https://hooks.slack.com/services/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');
+var slack = new _slack('https://hooks.slack.com/services/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');
 var through = require('through2');
 
 var message = {
@@ -27,17 +27,16 @@ gulp.task('deploy', function () {
     switch(target) {
         case 'production':
         case 'prod':
-            run('firebase deploy --firebase=thinkwater-production -m "' + p + '"').exec();
+            run('firebase deploy --firebase=thinkwater-production --message="' + p + '"').exec();
 
-            run('firebase deploy --firebase=meta-map-production -m "' + p + '"').exec()
+            run('firebase deploy --firebase=meta-map-production --message="' + p + '"').exec()
                 .pipe(sendToSlack(message));
             break;
 
         case 'staging':
         default:
-            run('firebase deploy --firebase=thinkwater-staging -m "' + p + '"').exec();
-
-            run('firebase deploy --firebase=meta-map-staging -m "' + p + '"').exec()
+            //run('firebase deploy --firebase=thinkwater-staging -m "' + p + '"').exec();
+            run('firebase deploy --firebase=meta-map-staging --message="' + p + '"').exec()
                 .pipe(sendToSlack(message));
             break;
     }
