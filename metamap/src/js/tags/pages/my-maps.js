@@ -239,7 +239,7 @@ module.exports = riot.tag('my-maps', html, function (opts) {
             const list = val.val();
             const maps = _.map(list, (obj, key) => {
                 obj.id = key;
-                obj.created_at = moment(obj.created_at, 'YYYY-MM-DD');
+                obj.created_at = moment(obj.created_at).format('YYYY-MM-DD');
                 return obj;
             });
             buildTable(0, maps);
@@ -252,7 +252,7 @@ module.exports = riot.tag('my-maps', html, function (opts) {
                     return;
                 } else {
                     obj.id = key;
-                    obj.created_at = moment(new Date(obj.created_at), 'YYYY-MM-DD');
+                    obj.created_at = moment(new Date(obj.created_at)).format('YYYY-MM-DD');
                     return obj;
                 }
             });
