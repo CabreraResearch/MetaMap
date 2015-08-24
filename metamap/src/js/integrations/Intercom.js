@@ -53,6 +53,12 @@ class Intercom extends IntegrationsBase {
             email: this.user.email, // TODO: The current logged in user's email address.
             created_at: this.user.createdOn.ticks // TODO: The current logged in user's sign-up date as a Unix timestamp.
         });
+        this.sendEvent('update');
+    }
+
+    sendEvent(event) {
+        super.sendEvent(event);
+        this.integration(event);
     }
 
 }

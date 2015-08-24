@@ -17,6 +17,7 @@ const Config = require('./js/app//Config.js');
 const ga = require('./js/integrations/google.js');
 const shims = require('./js/tools/shims.js');
 const AirbrakeClient = require('airbrake-js')
+const Integrations = require('./js/app/Integrations')
 
 class MetaMap {
 
@@ -25,10 +26,10 @@ class MetaMap {
         this.config = this.Config.config;
         this.MetaFire = this.Config.MetaFire;
         this.Eventer = new Eventer(this);
-        this.airbrake = new AirbrakeClient({projectId: 114900, projectKey: 'dc9611db6f77120ccecd1a273745a5ae'});
+        this.airbrake = new AirbrakeClient({ projectId: 114900, projectKey: 'dc9611db6f77120ccecd1a273745a5ae' });
         this.onReady();
         const that = this;
-        Promise.onPossiblyUnhandledRejection(function(error){
+        Promise.onPossiblyUnhandledRejection(function (error) {
             that.error(error);
             return this;
         });
@@ -53,16 +54,18 @@ class MetaMap {
             this.Auth0.login().then((profile) => {
                 this.MetaFire.login().then((auth) => {
                     this.User = new User(profile, auth, this.Eventer, this.MetaFire);
-                    this.User.onReady().then(() => {
+                    this.Integrations = new Integrations(this, this.User);
+                    this.User.onReady().then((user) => {
                         this.PageFactory = new PageFactory(this.Eventer, this.MetaFire);
                         this.Router = new Router(this);
                         this.Router.init();
+                        this.Integrations.init();
                     });
                 });
             });
         });
     }
-    
+
     log(val) {
         if (window.ga) {
             window.ga('send', 'event', 'log', 'label', val);

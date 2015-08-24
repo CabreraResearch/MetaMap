@@ -67,7 +67,5 @@ module.exports = riot.tag('home', html, function(opts) {
         this.update();
         
         NProgress.done();
-        
-        window.addthis.layers.refresh();
     });
 });

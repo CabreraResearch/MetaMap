@@ -1,5 +1,4 @@
 const uuid = require('../tools/uuid.js');
-const Integrations = require('./Integrations')
 const Common = require('../tools/Common');
 
 class User {
@@ -10,7 +9,6 @@ class User {
         this.userKey = uuid();
         this.onReady();
         this.metaMap = require('../../MetaMap');
-        this.integrations = new Integrations(this.metaMap, this);
     }
 
     onReady() {
@@ -32,7 +30,6 @@ class User {
                             }
                             this.profile = user;
                             trackHistory();
-                            this.integrations.init();
                         } catch (e) {
                             this.metaMap.error(e);
                         }
