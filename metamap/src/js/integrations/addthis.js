@@ -29,25 +29,6 @@ class AddThis extends IntegrationsBase {
     
     init() {
         super.init();
-        // window.addthis.ready(function () {
-        //     if (['#home', '#contact'].indexOf(window.location.hash) >= 0) {
-        //         var tryCount = 0;
-        //         var hideShares = function (keepGoing) {
-        //             if ($('#at4-share') && $('#at4-share').length >= 1) {
-        //                 $('#at4-share').parent().hide();
-        //                 if (keepGoing) {
-        //                     _.delay(hideShares, 3000);
-        //                 }
-        //             } else {
-        //                 tryCount += 1;
-        //                 if (tryCount < 60) {
-        //                     _.delay(hideShares, 250);
-        //                 }
-        //             }
-        //         }
-        //         hideShares(true);
-        //     }
-        // });
     }
 }
 
