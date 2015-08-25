@@ -58,6 +58,7 @@ class Google extends IntegrationsBase {
   }
 
   sendEvent(val, event, source, type) {
+    super.sendEvent(val, event, source, type);
     if (this.integration) {
       if (source && type) {
         this.integration('send', event, source, type, val);
@@ -68,6 +69,7 @@ class Google extends IntegrationsBase {
   }
   
   updatePath(path) {
+    super.updatePath(path);
     if (this.integration) {
         this.integration('set', {
             page: path

@@ -1,9 +1,6 @@
-/// <reference path="../../../../typings/riotjs/riotjs.d.ts" />
-/// <reference path="../../../../typings/nprogress/NProgress.d.ts" />
-
 const riot = require('riot');
 const NProgress = window.NProgress;
-const ROUTES = require('../../constants/routes');
+const CONSTANTS = require('../../constants/constants');
 
 const html = `
 <div class="portlet light">
@@ -53,7 +50,7 @@ module.exports = riot.tag('home', html, function(opts) {
     this.areas = []
     this.header = {}
 
-    MetaMap.MetaFire.on(ROUTES.HOME, (data) => {
+    MetaMap.MetaFire.on(CONSTANTS.ROUTES.HOME, (data) => {
         this.areas = _.filter(_.sortBy(data.areas, 'order'), (d) => {
             var include = d.archive != true;
             return include;

@@ -1,6 +1,6 @@
 /// <reference path="../../../../typings/riotjs/riotjs.d.ts" />
 const riot = require('riot')
-const ACTIONS = require('../constants/actions')
+const CONSTANTS = require('../constants/constants');
 
 class Router {
     constructor(metaMap) {
@@ -98,7 +98,7 @@ class Router {
 
     get doNotTrack() {
         if (!this._doNotTrack) {
-            this._doNotTrack = [ACTIONS.DELETE_MAP, ACTIONS.COPY_MAP, ACTIONS.LOGOUT, ACTIONS.NEW_MAP, ACTIONS.FEEDBACK];
+            this._doNotTrack = [CONSTANTS.ACTIONS.DELETE_MAP, CONSTANTS.ACTIONS.COPY_MAP, CONSTANTS.ACTIONS.LOGOUT, CONSTANTS.ACTIONS.NEW_MAP, CONSTANTS.ACTIONS.FEEDBACK];
         }
         return this._doNotTrack;
     }

@@ -1,7 +1,6 @@
 const ActionBase = require('./ActionBase.js');
-const ROUTES = require('../constants/routes.js');
+const CONSTANTS = require('../constants/constants');
 const _ = require('lodash');
-const PAGES = require('../constants/pages.js');
 
 class Logout extends ActionBase {
     constructor(...params) {

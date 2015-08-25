@@ -1,4 +1,4 @@
-const EVENTS = require('../constants/events');
+const CONSTANTS = require('../constants/constants');
 
 class ActionBase {
     constructor(metaFire, eventer, pageFactory) {
@@ -22,12 +22,12 @@ class ActionBase {
     
     openSidebar() {
         this.sidebarOpen = true;
-        this.eventer.do(EVENTS.SIDEBAR_OPEN);
+        this.eventer.do(CONSTANTS.EVENTS.SIDEBAR_OPEN);
     }
     
     closeSidebar() {
         this.sidebarOpen = false;
-        this.eventer.do(EVENTS.SIDEBAR_CLOSE);
+        this.eventer.do(CONSTANTS.EVENTS.SIDEBAR_CLOSE);
     }
 }
 

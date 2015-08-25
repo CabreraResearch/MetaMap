@@ -1,5 +1,5 @@
 const ActionBase = require('./ActionBase.js');
-const ROUTES = require('../constants/routes.js');
+const CONSTANTS = require('../constants/constants');
 
 class CopyMap extends ActionBase {
     constructor(...params) {
@@ -11,16 +11,16 @@ class CopyMap extends ActionBase {
         if (!id) {
             return new Error('Must have a map in order to copy.');
         }
-        this.metaFire.getData(`${ROUTES.MAPS_LIST}${id}`).then((oldMap) => {
+        this.metaFire.getData(`${CONSTANTS.ROUTES.MAPS_LIST}${id}`).then((oldMap) => {
             let newMap = {
                 created_at: new Date(),
                 owner: this.metaMap.User.userId,
                 name: this.appendCopy(oldMap.name)
             }
-            this.metaFire.getData(`${ROUTES.MAPS_DATA}${id}`).then((oldMapData) => {
-                let pushState = this.metaFire.pushData(newMap, `${ROUTES.MAPS_LIST}`);
+            this.metaFire.getData(`${CONSTANTS.ROUTES.MAPS_DATA}${id}`).then((oldMapData) => {
+                let pushState = this.metaFire.pushData(newMap, `${CONSTANTS.ROUTES.MAPS_LIST}`);
                 let mapId = pushState.key();
-                this.metaFire.setData(oldMapData, `${ROUTES.MAPS_DATA}${mapId}`);
+                this.metaFire.setData(oldMapData, `${CONSTANTS.ROUTES.MAPS_DATA}${mapId}`);
                 this.metaMap.Router.to(`map/${mapId}`);
             });
         });

@@ -1,5 +1,5 @@
 const riot = require('riot');
-const EVENTS = require('../constants/events');
+const CONSTANTS = require('../constants/constants');
 
 const html = `
 <div class="page-sidebar-wrapper" style="{ getDisplay() }">
@@ -57,13 +57,13 @@ module.exports = riot.tag('page-sidebar', html, function(opts) {
         }
     }
     
-    MetaMap.Eventer.on(EVENTS.SIDEBAR_CLOSE, () => {
+    MetaMap.Eventer.on(CONSTANTS.EVENTS.SIDEBAR_CLOSE, () => {
         this.display = false;
         this.update();
     });
     
     
-    MetaMap.Eventer.on(EVENTS.SIDEBAR_OPEN, () => {
+    MetaMap.Eventer.on(CONSTANTS.EVENTS.SIDEBAR_OPEN, () => {
         this.display = true;
         this.update();
     });

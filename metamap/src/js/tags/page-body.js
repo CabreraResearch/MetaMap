@@ -1,9 +1,8 @@
 const riot = require('riot');
 const pageHeader = require('./page-header');
 const pageContainer = require('./page-container');
-//const metaDialog = require('./components/meta-dialog');
 const pageFooter = require('./page-footer');
-const EVENTS = require('../constants/events');
+const CONSTANTS = require('../constants/constants');
 
 const html = `
 <div id="page_body" class="page-header-fixed page-sidebar-closed-hide-logo page-sidebar-closed-hide-logo">
@@ -30,12 +29,12 @@ module.exports = riot.tag('page-body', html, function(opts) {
         riot.mount(this.meta_page_footer, 'page-footer');
     });
     
-    MetaMap.Eventer.on(EVENTS.SIDEBAR_CLOSE, () => {
+    MetaMap.Eventer.on(CONSTANTS.EVENTS.SIDEBAR_CLOSE, () => {
         $(this.page_body).addClass('page-sidebar-reversed');
     });
     
     
-    MetaMap.Eventer.on(EVENTS.SIDEBAR_OPEN, () => {
+    MetaMap.Eventer.on(CONSTANTS.EVENTS.SIDEBAR_OPEN, () => {
         $(this.page_body).removeClass('page-sidebar-reversed');
     });
 

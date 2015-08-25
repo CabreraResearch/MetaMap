@@ -1,5 +1,4 @@
 const ActionBase = require('./ActionBase.js');
-const ROUTES = require('../constants/routes.js');
 
 class Feedback extends ActionBase {
     constructor(...params) {
