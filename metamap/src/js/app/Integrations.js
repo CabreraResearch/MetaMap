@@ -1,12 +1,7 @@
 const _ = require('lodash')
 
-const UserSnap = require('../integrations/UserSnap');
-const ZenDesk = require('../integrations/Zendesk');
-const Google = require('../integrations/Google');
 const Twiiter = require('../integrations/Twitter');
 const Facebook = require('../integrations/Facebook');
-const AddThis = require('../integrations/addthis');
-const Intercom = require('../integrations/Intercom');
 
 class Integrations {
 
@@ -14,13 +9,14 @@ class Integrations {
 		this.config = metaMap.config;
 		this.metaMap = metaMap;
 		this.user = user;
-		this._features = {};
-
-		this._features.google = Google;
-		this._features.usersnap = UserSnap;
-		this._features.intercom = Intercom;
-		this._features.zendesk = ZenDesk;
-		this._features.addthis = AddThis;
+		this._features = {
+			google: require('../integrations/Google'),
+			usersnap: require('../integrations/UserSnap'),
+			intercom: require('../integrations/Intercom'),
+			zendesk: require('../integrations/Zendesk'),
+			addthis: require('../integrations/AddThis'),
+			newrelic: require('../integrations/NewRelic')
+		};
 	}
 
 	init() {
@@ -61,7 +57,11 @@ class Integrations {
 	logout() {
 		_.each(this._features, (Feature, name) => {
             if (name) {
-				this[name].logout();
+				try {
+					this[name].logout();
+				} catch(e) {
+					this.metaMap.error(e);
+				}
 			}
         });
 	}
