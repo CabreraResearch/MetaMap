@@ -24,6 +24,10 @@ class IntegrationsBase {
 		
 	}
 	
+	logout() {
+		
+	}
+	
 }
 
 module.exports = IntegrationsBase;

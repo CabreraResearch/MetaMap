@@ -57,6 +57,14 @@ class Integrations {
 	updatePath() {
 		
 	}
+	
+	logout() {
+		_.each(this._features, (Feature, name) => {
+            if (name) {
+				this[name].logout();
+			}
+        });
+	}
 
 }
 

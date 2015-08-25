@@ -3,37 +3,26 @@ const IntegrationsBase = require('./_IntegrationsBase')
 class Intercom extends IntegrationsBase {
     constructor(config, user) {
         super(config, user);
-        let intercomSettings = window.intercomSettings;
-        let w = window;
-        let ic = w.Intercom;
-        if (typeof ic === "function") {
-            ic('reattach_activator');
-            ic('update', intercomSettings);
-        } else {
-            let d = document;
-            let i = function () {
-                i.c(arguments)
-            };
-            i.q = [];
-            i.c = function (args) {
-                i.q.push(args)
-            };
-            w.Intercom = i;
-            function l() {
-                let s = d.createElement('script');
-                s.type = 'text/javascript';
-                s.async = true;
-                s.src = `https://widget.intercom.io/widget/${config.apiKey}}`;
-                let x = d.getElementsByTagName('script')[0];
-                x.parentNode.insertBefore(s, x);
-            }
-            if (w.attachEvent) {
-                w.attachEvent('onload', l);
-            } else {
-                w.addEventListener('load', l, false);
-            }
+
+        let i = function () {
+            i.c(arguments)
+        };
+        i.q = [];
+        i.c = function (args) {
+            i.q.push(args)
+        };
+        window.Intercom = i;
+        try {
+            let s = document.createElement('script');
+            s.type = 'text/javascript';
+            s.async = true;
+            s.src = `https://widget.intercom.io/widget/${config.appid}}`;
+            let x = document.getElementsByTagName('script')[0];
+            x.parentNode.insertBefore(s, x);
+        } catch (e) {
+
         }
-        this.intercom = w.Intercom;
+        this.intercom = window.Intercom;
     }
 
     get integration() {
@@ -49,20 +38,26 @@ class Intercom extends IntegrationsBase {
         super.setUser();
         this.integration('boot', {
             app_id: this.config.appid,
-            name: this.user.fullName, // TODO: The current logged in user's full name
-            email: this.user.email, // TODO: The current logged in user's email address.
-            created_at: this.user.createdOn.ticks // TODO: The current logged in user's sign-up date as a Unix timestamp.
+            name: this.user.fullName,
+            email: this.user.email,
+            created_at: this.user.createdOn.ticks,
+            user_id: this.user.userId
         });
         this.sendEvent('update');
     }
 
-    sendEvent(event='update') {
+    sendEvent(event = 'update') {
         super.sendEvent(event);
         this.integration('update');
     }
-    
+
     updatePath(path) {
         this.integration('update');
+    }
+    
+    logout() {
+        super.logout();
+        this.integration('shutdown');
     }
 
 }
