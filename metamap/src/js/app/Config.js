@@ -23,6 +23,8 @@ const config = () => {
     if (first === 'www') {
         first = segments[1];
     }
+    first = first.split(':')[0];
+    
     switch (first.toLowerCase()) {
         case 'localhost':
         case 'meta-map-staging':

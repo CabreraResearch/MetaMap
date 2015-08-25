@@ -349,7 +349,7 @@ SandbankEditor.Templates = function ($scope, map) {
                 cursor: 'pointer',
                 click: function (event, target) {
                     // handle single or double click
-                    map.ui.handleCornerClick(CONSTANTS.DSRP.S, target.part);
+                    map.ui.handleCornerClick(CONSTANTS.DSRP.S, target.part.adornedPart);
                 }
             }),
             // expansion indicator
@@ -721,12 +721,12 @@ SandbankEditor.Templates = function ($scope, map) {
     // Returns the TextBlock for the group title, for use in the main group template, inside the box.
     function groupInternalTextBlock() {
         return mk(go.Panel, go.Panel.Horizontal, {
-                position: new go.Point(0, 0),
-                desiredSize: new go.Size(100, 100)
-            },
+            position: new go.Point(0, 0),
+            desiredSize: new go.Size(100, 100)
+        },
             mk(go.TextBlock,
                 new go.Binding("text", "text").makeTwoWay(),
-                new go.Binding("visible", "", function(group) {
+                new go.Binding("visible", "", function (group) {
                     // always show text inside box for R-things, because external text will throw off layout
                     return map.layouts.isNotWithinInventoryLayout(group) ||
                         map.layouts.isRThingWithinInventoryLayout(group);
@@ -744,14 +744,14 @@ SandbankEditor.Templates = function ($scope, map) {
                     mouseDragLeave: groupMouseDragLeaveHandler,
                     mouseDrop: getGroupMouseDropHandler(null),
                     click: groupClickHandler,
-                    contextClick: function(event, target) {
+                    contextClick: function (event, target) {
                         if (event.control) {
                             //console.log(groupInfo(target.part));
                         }
                     }
                 }
-            )
-        );
+                )
+            );
     }
 
     // Returns a TextBlock for the group title, for use in the main group template, on the left or right.
@@ -788,7 +788,7 @@ SandbankEditor.Templates = function ($scope, map) {
         }).ofObject(), {
             locationObjectName: "mainpanel",
             locationSpot: go.Spot.TopLeft,
-            selectionAdorned: false,
+            selectionAdorned: true,
             isSubGraphExpanded: true,
             layerName: 'Foreground',
             // highlight corners
@@ -856,6 +856,49 @@ SandbankEditor.Templates = function ($scope, map) {
         })
         );
 
+    this.groupTemplate.selectionAdornmentTemplate =
+    mk(go.Adornment, "Spot",
+        mk(go.Panel, "Auto",
+            mk(go.Shape, { fill: null, strokeWidth: 0 }),
+            mk(go.Placeholder)  // this represents the selected Node
+            ),
+        //P
+        mk("Button",
+            {
+                alignment: go.Spot.TopRight,
+                click: function () { }  // this function is defined below
+            },
+            mk(go.Shape, "PlusLine", { desiredSize: new go.Size(6, 6) })
+            ),
+        //D
+        mk("Button",
+            {
+                alignment: go.Spot.TopLeft,
+                click: function () { }  // this function is defined below
+            },
+            mk(go.Shape, "PlusLine", { desiredSize: new go.Size(6, 6) })
+            ),
+        //S
+        mk("Button",
+            {
+                alignment: go.Spot.BottomLeft,
+                click: function (event, target) {
+                    // handle single or double click
+                    map.ui.handleCornerClick(CONSTANTS.DSRP.S, target.part.adornedPart);
+                }// this function is defined below
+            },
+            mk(go.Shape, "PlusLine", { desiredSize: new go.Size(6, 6) })
+            ),
+        //R
+        mk("Button",
+            {
+                alignment: go.Spot.BottomRight,
+                click: function () { }  // this function is defined below
+            },
+            mk(go.Shape, "PlusLine", { desiredSize: new go.Size(6, 6) })
+            )
+        ); // end Adornment
+
     // ------------------- link template ---------------------------
 
     this.shapes = ['to', 'from', 'toFrom', 'noArrows']
@@ -909,7 +952,7 @@ SandbankEditor.Templates = function ($scope, map) {
             }
         },
         click: function (event, target) {
-            if(self._currentSelectedLink == target.position) {
+            if (self._currentSelectedLink == target.position) {
                 let shape = self.getNextRShape();
                 map.ui.setSelectedRelationshipsDirection(shape);
             } else {
