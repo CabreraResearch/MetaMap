@@ -1,15 +1,11 @@
 let NodeLabelDraggingTool = require('./extensions/NodeLabelDraggingTool.js');
 const SandbankEditor = require('./sbEditor');
-
+const CONSTANTS = require('../constants/constants');
 // functions for creating and manipulating the map (i.e. Diagram)
 
 SandbankEditor.Map = function($scope, $http, $resource, $timeout, $modal, $log) {
 
     var self = this;
-
-    // ----------- constants ---------------
-    this.LEFT = 'left';
-    this.RIGHT = 'right';
 
     // ------------ component accessors ----------------
 
@@ -581,7 +577,7 @@ SandbankEditor.Map = function($scope, $http, $resource, $timeout, $modal, $log) 
 
         // put new sister right after thing (not as the last sibling)
         if (thing.containingGroup) {
-            self.moveSiblingNextTo(newSister, thing, self.RIGHT);
+            self.moveSiblingNextTo(newSister, thing, CONSTANTS.CANVAS.RIGHT);
         }
         return newSister;
     };
@@ -615,7 +611,7 @@ SandbankEditor.Map = function($scope, $http, $resource, $timeout, $modal, $log) 
 
         // put new sister right after thing (not as the last sibling)
         if (thing.containingGroup) {
-            self.moveSiblingNextTo(newSister, thing, self.RIGHT);
+            self.moveSiblingNextTo(newSister, thing, CONSTANTS.CANVAS.RIGHT);
         }
         return newSister;
     };
@@ -773,7 +769,7 @@ SandbankEditor.Map = function($scope, $http, $resource, $timeout, $modal, $log) 
             while (it2.next()) {
                 var member2 = it2.value;
                 member2.containingGroup = group.containingGroup;
-                self.moveSiblingNextTo(member2, group, self.RIGHT);
+                self.moveSiblingNextTo(member2, group, CONSTANTS.CANVAS.RIGHT);
             }
         }
         self.diagram.clearSelection();
@@ -810,7 +806,7 @@ SandbankEditor.Map = function($scope, $http, $resource, $timeout, $modal, $log) 
             if (member instanceof go.Group) {
                 // we're at the target group, so add the moved thing either before or after it
                 if (member == group) {
-                    if (side == self.LEFT) {
+                    if (side == CONSTANTS.CANVAS.LEFT) {
                         memberOrder.add(sibling);
                         self.diagram.model.setDataProperty(sibling.data, 'order', order++);
                         memberOrder.add(member);
