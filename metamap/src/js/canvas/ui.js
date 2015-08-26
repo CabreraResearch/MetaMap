@@ -336,22 +336,22 @@ SandbankEditor.UI = function($scope, $timeout, $http, $resource, $modal, $log, m
     var _cornerFunction = null;
     var _cornerTimeout = 300;
 
-    this.handleCornerClick = function(corner, thing) {
+    this.handleCornerClick = function(corner, thing, count=1) {
         //console.log('handleCornerClick: corner = ' + corner + ', cornerClicked = ' + _cornerClicked);
         // assume it's a single click, and set handler
-        _cornerFunction = getCornerFunction(corner, 1);
+        _cornerFunction = getCornerFunction(corner, count);
         // already clicked, so it's a double click; change handler
-        if (_cornerClicked == corner) {
-            _cornerFunction = getCornerFunction(corner, 2);
-            //console.log('handleCornerClick: double click on ' + corner);
-            return;
-        }
+        // if (_cornerClicked == corner) {
+        //     _cornerFunction = getCornerFunction(corner, 2);
+        //     //console.log('handleCornerClick: double click on ' + corner);
+        //     return;
+        // }
         // remember that at least one click has happened for the current corner
         _cornerClicked = corner;
 
         // set timer to invoke whatever handler we have ready to go (unless another click happens within the interval)
-        var timer = setTimeout(function() {
-            // ding! invoke it
+        // var timer = setTimeout(function() {
+        //     // ding! invoke it
             if (_cornerFunction == self.showCornerTip) {
                 _cornerFunction(thing, corner);
             } else {
@@ -360,7 +360,7 @@ SandbankEditor.UI = function($scope, $timeout, $http, $resource, $modal, $log, m
             // reset handler and clicked flag
             _cornerFunction = getCornerFunction(corner, 1);
             _cornerClicked = null;
-        }, _cornerTimeout);
+        //}, _cornerTimeout);
     };
 
     function getCornerFunction(corner, clicks) {

@@ -1,4 +1,5 @@
 const SandbankEditor = require('./sbEditor');
+require('./buttons/button')
 // goJS templates used in the editor
 
 SandbankEditor.Templates = function ($scope, map) {
@@ -856,6 +857,25 @@ SandbankEditor.Templates = function ($scope, map) {
         })
         );
 
+    let reactWatch = {};
+    let react = (part, target) => {
+        target.clicks = target.clicks || 0;
+        target.clicks += 1;
+        let method = reactWatch[target.toString()];
+        if (!method) {
+            method = _.delay(() => {
+                let count = 1;
+                if (target.clicks > 1) {
+                    count = 2;
+                }
+                target.clicks = 0
+                reactWatch[target.toString()] = null;
+                map.ui.handleCornerClick(part, target.part.adornedPart, count);
+            }, 250);
+            reactWatch[target.toString()] = method;
+        }
+    }
+
     this.groupTemplate.selectionAdornmentTemplate =
     mk(go.Adornment, "Spot",
         mk(go.Panel, "Auto",
@@ -863,40 +883,104 @@ SandbankEditor.Templates = function ($scope, map) {
             mk(go.Placeholder)  // this represents the selected Node
             ),
         //P
-        mk("Button",
-            {
-                alignment: go.Spot.TopRight,
-                click: function () { }  // this function is defined below
-            },
-            mk(go.Shape, "PlusLine", { desiredSize: new go.Size(6, 6) })
-            ),
+        mk("CornerButton", {
+            alignment: go.Spot.TopRight,
+            cursor: 'pointer',
+            portId: CONSTANTS.DSRP.P,
+            fromLinkable: true,
+            fromLinkableSelfNode: false,
+            fromLinkableDuplicates: false,
+            toLinkable: true,
+            toLinkableSelfNode: false,
+            toLinkableDuplicates: false,
+            toMaxLinks: 1,
+            click: function (event, target) {
+                react(CONSTANTS.DSRP.P, target);
+            }
+        },
+            mk(go.Shape, {
+                desiredSize: new go.Size(20, 20),
+                geometryString: config.shapes.corners.P.path,
+                fill: config.colors.DSRP.P,
+                stroke: null,
+                strokeWidth: 0,
+            }
+                )),
         //D
-        mk("Button",
-            {
+        mk("CornerButton", {
+            alignment: go.Spot.TopLeft,
+            click: function (event, target) {
+                if (event.alt) {
+                    // NB: a side effect of this will be to select just this group,
+                    // which would not happen otherwise via control-click
+                    map.perspectives.setDEditorThing(target.part.adornedPart);
+                } else {
+                    react(CONSTANTS.DSRP.D, target);
+                }
+            },
+            contextClick: function (event, target) {
+                //console.log('contextClick:' + event);
+                map.toggleDFlag(target.part.adornedPart);
+            }
+        },
+            mk(go.Shape, {
                 alignment: go.Spot.TopLeft,
-                click: function () { }  // this function is defined below
-            },
-            mk(go.Shape, "PlusLine", { desiredSize: new go.Size(6, 6) })
-            ),
+                desiredSize: new go.Size(20, 20),
+                geometryString: config.shapes.corners.D.path,
+                fill: config.colors.DSRP.D,
+                stroke: null,
+                strokeWidth: 0,
+                cursor: 'pointer'
+
+            }
+                )),
         //S
-        mk("Button",
-            {
-                alignment: go.Spot.BottomLeft,
-                click: function (event, target) {
-                    // handle single or double click
-                    map.ui.handleCornerClick(CONSTANTS.DSRP.S, target.part.adornedPart);
-                }// this function is defined below
-            },
-            mk(go.Shape, "PlusLine", { desiredSize: new go.Size(6, 6) })
+        mk("CornerButton", {
+            alignment: go.Spot.BottomLeft,
+            click: function (event, target) {
+                react(CONSTANTS.DSRP.S, target);
+            }
+        },
+            mk(go.Shape, "Circle", {
+                desiredSize: new go.Size(20, 20),
+                geometryString: config.shapes.corners.S.path,
+                fill: config.colors.DSRP.S,
+                stroke: null,
+                strokeWidth: 0,
+                cursor: 'pointer'
+            }
+                )
             ),
         //R
-        mk("Button",
-            {
+        mk("CornerButton", {
+            alignment: go.Spot.BottomRight,
+            portId: CONSTANTS.DSRP.R,
+            fromLinkable: true,
+            fromLinkableSelfNode: false,
+            fromLinkableDuplicates: true,
+            toLinkable: true,
+            toLinkableSelfNode: false,
+            toLinkableDuplicates: true,
+            click: function (event, target) {
+                react(CONSTANTS.DSRP.R, target);
+            }
+        },
+            mk(go.Shape, {
                 alignment: go.Spot.BottomRight,
-                click: function () { }  // this function is defined below
-            },
-            mk(go.Shape, "PlusLine", { desiredSize: new go.Size(6, 6) })
-            )
+                desiredSize: new go.Size(20, 20),
+                geometryString: config.shapes.corners.R.path,
+                fill: config.colors.DSRP.R,
+                stroke: null,
+                strokeWidth: 0,
+                cursor: 'pointer'
+            }
+            // { toolTip:
+            //     mk(go.Adornment, "Auto",
+            //       mk(go.Shape, { fill: "LightYellow", stroke:"#888", strokeWidth: 2 }),
+            //       mk(go.TextBlock, { margin: 8, stroke: "#888", font: "bold 16px sans-serif" },
+            //         new go.Binding("text", "Relationships")))
+            // }
+                ))
         ); // end Adornment
 
     // ------------------- link template ---------------------------
