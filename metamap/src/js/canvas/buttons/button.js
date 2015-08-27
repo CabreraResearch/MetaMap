@@ -64,23 +64,5 @@ go.GraphObject.defineBuilder("CornerButton", function (args) {
         }
     };
 
-    button.mouseDragEnter = function (event, target) {
-        debugger;
-
-    };
-    button.mouseDragLeave = function (event, target) {
-        debugger;
-
-    };
-    button.mouseDrop = function (event, target) {
-        debugger;
-
-    };
-
-    button.mouseHold = function (event, target) {
-        debugger;
-
-    };
-
     return button;
 });

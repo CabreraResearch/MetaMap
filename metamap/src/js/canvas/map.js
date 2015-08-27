@@ -1,6 +1,8 @@
-let NodeLabelDraggingTool = require('./extensions/NodeLabelDraggingTool.js');
+const NodeLabelDraggingTool = require('./extensions/NodeLabelDraggingTool.js');
 const SandbankEditor = require('./sbEditor');
 const CONSTANTS = require('../constants/constants');
+const ButtonDraggingTool = require('./buttons/buttonDragging');
+const mk = go.GraphObject.make;
 // functions for creating and manipulating the map (i.e. Diagram)
 
 SandbankEditor.Map = function($scope, $http, $resource, $timeout, $modal, $log) {
@@ -64,14 +66,18 @@ SandbankEditor.Map = function($scope, $http, $resource, $timeout, $modal, $log) 
         });
 
         // create diagram
-        self.diagram = new go.Diagram("diagram");
-        self.diagram.initialContentAlignment = go.Spot.Center;
-        self.diagram.initialViewportSpot = go.Spot.Center;
-        self.diagram.initialDocumentSpot = go.Spot.Center;
-        self.diagram.hasHorizontalScrollbar = false;
-        self.diagram.hasVerticalScrollbar = false;
-        self.diagram.padding = 500;
-        self.diagram.layout = self.layouts.getFreehandDiagramLayout();
+        self.diagram = mk(go.Diagram, "diagram", {
+            initialContentAlignment: go.Spot.Center,
+            initialViewportSpot: go.Spot.Center,
+            initialDocumentSpot: go.Spot.Center,
+            hasHorizontalScrollbar: false,
+            hasVerticalScrollbar: false,
+            padding: 500,
+            layout: self.layouts.getFreehandDiagramLayout(),
+            "undoManager.isEnabled": true,
+            draggingTool: new ButtonDraggingTool(),
+            hoverDelay: 200
+        });
         self.diagram.toolManager.mouseMoveTools.insertAt(0, new NodeLabelDraggingTool());
 
         initTools();
@@ -98,7 +104,7 @@ SandbankEditor.Map = function($scope, $http, $resource, $timeout, $modal, $log) 
 
         //$scope.safeApply();
     };
-    
+
     // misc. tool configuration
     function initTools() {
         // disable clicking on TextBlocks to edit - we will invoke editing in other ways

@@ -16,3 +16,4 @@
 /// <reference path="riotjs/riotjs.d.ts" />
 /// <reference path="universal-analytics/universal-analytics.d.ts" />
 /// <reference path="browserify/browserify.d.ts" />
+/// <reference path="goJS/goJS.d.ts" />

@@ -111,7 +111,7 @@ SandbankEditor.Templates = function ($scope, map) {
 
     // -----------------------------------------------------------------------------
 
-    // NB: these are here because they are about colors; 
+    // NB: these are here because they are about colors;
     // similar functions that are scale-related are in layouts.js...
     function getGroupSelectionStroke(obj) {
         if (obj.isSelected) {
@@ -412,7 +412,7 @@ SandbankEditor.Templates = function ($scope, map) {
                 // NB: this corner is done differently from the others:
                 // 1. the overall shape is the size of the whole square, so the port falls in the middle instead of the corner;
                 // 2. the geometry traces around the edges of the whole square, because otherwise the link line will
-                //    show inside the main square if it's crossing one of the other 3 quadrants 
+                //    show inside the main square if it's crossing one of the other 3 quadrants
                 position: new go.Point(0, 0),
                 desiredSize: new go.Size(100, 100),
                 geometry: go.Geometry.parse("F" +
@@ -498,19 +498,7 @@ SandbankEditor.Templates = function ($scope, map) {
 
     // P view indicator
     function viewMarker() {
-        return mk(go.Shape, "Border",
-            new go.Binding('visible', '', function (obj) {
-                return true;
-            }).ofObject(),
-            new go.Binding('fill', '', function (obj) {
-                return getViewMarkerFill(obj);
-            }).ofObject(), {
-                position: new go.Point(0, 0),
-                height: 18,
-                width: 100,
-                stroke: null
-            }
-            );
+        return;
     }
 
     function getViewMarkerFill(obj) {
@@ -579,24 +567,7 @@ SandbankEditor.Templates = function ($scope, map) {
     }
 
     function mainBorder() {
-        return mk(go.Shape, "Border",
-            new go.Binding('stroke', '', getGroupSelectionStroke).ofObject(),
-            new go.Binding('strokeWidth', '', getGroupSelectionStrokeWidth).ofObject(), {
-                name: "mainarea",
-                position: new go.Point(0, 0),
-                height: 100,
-                width: 100,
-                fill: null,
-                //portId: "",
-                cursor: "pointer",
-                fromLinkable: true,
-                fromLinkableSelfNode: false,
-                fromLinkableDuplicates: true,
-                toLinkable: true,
-                toLinkableSelfNode: false,
-                toLinkableDuplicates: true
-            }
-            );
+        return;
     }
 
     // --------- handlers for mouse drag/drop actions on groups, which need to be replicated on different target parts -------
@@ -632,92 +603,15 @@ SandbankEditor.Templates = function ($scope, map) {
     // --------------- targets for dragging to D or S -----------------
 
     function dragAboveTarget() {
-        return mk(go.Panel, go.Panel.Position, {
-            position: new go.Point(0, 0),
-            height: 25,
-            width: 100,
-            mouseDragEnter: getGroupMouseDragEnterHandler(map.LEFT),
-            mouseDragLeave: groupMouseDragLeaveHandler,
-            mouseDrop: getGroupMouseDropHandler(map.LEFT),
-            click: groupClickHandler
-        },
-            // drag target region
-            mk(go.Shape, "Rectangle", {
-                position: new go.Point(0, 0),
-                height: 25,
-                width: 100,
-                cursor: "pointer",
-                stroke: null,
-                fill: 'transparent'
-            }),
-            // drag indicator bar
-            mk(go.Shape, "Border",
-                new go.Binding('visible', '', function (obj) {
-                    return canDragSelectionToBecomeOrderedSisterOf(obj.part, map.LEFT, false);
-                }).ofObject(), {
-                    position: new go.Point(0, 0),
-                    height: 10,
-                    width: 100,
-                    stroke: null,
-                    fill: config.colors.black
-                }
-                )
-            );
+        return;
     }
 
     function dragIntoTarget() {
-        return mk(go.Panel, go.Panel.Position, {
-            position: new go.Point(0, 25),
-            height: 50,
-            width: 100,
-            mouseDragEnter: getGroupMouseDragEnterHandler(null),
-            mouseDragLeave: groupMouseDragLeaveHandler,
-            mouseDrop: getGroupMouseDropHandler(null),
-            click: groupClickHandler
-        },
-            mk(go.Shape, "Rectangle", {
-                position: new go.Point(0, 0),
-                height: 50,
-                width: 100,
-                cursor: "pointer",
-                stroke: null,
-                fill: 'transparent'
-            })
-            );
+        return;
     }
 
     function dragBelowTarget() {
-        return mk(go.Panel, go.Panel.Position, {
-            position: new go.Point(0, 75),
-            height: 25,
-            width: 100,
-            mouseDragEnter: getGroupMouseDragEnterHandler(map.RIGHT),
-            mouseDragLeave: groupMouseDragLeaveHandler,
-            mouseDrop: getGroupMouseDropHandler(map.RIGHT),
-            click: groupClickHandler
-        },
-            // drag target region
-            mk(go.Shape, "Rectangle", {
-                position: new go.Point(0, 0),
-                height: 25,
-                width: 100,
-                cursor: "pointer",
-                stroke: null,
-                fill: 'transparent'
-            }),
-            // drag indicator bar
-            mk(go.Shape, "Border",
-                new go.Binding('visible', '', function (obj) {
-                    return canDragSelectionToBecomeOrderedSisterOf(obj.part, map.RIGHT, false);
-                }).ofObject(), {
-                    position: new go.Point(0, 15),
-                    height: 10,
-                    width: 100,
-                    stroke: null,
-                    fill: config.colors.black
-                }
-                )
-            );
+        return;
     }
 
     // Returns the TextBlock for the group title, for use in the main group template, inside the box.
@@ -725,33 +619,8 @@ SandbankEditor.Templates = function ($scope, map) {
         return mk(go.Panel, go.Panel.Horizontal, {
             position: new go.Point(0, 0),
             desiredSize: new go.Size(100, 100)
-        },
-            mk(go.TextBlock,
-                new go.Binding("text", "text").makeTwoWay(),
-                new go.Binding("visible", "", function (group) {
-                    // always show text inside box for R-things, because external text will throw off layout
-                    return true;
-                }).ofObject(), {
-                    width: 80,
-                    margin: 10,
-                    alignment: go.Spot.Center,
-                    textAlign: config.shapes.label.textAlign,
-                    cursor: config.shapes.label.cursor,
-                    font: config.shapes.label.font,
-                    isMultiline: true,
-                    wrap: go.TextBlock.WrapDesiredSize,
+        }
 
-                    mouseDragEnter: getGroupMouseDragEnterHandler(null),
-                    mouseDragLeave: groupMouseDragLeaveHandler,
-                    mouseDrop: getGroupMouseDropHandler(null),
-                    click: groupClickHandler,
-                    contextClick: function (event, target) {
-                        if (event.control) {
-                            //console.log(groupInfo(target.part));
-                        }
-                    }
-                }
-                )
             );
     }
 
@@ -802,9 +671,9 @@ SandbankEditor.Templates = function ($scope, map) {
                 map.ui.mouseOverGroup = null;
                 map.diagram.updateAllTargetBindings();
             }
-            // containingGroupChanged: function(part, oldgroup, newgroup) { 
-            //     map.diagram.model.setDataProperty(part.data, 'level', map.computeLevel(part)); 
-            //     //part.updateTargetBindings();   
+            // containingGroupChanged: function(part, oldgroup, newgroup) {
+            //     map.diagram.model.setDataProperty(part.data, 'level', map.computeLevel(part));
+            //     //part.updateTargetBindings();
             // }
         },
         mk(go.Panel, go.Panel.Horizontal,
@@ -813,40 +682,191 @@ SandbankEditor.Templates = function ($scope, map) {
                 name: "mainpanel"
             },
                 new go.Binding("scale", "", map.layouts.getScale).ofObject(),
-                // drag area
-                mk(go.Shape, "Rectangle", {
-                    name: "dragarea",
-                    position: new go.Point(0, 0),
-                    width: 100,
-                    height: 100,
-                    fill: config.shapes.box.fillColor,
-                    stroke: null,
-                    cursor: "move",
-                    // show debug info
-                    contextClick: function (event, target) {
-                        if (event.control) {
-                            //console.log(groupInfo(target.part));
+                mk(go.Panel, go.Panel.Spot,
+                    // drag area
+                    mk(go.Shape, "Rectangle", {
+                        name: "dragarea",
+                        position: new go.Point(0, 0),
+                        width: 100,
+                        height: 100,
+                        fill: config.shapes.box.fillColor,
+                        stroke: null,
+                        cursor: "move",
+                        fromLinkable: true,
+                        fromLinkableSelfNode: false,
+                        fromLinkableDuplicates: true,
+                        toLinkable: true,
+                        toLinkableSelfNode: false,
+                        toLinkableDuplicates: true,
+                        mouseDragEnter: getGroupMouseDragEnterHandler(map.LEFT),
+                        mouseDragLeave: groupMouseDragLeaveHandler,
+                        mouseDrop: getGroupMouseDropHandler(map.LEFT),
+                        // show debug info
+                        contextClick: function (event, target) {
+                            if (event.control) {
+                                //console.log(groupInfo(target.part));
+                            }
                         }
-                    }
-                }),
-                mk(go.Panel, go.Panel.Position,
-                    viewMarker(),
-                    dragAboveTarget(),
-                    dragIntoTarget(),
-                    dragBelowTarget(),
-                    groupInternalTextBlock(),
-                    cornerD(),
-                    dFlagMarker(),
-                    cornerS(),
-                    sCollapsedMarker(),
-                    cornerR(),
-                    pointMarker(),
-                    cornerP(),
-                    attachmentPaperClip(),
-                    mainBorder()
+                    },
+                        new go.Binding('stroke', '', getGroupSelectionStroke).ofObject(),
+                        new go.Binding('strokeWidth', '', getGroupSelectionStrokeWidth).ofObject()
+                        ),
+                    //viewMarker
+                    // mk(go.Shape, "Border",
+                    //     new go.Binding('visible', '', function (obj) {
+                    //         return true;
+                    //     }).ofObject(),
+                    //     new go.Binding('fill', '', function (obj) {
+                    //         return getViewMarkerFill(obj);
+                    //     }).ofObject(), {
+                    //         position: new go.Point(0, 0),
+                    //         height: 18,
+                    //         width: 100,
+                    //         stroke: null
+                    //     }
+                    //     ),
+                    //dragAboveTarget(),
+                    // mk(go.Panel, go.Panel.Position, {
+                    //     position: new go.Point(0, 0),
+                    //     height: 25,
+                    //     width: 100,
+                    //     mouseDragEnter: getGroupMouseDragEnterHandler(map.LEFT),
+                    //     mouseDragLeave: groupMouseDragLeaveHandler,
+                    //     mouseDrop: getGroupMouseDropHandler(map.LEFT),
+                    //     click: groupClickHandler
+                    // },
+                    //     // drag target region
+                    //     mk(go.Shape, "Rectangle", {
+                    //         position: new go.Point(0, 0),
+                    //         height: 25,
+                    //         width: 100,
+                    //         cursor: "pointer",
+                    //         stroke: null,
+                    //         fill: 'transparent'
+                    //     }),
+                    //     // drag indicator bar
+                    //     mk(go.Shape, "Border",
+                    //         new go.Binding('visible', '', function (obj) {
+                    //             return canDragSelectionToBecomeOrderedSisterOf(obj.part, map.LEFT, false);
+                    //         }).ofObject(), {
+                    //             position: new go.Point(0, 0),
+                    //             height: 10,
+                    //             width: 100,
+                    //             stroke: null,
+                    //             fill: config.colors.black
+                    //         }
+                    //         )
+                    //     ),
+                    // //dragIntoTarget(),
+                    // mk(go.Panel, go.Panel.Position, {
+                    //     position: new go.Point(0, 25),
+                    //     height: 50,
+                    //     width: 100,
+                    //     mouseDragEnter: getGroupMouseDragEnterHandler(null),
+                    //     mouseDragLeave: groupMouseDragLeaveHandler,
+                    //     mouseDrop: getGroupMouseDropHandler(null),
+                    //     click: groupClickHandler
+                    // },
+                    //     mk(go.Shape, "Rectangle", {
+                    //         position: new go.Point(0, 0),
+                    //         height: 50,
+                    //         width: 100,
+                    //         cursor: "pointer",
+                    //         stroke: null,
+                    //         fill: 'transparent'
+                    //     })
+                    //     ),
+                    // //dragBelowTarget(),
+                    // mk(go.Panel, go.Panel.Position, {
+                    //     position: new go.Point(0, 75),
+                    //     height: 25,
+                    //     width: 100,
+                    //     mouseDragEnter: getGroupMouseDragEnterHandler(map.RIGHT),
+                    //     mouseDragLeave: groupMouseDragLeaveHandler,
+                    //     mouseDrop: getGroupMouseDropHandler(map.RIGHT),
+                    //     click: groupClickHandler
+                    // },
+                    //     // drag target region
+                    //     mk(go.Shape, "Rectangle", {
+                    //         position: new go.Point(0, 0),
+                    //         height: 25,
+                    //         width: 100,
+                    //         cursor: "pointer",
+                    //         stroke: null,
+                    //         fill: 'transparent'
+                    //     }),
+                    //     // drag indicator bar
+                    //     mk(go.Shape, "Border",
+                    //         new go.Binding('visible', '', function (obj) {
+                    //             return canDragSelectionToBecomeOrderedSisterOf(obj.part, map.RIGHT, false);
+                    //         }).ofObject(), {
+                    //             position: new go.Point(0, 15),
+                    //             height: 10,
+                    //             width: 100,
+                    //             stroke: null,
+                    //             fill: config.colors.black
+                    //         }
+                    //         )
+                    //     ),
+                    //groupInternalText
+                    mk(go.TextBlock,
+                        new go.Binding("text", "text").makeTwoWay(),
+                        new go.Binding("alignment", "alignment").makeTwoWay(),
+                        new go.Binding("visible", "", function (group) {
+                            // always show text inside box for R-things, because external text will throw off layout
+                            return true;
+                        }).ofObject(), {
+                            width: 80,
+                            margin: 10,
+                            alignment: go.Spot.Center,
+                            textAlign: config.shapes.label.textAlign,
+                            cursor: config.shapes.label.cursor,
+                            font: config.shapes.label.font,
+                            isMultiline: true,
+                            wrap: go.TextBlock.None,
+                            editable: true,
+                            _isNodeLabel: true,
+                            mouseDragEnter: getGroupMouseDragEnterHandler(null),
+                            mouseDragLeave: groupMouseDragLeaveHandler,
+                            mouseDrop: getGroupMouseDropHandler(null),
+                            click: groupClickHandler,
+                            contextClick: function (event, target) {
+                                if (event.control) {
+                                    //console.log(groupInfo(target.part));
+                                }
+                            }
+                        }
+                        )
+                // cornerD(),
+                // dFlagMarker(),
+                // cornerS(),
+                // sCollapsedMarker(),
+                // cornerR(),
+                // pointMarker(),
+                // cornerP(),
+                // attachmentPaperClip(),
+                //mainBorder()
+                // mk(go.Shape, "Border",
+                //     new go.Binding('stroke', '', getGroupSelectionStroke).ofObject(),
+                //     new go.Binding('strokeWidth', '', getGroupSelectionStrokeWidth).ofObject(), {
+                //         name: "mainarea",
+                //         position: new go.Point(0, 0),
+                //         height: 100,
+                //         width: 100,
+                //         fill: null,
+                //         //portId: "",
+                //         cursor: "pointer",
+                //         fromLinkable: true,
+                //         fromLinkableSelfNode: false,
+                //         fromLinkableDuplicates: true,
+                //         toLinkable: true,
+                //         toLinkableSelfNode: false,
+                //         toLinkableDuplicates: true
+                //     }
+                //     )
                     )
                 )
-            //groupExternalTextBlock(map.layouts.showRightTextBlock, 'left')
+        //groupExternalTextBlock(map.layouts.showRightTextBlock, 'left')
             ),
         // the placeholder normally holds the child nodes, but we just use a dummy placeholder
         mk(go.Shape, {
@@ -1074,7 +1094,7 @@ SandbankEditor.Templates = function ($scope, map) {
 
     // change color and portId of temporary link templates based on the type of link being created/relinked
     this.handlePortTargeted = function (tool, realnode, realport, tempnode, tempport, toend) {
-        // //console.log('portTargeted, realport: ' + (realport ? realport.name : '') + ', tempport: ' + (tempport ? tempport.name : '') 
+        // //console.log('portTargeted, realport: ' + (realport ? realport.name : '') + ', tempport: ' + (tempport ? tempport.name : '')
         //     + ', originalFromPort: ' + (ltool.originalFromPort ? ltool.originalFromPort.name : '') + ', originalToPort: ' + ltool.originalToPort);
 
         var linkShape = tool.temporaryLink.findObject('linkshape');
@@ -1151,7 +1171,7 @@ SandbankEditor.Templates = function ($scope, map) {
             selectionAdorned: false,
             resizable: true,
             resizeAdornmentTemplate: mk(go.Adornment, "Spot",
-                mk(go.Placeholder), // takes size and position of adorned object                    
+                mk(go.Placeholder), // takes size and position of adorned object
                 createSlideResizeHandle(go.Spot.TopLeft),
                 createSlideResizeHandle(go.Spot.Top),
                 createSlideResizeHandle(go.Spot.TopRight),
@@ -1176,7 +1196,7 @@ SandbankEditor.Templates = function ($scope, map) {
 
     // ------------------- export footer ----------------------
 
-    // NB: this is not a template per se, in that it is added to the diagram 
+    // NB: this is not a template per se, in that it is added to the diagram
     // statically, rather than being bound to something in the model.
     // But we put it here because it is about creating parts and stuff.
 

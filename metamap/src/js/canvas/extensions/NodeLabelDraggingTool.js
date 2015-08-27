@@ -58,8 +58,9 @@ NodeLabelDraggingTool.prototype.findLabel = function() {
   var e = diagram.firstInput;
   var elt = diagram.findObjectAt(e.documentPoint, null, null);
 
-  if (elt === null || !(elt.part instanceof go.Node)) return null;
-  while (elt.panel !== null && elt.panel.type === go.Panel.Spot && elt.panel.elt(0) !== elt) {
+  //if (elt === null || !(elt.part instanceof go.Node)) return null;
+  if (elt._isNodeLabel) return elt;
+  while (elt.panel !== null && elt.panel.elt(0) !== elt) {
     if (elt._isNodeLabel) return elt;
     elt = elt.panel;
   }
