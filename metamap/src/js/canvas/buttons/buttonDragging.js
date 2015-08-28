@@ -93,25 +93,27 @@ ButtonDraggingTool.prototype.findDraggablePart = function () {
 // create a new Part and select it, so that it is dragged by the DraggingTool.
 ButtonDraggingTool.prototype.standardMouseSelect = function (event, obj) {
     if (this._dragData !== null) {
-        this.diagram.startTransaction("Drag");
-        // this method must now set this.currentPart to a selected movable Part
+        if (this._dragData.portId == CONSTANTS.DSRP.P || this._dragData.portId == CONSTANTS.DSRP.R) {
+            this.diagram.startTransaction("Drag");
+            // this method must now set this.currentPart to a selected movable Part
 
-        this.diagram.allowLink = true;
-        var tool = this.diagram.toolManager.linkingTool;
-        var node = this.diagram.findObjectAt(this.diagram.lastInput.documentPoint).part.adornedPart;
-        tool.startObject = node.findObject('dragarea');
-        tool.archetypeLinkData.text = "c";
-        this.diagram.currentTool = tool;
-        tool.doActivate();
+            this.diagram.allowLink = true;
+            var tool = this.diagram.toolManager.linkingTool;
+            var node = this.diagram.findObjectAt(this.diagram.lastInput.documentPoint).part.adornedPart;
+            tool.startObject = node.findObject('dragarea');
+            tool.archetypeLinkData.text = this._dragData.portId;
+            this.diagram.currentTool = tool;
+            tool.doActivate();
 
-        this.map.templates.groupMouseDragLeaveHandler()
+            this.map.templates.groupMouseDragLeaveHandler()
 
-        // var data = this.diagram.model.copyNodeData(this._dragData);
-        // this.diagram.model.addNodeData(data);
-        // var newpart = this.diagram.findNodeForData(data);
-        // newpart.location = this.diagram.lastInput.documentPoint;
-        // this.diagram.select(newpart);
-        // this.currentPart = newpart;
+            // var data = this.diagram.model.copyNodeData(this._dragData);
+            // this.diagram.model.addNodeData(data);
+            // var newpart = this.diagram.findNodeForData(data);
+            // newpart.location = this.diagram.lastInput.documentPoint;
+            // this.diagram.select(newpart);
+            // this.currentPart = newpart;
+        }
     } else {
         go.DraggingTool.prototype.standardMouseSelect.call(this);
     }
@@ -119,13 +121,6 @@ ButtonDraggingTool.prototype.standardMouseSelect = function (event, obj) {
 
 ButtonDraggingTool.prototype.doActivate = function (event, obj) {
     go.DraggingTool.prototype.doActivate.apply(this, arguments);
-
-    if (this._dragData !== null) {
-        this._dragData = null;
-        // match startTransaction call performed in doActivate but
-        // now performed early in standardMouseSelect (if _dragData !== null)
-        this.diagram.commitTransaction("Drag");
-    }
 };
 
 module.exports = ButtonDraggingTool;

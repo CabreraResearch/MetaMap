@@ -154,6 +154,10 @@ SandbankEditor.Map = function($scope, $http, $resource, $timeout, $modal, $log) 
         self.diagram.toolManager.linkingTool.archetypeLinkData = {
             type: 'noArrows'
         };
+        // default link attributes
+        self.diagram.toolManager.draggingTool.archetypeLinkData = {
+            type: 'noArrows'
+        };
 
         // allow double-click in background to create a new node
         self.diagram.toolManager.clickCreatingTool.archetypeNodeData = getNewThingData();
@@ -254,16 +258,18 @@ SandbankEditor.Map = function($scope, $http, $resource, $timeout, $modal, $log) 
     function linkDrawn(e) {
         var link = e.subject;
         //console.log('linkDrawn, link: ' + link + ', fromPort: ' + link.fromPortId + ', toPort: ' + link.toPortId);
-        if (link.fromPortId == 'P') {
+        if (link.data.text == CONSTANTS.DSRP.P || link.fromPortId == CONSTANTS.DSRP.P) {
+            link.fromPortId = CONSTANTS.DSRP.P
             self.diagram.model.startTransaction("change link category");
-            self.diagram.model.setDataProperty(link.data, 'toPort', 'P');
-            self.diagram.model.setDataProperty(link.data, 'category', 'P');
+            self.diagram.model.setDataProperty(link.data, 'toPort', CONSTANTS.DSRP.P);
+            self.diagram.model.setDataProperty(link.data, 'category', CONSTANTS.DSRP.P);
             self.diagram.model.commitTransaction("change link category");
         }
         // prevent links from R to P
-        else if (link.fromPortId == 'R') {
+        else if (link.data.text == CONSTANTS.DSRP.R || link.fromPortId == CONSTANTS.DSRP.R) {
+            link.fromPortId = CONSTANTS.DSRP.R
             self.diagram.model.startTransaction("change link toPort");
-            self.diagram.model.setDataProperty(link.data, 'toPort', 'R');
+            self.diagram.model.setDataProperty(link.data, 'toPort', CONSTANTS.DSRP.R);
             self.diagram.model.commitTransaction("change link toPort");
         }
     }
@@ -273,15 +279,15 @@ SandbankEditor.Map = function($scope, $http, $resource, $timeout, $modal, $log) 
     // since P port is on top of R port, so we reset both ports to R if the category is not P.
     function linkRelinked(e) {
         var link = e.subject;
-        if (link.data.category === undefined || link.data.category !== 'P') {
-            self.diagram.model.setDataProperty(link.data, 'fromPort', 'R');
-            self.diagram.model.setDataProperty(link.data, 'toPort', 'R');
+        if (link.data.category === undefined || link.data.category !== CONSTANTS.DSRP.P) {
+            self.diagram.model.setDataProperty(link.data, 'fromPort', CONSTANTS.DSRP.R);
+            self.diagram.model.setDataProperty(link.data, 'toPort', CONSTANTS.DSRP.R);
         }
     }
 
     function setNewLinkDirection(e) {
         var link = e.subject;
-        if (link.fromPortId == 'R') {
+        if (link.fromPortId == CONSTANTS.DSRP.R) {
             self.diagram.model.startTransaction("change link direction");
             self.diagram.model.setDataProperty(link.data, 'type', self.ui.getMapEditorOptions().defaultRelationshipDirection);
             self.diagram.commitTransaction("change link direction");
@@ -610,8 +616,8 @@ SandbankEditor.Map = function($scope, $http, $resource, $timeout, $modal, $log) 
             from: thingKey,
             to: groupKey,
             type: 'to',
-            fromPort: 'R',
-            toPort: 'R'
+            fromPort: CONSTANTS.DSRP.R,
+            toPort: CONSTANTS.DSRP.R
         };
         self.diagram.model.addLinkData(linkData);
 
@@ -695,8 +701,8 @@ SandbankEditor.Map = function($scope, $http, $resource, $timeout, $modal, $log) 
             type: 'noArrows',
             from: thing1.data.key,
             to: thing2.data.key,
-            fromPort: 'R',
-            toPort: 'R'
+            fromPort: CONSTANTS.DSRP.R,
+            toPort: CONSTANTS.DSRP.R
         };
         self.diagram.model.addLinkData(data);
         self.diagram.model.commitTransaction('add link');
@@ -710,9 +716,9 @@ SandbankEditor.Map = function($scope, $http, $resource, $timeout, $modal, $log) 
             type: 'noArrows',
             from: thing1.data.key,
             to: thing2.data.key,
-            fromPort: 'P',
-            toPort: 'P',
-            category: 'P'
+            fromPort: CONSTANTS.DSRP.P,
+            toPort: CONSTANTS.DSRP.P,
+            category: CONSTANTS.DSRP.P
         };
         self.diagram.model.addLinkData(data);
         self.diagram.model.commitTransaction('add link');
@@ -863,14 +869,14 @@ SandbankEditor.Map = function($scope, $http, $resource, $timeout, $modal, $log) 
         var isExpanded = !(thing.data && !thing.data.sExpanded); // expand by default if property not present
         self.diagram.model.setDataProperty(thing.data, 'sExpanded', !isExpanded);
         thing.updateTargetBindings();
-        self.ui.showCornerTip(thing, 'S');
+        self.ui.showCornerTip(thing, CONSTANTS.DSRP.S);
     };
 
     // P corner handler (single click)
     this.togglePExpansion = function(thing) {
         self.diagram.model.setDataProperty(thing.data, 'pExpanded', !self.pIsExpanded(thing));
         thing.updateTargetBindings();
-        self.ui.showCornerTip(thing, "P");
+        self.ui.showCornerTip(thing, CONSTANTS.DSRP.P);
     };
 
     this.pIsExpanded = function(group) {
