@@ -684,11 +684,11 @@ SandbankEditor.Templates = function ($scope, map) {
                 new go.Binding("scale", "", map.layouts.getScale).ofObject(),
                 mk(go.Panel, go.Panel.Spot,
                     // drag area
-                    mk(go.Shape, "Rectangle", {
+                    mk(go.Shape, "Circle", {
                         name: "dragarea",
                         position: new go.Point(0, 0),
-                        width: 100,
-                        height: 100,
+                        width: 50,
+                        height: 50,
                         fill: config.shapes.box.fillColor,
                         stroke: null,
                         cursor: "move",
@@ -711,6 +711,8 @@ SandbankEditor.Templates = function ($scope, map) {
                         new go.Binding('stroke', '', getGroupSelectionStroke).ofObject(),
                         new go.Binding('strokeWidth', '', getGroupSelectionStrokeWidth).ofObject()
                         ),
+                        mk(go.Shape,  // provide interior area where the user can grab the node
+          { fill: "transparent", stroke: null, desiredSize: new go.Size(40, 40) }),
                     //viewMarker
                     // mk(go.Shape, "Border",
                     //     new go.Binding('visible', '', function (obj) {
@@ -816,14 +818,14 @@ SandbankEditor.Templates = function ($scope, map) {
                             // always show text inside box for R-things, because external text will throw off layout
                             return true;
                         }).ofObject(), {
-                            width: 80,
-                            margin: 10,
-                            alignment: go.Spot.Center,
-                            textAlign: config.shapes.label.textAlign,
+                            //width: 80,
+                            //margin: 10,
+                            //alignment: go.Spot.Left,
+                            //textAlign: config.shapes.label.textAlign,
                             cursor: config.shapes.label.cursor,
                             font: config.shapes.label.font,
                             isMultiline: true,
-                            wrap: go.TextBlock.None,
+                            //wrap: go.TextBlock.,
                             editable: true,
                             _isNodeLabel: true,
                             mouseDragEnter: getGroupMouseDragEnterHandler(null),

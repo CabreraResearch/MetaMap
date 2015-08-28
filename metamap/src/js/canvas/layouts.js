@@ -236,7 +236,7 @@ SandbankEditor.Layouts = function($scope, map) {
 
     // gets the basic scaling for thing squares, by level
     function getThingScale(level) {
-        return Math.pow(0.45, level); // 1, .45, .2025, .091125, ...
+        return Math.pow(0.7, level); // 1, .45, .2025, .091125, ...
     }
 
     // this is only used for groups
@@ -263,7 +263,7 @@ SandbankEditor.Layouts = function($scope, map) {
                 //console.log('getScale, fromScale: ' + fromScale + ', toScale: ' + toScale + ', visitedGroupKeys: ' + visitedGroupKeys.join(','));
                 return Math.min(fromScale, toScale) * 0.5;
             } else if (group.containingGroup) {
-                return self.getScale(group.containingGroup, visitedGroupKeys) * 0.45;
+                return self.getScale(group.containingGroup, visitedGroupKeys) * 0.7;
             } else {
                 return getThingScale(self.computeLevel(group));
             }
@@ -273,7 +273,7 @@ SandbankEditor.Layouts = function($scope, map) {
 
     // gets the margin to be used in stack layout between this group's children
     function getStackMargin(group) {
-        return (10 / 0.45) * self.getScale(group);
+        return (10 / 0.7) * self.getScale(group);
     }
 
     // gets the margin to be used in stack layout between this group's children
@@ -286,7 +286,7 @@ SandbankEditor.Layouts = function($scope, map) {
     }
 
     this.getExternalTextScale = function(group) {
-        return 1 - 0.1 * self.computeLevel(group);
+        return 1;
     };
 
     this.getLinkStrokeWidth = function(link) {
@@ -295,7 +295,7 @@ SandbankEditor.Layouts = function($scope, map) {
         return (link.isSelected ? config.shapes.line.borderHighlightWidth : config.shapes.line.borderWidth) * Math.min(fromScale, toScale); // 2, .9, ...
     };
 
-    // scale arrowheads based on the smallest to/from node, 
+    // scale arrowheads based on the smallest to/from node,
     // or just the To node for P links
     this.getArrowheadScale = function(link) {
         var fromScale = self.getScale(link.fromNode);
@@ -314,9 +314,9 @@ SandbankEditor.Layouts = function($scope, map) {
 
     // -------------- creating new things ----------------------
 
-    // Returns a location for a new sister group (thing) to the given one, 
-    // which will not hide any existing things (overlap is allowed). 
-    // The returned coordinates are absolute for a top-level group, 
+    // Returns a location for a new sister group (thing) to the given one,
+    // which will not hide any existing things (overlap is allowed).
+    // The returned coordinates are absolute for a top-level group,
     // or relative to the parent otherwise - suitable for use with FreehandDiagramLayout
     // or FreehandLayout, resp.
     this.getNewSisterLocation = function(group, withR) {
@@ -422,7 +422,7 @@ SandbankEditor.Layouts = function($scope, map) {
         return new go.Point(x, y);
     };
 
-    // move all the given new member groups so that their locations are relative to that of 
+    // move all the given new member groups so that their locations are relative to that of
     // the parent and its previously existing members, and scaled down appropriately
     this.layoutNewMembersRelativeTo = function(newMembers, parent, oldMemberBounds) {
         // how big was the parent system before the new groups were added?
@@ -435,7 +435,7 @@ SandbankEditor.Layouts = function($scope, map) {
         //console.log('layoutNewMembersRelativeTo, systemBounds: ' + systemBounds + ', oldBounds: ' + oldBounds +  ', oldOrigin: ' + oldOrigin + ', newOrigin: ' + newOrigin);
 
         // figure out new scaled locations
-        // NB: we can assume newMembers are all one level down from parent (see map.addSelectedThingsAsChildrenOf), 
+        // NB: we can assume newMembers are all one level down from parent (see map.addSelectedThingsAsChildrenOf),
         // so we just multiply by the standard scale factor
         var it = newMembers.iterator;
         while (it.next()) {
@@ -774,7 +774,7 @@ SandbankEditor.Layouts = function($scope, map) {
             applyStraightRouting(link);
         }
 
-        // show link only if both connected things are visible (no collapsed ancestors); 
+        // show link only if both connected things are visible (no collapsed ancestors);
         // hide if both are in stacked layout or if it's a P-link that we shouldn't be showing now
         if (self.fromAndToNodesAreVisible(link) && !stackedAncestor && !hidePLink) {
             link.opacity = 1;
@@ -854,7 +854,7 @@ SandbankEditor.Layouts = function($scope, map) {
         var rangeStart = 0 - rangeSize / 2;
 
         link.curviness = (rangeStart + rangeIncrement * snpos.index) * snpos.orientation;
-        // //console.log('applyMultilinkCurveRouting, link: ' + link + ', curviness: ' + link.curviness); 
+        // //console.log('applyMultilinkCurveRouting, link: ' + link + ', curviness: ' + link.curviness);
     }
 
     // do normal straight lines for freehand layout, or links between descendants of things with different layouts
@@ -868,7 +868,7 @@ SandbankEditor.Layouts = function($scope, map) {
 
     // --------------- calculate how many links there are between a link's nodes ---------------
 
-    // Returns an object of the format { index: 1, count: 2, orientation: -1, hasRThing: false }, 
+    // Returns an object of the format { index: 1, count: 2, orientation: -1, hasRThing: false },
     // indicating how many other links there are between the same pair of nodes,
     // where the given link falls within this list, and what its orientation is.
     this.getSameNodesLinkPosition = function(link) {
@@ -930,7 +930,7 @@ SandbankEditor.Layouts = function($scope, map) {
 
     // Returns a key used to group links according to which pair of nodes they connect.
     // The returned key is non-empty for regular links and P links that should be shown currently,
-    // so that these will all be routed by the same rules. A null key is returned for any other 
+    // so that these will all be routed by the same rules. A null key is returned for any other
     // links, indicating that no grouping is required.
     function getSameNodesLinkKey(link) {
         //        if (self.isRLink(link) || (self.isPLink(link) && map.templates.showPLink(link))) {
