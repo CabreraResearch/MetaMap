@@ -573,7 +573,7 @@ SandbankEditor.Templates = function ($scope, map) {
     // --------- handlers for mouse drag/drop actions on groups, which need to be replicated on different target parts -------
 
     // position is map.LEFT, null, or map.RIGHT
-    function getGroupMouseDragEnterHandler(position) {
+    this.getGroupMouseDragEnterHandler = function(position) {
         return function (event, target, obj2) {
             //console.log('mouseDragEnter, e.dp: ' + event.documentPoint + ', target.part: ' + target.part + ', target bounds: ' + target.actualBounds);
             map.ui.dragTargetGroup = target.part;
@@ -582,13 +582,13 @@ SandbankEditor.Templates = function ($scope, map) {
         };
     }
 
-    var groupMouseDragLeaveHandler = function (event, target, obj2) {
+    this.groupMouseDragLeaveHandler = function (event, target, obj2) {
         map.ui.dragTargetGroup = null;
         map.ui.dragTargetPosition = null;
         map.diagram.updateAllTargetBindings();
     };
 
-    function getGroupMouseDropHandler(position) {
+    this.getGroupMouseDropHandler = function(position) {
         return function (event, dropTarget) {
             handleGroupMouseDrop(event, dropTarget, position);
         };
@@ -643,6 +643,43 @@ SandbankEditor.Templates = function ($scope, map) {
 
     // -------------- group/Thing template --------------------
 
+    var nodeHoverAdornment =
+        mk(go.Adornment, "Spot",
+            {
+                background: "transparent",
+                mouseLeave: function (e, obj) {
+                    var ad = obj.part;
+                    ad.adornedPart.removeAdornment("mouseHover");
+                }
+            },
+            mk(go.Placeholder,
+                {
+                    background: "transparent",  // to allow this Placeholder to be "seen" by mouse events
+                    isActionable: true,  // needed because this is in a temporary Layer
+                    click: function (e, obj) {
+                        var node = obj.part.adornedPart;
+                        node.diagram.select(node);
+                    }
+                }),
+
+                require('./buttons/d')(map),
+                require('./buttons/s')(map),
+                require('./buttons/r')(map),
+                require('./buttons/p')(map)
+
+            )
+
+    const groupSelectionAdornmentTemplate = mk(go.Adornment, "Spot",
+        mk(go.Panel, "Spot",
+            mk(go.Shape, "Circle", {
+                fill: null,
+                stroke: "dodgerblue",
+                strokeWidth: 4
+            }),
+            mk(go.Placeholder)  // this represents the selected Node
+            )
+        );
+
     this.groupTemplate =
     mk(go.Group, go.Panel.Vertical,
         new go.Binding("layout", "layout", function (layoutName) {
@@ -682,7 +719,20 @@ SandbankEditor.Templates = function ($scope, map) {
                 name: "mainpanel"
             },
                 new go.Binding("scale", "", map.layouts.getScale).ofObject(),
-                mk(go.Panel, go.Panel.Spot,
+                mk(go.Panel, go.Panel.Spot, {
+                    click: function (e, obj) {
+                        var node = obj.part;
+                        nodeHoverAdornment.adornedObject = node.findObject('dragarea')
+                        node.addAdornment("click", groupSelectionAdornmentTemplate);
+                        node.addAdornment("click", nodeHoverAdornment);
+                        return true;
+                    },
+                    mouseHover: function (e, obj) {
+                        var node = obj.part;
+                        nodeHoverAdornment.adornedObject = node.findObject('dragarea')
+                        node.addAdornment("mouseHover", nodeHoverAdornment);
+                    }
+                },
                     // drag area
                     mk(go.Shape, "Circle", {
                         name: "dragarea",
@@ -692,27 +742,30 @@ SandbankEditor.Templates = function ($scope, map) {
                         fill: config.shapes.box.fillColor,
                         stroke: null,
                         cursor: "move",
+                        portId: "",
                         fromLinkable: true,
                         fromLinkableSelfNode: false,
                         fromLinkableDuplicates: true,
                         toLinkable: true,
                         toLinkableSelfNode: false,
                         toLinkableDuplicates: true,
-                        mouseDragEnter: getGroupMouseDragEnterHandler(map.LEFT),
-                        mouseDragLeave: groupMouseDragLeaveHandler,
-                        mouseDrop: getGroupMouseDropHandler(map.LEFT),
+                        mouseDragEnter: self.getGroupMouseDragEnterHandler(map.LEFT),
+                        mouseDragLeave: self.groupMouseDragLeaveHandler,
+                        mouseDrop: self.getGroupMouseDropHandler(map.LEFT),
+
                         // show debug info
                         contextClick: function (event, target) {
                             if (event.control) {
                                 //console.log(groupInfo(target.part));
                             }
                         }
+
                     },
                         new go.Binding('stroke', '', getGroupSelectionStroke).ofObject(),
                         new go.Binding('strokeWidth', '', getGroupSelectionStrokeWidth).ofObject()
                         ),
-                        mk(go.Shape,  // provide interior area where the user can grab the node
-          { fill: "transparent", stroke: null, desiredSize: new go.Size(40, 40) }),
+                    mk(go.Shape,  // provide interior area where the user can grab the node
+                        { fill: "transparent", stroke: null, desiredSize: new go.Size(50, 50) }),
                     //viewMarker
                     // mk(go.Shape, "Border",
                     //     new go.Binding('visible', '', function (obj) {
@@ -828,9 +881,9 @@ SandbankEditor.Templates = function ($scope, map) {
                             //wrap: go.TextBlock.,
                             editable: true,
                             _isNodeLabel: true,
-                            mouseDragEnter: getGroupMouseDragEnterHandler(null),
-                            mouseDragLeave: groupMouseDragLeaveHandler,
-                            mouseDrop: getGroupMouseDropHandler(null),
+                            //mouseDragEnter: selfg.getGroupMouseDragEnterHandler(null),
+                            //mouseDragLeave: self.groupMouseDragLeaveHandler,
+                            //mouseDrop: self.getGroupMouseDropHandler(null),
                             click: groupClickHandler,
                             contextClick: function (event, target) {
                                 if (event.control) {
@@ -879,20 +932,27 @@ SandbankEditor.Templates = function ($scope, map) {
         })
         );
 
+
     this.groupTemplate.selectionAdornmentTemplate = mk(go.Adornment, "Spot",
         mk(go.Panel, "Auto",
-            mk(go.Shape, { fill: null, strokeWidth: 0 }),
+            mk(go.Shape, "Circle", {
+                fill: null,
+                stroke: null,
+                strokeWidth: 0
+            }),
             mk(go.Placeholder)  // this represents the selected Node
-            ),
-        //P
-        require('./buttons/p')(map),
-        //D
-        require('./buttons/d')(map),
-        //S
-        require('./buttons/s')(map),
-        //R
-        require('./buttons/r')(map)
-        ); // end Adornment
+            )
+        );
+
+    //     //P
+    //     require('./buttons/p')(map),
+    //     //D
+    //     require('./buttons/d')(map),
+    //     //S
+    //     require('./buttons/s')(map),
+    //     //R
+    //     require('./buttons/r')(map)
+    //     ); // end Adornment
 
     // ------------------- link template ---------------------------
 

@@ -75,7 +75,7 @@ SandbankEditor.Map = function($scope, $http, $resource, $timeout, $modal, $log) 
             padding: 500,
             layout: self.layouts.getFreehandDiagramLayout(),
             "undoManager.isEnabled": true,
-            draggingTool: new ButtonDraggingTool(),
+            draggingTool: new ButtonDraggingTool(self),
             hoverDelay: 200
         });
         self.diagram.toolManager.mouseMoveTools.insertAt(0, new NodeLabelDraggingTool());

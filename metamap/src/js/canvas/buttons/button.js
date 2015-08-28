@@ -14,7 +14,7 @@ go.GraphObject.defineBuilder("CornerButton", function (args) {
     var button =
       go.GraphObject.make(go.Panel, "Auto",
         {
-            isActionable: true,
+            isActionable: false,
             fromLinkable: true,
             fromLinkableSelfNode: true,
             fromLinkableDuplicates: true,
