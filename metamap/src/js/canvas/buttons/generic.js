@@ -8,7 +8,26 @@ const generic = (map, opts = {}) => {
     const outerSize = config.shapes.corners.all.size + config.shapes.corners.all.borderSize;
     const port = CONSTANTS.DSRP[opts.port];
     const position = opts.position;
-    const focus = opts.position.opposite();
+    let focus = opts.position.opposite().copy();
+    switch (position) {
+        case go.Spot.TopLeft:
+            focus.offsetX = 10;
+            focus.offsetY = 10;
+            break;
+        case go.Spot.TopRight:
+            focus.offsetX = -10;
+            focus.offsetY = 10;
+            break;
+        case go.Spot.BottomLeft:
+            focus.offsetX = 10;
+            focus.offsetY = -10;
+            break;
+        case go.Spot.BottomRight:
+            focus.offsetX = -10;
+            focus.offsetY = -10;
+            break;
+    }
+
     const geometry = config.shapes.corners[opts.port].pathOuter;
     const borderFill = config.colors[opts.port].dark;
     const innerSize = config.shapes.corners.all.size;

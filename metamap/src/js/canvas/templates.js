@@ -449,15 +449,10 @@ SandbankEditor.Templates = function ($scope, map) {
             selectionAdorned: true,
             isSubGraphExpanded: true,
             layerName: 'Foreground',
-            // highlight corners
-            mouseEnter: function (event, target, obj2) {
-                map.ui.mouseOverGroup = target;
-                map.diagram.updateAllTargetBindings();
-            },
-            // unhighlight corners
-            mouseLeave: function (event, target, obj2) {
-                map.ui.mouseOverGroup = null;
-                map.diagram.updateAllTargetBindings();
+            mouseHover: function (e, obj) {
+                var node = obj.part;
+                nodeHoverAdornment.adornedObject = node.findObject('dragarea')
+                node.addAdornment("mouseHover", nodeHoverAdornment);
             }
             // containingGroupChanged: function(part, oldgroup, newgroup) {
             //     map.diagram.model.setDataProperty(part.data, 'level', map.computeLevel(part));
@@ -468,11 +463,7 @@ SandbankEditor.Templates = function ($scope, map) {
 
 
         mk(go.Panel, go.Panel.Spot, {
-            mouseHover: function (e, obj) {
-                var node = obj.part;
-                nodeHoverAdornment.adornedObject = node.findObject('dragarea')
-                node.addAdornment("mouseHover", nodeHoverAdornment);
-            }
+
         },
             new go.Binding("scale", "", map.layouts.getScale).ofObject(),
             // drag area
