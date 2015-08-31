@@ -558,16 +558,6 @@ SandbankEditor.Templates = function ($scope, map) {
             )
         );
 
-    //     //P
-    //     require('./buttons/p')(map),
-    //     //D
-    //     require('./buttons/d')(map),
-    //     //S
-    //     require('./buttons/s')(map),
-    //     //R
-    //     require('./buttons/r')(map)
-    //     ); // end Adornment
-
     // ------------------- link template ---------------------------
 
     this.shapes = ['to', 'from', 'toFrom', 'noArrows']

@@ -364,15 +364,7 @@ SandbankEditor.UI = function($scope, $timeout, $http, $resource, $modal, $log, m
     };
 
     function getCornerFunction(corner, clicks) {
-        if (corner == "D") {
-            return (clicks == 1 ? self.showCornerTip : map.createSister);
-        } else if (corner == "S") {
-            return (clicks == 1 ? map.toggleSExpansion : map.createChild);
-        } else if (corner == "R") {
-            return (clicks == 1 ? self.showCornerTip : map.createRToSister);
-        } else if (corner == "P") {
-            return (clicks == 1 ? map.togglePExpansion : map.perspectives.setPEditorPoint);
-        } else if (corner === "") { // click on text
+        if (corner === "") { // click on text
             return (clicks == 1 ? self.showCornerTip : editText);
         } else {
             return function() {
@@ -496,7 +488,7 @@ SandbankEditor.UI = function($scope, $timeout, $http, $resource, $modal, $log, m
             scale = Math.min(4, Math.sqrt(50 / imageMB));
         }
 
-        //console.log('image dimensions: ' + rect.width + ' x ' + rect.height + ', image bytes: ' + (rect.width * rect.height * 4) + 
+        //console.log('image dimensions: ' + rect.width + ' x ' + rect.height + ', image bytes: ' + (rect.width * rect.height * 4) +
         //        ', imageMB: ' + imageMB + ', scale: ' + scale);
 
         $scope.showImageExport = true;

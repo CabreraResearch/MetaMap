@@ -28,17 +28,7 @@ go.GraphObject.defineBuilder("CornerButton", function (args) {
             "_buttonStrokeNormal": buttonStrokeNormal,
             "_buttonFillOver": buttonFillOver,
             "_buttonStrokeOver": buttonStrokeOver
-        },
-        go.GraphObject.make(go.Shape,  // the border
-          {
-              name: "ButtonBorder",
-              figure: "Circle",
-              spot1: new go.Spot(0, 0, offset, offset),
-              spot2: new go.Spot(1, 1, -offset, -offset),
-              fill: buttonFillNormal,
-              stroke: null,
-              strokeWidth: 0
-          }));
+        });
 
     // There"s no GraphObject inside the button shape -- it must be added as part of the button definition.
     // This way the object could be a TextBlock or a Shape or a Picture or arbitrarily complex Panel.

@@ -4,41 +4,33 @@ const metaMap = require('../../../MetaMap');
 const config = metaMap.config.canvas;
 const CONSTANTS = require('../../constants/constants');
 
-let react = require('./buttonClick')
+let generic = require('./generic')
 
 const dButton = (map) => {
-    return mk(go.Panel, "Auto",
-        {
-            alignment: go.Spot.TopLeft
+    const opts = {
+        port: CONSTANTS.DSRP.D,
+        position: go.Spot.TopLeft,
+        click: function (event, target) {
+            if (event.alt) {
+                // NB: a side effect of this will be to select just this group,
+                // which would not happen otherwise via control-click
+                map.perspectives.setDEditorThing(target.part.adornedPart);
+            } else {
+                //react(map, opts.port, target);
+                //map.ui.showCornerTip()
+            }
         },
+        contextClick: function (event, target) {
+            //console.log('contextClick:' + event);
+            map.toggleDFlag(target.part.adornedPart);
+        },
+        doubleClick: function (event, target) {
+            map.createSister(target, 'Idea')
+        }
+    };
 
-        mk("CornerButton", "Auto", {
-            cursor: 'pointer',
-            _dragData: { portId: CONSTANTS.DSRP.D },
-            portId: CONSTANTS.DSRP.D,
-            click: function (event, target) {
-                if (event.alt) {
-                    // NB: a side effect of this will be to select just this group,
-                    // which would not happen otherwise via control-click
-                    map.perspectives.setDEditorThing(target.part.adornedPart);
-                } else {
-                    react(map, CONSTANTS.DSRP.D, target);
-                }
-            },
-            contextClick: function (event, target) {
-                //console.log('contextClick:' + event);
-                map.toggleDFlag(target.part.adornedPart);
-            }
-        },
-            mk(go.Shape, {
-                desiredSize: new go.Size(20, 20),
-                geometryString: config.shapes.corners.D.path,
-                fill: config.colors.DSRP.D,
-                stroke: null,
-                strokeWidth: 0
-            }
-                ))
-        )
+    return generic(map, opts);
+
 }
 
 module.exports = dButton;

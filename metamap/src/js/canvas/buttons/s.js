@@ -4,29 +4,29 @@ const metaMap = require('../../../MetaMap');
 const config = metaMap.config.canvas;
 const CONSTANTS = require('../../constants/constants');
 
-let react = require('./buttonClick')
+let generic = require('./generic')
 
 const sButton = (map) => {
-    return mk(go.Panel, "Auto",
-        {
-            alignment: go.Spot.BottomLeft,
+    const opts = {
+        port: CONSTANTS.DSRP.S,
+        position: go.Spot.BottomLeft,
+        isExpanded: function (target) {
+          return !(target.data && !target.data.sExpanded); // expand by default if property not present
         },
+        click: function (event, target) {
+            map.diagram.model.setDataProperty(target.data, 'sExpanded', !opts.isExpanded(target));
+            target.updateTargetBindings();
+            map.ui.showCornerTip(target, CONSTANTS.DSRP.S);
+        },
+        contextClick: function (event, target) {
+        },
+        doubleClick: function (event, target) {
+            if (!opts.isExpanded(target)) { opts.click(event, target);}
+            map.createChild(target, 'Part');
+        }
+    };
 
-        mk("CornerButton", "Auto", {
-            cursor: 'pointer',
-            portId: CONSTANTS.DSRP.S,
-            _dragData: { portId: CONSTANTS.DSRP.S },
-        },
-            mk(go.Shape, {
-                desiredSize: new go.Size(20, 20),
-                geometryString: config.shapes.corners.S.path,
-                fill: config.colors.DSRP.S,
-                stroke: null,
-                strokeWidth: 0
-            }
-                )
-            )
-        )
+    return generic(map, opts);
 }
 
 module.exports = sButton;

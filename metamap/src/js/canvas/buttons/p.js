@@ -5,47 +5,24 @@ const config = metaMap.config.canvas;
 const CONSTANTS = require('../../constants/constants');
 
 let react = require('./buttonClick')
+let generic = require('./generic')
 
 const pButton = (map) => {
-    return mk(go.Panel, "Auto",
-        {
-            alignment: go.Spot.TopRight
+    const opts = {
+        port: CONSTANTS.DSRP.P,
+        position: go.Spot.TopRight,
+        click: function (event, target) {
+            map.togglePExpansion(target)
         },
+        contextClick: function (event, target) {
 
-        mk("CornerButton", "Auto", {
-            cursor: 'pointer',
-            _dragData: { portId: CONSTANTS.DSRP.P },
-            portId: CONSTANTS.DSRP.P,
-            fromLinkable: true,
-            fromLinkableSelfNode: true,
-            fromLinkableDuplicates: true,
-            toLinkable: true,
-            toLinkableSelfNode: true,
-            toLinkableDuplicates: true,
-            toMaxLinks: 1,
-            mouseDragEnter: function (event, target) {
-                debugger;
-                //getGroupMouseDragEnterHandler(map.LEFT)
-            },
-            mouseDragLeave: function (event, target) {
-                debugger;
-                //groupMouseDragLeaveHandler()
-            },
-            mouseDrop: function (event, target) {
-                debugger;
-                //getGroupMouseDropHandler(map.LEFT)
-            }
         },
-            mk(go.Shape, {
-                desiredSize: new go.Size(20, 20),
-                geometryString: config.shapes.corners.P.path,
-                fill: config.colors.DSRP.P,
-                stroke: null,
-                strokeWidth: 0
-            }
-                )
-            )
-        )
+        doubleClick: function (event, target) {
+            map.createRToSister(target, 'Idea')
+        }
+    };
+
+    return generic(map, opts);
 }
 
 module.exports = pButton;

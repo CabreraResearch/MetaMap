@@ -864,14 +864,6 @@ SandbankEditor.Map = function($scope, $http, $resource, $timeout, $modal, $log) 
         thing.updateTargetBindings();
     };
 
-    // S corner handler (single click)
-    this.toggleSExpansion = function(thing) {
-        var isExpanded = !(thing.data && !thing.data.sExpanded); // expand by default if property not present
-        self.diagram.model.setDataProperty(thing.data, 'sExpanded', !isExpanded);
-        thing.updateTargetBindings();
-        self.ui.showCornerTip(thing, CONSTANTS.DSRP.S);
-    };
-
     // P corner handler (single click)
     this.togglePExpansion = function(thing) {
         self.diagram.model.setDataProperty(thing.data, 'pExpanded', !self.pIsExpanded(thing));
