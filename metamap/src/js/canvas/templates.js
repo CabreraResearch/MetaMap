@@ -409,6 +409,7 @@ SandbankEditor.Templates = function ($scope, map) {
                     isActionable: true,  // needed because this is in a temporary Layer
                     click: function (e, obj) {
                         var node = obj.part.adornedPart;
+                        node.removeAdornment("mouseHover", nodeHoverAdornment);
                         node.diagram.select(node);
                     }
                 }),
@@ -448,12 +449,7 @@ SandbankEditor.Templates = function ($scope, map) {
             locationSpot: go.Spot.TopLeft,
             selectionAdorned: true,
             isSubGraphExpanded: true,
-            layerName: 'Foreground',
-            mouseHover: function (e, obj) {
-                var node = obj.part;
-                nodeHoverAdornment.adornedObject = node.findObject('dragarea')
-                node.addAdornment("mouseHover", nodeHoverAdornment);
-            }
+            layerName: 'Foreground'
             // containingGroupChanged: function(part, oldgroup, newgroup) {
             //     map.diagram.model.setDataProperty(part.data, 'level', map.computeLevel(part));
             //     //part.updateTargetBindings();
@@ -463,7 +459,15 @@ SandbankEditor.Templates = function ($scope, map) {
 
 
         mk(go.Panel, go.Panel.Spot, {
-
+            mouseHover: function (e, obj) {
+                var node = obj.part;
+                nodeHoverAdornment.adornedObject = node.findObject('dragarea')
+                node.addAdornment("mouseHover", nodeHoverAdornment);
+            },
+            click: function (e, obj) {
+                var node = obj.part;
+                node.removeAdornment("mouseHover", nodeHoverAdornment);
+            }
         },
             new go.Binding("scale", "", map.layouts.getScale).ofObject(),
             // drag area
@@ -514,12 +518,23 @@ SandbankEditor.Templates = function ($scope, map) {
                     return true;
                 }).ofObject(), {
                     //position: new go.Point(0, 0),
+                    name: 'nodeText',
                     cursor: config.shapes.label.cursor,
                     font: config.shapes.label.font,
                     isMultiline: true,
                     editable: true,
                     _isNodeLabel: true,
-                    click: groupClickHandler,
+                    click: function (event, target) {
+                        if (!$scope.canEdit) {
+                            return null;
+                        }
+                        var textBlockName = 'externaltext-' + target.part.data.layout;
+                        var text = target.part.findObject(textBlockName);
+                        if (text) {
+                            target = text;
+                        }
+                        map.diagram.commandHandler.editTextBlock(target);
+                    },
                     contextClick: function (event, target) {
                         if (event.control) {
                             //console.log(groupInfo(target.part));
