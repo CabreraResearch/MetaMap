@@ -476,14 +476,14 @@ SandbankEditor.Templates = function ($scope, map) {
         },
             new go.Binding("scale", "", map.layouts.getScale).ofObject(),
             // drag area
-            mk(go.Shape, "Circle", {
+            mk(go.Shape, config.shapes.box.shape, {
                 name: "dragarea",
                 position: new go.Point(0, 0),
-                width: 50,
-                height: 50,
+                width: config.shapes.box.width,
+                height: config.shapes.box.height,
                 fill: config.shapes.box.fillColor,
                 stroke: null,
-                cursor: "move",
+                cursor: config.shapes.box.cursor,
                 portId: "",
                 fromLinkable: true,
                 fromLinkableSelfNode: false,
@@ -512,8 +512,8 @@ SandbankEditor.Templates = function ($scope, map) {
                     //position: new go.Point(0, 0),
                     fill: "transparent",
                     stroke: null,
-                    desiredSize: new go.Size(50, 50),
-                    cursor: "move"
+                    desiredSize: new go.Size(config.shapes.box.width, config.shapes.box.height),
+                    cursor: config.shapes.box.cursor
                 }),
             mk(go.TextBlock,
                 new go.Binding("text", "text").makeTwoWay(),
@@ -549,7 +549,7 @@ SandbankEditor.Templates = function ($scope, map) {
 
     this.groupTemplate.selectionAdornmentTemplate = mk(go.Adornment, "Spot",
         mk(go.Panel, "Auto",
-            mk(go.Shape, "Circle", {
+            mk(go.Shape, config.shapes.box.shape, {
                 fill: null,
                 stroke: null,
                 strokeWidth: 0
