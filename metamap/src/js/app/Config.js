@@ -3,14 +3,8 @@ const _ = require('lodash')
 
 const config = () => {
     const SITES = {
-        CRL: {
-            db: 'meta-map-production'
-        },
         CRL_STAGING: {
             db: 'meta-map-staging'
-        },
-        THINK_WATER: {
-            db: 'thinkwater-production'
         }
     }
 
@@ -24,22 +18,13 @@ const config = () => {
         first = segments[1];
     }
     first = first.split(':')[0];
-    
+
     switch (first.toLowerCase()) {
+
         case 'localhost':
         case 'meta-map-staging':
+        default:
             ret.site = SITES.CRL_STAGING;
-            break;
-
-        case 'crlab':
-        case 'frontend':
-            ret.site = SITES.CRL;
-            break;
-
-        case 'thinkwater-production':
-        case 'thinkwater-staging':
-        case 'thinkwater':
-            ret.site = SITES.THINK_WATER;
             break;
     }
 
