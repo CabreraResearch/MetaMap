@@ -1,0 +1,85 @@
+#info {
+    position:fixed;
+    right:0;
+    bottom:0;
+    padding:7px;
+    background-color:beige;
+    z-index:1000;
+}
+
+.jtk-node {
+    background-color: transparent;
+    font-size: 12px;
+    position: absolute;
+    z-index: 11;
+
+}
+
+.jtk-node .name {
+    color: black;
+    cursor: move;
+    font-size: 12px;
+    line-height: 24px;
+    padding: 6px;
+    height:24px;
+    width:50px;
+    text-align: center;
+    position:absolute;
+    left:30%;
+    top:30%;
+}
+
+.jtk-node .name span {
+    cursor:pointer;
+}
+
+/* styles for the idea node. */
+
+.segment {
+    opacity:0;
+    transition:opacity 0.2s;
+}
+
+.jtk-node:hover .segment {
+    opacity:1;
+}
+
+.outer {
+    fill:#cccccc;
+}
+
+.inner {
+    fill:white;
+}
+
+.orange, .orange circle {
+    fill:orange;
+}
+
+.red {
+    fill:red;
+}
+
+.blue {
+    fill:blue;
+}
+
+.green {
+    fill:green;
+}
+
+/* styles for edges */
+
+.edge-perspective path {
+    stroke:orange;
+    stroke-width:3;
+}
+
+.edge-relationship path {
+    stroke:black;
+    stroke-width:1;
+}
+
+.relationship-overlay {
+    fill:black;
+}

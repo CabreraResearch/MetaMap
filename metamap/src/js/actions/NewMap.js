@@ -16,7 +16,7 @@ class NewMap extends ActionBase {
             }
             let pushState = this.metaFire.pushData(newMap, `${CONSTANTS.ROUTES.MAPS_LIST}`);
             let mapId = pushState.key();
-            this.metaFire.setData(blankMap, `${CONSTANTS.ROUTES.MAPS_DATA}${mapId}`);
+            this.metaFire.setData(newMap, `${CONSTANTS.ROUTES.MAPS_DATA}${mapId}`);
             this.metaMap.Router.to(`map/${mapId}`);
         });
         return true;

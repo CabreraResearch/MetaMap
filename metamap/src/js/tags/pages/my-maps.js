@@ -131,7 +131,7 @@ module.exports = riot.tag('my-maps', html, function (opts) {
                     _.each(selected, (cell) => {
                         ids.push(cell.innerHTML);
                     });
-                    deleteMaps.deleteAll(ids, PAGES.MY_MAPS);
+                    deleteMaps.deleteAll(ids, CONSTANTS.PAGES.MY_MAPS);
                     let find = this[`table0`].find('tbody tr .checkboxes');
                     find.each(function () {
                         $(this).attr('checked', false);
@@ -170,8 +170,8 @@ module.exports = riot.tag('my-maps', html, function (opts) {
                 this[`dataTable${idx}`] = this[`table${idx}`].DataTable({
 
                     // Uncomment below line('dom' parameter) to fix the dropdown overflow issue in the datatable cells. The default datatable layout
-                    // setup uses scrollable div(table-scrollable) with overflow:auto to enable vertical scroll(see: assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.js). 
-                    // So when dropdowns used the scrollable div should be removed. 
+                    // setup uses scrollable div(table-scrollable) with overflow:auto to enable vertical scroll(see: assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.js).
+                    // So when dropdowns used the scrollable div should be removed.
                     //'dom': '<'row'<'col-md-6 col-sm-12'l><'col-md-6 col-sm-12'f>r>t<'row'<'col-md-5 col-sm-12'i><'col-md-7 col-sm-12'p>>',
 
                     //'bStateSave': true, // save datatable state(pagination, sort, etc) in cookie.
