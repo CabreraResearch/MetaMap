@@ -2,18 +2,11 @@
   var gulp = require('gulp');
   var stripBom = require('gulp-stripbom');
   var paths = [
-      './frontend/**/*.js',
-      './frontend/**/*.tag',
-      './frontend/**/*.scss',
-      './frontend/**/*.css',
+      './src/**/*.js',
+      './src/**/*.scss',
+      './src/**/*.css',
       './*.tmpl',
-      './*.html',
-      './metamap/**/*.js',
-      './metamap/**/*.tag',
-      './metamap/**/*.css',
-      './metamap/**/*.scss',
-      './metamap/**/*.tmpl',
-      './metamap/**/*.html'
+      './*.html'
       ];
 
   /*

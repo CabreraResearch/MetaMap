@@ -26,7 +26,7 @@ var runconcat = function () {
     });
 };
 
-var runbrowserify = function (app) {
+var runbrowserify = function () {
     var module;
     var bundleLogger = new Logger('vendor-browserify');
     var bundler = browserify(
@@ -44,22 +44,21 @@ var runbrowserify = function (app) {
     for (module in pkg['optionalDependencies']) {
         bundler.require(module);
     }
-    
+
     bundleLogger.start();
     //bundler.transform();
     return bundler.bundle()
         .on('error', handleErrors)
         .pipe(source('vendor.js'))
-        .pipe(gulp.dest('./'+app+'/dist'))
-        .pipe(notify.message('Finished bundling vendor packages to '+app + '/dist'))
+        .pipe(gulp.dest('./dist'))
+        .pipe(notify.message('Finished bundling vendor packages to /dist'))
         .on('end', function () {
             return bundleLogger.end();
         });
 };
 
 gulp.task('vendor', function () {
-    var app = argv.app || 'metamap';
-    return runbrowserify(app);
+    return runbrowserify();
 });
 
 

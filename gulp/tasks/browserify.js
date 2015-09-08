@@ -11,16 +11,7 @@ var argv = require('yargs').argv;
 var transforms = [riotify];
 
 var config = function (app) {
-    app = app || 'metamap';
     var path = '';
-    switch (app) {
-        case 'metamap':
-            path = '/' + app;
-            break;
-        case 'frontend':
-            path = '/' + app;
-            break;
-    }
     return {
         dev: {
             entries: '.' + path + '/src/MetaMap.js',
@@ -49,12 +40,12 @@ var config = function (app) {
     }
 };
 
-var runbrowserify = function (name, app) {
+var runbrowserify = function (name) {
     var standalone = 'MetaMap';
 
     var module;
     var bundleLogger = new Logger(name);
-    var cfg = config(app)[name];
+    var cfg = config('metamap')[name];
     var bundleMethod = (global.isWatching ? watchify : browserify);
     var bundleCfg = {
         entries: cfg.entries,
@@ -91,7 +82,7 @@ var runbrowserify = function (name, app) {
     for (module in pkg['browser']) {
         bundler.external(module);
     }
-    
+
     var bundle = function () {
         bundleLogger.start();
         return bundler.bundle()
@@ -112,11 +103,9 @@ var runbrowserify = function (name, app) {
 gulp.task('browserify', ['browserify-dev', 'browserify-release']);
 
 gulp.task('browserify-dev', function () {
-    var app = argv.app || 'metamap';
-    return runbrowserify('dev', app);
+    return runbrowserify('dev');
 });
 
 gulp.task('browserify-release', function () {
-    var app = argv.app || 'metamap';
-    return runbrowserify('release', app);
+    return runbrowserify('release');
 });
