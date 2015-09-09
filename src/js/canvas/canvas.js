@@ -10,11 +10,11 @@ class Canvas {
         this.metaMap = require('../../MetaMap')
 
         jsPlumbToolkit.ready(() => {
-            this.toolkit = jsPlumbToolkit.newInstance({
+            this.toolkit = window.toolkit = jsPlumbToolkit.newInstance({
                 autoSave:true,
-                saveUrl:"https://localhost:10",
+                saveUrl:'https://localhost:10',
                 onAutoSaveError: (msg) => {
-                   var postData = {
+                   let postData = {
                         data: this.toolkit.exportData(),
                         changed_by: this.metaMap.User.userKey
                     };
@@ -38,34 +38,34 @@ class Canvas {
             //
             // dummy for a new node.
             //
-            var _newNode = function() {
+            let _newNode = function() {
                 return {
                     w:150,
                     h:150,
-                    label:"idea",
+                    label:'idea',
                     type:'idea'
                 };
             };
 
-            var mainElement = document.querySelector(".jtk-demo-main"),
-                canvasElement = mainElement.querySelector(".jtk-demo-canvas"),
-                miniviewElement = mainElement.querySelector(".miniview");
+            let mainElement = document.querySelector('.jtk-demo-main'),
+                canvasElement = mainElement.querySelector('.jtk-demo-canvas'),
+                miniviewElement = mainElement.querySelector('.miniview');
 
 
-            var renderer = this.toolkit.render({
+            let renderer = this.toolkit.render({
                 container:canvasElement,
                 miniview:{
                     container:miniviewElement
                 },
                 layout:{
-                    type:"Spring",
+                    type:'Spring',
                     absoluteBacked:false
                 },
                 zoomToFit:true,
                 view:{
                     nodes:{
-                        "default":{
-                            template:"tmplNode",
+                        'default':{
+                            template:'tmplNode',
                             parameters: {
                                 w: 150,
                                 h: 150
@@ -73,34 +73,34 @@ class Canvas {
                         }
                     },
                     edges:{
-                        "default":{
-                            anchor:["Perimeter", { shape:"Circle" }]
+                        'default':{
+                            anchor:['Perimeter', { shape:'Circle' }]
                         },
                         relationship:{
-                            cssClass:"edge-relationship",
-                            connector:"StateMachine",
-                            endpoint:"Blank",
+                            cssClass:'edge-relationship',
+                            connector:'StateMachine',
+                            endpoint:'Blank',
                             overlays:[
-                                [ "PlainArrow", { location:1, width:10, length:10, cssClass:"relationship-overlay" } ]
+                                [ 'PlainArrow', { location:1, width:10, length:10, cssClass:'relationship-overlay' } ]
                             ]
                         },
                         perspective:{
-                            connector:"StateMachine",
-                            cssClass:"edge-perspective",
-                            endpoints:[ "Blank", [ "Dot", { radius:10, cssClass:"orange" }]]
+                            connector:'StateMachine',
+                            cssClass:'edge-perspective',
+                            endpoints:[ 'Blank', [ 'Dot', { radius:10, cssClass:'orange' }]]
                         }
                     }
                 },
                 events:{
                     canvasDblClick:(e) => {
                         // add an Idea node at the location at which the event occurred.
-                        var pos = renderer.mapEventLocation(e);
+                        let pos = renderer.mapEventLocation(e);
                         this.toolkit.addNode(jsPlumb.extend(_newNode(), pos));
                     },
                     nodeAdded:_registerHandlers // see below
                 },
                 dragOptions:{
-                    filter:".segment",       // can't drag nodes by the color segments.
+                    filter:'.segment',       // can't drag nodes by the color segments.
                     stop:function() {
 
                     },
@@ -117,64 +117,64 @@ class Canvas {
             //
             // -----------------------------------------------------------------------------------------
 
-            var _types = [ "red", "orange", "green", "blue" ];
+            let _types = [ 'red', 'orange', 'green', 'blue' ];
 
-            var _clickHandlers = {
-                "click":{
-                    "red":function(el, node) {
-                        console.log("click red");
+            let _clickHandlers = {
+                'click':{
+                    'red':function(el, node) {
+                        console.log('click red');
                         console.dir(node.data);
-                        _info("Double click to create a new idea. Right-click to mark with a distinction flag");
+                        _info('Double click to create a new idea. Right-click to mark with a distinction flag');
                     },
-                    "green":function(el, node) {
-                        console.log("click green");
+                    'green':function(el, node) {
+                        console.log('click green');
                         console.dir(node.data);
-                        _info("Double click to add a part. Single click to show/hide parts");
+                        _info('Double click to add a part. Single click to show/hide parts');
                     },
-                    "orange":function(el, node) {
-                        console.log("click orange");
+                    'orange':function(el, node) {
+                        console.log('click orange');
                         console.dir(node.data);
-                        _info("Drag to create a Perspective. Double click to open Perspective Editor");
+                        _info('Drag to create a Perspective. Double click to open Perspective Editor');
                     },
-                    "blue":function(el, node) {
-                        console.log("click blue");
+                    'blue':function(el, node) {
+                        console.log('click blue');
                         console.dir(node.data);
-                        _info("Double click to create a new related idea. Drag to relate to an existing idea.");
+                        _info('Double click to create a new related idea. Drag to relate to an existing idea.');
                     }
                 },
-                "dblclick":{
-                    "red":function(el, node) {
-                        console.log("double click red");
+                'dblclick':{
+                    'red':function(el, node) {
+                        console.log('double click red');
                         console.dir(node.data);
                     },
-                    "green":function(el, node) {
-                        console.log("double click green");
+                    'green':function(el, node) {
+                        console.log('double click green');
                         console.dir(node.data);
                     },
-                    "orange":function(el, node) {
-                        console.log("double click orange");
+                    'orange':function(el, node) {
+                        console.log('double click orange');
                         console.dir(node.data);
                     },
-                    "blue":(el, node) => {
-                        console.log("double click blue");
+                    'blue':(el, node) => {
+                        console.log('double click blue');
                         console.dir(node.data);
                         this.toolkit.batch(()=> {
-                            var newNode = this.toolkit.addNode(_newNode());
+                            let newNode = this.toolkit.addNode(_newNode());
                             this.toolkit.connect({source:node, target:newNode, data:{
-                                type:"perspective"
+                                type:'perspective'
                             }});
                         });
                     }
                 }
             };
 
-            var _curryHandler = function(el, segment, node) {
-                var _el = el.querySelector("." + segment);
-                jsPlumb.on(_el, "click", function () {
-                    _clickHandlers["click"][segment](el, node);
+            let _curryHandler = function(el, segment, node) {
+                let _el = el.querySelector('.' + segment);
+                jsPlumb.on(_el, 'click', function () {
+                    _clickHandlers['click'][segment](el, node);
                 });
-                jsPlumb.on(_el, "dblclick", function () {
-                    _clickHandlers["dblclick"][segment](el, node);
+                jsPlumb.on(_el, 'dblclick', function () {
+                    _clickHandlers['dblclick'][segment](el, node);
                 });
             };
 
@@ -186,8 +186,8 @@ class Canvas {
             function _registerHandlers(params) {
                 // here you have params.el, the DOM element
                 // and params.node, the underlying node. it has a `data` member with the node's payload.
-                var el = params.el, node = params.node, label = el.querySelector(".name");
-                for (var i = 0; i < _types.length; i++) {
+                let el = params.el, node = params.node, label = el.querySelector('.name');
+                for (let i = 0; i < _types.length; i++) {
                     _curryHandler(el, _types[i], node);
                 }
 
@@ -203,24 +203,24 @@ class Canvas {
             }
 
             function _info(text) {
-                document.getElementById("info").innerHTML = text;
+                document.getElementById('info').innerHTML = text;
             }
 
             // --------------------------------------------------------------------------------------------------------
             // a couple of random examples of the filter function, allowing you to query your data
             // --------------------------------------------------------------------------------------------------------
 
-            var countEdgesOfType = (type) => {
-                return this.toolkit.filter(function(obj) { return obj.objectType == "Edge" && obj.data.type===type; }).getEdgeCount()
+            let countEdgesOfType = (type) => {
+                return this.toolkit.filter(function(obj) { return obj.objectType == 'Edge' && obj.data.type===type; }).getEdgeCount()
             };
-            var dumpEdgeCounts = function() {
-                console.log("There are " + countEdgesOfType("relationship") + " relationship edges");
-                console.log("There are " + countEdgesOfType("perspective") + " perspective edges");
+            let dumpEdgeCounts = function() {
+                console.log('There are ' + countEdgesOfType('relationship') + ' relationship edges');
+                console.log('There are ' + countEdgesOfType('perspective') + ' perspective edges');
             };
 
-            jsPlumb.on("relationshipEdgeDump", "click", dumpEdgeCounts());
+            jsPlumb.on('relationshipEdgeDump', 'click', dumpEdgeCounts());
 
-            this.toolkit.bind("dataUpdated", function() {
+            this.toolkit.bind('dataUpdated', function() {
                 dumpEdgeCounts();
             });
 
