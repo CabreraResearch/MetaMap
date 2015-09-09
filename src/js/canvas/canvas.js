@@ -12,7 +12,7 @@ class Canvas {
         jsPlumbToolkit.ready(() => {
             this.toolkit = jsPlumbToolkit.newInstance({
                 autoSave:true,
-                saveUrl:"http://localhost:10",
+                saveUrl:"https://localhost:10",
                 onAutoSaveError: (msg) => {
                    var postData = {
                         data: this.toolkit.exportData(),
