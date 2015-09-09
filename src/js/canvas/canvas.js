@@ -9,18 +9,23 @@ class Canvas {
         this.toolkit = {};
         this.metaMap = require('../../MetaMap')
 
+        const throttleSave = _.throttle(() => {
+            let postData = {
+                data: this.toolkit.exportData(),
+                changed_by: this.metaMap.User.userKey
+            };
+            // $scope.map.loadMapExtraData(response.data.map);
+            this.metaMap.MetaFire.setDataInTransaction(postData, `maps/data/${this.mapId}`);
+            this.metaMap.Integrations.sendEvent(this.mapId, 'event', 'autosave', 'autosave')
+        }, 500);
+
         jsPlumbToolkit.ready(() => {
             this.toolkit = window.toolkit = jsPlumbToolkit.newInstance({
                 autoSave:true,
                 saveUrl:'https://localhost:10',
                 onAutoSaveError: (msg) => {
-                   let postData = {
-                        data: this.toolkit.exportData(),
-                        changed_by: this.metaMap.User.userKey
-                    };
-                    // $scope.map.loadMapExtraData(response.data.map);
-                    this.metaMap.MetaFire.setDataInTransaction(postData, `maps/data/${this.mapId}`);
-                    this.metaMap.Integrations.sendEvent(this.mapId, 'event', 'autosave', 'autosave')
+                    throttleSave();
+                    return true;
                 },
                 onAutoSaveSuccess: (response) => {
                     console.log('Success should not happen')
@@ -69,12 +74,24 @@ class Canvas {
                             parameters: {
                                 w: 150,
                                 h: 150
+                            },
+                            events: {
+                                tap: (obj) => {
+                                    this.toolkit.clearSelection()
+                                    this.toolkit.setSelection(obj.node);
+                                }
                             }
                         }
                     },
                     edges:{
                         'default':{
-                            anchor:['Perimeter', { shape:'Circle' }]
+                            anchor:['Perimeter', { shape:'Circle' }],
+                            events: {
+                                tap: (obj) => {
+                                    this.toolkit.clearSelection()
+                                    this.toolkit.setSelection(obj.edge);
+                                }
+                            }
                         },
                         relationship:{
                             cssClass:'edge-relationship',
@@ -92,7 +109,10 @@ class Canvas {
                     }
                 },
                 events:{
-                    canvasDblClick:(e) => {
+                    canvasClick: (e) => {
+                        this.toolkit.clearSelection();
+                    },
+                    canvasDblClick: (e) => {
                         // add an Idea node at the location at which the event occurred.
                         let pos = renderer.mapEventLocation(e);
                         this.toolkit.addNode(jsPlumb.extend(_newNode(), pos));
@@ -206,6 +226,13 @@ class Canvas {
                 document.getElementById('info').innerHTML = text;
             }
 
+            if (this.map && this.map.data) {
+                this.toolkit.load({
+                    type: 'json',
+                    data: this.map.data
+                })
+            }
+
             // --------------------------------------------------------------------------------------------------------
             // a couple of random examples of the filter function, allowing you to query your data
             // --------------------------------------------------------------------------------------------------------
@@ -220,20 +247,21 @@ class Canvas {
 
             jsPlumb.on('relationshipEdgeDump', 'click', dumpEdgeCounts());
 
+            jsPlumb.on(document, 'keyup', (obj,a,b) => {
+                let selected = this.toolkit.getSelection();
+                this.toolkit.remove(selected);
+            })
+
             this.toolkit.bind('dataUpdated', function() {
                 dumpEdgeCounts();
             });
+
 
         }); //jsPlumb.ready
     }
 
     init() {
-        if (this.map && this.map.data) {
-            this.toolkit.load({
-                type: 'json',
-                data: this.map.data
-            })
-        }
+
     }
 }
 
