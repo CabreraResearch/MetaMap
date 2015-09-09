@@ -9,6 +9,8 @@ class Canvas {
         this.toolkit = {};
         this.metaMap = require('../../MetaMap')
 
+        let that = this;
+
         const throttleSave = _.throttle(() => {
             let postData = {
                 data: this.toolkit.exportData(),
@@ -211,6 +213,16 @@ class Canvas {
                     _curryHandler(el, _types[i], node);
                 }
 
+                $(label).editable({
+                    unsavedclass: null,
+                    mode: 'inline',
+                    toggle: 'dblclick',
+                    type: 'textarea'
+                }).on('save', (event, params) => {
+                    var info = renderer.getObjectInfo(label);
+                    that.toolkit.updateNode(info.obj, { label: params.newValue });
+                });
+
                 // make the label draggable (see note above).
                 jsPlumb.draggable(label, {
                     stop:function(e) {
@@ -247,9 +259,13 @@ class Canvas {
 
             jsPlumb.on('relationshipEdgeDump', 'click', dumpEdgeCounts());
 
-            jsPlumb.on(document, 'keyup', (obj,a,b) => {
-                let selected = this.toolkit.getSelection();
-                this.toolkit.remove(selected);
+            jsPlumb.on(document, 'keyup', (event) => {
+                switch (event.keyCode) {
+                    case 46:
+                        let selected = this.toolkit.getSelection();
+                        this.toolkit.remove(selected);
+                        break;
+                }
             })
 
             this.toolkit.bind('dataUpdated', function() {
