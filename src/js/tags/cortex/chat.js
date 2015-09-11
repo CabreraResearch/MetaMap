@@ -30,7 +30,7 @@ const html = `
                 </li>
             </ul>
         </div>
-        <div class="panel-footer" style="position: fixed; width: 233px; bottom: 60px;">
+        <div class="panel-footer" style="position: fixed; width: 233px; bottom: 24px;">
             <div class="row">
                 <div class="col-lg-12">
                     <form onsubmit="{ onSubmit }">
@@ -56,8 +56,8 @@ riot.tag('chat', html, function (opts) {
     const MetaMap = require('../../../MetaMap');
 
     this.correctHeight = () => {
-        this.chat_shell.style.height = (window.innerHeight - 154) + 'px'
-        this.chat_body.style.height = (window.innerHeight - 301) + 'px'
+        this.chat_shell.style.height = (window.innerHeight - 120) + 'px'
+        this.chat_body.style.height = (window.innerHeight - 267) + 'px'
         Ps.update(this.chat_body);
     }
 

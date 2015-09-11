@@ -61,7 +61,7 @@ module.exports = riot.tag('meta-canvas', html, function(opts) {
 
     this.correctHeight = () => {
         $(this.diagram).css({
-            height: window.innerHeight - 154 + 'px'
+            height: window.innerHeight - 120 + 'px'
         });
     }
 
