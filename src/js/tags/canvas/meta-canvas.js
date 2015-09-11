@@ -9,9 +9,7 @@ const html = `
     <div class="jtk-demo-canvas canvas-wide" id="diagram">
 
     </div>
-    <div class="miniview"></div>
 </div>
-<div id="info"></div>
 `;
 
 module.exports = riot.tag('meta-canvas', html, function(opts) {

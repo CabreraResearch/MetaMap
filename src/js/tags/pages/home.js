@@ -46,7 +46,7 @@ const html = `
 module.exports = riot.tag('home', html, function(opts) {
 
     const MetaMap = require('../../../MetaMap');
-    
+
     this.areas = []
     this.header = {}
 
@@ -58,11 +58,11 @@ module.exports = riot.tag('home', html, function(opts) {
         this.quote = data.quote;
         this.header = data.header;
         this.vision = data.vision;
-        
+
         this.userName = MetaMap.User.fullName;
-        
+
         this.update();
-        
+
         NProgress.done();
     });
 });

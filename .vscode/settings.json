@@ -4,5 +4,6 @@
 	"editor.insertSpaces": true,
     "editor.formatOnType": true,
     "files.trimTrailingWhitespace": true,
-    "typescript.tsdk": "/typings"
+    "typescript.tsdk": "/typings",
+    "eslint.enable": true
 }

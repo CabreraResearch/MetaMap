@@ -55,15 +55,11 @@ class Canvas {
             };
 
             let mainElement = document.querySelector('.jtk-demo-main'),
-                canvasElement = mainElement.querySelector('.jtk-demo-canvas'),
-                miniviewElement = mainElement.querySelector('.miniview');
+                canvasElement = mainElement.querySelector('.jtk-demo-canvas');
 
 
             let renderer = this.toolkit.render({
                 container:canvasElement,
-                miniview:{
-                    container:miniviewElement
-                },
                 layout:{
                     type:'Spring',
                     absoluteBacked:false
