@@ -30,14 +30,14 @@ const html = `
                 </li>
             </ul>
         </div>
-        <div class="panel-footer" style="position: fixed; width: 233px; bottom: 24px;">
+        <div class="panel-footer" style="position: fixed; width: 233px; bottom: 26px;">
             <div class="row">
                 <div class="col-lg-12">
                     <form onsubmit="{ onSubmit }">
                         <div class="input-group">
                             <input id="chat_input" type="text" class="form-control" placeholder="Enter message...">
                             <span class="input-group-btn">
-                                <button class="btn btn-default" type="submit">Send</button>
+                                <button class="btn blue" type="button" action="submit">Send</button>
                             </span>
                         </div>
                     </form>
