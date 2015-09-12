@@ -14,9 +14,7 @@ const html = `
 
     <div id="meta_page_container"></div>
 
-</div>
-
-<div id="meta_page_footer"></div>`;
+</div>`;
 
 module.exports = riot.tag('page-body', html, function(opts) {
 
@@ -25,15 +23,12 @@ module.exports = riot.tag('page-body', html, function(opts) {
     this.on('mount', () => {
         riot.mount(this.meta_page_header, 'page-header');
         riot.mount(this.meta_page_container, 'page-container');
-//        riot.mount(this.meta_page_dialog, 'meta-dialog');
-        riot.mount(this.meta_page_footer, 'page-footer');
     });
-    
+
     MetaMap.Eventer.on(CONSTANTS.EVENTS.SIDEBAR_CLOSE, () => {
         $(this.page_body).addClass('page-sidebar-reversed');
     });
-    
-    
+
     MetaMap.Eventer.on(CONSTANTS.EVENTS.SIDEBAR_OPEN, () => {
         $(this.page_body).removeClass('page-sidebar-reversed');
     });

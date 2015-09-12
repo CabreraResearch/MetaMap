@@ -22,17 +22,30 @@ module.exports = riot.tag('page-content', html, function (opts) {
 
     const MetaMap = require('../../MetaMap');
 
-    MetaMap.Eventer.on(CONSTANTS.EVENTS.SIDEBAR_CLOSE, () => {
-        let width = window.innerWidth;
-        $(this['app-container']).css({ width: `${width - 46}px` });
-    });
+    this.hasSidebar = true;
+
+    this.resize = () => {
+        if (this.hasSidebar) {
+            $(this['app-container']).css({ width: `100%` });
+        } else {
+            let width = `${window.innerWidth - 40}px`;
+            $(this['app-container']).css({ width: width });
+        }
+    }
 
     $(window).on('resize', () => {
-        $(this['app-container']).css({ width: `100%` });
+        this.resize()
     });
 
     MetaMap.Eventer.on(CONSTANTS.EVENTS.SIDEBAR_OPEN, () => {
-        $(this['app-container']).css({ width: `100%` });
+        this.hasSidebar = true;
+        this.resize()
     });
+
+    MetaMap.Eventer.on(CONSTANTS.EVENTS.SIDEBAR_CLOSE, () => {
+        this.hasSidebar = false;
+        this.resize()
+    });
+
 
 });

@@ -2,6 +2,7 @@ const riot = require('riot');
 const moment = require('moment')
 const Ps = require('perfect-scrollbar');
 
+const raw = require('../components/raw');
 const CONSTANTS = require('../../constants/constants');
 
 const html = `
@@ -12,19 +13,14 @@ const html = `
         </div>
         <div id="chat_body" class="panel-body" style="position: absolute;">
             <ul class="media-list example-chat-messages" id="example-messages">
-                <li class="media">
-                    <div class="media-body">
-                        <div class="media">
-                            <a class="pull-left" href="#"><img height="39" width="39" class="media-object img-circle" src="{ cortexPicture }"></a>
-                            <div class="media-body bubble">Hello, I'm Cortex Man. Ask me anything. Try <code>/help</code> if you get lost.<small class="text-muted"><br>{ getRelativeTime() }</small></div>
-                        </div>
-                    </div>
-                </li>
                 <li each="{ messages }" class="media">
                     <div class="media-body">
                         <div class="media">
                             <a class="pull-{ left: author == 'cortex', right: author != 'cortex' }" href="#"><img height="39" width="39" class="media-object img-circle" src="{ picture }"></a>
-                            <div class="media-body bubble">{ message }<small class="text-muted"><br>{ parent.getRelativeTime(time) }</small></div>
+                            <div class="media-body bubble">
+                                <raw content="{ message }"></raw>
+                                <small class="text-muted"><br>{ parent.getRelativeTime(time) }</small>
+                            </div>
                         </div>
                     </div>
                 </li>
@@ -33,11 +29,11 @@ const html = `
         <div class="panel-footer" style="position: fixed; width: 233px; bottom: 26px;">
             <div class="row">
                 <div class="col-lg-12">
-                    <form onsubmit="{ onSubmit }">
+                    <form id="chat_input_form" onsubmit="{ onSubmit }">
                         <div class="input-group">
                             <input id="chat_input" type="text" class="form-control" placeholder="Enter message...">
                             <span class="input-group-btn">
-                                <button class="btn blue" type="button" action="submit">Send</button>
+                                <button class="btn blue" type="submit">Send</button>
                             </span>
                         </div>
                     </form>
@@ -50,8 +46,13 @@ const html = `
 
 riot.tag('chat', html, function (opts) {
 
-    this.messages = [];
     this.cortexPicture = 'src/images/cortex-avatar-small.jpg';
+    this.messages = [{
+        message: `Hello, I'm Cortex Man. Ask me anything. Try <code>/help</code> if you get lost.`,
+        author: 'cortex',
+        picture: this.cortexPicture,
+        time: new Date()
+    }];
 
     const MetaMap = require('../../../MetaMap');
 
@@ -111,7 +112,11 @@ riot.tag('chat', html, function (opts) {
     }
 
     MetaMap.Eventer.on(CONSTANTS.EVENTS.SIDEBAR_TOGGLE, () => {
-        this.toggle(!this.display);
+        if (this.display) {
+            MetaMap.Eventer.do(CONSTANTS.EVENTS.SIDEBAR_CLOSE)
+        } else {
+            MetaMap.Eventer.do(CONSTANTS.EVENTS.SIDEBAR_OPEN)
+        }
     });
 
     MetaMap.Eventer.on(CONSTANTS.EVENTS.SIDEBAR_CLOSE, () => {
