@@ -10,7 +10,7 @@ class UserSnap extends IntegrationsBase {
             config = {};
         }
         apiKey = config.api;
-        if (apiKey) {
+        if (apiKey && !window.location.host.startsWith('localhost')) {
             let usConf = {
                 emailBox: true,
                 emailBoxValue: user.email,
@@ -23,7 +23,7 @@ class UserSnap extends IntegrationsBase {
                 }
             };
             window.usersnapconfig = window._usersnapconfig = usConf;
-            
+
             s = document.createElement('script');
             s.type = 'text/javascript';
             s.async = true;
@@ -33,20 +33,20 @@ class UserSnap extends IntegrationsBase {
         }
         this.userSnap = window.UserSnap;
     }
-    
+
     get integration() {
         this.userSnap = this.userSnap || window.UserSnap;
         return this.userSnap;
     }
-    
+
     init() {
         super.init();
     }
-    
+
     setUser() {
         super.setUser();
     }
-    
+
 }
 
 

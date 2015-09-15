@@ -22,7 +22,7 @@ var sendToSlack = function(i) {
 gulp.task('deploy', function () {
     var p = argv.message;
     var target = argv.target || 'staging';
-    message.text = 'Just deployed new release to '+target+' that: ' + p;
+    message.text = 'Just deployed new release to https://www.metamap.co that: ' + p;
 
     switch(target) {
         case 'staging':

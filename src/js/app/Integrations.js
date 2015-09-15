@@ -37,23 +37,33 @@ class Integrations {
 	setUser() {
 		_.each(this._features, (Feature, name) => {
             if (name) {
-				this[name].setUser();
-			}
-        });
-	}
-	
-	sendEvent(val, ...params) {
-		_.each(this._features, (Feature, name) => {
-            if (name) {
-				this[name].sendEvent(val, ...params);
+                try {
+                    this[name].setUser();
+                } catch (e) {
+                    console.error(e);
+                }
 			}
         });
 	}
 
-	updatePath() {
-		
+	sendEvent(val, ...params) {
+        if (!this.metaMap.debug) {
+            _.each(this._features, (Feature, name) => {
+                if (name) {
+                    try {
+                        this[name].sendEvent(val, ...params);
+                    } catch (e) {
+                        console.log(e);
+                    }
+                }
+            });
+        }
 	}
-	
+
+	updatePath() {
+
+	}
+
 	logout() {
 		_.each(this._features, (Feature, name) => {
             if (name) {

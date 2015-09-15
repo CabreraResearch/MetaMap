@@ -66,15 +66,23 @@ class MetaMap {
         });
     }
 
+    get debug() {
+        return window.location.host.startsWith('localhost')
+    }
+
     log(val) {
-        this.Integrations.sendEvent(val, 'event', 'log', 'label')
+        if (!this.debug) {
+            this.Integrations.sendEvent(val, 'event', 'log', 'label')
+        }
         window.console.info(val);
     }
 
     error(val) {
         window.console.error(val);
-        this.Integrations.sendEvent(val, 'exception')
-        this.airbrake.notify(val);
+        if (!this.debug) {
+            this.Integrations.sendEvent(val, 'exception')
+            this.airbrake.notify(val);
+        }
     }
 
     logout() {

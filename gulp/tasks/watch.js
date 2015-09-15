@@ -24,7 +24,7 @@
     }
 
     gulp.task('watch', function () {
-        lr.listen();
+        lr({start: true});
         gulp.watch(['./src/**/*.tag', './src/**/*.js'], watch_opts, ['browserify-dev']);
         gulp.watch(['./dist/MetaMap.js']).on('change', lr.changed);
         gulp.watch(['./test/**/*.coffee'], watch_opts, ['browserify-test']);

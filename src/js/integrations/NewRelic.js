@@ -18,8 +18,10 @@ class NewRelic extends IntegrationsBase {
 
     setUser() {
         super.setUser();
-        this.integration.setCustomAttribute('username', this.user.email);
-        this.integration.setCustomAttribute('acccountID', this.user.userId);
+        if (this.integration) {
+            this.integration.setCustomAttribute('username', this.user.email);
+            this.integration.setCustomAttribute('acccountID', this.user.userId);
+        }
     }
 
     sendEvent(val, event, source, type) {

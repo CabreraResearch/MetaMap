@@ -37,6 +37,7 @@
     z-index: 100;
 }
 
+
 .jtk-demo-dataset {
     text-align: left;
     max-height: 600px;
@@ -131,17 +132,17 @@ li {
 /* --- jsPlumb setup ---------------------------------------------------------------------------------- */
 /* ---------------------------------------------------------------------------------------------------- */
 
-._jsPlumb_connector {
+.jsplumb-connector {
     z-index:9;
 }
 
-._jsPlumb_endpoint {
+.jsplumb-endpoint {
     z-index:12;
     opacity:0.8;
     cursor:pointer;
 }
 
-._jsPlumb_overlay {
+.jsplumb-overlay {
     background-color: white;
     color: #434343;
     font-weight: 400;
@@ -150,7 +151,7 @@ li {
 
 }
 
-._jsPlumb_overlay._jsPlumb_hover {
+.jsplumb-overlay.jsplumb-hover {
     color: #434343;
 }
 
@@ -242,7 +243,3 @@ path {
     color: #cdcc73;
     text-decoration: none;
 }
-
-
-
-
