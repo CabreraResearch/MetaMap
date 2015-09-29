@@ -30,14 +30,6 @@
     margin-left:0;
 }
 
-.miniview {
-    position: absolute;
-    top: 25px;
-    right: 25px;
-    z-index: 100;
-}
-
-
 .jtk-demo-dataset {
     text-align: left;
     max-height: 600px;

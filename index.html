@@ -68,51 +68,24 @@
             measure it and then adjust its position in the parent).
 
         -->
-    <script type="jtk" id="tmplNode">
-        <div>
-            <div style="position:relative;">
-                <svg:svg width="${w}" height="${h}">
-
-                    <!-- outer ring -->
-                    <svg:rect width="${w}" height="${h}" class="outer" />
-
-                    <!-- segments -->
-                    <svg:path d="M ${w/2} ${h/2} L ${(w/2) + (w/2*Math.cos(Math.PI*1.25))} ${(h/2) + (h/2*Math.sin(Math.PI*1.25))} A ${w/2} ${h/2} 0 0,1 ${(w/2) + (w/2*Math.cos(Math.PI*1.75))} ${(h/2) + (h/2*Math.sin(Math.PI*1.75))} Z" class="orange segment" />
-                    <svg:path d="M ${w/2} ${h/2} L ${(w/2) + (w/2*Math.cos(Math.PI*1.75))} ${(h/2) + (h/2*Math.sin(Math.PI*1.75))} A ${w/2} ${h/2} 0 0,1 ${(w/2) + (w/2*Math.cos(Math.PI*2.25))} ${(h/2) + (h/2*Math.sin(Math.PI*2.25))} Z" class="red segment" />
-                    <svg:path d="M ${w/2} ${h/2} L ${(w/2) + (w/2*Math.cos(Math.PI*2.25))} ${(h/2) + (h/2*Math.sin(Math.PI*2.25))} A ${w/2} ${h/2} 0 0,1 ${(w/2) + (w/2*Math.cos(Math.PI*2.75))} ${(h/2) + (h/2*Math.sin(Math.PI*2.75))} Z" class="green segment" />
-                    <svg:path d="M ${w/2} ${h/2} L ${(w/2) + (w/2*Math.cos(Math.PI*2.75))} ${(h/2) + (h/2*Math.sin(Math.PI*2.75))} A ${w/2} ${h/2} 0 0,1 ${(w/2) + (w/2*Math.cos(Math.PI*3.25))} ${(h/2) + (h/2*Math.sin(Math.PI*3.25))} Z" class="blue segment" />
-
-                    <!-- inner ring sits on top of segments -->
-                    <svg:rect width="${w-20}" height="${h-20}" x="10" y="10" class="inner" />
-
-                </svg:svg>
-
-                <div class="name">
-                    ${label}
-                </div>
-
-            </div>
-
-            <jtk-source edge-type="relationship" filter=".blue.segment" />
-            <jtk-source edge-type="perspective" filter=".orange.segment" />
-            <jtk-target />
-        </div>
-    </script>
-
+    <script type="text/x-jtk-templates" src="node.html"></script>
 
     <!--
-          this is the template for the proxy node - the node that appears in the
-          center of an edge and allows the edge to be "dragged"
-        -->
+      this is the template for the proxy node - the node that appears in the
+      center of an edge and allows the edge to be "dragged"
+    -->
     <script type="jtk" id="tmplDragProxy">
-        <div class="dragProxy">
-            <div class="name">${label}</div>
+        <div style="width:${w}px;height:${h}px;" class="dragProxy">
+            <div style="position:relative">
+                <svg:svg width="${w}" height="${h}">
+                    <svg:circle cx="${w/2}" cy="${h/2}" r="${w/2}"></svg:circle>
+                </svg:svg>
+            </div>
         </div>
     </script>
-
     <!-- simple dialog template for text edit -->
     <script type="jtk" class="dlg" id="dlgText" title="Enter Text">
-        <input type="text" size="50" jtk-focus jtk-att="text" value="${text}" jtk-commit="true" />
+        <textarea type="text" size="50" jtk-focus jtk-att="text" value="${text}" jtk-commit="true" />
     </script>
 
     <script src="dist/vendor.js"></script>

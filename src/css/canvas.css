@@ -1,13 +1,5 @@
-#info {
-    position:fixed;
-    right:0;
-    bottom:0;
-    padding:7px;
-    background-color:beige;
-    z-index:1000;
-}
 
-.jtk-node {
+.ideaNode {
     background-color: transparent;
     font-size: 12px;
     position: absolute;
@@ -15,32 +7,83 @@
 
 }
 
-.jtk-node .name {
+.ideaNode .name {
     color: black;
     cursor: move;
     font-size: 12px;
     line-height: 24px;
     padding: 6px;
     height:24px;
-    width:50px;
-    text-align: center;
+    white-space: pre;
+    text-align: left;
     position:absolute;
     left:30%;
     top:30%;
 }
 
-.jtk-node .name span {
+.ideaNode .name span {
     cursor:pointer;
 }
 
 /* styles for the idea node. */
+
+.perspective_closed {
+    opacity:0;
+}
+
+.perspective_open {
+    opacity:0;
+}
+
+.paperclip {
+    opacity:0;
+}
+
+.node_internal {
+    opacity:0;
+}
+
+.text_segment {
+    opacity:0;
+}
+
+.text_segment:hover {
+    opacity:1;
+}
+
+.node_name_lines {
+    opacity:0;
+    color: #282828;
+}
+
+.ideaNode:hover .node_internal {
+    opacity:1;
+}
+
+.ideaNode:hover .text_segment {
+    opacity:1;
+    color: white;
+}
+
+.ideaNode:hover .node_name_lines {
+    opacity:1;
+    color: grey;
+}
+
+.ideaNode:hover .name {
+    opacity:0;
+}
 
 .segment {
     opacity:0;
     transition:opacity 0.2s;
 }
 
-.jtk-node:hover .segment {
+.segment:hover {
+    opacity:1;
+}
+
+.letter:hover .segment, .segment.hover .segment{
     opacity:1;
 }
 
@@ -53,67 +96,62 @@
 }
 
 .orange, .orange circle {
-    fill:orange;
+    fill:#F9A736;
+}
+
+.orange_proxy, .orange_proxy circle {
+    fill:#F9A736;
+    opacity: 0;
 }
 
 .red {
-    fill:red;
+    fill:#EF614A;
 }
 
 .blue {
-    fill:blue;
+    fill:#4ABCC1;
 }
 
 .green {
-    fill:green;
+    fill: #93C63D;
 }
 
 /* styles for the drag proxy node */
 .dragProxy {
-  width:80px;
-  height:50px;
-  background-color:white;
-  border:2px solid #CCC;
-  text-align:center;
+  color: #282828;
+  opacity: 0.5;
 }
 
 /* styles for edges */
 
 .edge-perspective path {
     stroke:orange;
-    stroke-width:3;
+    stroke-width:4;
 }
 
 .edge-relationship path {
     stroke:black;
-    stroke-width:1;
+    stroke-width:4;
 }
 
 .relationship-overlay {
     fill:black;
 }
-/* rounded corners */
+
+/* Hack to hide navigation edges */
 
 .jtk-surface-pan-right {
-    border-bottom-right-radius: 4px;
-    border-top-right-radius: 4px;
     display: none;
 }
 
 .jtk-surface-pan-left {
-    border-bottom-left-radius: 4px;
-    border-top-left-radius: 4px;
     display: none;
 }
 
 .jtk-surface-pan-top {
-    border-top-right-radius: 4px;
-    border-top-left-radius: 4px;
     display: none;
 }
 
 .jtk-surface-pan-bottom {
-    border-bottom-left-radius: 4px;
-    border-bottom-right-radius: 4px;
     display: none;
 }

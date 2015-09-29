@@ -21,12 +21,14 @@
             y = parentPos[1] + parentSize[1] + padding;
 
         for (var i = 0; i < c.length; i++) {
-          var childSize = this.getSize(c[i]),
-              x = parentPos[0] + (align * (parentSize[0] - childSize[0]));
-
-          this.setPosition(c[i], x, y, true);
-          magnetizeNodes.push(c[i]);
-          y += (childSize[1] + padding);
+          if(c[i]) {
+            var childSize = this.getSize(c[i]),
+                x = parentPos[0] + (align * (parentSize[0] - childSize[0]));
+  
+            this.setPosition(c[i], x, y, true);
+            magnetizeNodes.push(c[i]);
+            y += (childSize[1] + padding);
+          }
         }
 
       }
