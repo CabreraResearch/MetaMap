@@ -3,7 +3,8 @@ const ROUTES = {
     MAPS_DATA: 'maps/data/',
     MAPS_NEW_MAP: 'maps/new-map/',
     TERMS_AND_CONDITIONS: 'metamap/terms-and-conditions/',
-    HOME: 'metamap/home/'
+    HOME: 'metamap/home/',
+    NOTIFICATIONS: 'users/{0}/notifications'
 };
 
 Object.freeze(ROUTES);

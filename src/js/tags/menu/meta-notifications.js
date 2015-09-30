@@ -1,4 +1,6 @@
 const riot = require('riot');
+const CONSTANTS = require('../../constants/constants')
+require('../../tools/shims')
 
 const html = `<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
                     <i class="fa fa-bell-o"></i>
@@ -11,7 +13,7 @@ const html = `<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdo
                         <h3>
                             <span class ="bold">{ notifications.length } pending</span> notification{ s: notifications.length == 0 || notifications.length > 1 }
                         </h3>
-                        <a href="javascript:;">view all</a>
+                        <a if="{ allNotifications.length > 1 }" href="javascript:;">view all</a>
                     </li>
                     <li>
                         <ul class="dropdown-menu-list scroller" style="height: 250px;" data-handle-color="#637283">
@@ -38,15 +40,17 @@ riot.tag('meta-notifications', html, function (opts) {
     const MetaMap = require('../../../MetaMap.js');
 
     this.notifications = [];
+    this.allNotifications = [];
 
     this.onClick = (event, params) => {
         console.log(event, params);
         return true;
     }
-        
+
     this.on('mount', () => {
-        MetaMap.MetaFire.on('metamap/notifications', (data) => {
-            this.notifications = _.filter(_.sortBy(data, 'order'), (d) => {
+        MetaMap.MetaFire.on(CONSTANTS.ROUTES.NOTIFICATIONS.format(MetaMap.User.userId), (data) => {
+            this.allNotifications = data;
+            this.notifications = _.filter(_.sortBy(this.allNotifications, 'date'), (d) => {
                 var include = d.archive != true;
                 return include;
             });
