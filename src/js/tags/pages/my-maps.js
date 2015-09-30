@@ -88,9 +88,8 @@ const html = `
                                 <raw content="{ parent.getOwner(this) }"></raw>
                             </td>
                             <td>
-                                <button class="btn btn-sm blue filter-submit" onclick="{ parent.onOpen }">
-                                    <i class="fa fa-icon-eye-open"></i> Open
-                                </button>
+                                <button class="btn btn-sm blue filter-submit" onclick="{ parent.onOpen }">Open</button>
+                                <a class="btn btn-sm red" onclick="{}">Share <i class="fa fa-share"></i></a>
                             </td>
                         </tr>
                     </tbody>
@@ -236,7 +235,8 @@ module.exports = riot.tag('my-maps', html, function (opts) {
                         }, {
                             'orderable': false
                         }, {
-                            'orderable': false
+                            'orderable': false,
+                            width: '120px'
                         }
                     ]
                 });
