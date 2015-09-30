@@ -4,7 +4,7 @@ const html = `<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdo
                     <span class="username username-hide-on-mobile">
                         { username }
                     </span>
-                    <img alt="" height="39" width="39" class="img-circle" src="{ picture }" />
+                    <img if="{ picture }" alt="" height="39" width="39" class="img-circle" src="{ picture }" />
                 </a>
                 <ul class="dropdown-menu dropdown-menu-default">
                     <li if="{ menu }"
