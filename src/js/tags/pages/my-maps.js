@@ -3,6 +3,7 @@ const moment = require('moment');
 const NProgress = window.NProgress;
 const _ = require('lodash');
 const CONSTANTS = require('../../constants/constants');
+var raw = require('../components/raw');
 
 const html = `
 <div class="portlet box grey-cascade">
@@ -47,7 +48,7 @@ const html = `
                                 MapId
                             </th>
                             <th class="table-checkbox">
-                                <input if="{ parent.currentTab == 'My Maps' }" type="checkbox" class="group-checkable" data-set="#mymaps_table_{ i } .checkboxes"/>
+                                <input if="{ val.title == 'My Maps' }" type="checkbox" class="group-checkable" data-set="#mymaps_table_{ i } .checkboxes"/>
                             </th>
                             <th style="display: none;">
                                 UserId
@@ -58,8 +59,12 @@ const html = `
                             <th>
                                 Created On
                             </th>
-                            <th>
+                            <th if="{ val.title == 'My Maps' }">
                                 Status
+                            </th>
+                            </th>
+                            <th if="{ val.title != 'My Maps' }">
+                                Owner
                             </th>
                             <th>
                                 Action
@@ -70,16 +75,17 @@ const html = `
                         <tr if="{ parent.data && parent.data[i] }" each="{ parent.data[i] }" class="odd gradeX">
                             <td style="display: none;" ><span data-selector="id" class ="mapid">{ id }</span></td>
                             <td>
-                                <input if="{ parent.currentTab == 'My Maps' }" type="checkbox" class="checkboxes" value="1"/>
+                                <input if="{ val.title == 'My Maps' }" type="checkbox" class="checkboxes" value="1"/>
                             </td>
                             <td style="display: none;">{ user_id }</td>
                             <td if="{ val.editable }" class="meta_editable_{ i }" data-pk="{ id }" data-title="Edit Map Name">{ name }</td>
                             <td if="{ !val.editable }">{ name }</td>
                             <td class="center">{ created_at }</td>
-                            <td>
-                                <span class="label label-sm label-success">
-                                    Private
-                                </span>
+                            <td if="{ val.title == 'My Maps' }">
+                                <raw content="{ parent.getStatus(this) }"></raw>
+                            </td>
+                            <td if="{ val.title != 'My Maps' }">
+                                <raw content="{ parent.getOwner(this) }"></raw>
                             </td>
                             <td>
                                 <button class="btn btn-sm blue filter-submit" onclick="{ parent.onOpen }">
@@ -99,11 +105,50 @@ module.exports = riot.tag('my-maps', html, function (opts) {
 
     const MetaMap = require('../../../MetaMap.js');
 
+    this.user = MetaMap.User;
     this.data = null;
     this.menu = null;
-    this.tabs = _.sortBy([{ title: 'My Maps', order: 0, editable: true }, { title: 'Shared with Me', order: 1, editable: false }], 'order');
+    let tabs = [
+        { title: 'My Maps', order: 0, editable: true },
+        { title: 'Shared with Me', order: 1, editable: false },
+        { title: 'Public', order: 2, editable: false }
+    ];
+    if (this.user.isAdmin) {
+        tabs.push({ title: 'All Maps', order: 3, editable: true })
+        tabs.push({ title: 'Templates', order: 4, editable: true })
+    }
+    this.tabs = _.sortBy(tabs, 'order')
+
     this.currentTab = 'My Maps';
 
+    //
+    this.getStatus = (item) => {
+        let status = 'Private'
+        let code = 'default'
+        let html = '';
+        if (item.shared_with) {
+            if (item.shared_with['*'] && (item.shared_with['*'].read == true || item.shared_with['*'].write == true)) {
+                status = 'Public'
+                code = 'primary'
+            } else {
+                _.each(item.shared_with, (share, key) => {
+                    if (share.picture && key != '*' && key != 'admin') {
+                        html += `<span class="label"><img alt="${share.name}" height="30" width="30" class="img-circle" src="${share.picture}"></span>`
+                    }
+                })
+            }
+        }
+        html = html || `<span class="label label-sm label-${code}">${status}</span>`
+
+        return html;
+    }
+
+    this.getOwner = (item) => {
+        let html = `<span class="label"><img alt="${item.owner.name}" height="30" width="30" class="img-circle" src="${item.owner.picture}"></span>`
+        return html;
+    }
+
+    //Events
     this.onOpen = (event, ...o) => {
         MetaMap.Router.to(`map/${event.item.id}`);
     }
@@ -143,6 +188,8 @@ module.exports = riot.tag('my-maps', html, function (opts) {
         }
     }
 
+
+    //Riot bindings
     this.on('mount', () => {
         NProgress.start();
         MetaMap.MetaFire.on('metamap/mymaps', (data) => {
@@ -235,29 +282,73 @@ module.exports = riot.tag('my-maps', html, function (opts) {
             }
         };
 
-        MetaMap.MetaFire.getChild(CONSTANTS.ROUTES.MAPS_LIST).orderByChild('owner').equalTo(MetaMap.User.userId).on('value', (val) => {
-            const list = val.val();
-            const maps = _.map(list, (obj, key) => {
-                obj.id = key;
-                obj.created_at = moment(obj.created_at).format('YYYY-MM-DD');
-                return obj;
-            });
-            buildTable(0, maps);
-        });
-
+        //Fetch All maps
         MetaMap.MetaFire.getChild(CONSTANTS.ROUTES.MAPS_LIST).on('value', (val) => {
             const list = val.val();
-            let maps = _.map(list, (obj, key) => {
-                if (obj.owner == MetaMap.User.userId || !obj.shared_with || obj.shared_with[MetaMap.User.userId] != true) {
-                    return;
-                } else {
-                    obj.id = key;
-                    obj.created_at = moment(new Date(obj.created_at)).format('YYYY-MM-DD');
-                    return obj;
+            _.each(this.tabs, (tab) => {
+                let maps = null;
+                switch (tab.title) {
+                    case 'Templates':
+                    case 'My Maps':
+                        maps = _.map(list, (obj, key) => {
+                            if (obj.owner.userId == MetaMap.User.userId) { //Only include my own maps
+                                obj.id = key;
+                                obj.created_at = moment(new Date(obj.created_at)).format('YYYY-MM-DD');
+                                return obj;
+                            } else {
+                                return;
+                            }
+                        });
+                        break;
+                    case 'Shared with Me':
+                        maps = _.map(list, (obj, key) => {
+                            if (obj.owner.userId != MetaMap.User.userId && //Don't include my own maps
+                                obj.shared_with && //Exclude anything that isn't shared at all
+                                (!obj.shared_with['*'] || obj.shared_with['*'].read == true || obj.shared_with['*'].write == true) && //Exclude public maps
+                                obj.shared_with[MetaMap.User.userId] && //Include shares wih my userId
+                                (obj.shared_with[MetaMap.User.userId].write == true || //Include anything I can write to
+                                obj.shared_with[MetaMap.User.userId].read == true) //Include anything I can read from
+                                ) {
+                                obj.id = key;
+                                obj.created_at = moment(new Date(obj.created_at)).format('YYYY-MM-DD');
+                                return obj;
+                            } else {
+                                return;
+                            }
+                        });
+                        break;
+                    case 'Public':
+                        maps = _.map(list, (obj, key) => {
+                            if (obj.owner.userId != MetaMap.User.userId && //Don't include my own maps
+                                obj.shared_with && //Exclude anything that isn't shared at all
+                                (obj.shared_with['*'] && (obj.shared_with['*'].read == true || obj.shared_with['*'].write == true) ) //Include public maps
+                                ) {
+                                obj.id = key;
+                                obj.created_at = moment(new Date(obj.created_at)).format('YYYY-MM-DD');
+                                return obj;
+                            } else {
+                                return;
+                            }
+                        });
+                        break;
+                    case 'All Maps':
+                        if (this.user.isAdmin) {
+                            maps = _.map(list, (obj, key) => {
+                                //Like it says, all maps
+                                obj.id = key;
+                                obj.created_at = moment(new Date(obj.created_at)).format('YYYY-MM-DD');
+                                return obj;
+                            });
+                        }
+                        break;
                 }
-            });
-            maps = _.filter(maps, (map) => { return map && map.id })
-            buildTable(1, maps);
+                if (maps) {
+                    maps = _.filter(maps, (map) => { return map && map.id })
+                    buildTable(tab.order, maps);
+                }
+            })
+
+
         });
     });
 });

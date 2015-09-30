@@ -1,6 +1,7 @@
 const jsPlumb = window.jsPlumb;
 const jsPlumbToolkit = window.jsPlumbToolkit;
 const _ = require('lodash')
+const CONSTANTS = require('../constants/constants')
 
 require('./layout')
 
@@ -12,15 +13,26 @@ class Canvas {
         this.toolkit = {};
         this.metaMap = require('../../MetaMap')
 
+        this.metaMap.MetaFire.getData(`${CONSTANTS.ROUTES.MAPS_LIST}/${mapId}`).then((mapInfo) => {
+            this.mapInfo = mapInfo;
+        })
+
         let that = this;
 
         const throttleSave = _.throttle(() => {
-            let postData = {
-                data: this.toolkit.exportData(),
-                changed_by: this.metaMap.User.userKey
-            };
-            this.metaMap.MetaFire.setDataInTransaction(postData, `maps/data/${this.mapId}`);
-            this.metaMap.Integrations.sendEvent(this.mapId, 'event', 'autosave', 'autosave')
+            if (this.mapInfo) {
+                if (this.mapInfo.owner.userId == this.metaMap.User.userId || //Users can always save their own maps
+                    (this.mapInfo.shared_with && this.mapInfo.shared_with[this.metaMap.User.userId].write == true)) { //Users can always save maps if they've been granted write permission
+                    let postData = {
+                        data: window.toolkit.exportData(),
+                        changed_by: {
+                            userId: this.metaMap.User.userId
+                        }
+                    };
+                    this.metaMap.MetaFire.setDataInTransaction(postData, `maps/data/${this.mapId}`);
+                    this.metaMap.Integrations.sendEvent(this.mapId, 'event', 'autosave', 'autosave')
+                }
+            }
         }, 500);
 
         jsPlumbToolkit.ready(function() {
@@ -509,7 +521,7 @@ class Canvas {
 
             toolkit.bind("dataUpdated", function() {
                 dumpEdgeCounts();
-                //TODO: wire up autosave here
+                throttleSave();
             })
 
             jsPlumb.on("relationshipEdgeDump", "click", dumpEdgeCounts());
@@ -519,11 +531,6 @@ class Canvas {
                 if(event.ctrlKey) {
                     renderer.setMode('select')
                 }
-            });
-
-            //CTRL + click enables the lasso
-            jsPlumb.on('beforeDrop', function(event) {
-                debugger;
             });
 
             var deleteAll = function(selected) {

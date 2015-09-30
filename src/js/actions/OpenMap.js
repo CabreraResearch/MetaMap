@@ -1,5 +1,3 @@
-/// <reference path="../../../../typings/riotjs/riotjs.d.ts" />
-
 const riot = require('riot');
 const ActionBase = require('./ActionBase.js');
 const CONSTANTS = require('../constants/constants');

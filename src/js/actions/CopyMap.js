@@ -13,12 +13,20 @@ class CopyMap extends ActionBase {
         }
         this.metaFire.getData(`${CONSTANTS.ROUTES.MAPS_LIST}${id}`).then((oldMap) => {
             let newMap = {
-                created_at: new Date(),
-                owner: this.metaMap.User.userId,
+                created_at: `${new Date()}`,
+                owner: {
+                    userId: this.metaMap.User.userId,
+                    name: this.metaMap.User.displayName,
+                    picture: this.metaMap.User.picture
+                },
                 name: this.appendCopy(oldMap.name),
                 shared_with: {
-                    admin: true,
-                    '*': false
+                    admin: {
+                        read: true,
+                        write: true },
+                    '*': {
+                        read: false,
+                        write: false }
                 }
             }
             this.metaFire.getData(`${CONSTANTS.ROUTES.MAPS_DATA}${id}`).then((oldMapData) => {
@@ -38,7 +46,7 @@ class CopyMap extends ActionBase {
         } else {
             let mess = str.split(' ');
             let cnt = 2;
-            if (mess[mess.length - 2] == '(Copy') {
+            if (mess.length - mess.lastIndexOf('(Copy') <= 4) {
                 let grbg = mess[mess.length - 1];
                 if (grbg) {
                     grbg = grbg.replace(')', '');

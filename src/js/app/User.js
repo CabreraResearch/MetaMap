@@ -1,5 +1,6 @@
 const uuid = require('../tools/uuid.js');
 const Common = require('../tools/Common');
+const _ = require('lodash')
 
 class User {
     constructor(profile, auth, eventer, metaFire) {
@@ -107,9 +108,9 @@ class User {
     get isAdmin() {
         let ret = false;
         if (this._identity.roles) {
-            ret = this._identity.roles.indexOf('admin') !== -1;
+            ret = this._identity.roles.admin == true
         }
-        return ret;
+        return ret
     }
 
     get history() {
