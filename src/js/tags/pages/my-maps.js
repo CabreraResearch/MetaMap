@@ -75,11 +75,11 @@ const html = `
                         <tr if="{ parent.data && parent.data[i] }" each="{ parent.data[i] }" class="odd gradeX">
                             <td style="display: none;" ><span data-selector="id" class ="mapid">{ id }</span></td>
                             <td>
-                                <input if="{ val.title == 'My Maps' }" type="checkbox" class="checkboxes" value="1"/>
+                                <input if="{ val.title == 'My Maps' || parent.user.isAdmin }" type="checkbox" class="checkboxes" value="1"/>
                             </td>
                             <td style="display: none;">{ user_id }</td>
-                            <td if="{ val.editable }" class="meta_editable_{ i }" data-pk="{ id }" data-title="Edit Map Name">{ name }</td>
-                            <td if="{ !val.editable }">{ name }</td>
+                            <td if="{ editable }" class="meta_editable_{ i }" data-pk="{ id }" data-title="Edit Map Name">{ name }</td>
+                            <td if="{ !editable }">{ name }</td>
                             <td class="center">{ created_at }</td>
                             <td if="{ val.title == 'My Maps' }">
                                 <raw content="{ parent.getStatus(this) }"></raw>
@@ -265,15 +265,14 @@ module.exports = riot.tag('my-maps', html, function (opts) {
 
                 tableWrapper.find('.dataTables_length select').addClass('form-control input-xsmall input-inline'); // modify table per page dropdown
 
-                if (editable) {
-                    $(`.meta_editable_${idx}`).editable({ unsavedclass: null }).on('save', function (event, params) {
-                        if (this.dataset && this.dataset.pk) {
-                            var id = this.dataset.pk;
-                            MetaMap.MetaFire.setData(params.newValue, `${CONSTANTS.ROUTES.MAPS_LIST}/${id}/name`);
-                        }
-                        return true;
-                    });
-                }
+                $(`.meta_editable_${idx}`).editable({ unsavedclass: null }).on('save', function (event, params) {
+                    if (this.dataset && this.dataset.pk) {
+                        var id = this.dataset.pk;
+                        MetaMap.MetaFire.setData(params.newValue, `${CONSTANTS.ROUTES.MAPS_LIST}/${id}/name`);
+                    }
+                    return true;
+                });
+
                 NProgress.done();
 
             } catch (e) {
@@ -292,6 +291,7 @@ module.exports = riot.tag('my-maps', html, function (opts) {
                     case 'My Maps':
                         maps = _.map(list, (obj, key) => {
                             if (obj.owner.userId == MetaMap.User.userId) { //Only include my own maps
+                                obj.editable = true
                                 obj.id = key;
                                 obj.created_at = moment(new Date(obj.created_at)).format('YYYY-MM-DD');
                                 return obj;
@@ -304,11 +304,12 @@ module.exports = riot.tag('my-maps', html, function (opts) {
                         maps = _.map(list, (obj, key) => {
                             if (obj.owner.userId != MetaMap.User.userId && //Don't include my own maps
                                 obj.shared_with && //Exclude anything that isn't shared at all
-                                (!obj.shared_with['*'] || obj.shared_with['*'].read == true || obj.shared_with['*'].write == true) && //Exclude public maps
+                                (!obj.shared_with['*'] || (obj.shared_with['*'].read != true || obj.shared_with['*'].write != true)) && //Exclude public maps
                                 obj.shared_with[MetaMap.User.userId] && //Include shares wih my userId
                                 (obj.shared_with[MetaMap.User.userId].write == true || //Include anything I can write to
                                 obj.shared_with[MetaMap.User.userId].read == true) //Include anything I can read from
                                 ) {
+                                obj.editable = (obj.shared_with[MetaMap.User.userId].write == true)
                                 obj.id = key;
                                 obj.created_at = moment(new Date(obj.created_at)).format('YYYY-MM-DD');
                                 return obj;
@@ -323,6 +324,7 @@ module.exports = riot.tag('my-maps', html, function (opts) {
                                 obj.shared_with && //Exclude anything that isn't shared at all
                                 (obj.shared_with['*'] && (obj.shared_with['*'].read == true || obj.shared_with['*'].write == true) ) //Include public maps
                                 ) {
+                                obj.editable = (obj.shared_with['*'].write == true)
                                 obj.id = key;
                                 obj.created_at = moment(new Date(obj.created_at)).format('YYYY-MM-DD');
                                 return obj;
@@ -335,6 +337,7 @@ module.exports = riot.tag('my-maps', html, function (opts) {
                         if (this.user.isAdmin) {
                             maps = _.map(list, (obj, key) => {
                                 //Like it says, all maps
+                                obj.editable = true
                                 obj.id = key;
                                 obj.created_at = moment(new Date(obj.created_at)).format('YYYY-MM-DD');
                                 return obj;
