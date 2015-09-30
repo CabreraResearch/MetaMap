@@ -15,7 +15,11 @@ class CopyMap extends ActionBase {
             let newMap = {
                 created_at: new Date(),
                 owner: this.metaMap.User.userId,
-                name: this.appendCopy(oldMap.name)
+                name: this.appendCopy(oldMap.name),
+                shared_with: {
+                    admin: true,
+                    '*': false
+                }
             }
             this.metaFire.getData(`${CONSTANTS.ROUTES.MAPS_DATA}${id}`).then((oldMapData) => {
                 let pushState = this.metaFire.pushData(newMap, `${CONSTANTS.ROUTES.MAPS_LIST}`);
