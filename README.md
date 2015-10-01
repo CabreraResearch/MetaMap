@@ -36,7 +36,7 @@ Assume the following style: ES6/ES7
 3. `tsd install`
     * installs all DefinitelyTyped definitions to provide Intellisense in VS Code, Atom or Sublime
 3. Optional: `npm install dev-documentation firebase ncu rimraf wt yo`
-    * firebase: allows deployment of the app to the server
+    * firebase: allows deployment of the app to the server by `gulp deploy --message="My deploy comment"`
     * dev-documentation: generates documentation from JsDoc commented code
     * ncu: checks for updates to all packages
     * rimraf: quickly `sudo rm -f` delete an entire directory quickly (useful when nuking /node_modules/)
