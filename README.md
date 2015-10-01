@@ -58,6 +58,7 @@ Assume the following style: ES6/ES7
         
 
 3. Rebuild client automatically as changes are made:
+
         gulp watch
         
     * Must have [LiveReload](https://chrome.google.com/webstore/detail/livereload/jnihajbhpnppcggbcgedagnkighmdlei?hl=en) extension installed
