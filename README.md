@@ -33,7 +33,13 @@ Assume the following style: ES6/ES7
 
 1. `install node.js and npm`
 2. `npm install -g babel bower gulp riot tsd wiredep`
+3. `tsd install`
+    * installs all DefinitelyTyped definitions to provide Intellisense in VS Code, Atom or Sublime
 3. Optional: `npm install dev-documentation firebase ncu rimraf wt yo`
+    * firebase: allows deployment of the app to the server
+    * dev-documentation: generates documentation from JsDoc commented code
+    * ncu: checks for updates to all packages
+    * rimraf: quickly `sudo rm -f` delete an entire directory quickly (useful when nuking /node_modules/)
 
 ## Install project dependencies
 
