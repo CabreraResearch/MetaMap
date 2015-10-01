@@ -4,7 +4,6 @@
     font-size: 12px;
     position: absolute;
     z-index: 11;
-
 }
 
 .ideaNode .name {
@@ -43,35 +42,8 @@
     opacity:0;
 }
 
-.text_segment {
-    opacity:0;
-}
-
-.text_segment:hover {
-    opacity:1;
-}
-
-.node_name_lines {
-    opacity:0;
-    color: #282828;
-}
-
 .ideaNode:hover .node_internal {
     opacity:1;
-}
-
-.ideaNode:hover .text_segment {
-    opacity:1;
-    color: white;
-}
-
-.ideaNode:hover .node_name_lines {
-    opacity:1;
-    color: grey;
-}
-
-.ideaNode:hover .name {
-    opacity:0;
 }
 
 .segment {
