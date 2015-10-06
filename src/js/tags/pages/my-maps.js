@@ -11,7 +11,7 @@ const CONSTANTS = require('../../constants/constants');
 var raw = require('../components/raw');
 
 const html = `
-<div class="portlet box grey-cascade">
+<div id="my_maps_page" class="portlet box grey-cascade">
     <div class="portlet-title">
         <div class="caption">
             <i class="fa fa-icon-th-large"></i>MetaMaps
@@ -102,7 +102,7 @@ const html = `
             </div>
         </div>
     </div>
-    <share></share>
+    <div id="my_maps_modal_container"></div>
 </div>
 `;
 
@@ -159,8 +159,11 @@ module.exports = riot.tag('my-maps', html, function (opts) {
     }
 
     this.onShare = (event, ...o) => {
-        riot.mount('share');
-        $('#share_modal').modal('show')
+        let opts = {
+            map: event.item
+        }
+        let modal = riot.mount(this.my_maps_modal_container, 'share')[0];
+        modal.update(opts);
     }
 
     this.onTabSwitch = (event, ...o) => {
