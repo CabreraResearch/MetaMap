@@ -1,4 +1,7 @@
 const riot = require('riot');
+const $ = require('jquery')
+require('bootstrap-hover-dropdown')
+
 const metaPoints = require('./menu/meta-points.js');
 const metaHelp = require('./menu/meta-help.js');
 const metaUser = require('./menu/meta-user.js');

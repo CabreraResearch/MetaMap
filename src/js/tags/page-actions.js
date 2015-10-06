@@ -1,4 +1,7 @@
 const riot = require('riot');
+const $ = require('jquery')
+require('bootstrap-hover-dropdown')
+
 const CONSTANTS = require('../constants/constants')
 require('../tools/shims');
 

@@ -1,4 +1,6 @@
 const riot = require('riot');
+const $ = require('jquery')
+require('bootstrap-hover-dropdown')
 
 const html = `<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
                     <span class="username username-hide-on-mobile">

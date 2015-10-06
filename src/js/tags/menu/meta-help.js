@@ -1,4 +1,6 @@
 const riot = require('riot');
+const $ = require('jquery')
+require('bootstrap-hover-dropdown')
 
 const html = `<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
             <i class="fa fa-graduation-cap"></i>
@@ -27,7 +29,7 @@ riot.tag('meta-help', html, function (opts) {
         console.log(event, params);
         return true;
     }
-        
+
     this.help = null;
     this.on('mount', () => {
         MetaMap.MetaFire.on('metamap/help', (data) => {

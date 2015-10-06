@@ -1,4 +1,4 @@
-const Auth0Lock = window.Auth0Lock; //require('auth0-lock');
+const Auth0Lock = require('auth0-lock')
 const localforage = require('localforage')
 const _ = require('lodash')
 const Promise = require('bluebird')
@@ -10,7 +10,7 @@ class Auth0 {
         this.metaMap = metaMap;
         this.lock = new Auth0Lock(config.api, config.app);
         this.lock.on('loading ready', (...e) => {
-            
+
         });
     }
 
@@ -28,12 +28,15 @@ class Auth0 {
                         if (err) {
                             this.onFail(err, reject);
                         } else {
-                            localforage.setItem('id_token', id_token);
-                            localforage.setItem('profile', profile);
-
                             this.ctoken = profile.ctoken = ctoken;
+                            localforage.setItem('ctoken', this.ctoken);
+
                             this.id_token = profile.id_token = id_token;
+                            localforage.setItem('id_token', this.id_token);
+
                             this.profile = profile;
+                            localforage.setItem('profile', this.profile);
+
                             this.refresh_token = profile.refresh_token = refresh_token;
                             this._getSession = fulfill(profile);
                         }

@@ -1,7 +1,6 @@
 const riot = require('riot');
 const NProgress = window.NProgress;
 const Canvas = require('../../canvas/canvas');
-const d3 = require('d3')
 require('./node')
 
 const html = `
