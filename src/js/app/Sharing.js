@@ -38,8 +38,14 @@ class Sharing {
         }
     }
 
-    removeShare(mapId, userData) {
-
+    removeShare(map, userData) {
+        if (map && map.id && userData && userData.id) {
+            this._fb.deleteData(`${CONSTANTS.ROUTES.MAPS_LIST}/${map.id}/shared_with/${userData.id}`)
+            this._fb.pushData({
+                event: `${this.user.displayName} removed a map, ${map.name}, that was previously shared.`,
+                time: `${new Date()}`
+            }, `${CONSTANTS.ROUTES.NOTIFICATIONS.format(userData.id)}`)
+        }
     }
 
     editShare(mapId, userData, opts = { read: true, write: false }) {

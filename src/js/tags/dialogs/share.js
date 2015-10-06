@@ -39,8 +39,20 @@ const html = `
                         </div>
                     </div>
                     <div if="{ opts && opts.map && opts.map.shared_with}" class="row">
+                        <br>
                         <div class="col-md-12">
-                            <span class="label" if="{i != '*' && i != 'admin'}" each="{val, i in opts.map.shared_with}">{ val.name }</span>
+                            <span
+                                class="label label-default"
+                                if="{i != '*' && i != 'admin'}"
+                                each="{ i, val in opts.map.shared_with}">
+                                { val.name }
+                                <i
+                                    class="fa fa-times-circle"
+                                    style="cursor: pointer;"
+                                    onclick="{ parent.onUnShare }"
+                                    >
+                                </i>
+                            </span>
                         </div>
                     </div>
                 </form>
@@ -78,6 +90,12 @@ module.exports = riot.tag('share', html, function (opts) {
         $(this.share_button).hide()
     }
 
+    this.onUnShare = (e, opts) => {
+        e.item.val.id = e.item.i
+        delete this.opts.map.shared_with[e.item.i]
+        share.removeShare(this.opts.map, e.item.val)
+    }
+
     this.on('update', (opts) => {
         if (opts) {
             _.extend(this.opts, opts);
@@ -96,6 +114,7 @@ module.exports = riot.tag('share', html, function (opts) {
                     data: JSON.stringify( {
                         currentUserId: MetaMap.User.userId,
                         sessionId: MetaMap.Auth0.ctoken,
+                        excludedUsers: _.keys(this.opts.map.shared_with),
                         search: query
                     }),
                     contentType: 'application/json; charset=utf-8',

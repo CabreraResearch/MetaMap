@@ -138,9 +138,12 @@ module.exports = riot.tag('my-maps', html, function (opts) {
             } else {
                 _.each(item.shared_with, (share, key) => {
                     if (share.picture && key != '*' && key != 'admin') {
-                        html += `<span class="label"><img alt="${share.name}" height="30" width="30" class="img-circle" src="${share.picture}"></span>`
+                        html += `<span class="label" data-toggle="tooltip" data-placement="bottom" title="${share.name}"><img alt="${share.name}" height="30" width="30" class="img-circle" src="${share.picture}"></span>`
                     }
                 })
+                if (html) {
+                    html = '<span class="">Shared with: </span>' + html;
+                }
             }
         }
         html = html || `<span class="label label-sm label-${code}">${status}</span>`
@@ -201,6 +204,9 @@ module.exports = riot.tag('my-maps', html, function (opts) {
         }
     }
 
+    this.on('update', () => {
+
+    })
 
     //Riot bindings
     this.on('mount', () => {
@@ -370,8 +376,7 @@ module.exports = riot.tag('my-maps', html, function (opts) {
                     buildTable(tab.order, maps);
                 }
             })
-
-
-        });
+            _.delay(() => { $('[data-toggle="tooltip"]').tooltip() }, 500);
+       });
     });
 });
