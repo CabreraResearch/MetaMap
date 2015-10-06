@@ -94,6 +94,9 @@ class Auth0 {
                             } else {
                                 localforage.setItem('id_token', id_token);
                                 localforage.setItem('profile', profile);
+                                localforage.getItem('ctoken').then((token) => {
+                                    this.ctoken = token;
+                                });
                                 this.id_token = profile.id_token = id_token;
                                 this.profile = profile;
                                 return fulfill(profile);

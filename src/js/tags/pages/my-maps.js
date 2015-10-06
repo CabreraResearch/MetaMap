@@ -5,6 +5,7 @@ const _ = require('lodash');
 const $ = require('jquery')
 require('datatables')
 
+require('../dialogs/share')
 const CONSTANTS = require('../../constants/constants');
 var raw = require('../components/raw');
 
@@ -60,6 +61,9 @@ const html = `
                                 Name
                             </th>
                             <th>
+                                Action
+                            </th>
+                            <th>
                                 Created On
                             </th>
                             <th if="{ val.title == 'My Maps' }">
@@ -68,9 +72,6 @@ const html = `
                             </th>
                             <th if="{ val.title != 'My Maps' }">
                                 Owner
-                            </th>
-                            <th>
-                                Action
                             </th>
                         </tr>
                     </thead>
@@ -83,6 +84,10 @@ const html = `
                             <td style="display: none;">{ user_id }</td>
                             <td if="{ editable }" class="meta_editable_{ i }" data-pk="{ id }" data-title="Edit Map Name">{ name }</td>
                             <td if="{ !editable }">{ name }</td>
+                            <td>
+                                <button class="btn btn-sm blue filter-submit" onclick="{ parent.onOpen }">Open</button>
+                                <a if="{ val.title == 'My Maps' }" class="btn btn-sm red" onclick="{ parent.onShare }">Share <i class="fa fa-share"></i></a>
+                            </td>
                             <td class="center">{ created_at }</td>
                             <td if="{ val.title == 'My Maps' }">
                                 <raw content="{ parent.getStatus(this) }"></raw>
@@ -90,16 +95,13 @@ const html = `
                             <td if="{ val.title != 'My Maps' }">
                                 <raw content="{ parent.getOwner(this) }"></raw>
                             </td>
-                            <td>
-                                <button class="btn btn-sm blue filter-submit" onclick="{ parent.onOpen }">Open</button>
-                                <a class="btn btn-sm red" onclick="{}">Share <i class="fa fa-share"></i></a>
-                            </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
+    <share></share>
 </div>
 `;
 
@@ -153,6 +155,11 @@ module.exports = riot.tag('my-maps', html, function (opts) {
     //Events
     this.onOpen = (event, ...o) => {
         MetaMap.Router.to(`map/${event.item.id}`);
+    }
+
+    this.onShare = (event, ...o) => {
+        riot.mount('share');
+        $('#share_modal').modal('show')
     }
 
     this.onTabSwitch = (event, ...o) => {
@@ -234,12 +241,12 @@ module.exports = riot.tag('my-maps', html, function (opts) {
                         }, {
                             'orderable': true
                         }, {
+                            'orderable': false,
+                            width: '120px'
+                        }, {
                             'orderable': true
                         }, {
                             'orderable': false
-                        }, {
-                            'orderable': false,
-                            width: '120px'
                         }
                     ]
                 });

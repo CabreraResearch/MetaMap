@@ -17,3 +17,4 @@
 /// <reference path="universal-analytics/universal-analytics.d.ts" />
 /// <reference path="browserify/browserify.d.ts" />
 /// <reference path="goJS/goJS.d.ts" />
+/// <reference path="typeahead/typeahead.d.ts" />

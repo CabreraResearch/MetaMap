@@ -24,7 +24,7 @@
       "commit": "3b0f362204ea965952dafdb682a5274d527ef9d0"
     },
     "jquery/jquery.d.ts": {
-      "commit": "3b0f362204ea965952dafdb682a5274d527ef9d0"
+      "commit": "6436105ed9e3f9de49ca7e2e010ffe298e884e40"
     },
     "bootstrap/bootstrap.d.ts": {
       "commit": "3b0f362204ea965952dafdb682a5274d527ef9d0"
@@ -61,6 +61,9 @@
     },
     "goJS/goJS.d.ts": {
       "commit": "e5de5c4daf8cdc33ed60704cd6e8021c99a89f92"
+    },
+    "typeahead/typeahead.d.ts": {
+      "commit": "6436105ed9e3f9de49ca7e2e010ffe298e884e40"
     }
   }
 }
