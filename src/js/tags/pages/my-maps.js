@@ -4,6 +4,7 @@ const NProgress = window.NProgress;
 const _ = require('lodash');
 const $ = require('jquery')
 require('datatables')
+require('datatables-bootstrap3-plugin')
 
 require('../dialogs/share')
 const CONSTANTS = require('../../constants/constants');
@@ -58,10 +59,10 @@ const html = `
                                 UserId
                             </th>
                             <th>
-                                Name
+                                Action
                             </th>
                             <th>
-                                Action
+                                Name
                             </th>
                             <th>
                                 Created On
@@ -82,12 +83,12 @@ const html = `
                                 <input if="{ val.title == 'My Maps' || parent.user.isAdmin }" type="checkbox" class="checkboxes" value="1"/>
                             </td>
                             <td style="display: none;">{ user_id }</td>
-                            <td if="{ editable }" class="meta_editable_{ i }" data-pk="{ id }" data-title="Edit Map Name">{ name }</td>
-                            <td if="{ !editable }">{ name }</td>
                             <td>
                                 <button class="btn btn-sm blue filter-submit" onclick="{ parent.onOpen }">Open</button>
                                 <a if="{ val.title == 'My Maps' }" class="btn btn-sm red" onclick="{ parent.onShare }">Share <i class="fa fa-share"></i></a>
                             </td>
+                            <td if="{ editable }" class="meta_editable_{ i }" data-pk="{ id }" data-title="Edit Map Name">{ name }</td>
+                            <td if="{ !editable }">{ name }</td>
                             <td class="center">{ created_at }</td>
                             <td if="{ val.title == 'My Maps' }">
                                 <raw content="{ parent.getStatus(this) }"></raw>
@@ -229,24 +230,30 @@ module.exports = riot.tag('my-maps', html, function (opts) {
                     // setup uses scrollable div(table-scrollable) with overflow:auto to enable vertical scroll(see: assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.js).
                     // So when dropdowns used the scrollable div should be removed.
                     //'dom': '<'row'<'col-md-6 col-sm-12'l><'col-md-6 col-sm-12'f>r>t<'row'<'col-md-5 col-sm-12'i><'col-md-7 col-sm-12'p>>',
-
                     //'bStateSave': true, // save datatable state(pagination, sort, etc) in cookie.
                     'columns': [
                         {
+                            name: 'MapId',
                             orderable: false
                         }, {
-                            'orderable': false
+                            name: 'ChckBx',
+                            orderable: false
                         }, {
-                            'orderable': true
+                            name: 'UserId',
+                            orderable: false
                         }, {
-                            'orderable': true
-                        }, {
-                            'orderable': false,
+                            name: 'Action',
+                            orderable: false,
                             width: '120px'
                         }, {
-                            'orderable': true
+                            name: 'Name',
+                            orderable: true
                         }, {
-                            'orderable': false
+                            name: 'Created On',
+                            orderable: true
+                        }, {
+                            name: 'Status',
+                            orderable: false
                         }
                     ]
                 });

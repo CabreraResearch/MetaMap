@@ -44,7 +44,7 @@ module.exports = riot.tag('share', html, function (opts) {
     this.data = [];
 
     this.on('mount', () => {
-        window.findUsers = $('#share_typeahead .typeahead').typeahead({
+        $('#share_typeahead .typeahead').typeahead({
             highlight: true
         },{
             source: (query, syncMethod, asyncMethod) => {
