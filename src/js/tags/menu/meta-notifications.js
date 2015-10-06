@@ -51,6 +51,11 @@ riot.tag('meta-notifications', html, function (opts) {
     this.onClick = (event, params) => {
         let item = event.item.val
         MetaMap.MetaFire.setData(true, `${fbPath}/${item.id}/archive`)
+        switch (item.type) {
+            case CONSTANTS.NOTIFICATION.MAP:
+                MetaMap.Router.to(`map/${item.mapId}`);
+                break;
+        }
         return true;
     }
 

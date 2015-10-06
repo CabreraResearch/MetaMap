@@ -33,6 +33,7 @@ class Sharing {
             this._fb.pushData({
                 event: `${this.user.displayName} shared a map, ${map.name}, with you!`,
                 mapId: map.id,
+                type: CONSTANTS.NOTIFICATION.MAP,
                 time: `${new Date()}`
             }, `${CONSTANTS.ROUTES.NOTIFICATIONS.format(userData.id)}`)
         }
