@@ -14,7 +14,11 @@ class Permissions {
     }
 
     isSharedEdit() {
-        return this.map && this.map.shared_with && this.map.shared_with[this.metaMap.User.userId].write == true
+        return this.map &&
+            this.map.shared_with &&
+                (this.metaMap.User.isAdmin ||
+                (this.map.shared_with[this.metaMap.User.userId] && this.map.shared_with[this.metaMap.User.userId].write == true) ||
+                (this.map.shared_with['*'] && this.map.shared_with['*'].write == true))
     }
 }
 

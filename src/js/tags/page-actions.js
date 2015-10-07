@@ -86,7 +86,7 @@ module.exports = riot.tag('page-actions', html, function (opts) {
         if (permissions.isMapOwner()) {
             this.pageName = map.name || ''
         } else {
-            this.pageName = map.name + ' Shared by ' + map.owner.name
+            this.pageName = map.name + ' (Shared by ' + map.owner.name + ')'
         }
         if (permissions && permissions.isMapOwner()) {
             $(this.map_name).editable({ unsavedclass: null }).on('save', (event, params) => {
