@@ -31,7 +31,8 @@ const html = `
         <span if="{ pageName }"
                 id="map_name"
                 data-type="text"
-                data-title="Enter map name">
+                data-title="Enter map name"
+                style="vertical-align: middle;">
             { pageName }
         </span>
     </span>

@@ -57,20 +57,9 @@
         NProgress.start();
     </script>
     <page-body></page-body>
+    <div id="meta_modal_dialog_container"></div>
 
-    <!--
-            The template for an idea node. this is strict xhtml (eg <input ../> not <input ..>), and you must
-            namespace svg elements.
-
-            The template will expand/shrink based on the input values of w and h.
-
-            The label has to be done as a DOM element, not svg:text, or you wouldn't be able to drag it outside
-            of the parent (SVG elements do not allow that to happen). There are placement issues with this setup
-            that the prototype does not attempt to address (at render time in order to center the label you'd want to
-            measure it and then adjust its position in the parent).
-
-        -->
-    <script type="text/x-jtk-templates" src="node.html"></script>
+    <script type="text/x-jtk-templates" src="src/html/node.html"></script>
 
     <!--
       this is the template for the proxy node - the node that appears in the

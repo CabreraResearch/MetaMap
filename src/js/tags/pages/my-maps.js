@@ -79,9 +79,9 @@ const html = `
                                 <button class="btn btn-sm blue filter-submit" onclick="{ parent.onOpen }">Open</button>
                                 <a if="{ val.title == 'My Maps' }" class="btn btn-sm red" onclick="{ parent.onShare }">Share <i class="fa fa-share"></i></a>
                             </td>
-                            <td if="{ editable }" class="meta_editable_{ i }" data-pk="{ id }" data-title="Edit Map Name">{ name }</td>
-                            <td if="{ !editable }">{ name }</td>
-                            <td class="center">{ created_at }</td>
+                            <td if="{ editable }" class="meta_editable_{ i }" data-pk="{ id }" data-title="Edit Map Name" style="vertical-align: middle;">{ name }</td>
+                            <td if="{ !editable }" style="vertical-align: middle;">{ name }</td>
+                            <td style="vertical-align: middle;">{ created_at }</td>
                             <td if="{ val.title == 'My Maps' }">
                                 <raw content="{ parent.getStatus(this) }"></raw>
                             </td>
