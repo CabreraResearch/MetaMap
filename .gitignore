@@ -13,3 +13,4 @@ Web.Release.config
 Web.config
 .idea/
 desktop.ini
+npm-debug.log

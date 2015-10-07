@@ -25,7 +25,7 @@ const html = `<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdo
                                 each="{ val, i in notifications }"
                                 onclick="{ parent.onClick }">
                                 <a>
-                                    <span if="{ val.photo }" class="photo">
+                                    <span if="{ val && val.photo }" class="photo">
 										<img src="{ val.photo }" class="img-circle" alt="">
                                     </span>
                                     <span class="subject">

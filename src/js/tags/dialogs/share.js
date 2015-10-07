@@ -12,7 +12,11 @@ const html = `
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <a style="float: right; vertical-align: middle;" onclick="{ getPublicLink }">Get sharable link  <i class="fa fa-link"></i></a>
+                <a id="share_public_link"
+                    style="float: right; vertical-align: middle;"
+                    data-clipboard-text="{window.location.host+'/'+window.location.pathname+'/maps/'+opts.map.id}"
+                    onclick="{ getPublicLink }">
+                        Get sharable link  <i class="fa fa-link"></i></a>
                 <h4 class="modal-title">Share with others</h4>
             </div>
             <div class="modal-body">
@@ -43,9 +47,13 @@ const html = `
                         <div class="col-md-12">
                             <span
                                 class="label label-default"
+                                style="margin-right: 5px;"
                                 if="{i != '*' && i != 'admin'}"
                                 each="{ i, val in opts.map.shared_with}">
-                                { val.name }
+                                <i if="{ val.write }" class="fa fa-pencil"></i>
+                                <i if="{ !val.write }" class="fa fa-eye"></i>
+                                </i>
+                                  { val.name }
                                 <i
                                     class="fa fa-times-circle"
                                     style="cursor: pointer;"

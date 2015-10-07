@@ -49,14 +49,8 @@ const html = `
                 <table class="table table-striped table-bordered table-hover" id="mymaps_table_{ i }">
                     <thead>
                         <tr>
-                            <th style="display: none;">
-                                MapId
-                            </th>
                             <th class="table-checkbox">
                                 <input if="{ val.title == 'My Maps' }" type="checkbox" class="group-checkable" data-set="#mymaps_table_{ i } .checkboxes"/>
-                            </th>
-                            <th style="display: none;">
-                                UserId
                             </th>
                             <th>
                                 Action
@@ -78,11 +72,9 @@ const html = `
                     </thead>
                     <tbody>
                         <tr if="{ parent.data && parent.data[i] }" each="{ parent.data[i] }" class="odd gradeX">
-                            <td style="display: none;" ><span data-selector="id" class ="mapid">{ id }</span></td>
                             <td>
                                 <input if="{ val.title == 'My Maps' || parent.user.isAdmin }" type="checkbox" class="checkboxes" value="1"/>
                             </td>
-                            <td style="display: none;">{ user_id }</td>
                             <td>
                                 <button class="btn btn-sm blue filter-submit" onclick="{ parent.onOpen }">Open</button>
                                 <a if="{ val.title == 'My Maps' }" class="btn btn-sm red" onclick="{ parent.onShare }">Share <i class="fa fa-share"></i></a>
@@ -242,13 +234,7 @@ module.exports = riot.tag('my-maps', html, function (opts) {
                     //'bStateSave': true, // save datatable state(pagination, sort, etc) in cookie.
                     'columns': [
                         {
-                            name: 'MapId',
-                            orderable: false
-                        }, {
                             name: 'ChckBx',
-                            orderable: false
-                        }, {
-                            name: 'UserId',
                             orderable: false
                         }, {
                             name: 'Action',

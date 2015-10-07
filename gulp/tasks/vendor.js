@@ -5,35 +5,18 @@ var gulp = require('gulp');
 var handleErrors = require('../util/handleErrors');
 var source = require('vinyl-source-stream');
 var pkg = require('../../package.json');
-var concat = require('gulp-concat');
-var argv = require('yargs').argv;
-
-var runconcat = function () {
-    var module, path;
-    var bundleLogger = new Logger('vendor');
-    bundleLogger.start();
-    var libs = (function () {
-        var _ref = pkg['browser'];
-        var _results = [];
-        for (module in _ref) {
-            path = _ref[module];
-            _results.push(require.resolve('../.' + path));
-        }
-        return _results;
-    })();
-    return gulp.src(libs).pipe(concat('vendor.js')).pipe(gulp.dest('./dist')).pipe(notify.message('Vendor bundle complete.')).on('error', handleErrors).on('end', function () {
-        return bundleLogger.end();
-    });
-};
+var minify = require('minifyify')
 
 var runbrowserify = function () {
     var module;
     var bundleLogger = new Logger('vendor-browserify');
     var bundler = browserify(
     {
-       builtins: true
+            builtins: true,
+            debug: true
     });
 
+    bundler.plugin('minifyify', {map: 'vendor.map.json', output: 'dist/vendor.map.json'});
 
     for (module in pkg['dependencies']) {
         bundler.require(module);

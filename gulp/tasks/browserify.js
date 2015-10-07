@@ -57,24 +57,8 @@ var runbrowserify = function (name) {
         standalone: standalone
     };
     var bundler = bundleMethod(bundleCfg);
-    //_ref = cfg.transforms;
-    //for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-    //    transform = _ref[_i];
-    //    switch (transform) {
-    //    case 'uglifyify':
-    //        bundler.transform({
-    //            global: true
-    //        }, transform);
-    //        break;
-    //    case 'minifyify':
-    //        bundler.plugin(transform, {
-    //            output: cfg.dest + '/' + cfg.filename
-    //        });
-    //        break;
-    //    default:
-    //        bundler.transform(riotify);
-    //    }
-    //}
+
+    bundler.plugin('minifyify', {map: 'metamap.map.json', output: 'dist/metamap.map.json'});
 
     for (module in pkg['dependencies']) {
         bundler.external(module);
