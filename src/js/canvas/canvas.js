@@ -2,6 +2,7 @@ const jsPlumb = window.jsPlumb;
 const jsPlumbToolkit = window.jsPlumbToolkit;
 const _ = require('lodash')
 const CONSTANTS = require('../constants/constants')
+const Permissions = require('../app/Permissions')
 
 require('./layout')
 
@@ -12,21 +13,17 @@ class Canvas {
         this.mapId = mapId;
         this.toolkit = {};
         this.metaMap = require('../../MetaMap')
+        let permissions = null;
 
         let ready = this.metaMap.MetaFire.getData(`${CONSTANTS.ROUTES.MAPS_LIST}/${mapId}`).then((mapInfo) => {
-            this.mapInfo = mapInfo;
+            this.mapInfo = mapInfo
+            permissions = new Permissions(mapInfo)
         })
-
-        let canEdit = () => {
-            return this.mapInfo &&
-                (this.mapInfo.owner.userId == this.metaMap.User.userId || //Users can always save their own maps
-                (this.mapInfo.shared_with && this.mapInfo.shared_with[this.metaMap.User.userId].write == true));
-        }
 
         let that = this;
 
         const throttleSave = _.throttle(() => {
-            if (canEdit()) {
+            if (permissions.canEdit()) {
                 let postData = {
                     data: window.toolkit.exportData(),
                     changed_by: {
@@ -114,7 +111,7 @@ class Canvas {
                 // configure the renderer
                 var renderer = toolkit.render({
                     container: canvasElement,
-                    elementsDraggable: canEdit(),
+                    elementsDraggable: permissions.canEdit(),
                     enablePanButtons: false,
                     layout:{
                         // custom layout for this app. simple extension of the spring layout.

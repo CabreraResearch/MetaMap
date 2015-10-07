@@ -4,6 +4,7 @@ require('bootstrap-hover-dropdown')
 
 const CONSTANTS = require('../constants/constants')
 require('../tools/shims');
+const Permissions = require('../app/Permissions')
 
 const html = `
 <div class="page-actions">
@@ -48,6 +49,8 @@ module.exports = riot.tag('page-actions', html, function (opts) {
     this.url = MetaMap.config.site.db + '.firebaseio.com';
     this.loaded = false;
 
+    let permissions = null;
+
     this.getActionLink = (obj) => {
         let ret = obj.link;
         if (obj.url_params) {
@@ -66,41 +69,51 @@ module.exports = riot.tag('page-actions', html, function (opts) {
             let currentPage = MetaMap.Router.currentPath;
             ret = true == obj['allowed-on'][currentPage];
         }
+        if (ret && this.map && permissions) {
+            switch (obj.title) {
+                case 'Share Map':
+                case 'Delete Map':
+                    ret = permissions.isMapOwner()
+                    break;
+            }
+        }
         return ret;
     }
 
-    this.bindTopageName = _.once(() => {
-        if (this.mapId) {
-            MetaMap.MetaFire.on(`${CONSTANTS.ROUTES.MAPS_LIST}/${this.mapId}/name`, (name) => {
-                this.pageName = name || '';
-                this.update();
-            });
+    this.updatePageName = (map) => {
+        permissions = new Permissions(map)
+        this.map = map || {}
+        if (permissions.isMapOwner()) {
+            this.pageName = map.name || ''
+        } else {
+            this.pageName = map.name + ' Shared by ' + map.owner.name
         }
-        this.loaded = true;
-    });
+        if (permissions && permissions.isMapOwner()) {
+            $(this.map_name).editable({ unsavedclass: null }).on('save', (event, params) => {
+                MetaMap.MetaFire.setData(params.newValue, `${CONSTANTS.ROUTES.MAPS_LIST}/${this.mapId}/name`);
+            });
+            this.loaded = true;
+        }
+        this.update()
+    }
 
     MetaMap.Eventer.every('pageName', (opts) => {
         if (this.loaded) {
             $(this.map_name).editable('destroy');
         }
         if (this.mapId) {
-            MetaMap.MetaFire.off(`${CONSTANTS.ROUTES.MAPS_LIST}/${this.mapId}/name`);
-            if (opts.id) {
-                MetaMap.MetaFire.on(`${CONSTANTS.ROUTES.MAPS_LIST}/${opts.id}/name`, (name) => {
-                    this.pageName = name;
-                    this.update();
-                });
-            }
+            MetaMap.MetaFire.off(`${CONSTANTS.ROUTES.MAPS_LIST}/${this.mapId}`);
+            this.mapId = null
+            this.map = null
+        }
+        if (opts.id) {
+            this.mapId = opts.id;
+            MetaMap.MetaFire.on(`${CONSTANTS.ROUTES.MAPS_LIST}/${opts.id}`, (map) => {
+                this.updatePageName(map)
+            });
         }
         this.pageName = opts.name || 'Home';
-        this.mapId = opts.id;
         this.update();
-        if (this.mapId) {
-            $(this.map_name).editable({ unsavedclass: null }).on('save', (event, params) => {
-                MetaMap.MetaFire.setData(params.newValue, `${CONSTANTS.ROUTES.MAPS_LIST}/${this.mapId}/name`);
-            });
-            this.bindTopageName();
-        }
     });
 
     MetaMap.MetaFire.on('metamap/actions', (data) => {
