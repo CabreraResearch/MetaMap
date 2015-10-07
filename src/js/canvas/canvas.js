@@ -130,7 +130,7 @@ class Canvas {
                     assignPosse:function(node) {
                         return node.data.parent || node.id;
                     },
-                    zoomToFit:true,
+                    zoomToFit:false,
                     view:{
                         nodes:{
                             all: {
@@ -215,7 +215,7 @@ class Canvas {
                                 parent: "all",
                                 connector:["StateMachine", {
                                     margin: 1.01,
-                                    curviness:30
+                                    curviness:15
                                 }]
                             },
                             relationship:{
@@ -239,7 +239,7 @@ class Canvas {
                             },
                             perspective:{
                                 cssClass:"edge-perspective",
-                                endpoints:[ "Blank", [ "Dot", { radius:10, cssClass:"orange" }]],
+                                endpoints:[ "Blank", [ "Dot", { radius:5, cssClass:"orange" }]],
                                 parent: "connector"
                             },
                             perspectiveProxy:{

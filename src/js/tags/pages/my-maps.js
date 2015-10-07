@@ -6,9 +6,9 @@ const $ = require('jquery')
 require('datatables')
 require('datatables-bootstrap3-plugin')
 
-require('../dialogs/share')
 const CONSTANTS = require('../../constants/constants');
-var raw = require('../components/raw');
+const raw = require('../components/raw');
+const ShareMap = require('../../actions/ShareMap')
 
 const html = `
 <div id="my_maps_page" class="portlet box grey-cascade">
@@ -78,6 +78,7 @@ const html = `
                             <td>
                                 <button class="btn btn-sm blue filter-submit" onclick="{ parent.onOpen }">Open</button>
                                 <a if="{ val.title == 'My Maps' }" class="btn btn-sm red" onclick="{ parent.onShare }">Share <i class="fa fa-share"></i></a>
+                                <a if="{ val.title != 'My Maps' }" class="btn btn-sm red" onclick="{ parent.onCopy }">Copy <i class="fa fa-clone"></i></a>
                             </td>
                             <td if="{ editable }" class="meta_editable_{ i }" data-pk="{ id }" data-title="Edit Map Name" style="vertical-align: middle;">{ name }</td>
                             <td if="{ !editable }" style="vertical-align: middle;">{ name }</td>
@@ -94,7 +95,6 @@ const html = `
             </div>
         </div>
     </div>
-    <div id="my_maps_modal_container"></div>
 </div>
 `;
 
@@ -157,8 +157,11 @@ module.exports = riot.tag('my-maps', html, function (opts) {
         let opts = {
             map: event.item
         }
-        let modal = riot.mount(this.my_maps_modal_container, 'share')[0];
-        modal.update(opts);
+        ShareMap.act(opts);
+    }
+
+    this.onCopy = (event, ...o) => {
+        console.log('copy')
     }
 
     this.onTabSwitch = (event, ...o) => {

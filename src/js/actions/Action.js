@@ -30,9 +30,11 @@ class Action extends ActionBase {
                 case CONSTANTS.ACTIONS.LOGOUT:
                     Method = require('./Logout.js');
                     break;
+                case CONSTANTS.ACTIONS.SHARE_MAP:
+                    Method = require('./ShareMap');
+                    break;
                 case CONSTANTS.ACTIONS.TERMS_AND_CONDITIONS:
                     Method = require('./Terms.js');
-                    break;
                     break;
                 case CONSTANTS.ACTIONS.FEEDBACK:
                     Method = require('./Feedback');

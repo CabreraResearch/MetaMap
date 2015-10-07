@@ -58,8 +58,10 @@ var runbrowserify = function (name) {
     };
     var bundler = bundleMethod(bundleCfg);
 
-    bundler.plugin('minifyify', {map: 'metamap.map.json', output: 'dist/metamap.map.json'});
-
+    if(name != 'dev') {
+        bundler.plugin('minifyify', {map: 'metamap.map.json', output: 'dist/metamap.map.json'});
+    }
+    
     for (module in pkg['dependencies']) {
         bundler.external(module);
     }

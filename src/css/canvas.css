@@ -102,12 +102,12 @@
 }
 
 .edge-relationship path {
-    stroke:black;
+    stroke:#B3C2C7;
     stroke-width:4;
 }
 
 .relationship-overlay {
-    fill:black;
+    fill:#B3C2C7;
 }
 
 /* Hack to hide navigation edges */

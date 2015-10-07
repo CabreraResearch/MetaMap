@@ -7,7 +7,8 @@ const ACTIONS = {
     MY_MAPS: 'mymaps',
     TERMS_AND_CONDITIONS: 'terms',
     LOGOUT: 'logout',
-    FEEDBACK: 'feedback'
+    FEEDBACK: 'feedback',
+    SHARE_MAP: 'share_map'
 };
 
 Object.freeze(ACTIONS);
