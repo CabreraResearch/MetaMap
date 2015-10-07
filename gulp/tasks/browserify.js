@@ -11,30 +11,29 @@ var argv = require('yargs').argv;
 var transforms = [riotify];
 
 var config = function (app) {
-    var path = '';
     return {
         dev: {
-            entries: '.' + path + '/src/MetaMap.js',
+            entries: './src/MetaMap.js',
             export: {
-                glob: '.' + path + '/src/tags/**/*.tag',
-                cwd: '.' + path + '/src/tag'
+                glob: './src/tags/**/*.tag',
+                cwd: './src/tag'
             },
-            filename: app + '.js',
-            dest: '.' + path + '/dist',
+            filename: 'MetaMap.js',
+            dest: './dist',
             transforms: transforms,
             debug: true,
             fullPaths: true
         },
         release: {
-            entries: '.' + path + '/src/MetaMap.js',
+            entries: './src/MetaMap.js',
             export: {
-                glob: '.' + path + '/src/tags/**/*.tag',
-                cwd: '.' + path + '/src/tags'
+                glob: './src/tags/**/*.tag',
+                cwd: './src/tags'
             },
-            filename: app + '.min.js',
+            filename: 'MetaMap.min.js',
             transforms: transforms,
             debug: true,
-            dest: '.' + path + '/dist',
+            dest: './dist',
             fullPaths: false
         }
     }
@@ -59,9 +58,9 @@ var runbrowserify = function (name) {
     var bundler = bundleMethod(bundleCfg);
 
     if(name != 'dev') {
-        bundler.plugin('minifyify', {map: 'metamap.map.json', output: 'dist/metamap.map.json'});
+        bundler.plugin('minifyify', {map: 'MetaMap.map.json', output: 'dist/MetaMap.map.json'});
     }
-    
+
     for (module in pkg['dependencies']) {
         bundler.external(module);
     }
