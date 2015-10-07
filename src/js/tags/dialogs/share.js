@@ -48,7 +48,7 @@ const html = `
                             <span
                                 class="label label-default"
                                 style="margin-right: 5px;"
-                                if="{i != '*' && i != 'admin'}"
+                                if="{ i != 'admin' && (val.write || val.read) }"
                                 each="{ i, val in opts.map.shared_with}">
                                 <i if="{ val.write }" class="fa fa-pencil"></i>
                                 <i if="{ !val.write }" class="fa fa-eye"></i>
@@ -127,7 +127,12 @@ module.exports = riot.tag('share', html, function (opts) {
                     }),
                     contentType: 'application/json; charset=utf-8',
                     success: function (data) {
-                        asyncMethod(data);
+                        data.push({
+                            id: '*',
+                            picture: 'src/images/world-globe.jpg',
+                            name: 'Public'
+                        })
+                        asyncMethod(data)
                     },
                     error : function (e) {
                         console.log(e);
