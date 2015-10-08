@@ -44,7 +44,7 @@ const html = `
 </div>
 `
 
-riot.tag('chat', html, function (opts) {
+riot.tag('chat2', html, function (opts) {
 
     this.cortexPicture = 'src/images/cortex-avatar-small.jpg';
     this.messages = [{

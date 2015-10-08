@@ -5,7 +5,7 @@ const pageFooter = require('./page-footer');
 const CONSTANTS = require('../constants/constants');
 
 const html = `
-<div id="page_body" class="page-header-fixed page-sidebar-open">
+<div id="page_body" class="page-header-fixed page-sidebar-reversed">
 
     <div id="meta_page_header"></div>
 
@@ -26,11 +26,11 @@ module.exports = riot.tag('page-body', html, function(opts) {
     });
 
     MetaMap.Eventer.on(CONSTANTS.EVENTS.SIDEBAR_CLOSE, () => {
-        $(this.page_body).addClass('page-sidebar-reversed');
+        //$(this.page_body).addClass('page-sidebar-reversed');
     });
 
     MetaMap.Eventer.on(CONSTANTS.EVENTS.SIDEBAR_OPEN, () => {
-        $(this.page_body).removeClass('page-sidebar-reversed');
+        //$(this.page_body).removeClass('page-sidebar-reversed');
     });
 
 });
