@@ -121,7 +121,7 @@ module.exports = riot.tag('share', html, function (opts) {
                     url: 'https://api.metamap.co/users/find',
                     data: JSON.stringify( {
                         currentUserId: MetaMap.User.userId,
-                        sessionId: MetaMap.Auth0.ctoken,
+                        sessionId: MetaMap.MetaFire.firebase_token,
                         excludedUsers: _.keys(this.opts.map.shared_with),
                         search: query
                     }),
