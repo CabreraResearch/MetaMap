@@ -51,9 +51,6 @@ class Config {
                         try {
                             _.extend(this.config.site, data);
                             this.config.canvas = canvas;
-                            document.title = this.config.site.title;
-                            let favico = document.getElementById('favico');
-                            favico.setAttribute('href', `${this.config.site.imageUrl}favicon.ico`);
                             this.init();
                             fulfill(this.config.site);
                         } catch (e) {

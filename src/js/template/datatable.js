@@ -1,3 +1,7 @@
+const $ = require('jquery')
+require('datatables')
+require('datatables-bootstrap3-plugin')
+
 /***
 Wrapper/Helper Class for datagrid based on jQuery Datatable Plugin
 ***/
@@ -35,7 +39,7 @@ var Datatable = function() {
 
             // default settings
             options = $.extend(true, {
-                src: "", // actual table  
+                src: "", // actual table
                 filterApplyAction: "filter",
                 filterCancelAction: "filter_cancel",
                 resetGroupActionInputOnSuccess: true,
@@ -302,3 +306,5 @@ var Datatable = function() {
     };
 
 };
+
+module.exports = Datatable

@@ -1,8 +1,12 @@
-const riot = window.riot;
-const NProgress = window.NProgress;
-const pageBody = require('../tags/page-body.js');
-const CONSTANTS = require('../constants/constants');
-const Actions = require('../actions/Action.js');
+const riot = window.riot
+const NProgress = window.NProgress
+const pageBody = require('../tags/page-body.js')
+const CONSTANTS = require('../constants/constants')
+const Actions = require('../actions/Action.js')
+const Metronic = require('../template/metronic')
+const Layout = require('../template/layout')
+const Demo = require('../template/demo')
+
 
 class PageFactory {
     constructor(eventer, metaFire) {
@@ -23,8 +27,7 @@ class PageFactory {
                     Metronic.init(); // init metronic core componets
                     Layout.init(); // init layout
                     Demo.init(); // init demo features
-                    Index.init(); // init index page
-                    Tasks.initDashboardWidget(); // init tash dashboard widget
+
                     fulfill();
                 }, 250);
             });

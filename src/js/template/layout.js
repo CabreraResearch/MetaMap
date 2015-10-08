@@ -1,3 +1,5 @@
+const $ = require('jquery')
+const Metronic = require('./metronic')
 /**
 Core script to handle the entire theme and core functions
 **/
@@ -281,7 +283,7 @@ var Layout = function() {
     // Hanles sidebar toggler
     var handleSidebarToggler = function() {
         var body = $(document.getElementById('page_body'));
-        
+
         // handle sidebar show/hide
         $(document.getElementById('page_body')).on('click', '.sidebar-toggler', function(e) {
             var sidebar = $('.page-sidebar');
@@ -480,4 +482,6 @@ var Layout = function() {
         }
     };
 
-}();
+} ();
+
+module.exports = Layout;

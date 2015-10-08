@@ -5,7 +5,7 @@ const pageFooter = require('./page-footer');
 const CONSTANTS = require('../constants/constants');
 
 const html = `
-<div id="page_body" class="page-header-fixed page-sidebar-closed-hide-logo page-sidebar-closed-hide-logo">
+<div id="page_body" class="page-header-fixed page-sidebar-open">
 
     <div id="meta_page_header"></div>
 

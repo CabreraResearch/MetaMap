@@ -130,7 +130,7 @@ module.exports = riot.tag('my-maps', html, function (opts) {
             } else {
                 _.each(item.shared_with, (share, key) => {
                     if (share.picture && key != '*' && key != 'admin') {
-                        html += `<span class="label" data-toggle="tooltip" data-placement="bottom" title="${share.name}"><img alt="${share.name}" height="30" width="30" class="img-circle" src="${share.picture}"></span>`
+                        html += `<span class="label owner-label" data-toggle="tooltip" data-placement="bottom" title="${share.name}"><img alt="${share.name}" height="30" width="30" class="img-circle" src="${share.picture}"></span>`
                     }
                 })
                 if (html) {
@@ -144,7 +144,7 @@ module.exports = riot.tag('my-maps', html, function (opts) {
     }
 
     this.getOwner = (item) => {
-        let html = `<span class="label"><img alt="${item.owner.name}" height="30" width="30" class="img-circle" src="${item.owner.picture}"></span>`
+        let html = `<span class="label owner-label" data-toggle="tooltip" data-placement="bottom" title="${item.owner.name}"><img alt="${item.owner.name}" height="30" width="30" class="img-circle" src="${item.owner.picture}"></span>`
         return html;
     }
 
@@ -166,6 +166,9 @@ module.exports = riot.tag('my-maps', html, function (opts) {
 
     this.onTabSwitch = (event, ...o) => {
         this.currentTab = event.item.val.title;
+         _.delay(() => {
+            $('.owner-label').tooltip()
+        }, 250);
         switch (this.currentTab) {
             case 'My Maps':
 
@@ -365,7 +368,9 @@ module.exports = riot.tag('my-maps', html, function (opts) {
                     buildTable(tab.order, maps);
                 }
             })
-            _.delay(() => { $('[data-toggle="tooltip"]').tooltip() }, 500);
+            _.delay(() => {
+                $('.owner-label').tooltip()
+            }, 250);
        });
     });
 });
