@@ -168,8 +168,8 @@ class Canvas {
                                         var d = renderer.mapEventLocation(obj.e)
                                         var edges = obj.node.getEdges()
 
-                                        d.w = edges[0].source.data.w * 0.8;
-                                        d.h = edges[0].source.data.h * 0.8;
+                                        d.w = edges[0].source.data.w * 0.667;
+                                        d.h = edges[0].source.data.h * 0.667;
 
                                         var newNode = toolkit.addNode(jsPlumb.extend(_newNode("r-thing"), d));
 
@@ -322,8 +322,8 @@ class Canvas {
                         },
                         green:function(el, node) {
                             clickLogger('G', 'dblclick', el, node)
-                            var newWidth = node.data.w * 0.8;
-                            var newHeight = node.data.h * 0.8;
+                            var newWidth = node.data.w * 0.667;
+                            var newHeight = node.data.h * 0.667;
 
                             node.data.children = node.data.children || [];
                             var newLabel = node.data.label + ": Part " + (node.data.children.length+1);
@@ -554,6 +554,7 @@ class Canvas {
 
                 $('.segment').hover(function () {
                     //Mouse Over
+                    $(this).css('opacity', 1)
                 }, function () {
                     //Mouse Out
                     $(this).css('opacity', 0)
