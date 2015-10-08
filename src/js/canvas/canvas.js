@@ -518,6 +518,47 @@ class Canvas {
                     }
                 })
 
+                //KLUDGE:
+                //The SVG segments for letters and buttons are not grouped together, so the css:hover trick doesn't work
+                //Instead, use jQuery
+                const toggleOpacity = (node, on) => {
+                    //Mouse Over
+                    let letter = $(node)
+                    let cssClass = node.classList[1]
+                    let button = ''
+                    switch (cssClass.toLowerCase()) {
+                        case 'p':
+                            button = 'orange'
+                            break;
+                        case 'd':
+                            button = 'red'
+                            break;
+                        case 'r':
+                            button = 'blue'
+                            break;
+                        case 's':
+                            button = 'green'
+                            break;
+                        default:
+                            break;
+                    }
+                    $(letter).parent().parent().find(`.${button}.segment`).css('opacity', on)
+                }
+
+                $('.letter').hover(function () {
+                    //Mouse Over
+                    toggleOpacity(this, 1);
+                }, function () {
+                    //Mouse Out
+                    })
+
+                $('.segment').hover(function () {
+                    //Mouse Over
+                }, function () {
+                    //Mouse Out
+                    $(this).css('opacity', 0)
+                })
+
             })
         });
 
