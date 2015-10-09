@@ -2,20 +2,23 @@
   "firebase": "meta-map-staging",
   "public": ".",
   "ignore": [
-    "firebase.json",
-    "bower.json",
-    "package.json",
+    "*.json",
+    "*.log",
     ".gitignore",
     "Gulpfile.js",
-    "README.md",
+    "*.md",
     "**/.*",
     "**/node_modules/**",
+    "**/bower_components/**",
     "bin/**",
     "obj/**",
+    "gulp/**",
     ".vs/**",
+    ".vscode/**",
     "*.config",
     "*.tmpl",
-    ".git/**"
+    ".git/**",
+    "typings/**"
   ],
   "redirects": [
     {

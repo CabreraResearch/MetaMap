@@ -519,6 +519,9 @@ class Canvas {
                         }
                     } else {
                         switch (event.keyCode) {
+                            case 8:
+                                event.preventDefault()
+                                break;
                             case 46:
                                 var selected = toolkit.getSelection();
                                 deleteAll(selected);
