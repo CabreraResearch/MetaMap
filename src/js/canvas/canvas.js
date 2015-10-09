@@ -408,6 +408,7 @@ class Canvas {
                                 parseInt(label.style.left, 10),
                                 parseInt(label.style.top, 10)
                             ]
+                            throttleSave()
                         }
                     });
 
@@ -442,10 +443,6 @@ class Canvas {
                         type: 'json',
                         data: that.map.data
                     })
-                } else {
-                    toolkit.load({
-                        url:"data.json"
-                    });
                 }
 
             // --------------------------------------------------------------------------------------------------------
