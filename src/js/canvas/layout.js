@@ -10,7 +10,7 @@
 
     var _oneSet = function(parent, params) {
       params = params || {};
-      var padding = params.partPadding || 50;
+      var padding = params.partPadding || 20;
       if (parent.data.children) {
 
         var c = parent.data.children,
@@ -24,7 +24,7 @@
           if(c[i]) {
             var childSize = this.getSize(c[i]),
                 x = parentPos[0] + (align * (parentSize[0] - childSize[0]));
-  
+
             this.setPosition(c[i], x, y, true);
             magnetizeNodes.push(c[i]);
             y += (childSize[1] + padding);
