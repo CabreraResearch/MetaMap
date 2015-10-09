@@ -79,8 +79,8 @@ class Canvas {
                 var _newNode = function(type) {
                     type=type||"idea"
                     return {
-                        w:100,
-                        h:100,
+                        w:50,
+                        h:50,
                         label:"idea",
                         type:type
                     };
@@ -326,7 +326,7 @@ class Canvas {
                             var newHeight = node.data.h * 0.667;
 
                             node.data.children = node.data.children || [];
-                            var newLabel = node.data.label + ": Part " + (node.data.children.length+1);
+                            var newLabel = 'Part';
 
                             var newNode = toolkit.addNode({parent:node.id,w:newWidth,h:newHeight,label: newLabel});
                             node.data.children.push(newNode.id);
@@ -469,8 +469,8 @@ class Canvas {
 
                 //CTRL + click enables the lasso
                 jsPlumb.on(document, 'mousedown', function(event) {
-                    if(event.ctrlKey) {
-                        renderer.setMode('select')
+                    if (event.ctrlKey) {
+                        event.preventDefault()
                     }
                 });
 
@@ -495,8 +495,10 @@ class Canvas {
                     toolkit.remove(selected);
                 }
 
+                let mode = null;
                 //map backspace to delete if anything is selected
                 jsPlumb.on(document, 'keyup', function(event) {
+                    mode = null
                     var selected = toolkit.getSelection();
                     switch (event.keyCode) {
                         case 8:
@@ -510,11 +512,18 @@ class Canvas {
                 })
 
                 jsPlumb.on(document, 'keydown', function(event) {
-                    switch (event.keyCode) {
-                        case 46:
-                            var selected = toolkit.getSelection();
-                            deleteAll(selected);
-                            break;
+                    if (event.ctrlKey) {
+                        if (!mode) {
+                            mode = 'select'
+                            renderer.setMode('select')
+                        }
+                    } else {
+                        switch (event.keyCode) {
+                            case 46:
+                                var selected = toolkit.getSelection();
+                                deleteAll(selected);
+                                break;
+                        }
                     }
                 })
 
