@@ -268,7 +268,13 @@ class Canvas {
                         }
                     },
                     dragOptions:{
-                        filter:".segment"       // can't drag nodes by the color segments.
+                        filter:".segment",       // can't drag nodes by the color segments.
+						stop:function() {
+							// when _any_ node stops dragging, run the layout again.
+							// this will cause child nodes to snap to their new parent, and also
+							// cleanup nicely if a node is dropped on another node.
+							renderer.refresh();
+						}
                     }
                 });
 
