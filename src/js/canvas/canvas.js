@@ -125,7 +125,7 @@ class Canvas {
                     // methods too (on the renderer, not the toolkit); these can be used
                     // when transferring a part from one parent to another.
                     assignPosse:function(node) {
-                        return node.data.parent || node.id;
+                        return node.data.parent ? [ node.data.parent, false ] : node.id;
                     },
                     zoomToFit:false,
                     view:{
