@@ -125,7 +125,7 @@ class Canvas {
                     // methods too (on the renderer, not the toolkit); these can be used
                     // when transferring a part from one parent to another.
                     assignPosse:function(node) {
-                        return node.data.parent || node.id;
+                        return node.data.parent ? [ node.data.parent, false ] : node.id;
                     },
                     zoomToFit:false,
                     view:{
@@ -268,7 +268,13 @@ class Canvas {
                         }
                     },
                     dragOptions:{
-                        filter:".segment"       // can't drag nodes by the color segments.
+                        filter:".segment",       // can't drag nodes by the color segments.
+						stop:function() {
+							// when _any_ node stops dragging, run the layout again.
+							// this will cause child nodes to snap to their new parent, and also
+							// cleanup nicely if a node is dropped on another node.
+							renderer.refresh();
+						}
                     }
                 });
 
