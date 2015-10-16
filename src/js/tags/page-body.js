@@ -25,12 +25,4 @@ module.exports = riot.tag('page-body', html, function(opts) {
         riot.mount(this.meta_page_container, 'page-container');
     });
 
-    MetaMap.Eventer.on(CONSTANTS.EVENTS.SIDEBAR_CLOSE, () => {
-        //$(this.page_body).addClass('page-sidebar-reversed');
-    });
-
-    MetaMap.Eventer.on(CONSTANTS.EVENTS.SIDEBAR_OPEN, () => {
-        //$(this.page_body).removeClass('page-sidebar-reversed');
-    });
-
 });

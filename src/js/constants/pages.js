@@ -10,7 +10,7 @@ const PAGES = {
     TERMS_AND_CONDITIONS: 'terms',
     HOME: 'home',
     COURSE_LIST: 'course_list',
-    TRAINING: 'training'
+    TRAININGS: 'trainings'
 };
 
 _.extend()

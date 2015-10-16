@@ -23,12 +23,6 @@ module.exports = riot.tag('meta-canvas', html, function(opts) {
         if (!this.canvas) {
             $(this.diagram).empty();
 
-            var width = $(this.diagram).width(),
-                height =  $(this.diagram).height();
-
-            var xLoc = width/2 - 25,
-                yLoc = 100;
-
             this.canvas = new Canvas(map, this.mapId);
             this.canvas.init();
 

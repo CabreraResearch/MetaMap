@@ -25,7 +25,7 @@ module.exports = riot.tag('page-logo', html, function(opts) {
 
     this.getDisplay = (el) => {
 
-        if(MetaMap && MetaMap.Router && MetaMap.Router.currentPath == CONSTANTS.PAGES.TRAINING) {
+        if(MetaMap && MetaMap.Router && MetaMap.Router.currentPath == CONSTANTS.PAGES.TRAININGS) {
             return 'visible'
         } else {
             return 'hidden'

@@ -3,19 +3,16 @@ const NProgress = window.NProgress;
 const CONSTANTS = require('../../constants/constants');
 
 const html = `
-<div class="portlet light">
+<div id="training_portlet" class="portlet light">
 				<div class="portlet-body">
 					<div class="row margin-bottom-30">
-						<div if="{ training }" class="col-md-12">
-                            <h1>{ training.name }</h1>
-                            <p>{ training.text }</p>
-						</div>
+						
 					</div>
 				</div>
 			</div>
 `;
 
-module.exports = riot.tag(CONSTANTS.PAGES.TRAINING, html, function(opts) {
+module.exports = riot.tag(CONSTANTS.TAGS.TRAINING, html, function(opts) {
 
     const MetaMap = require('../../../MetaMap.js');
 
@@ -39,6 +36,20 @@ module.exports = riot.tag(CONSTANTS.PAGES.TRAINING, html, function(opts) {
             this.config = opts
             getData()
         }
+    });
+
+    this.correctHeight = () => {
+        $(this.training_portlet).css({
+            height: window.innerHeight - 120 + 'px'
+        });
+    }
+
+    this.on('update', () => {
+        this.correctHeight();
+    });
+
+    $(window).resize(() => {
+        this.correctHeight();
     });
 
 });

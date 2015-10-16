@@ -4,7 +4,8 @@ const TAGS = {
     TERMS: 'terms',
     MY_MAPS: 'my-maps',
     SHARE: 'share',
-    COURSE_LIST: 'course_list'
+    COURSE_LIST: 'course_list',
+    TRAINING: 'training'
 };
 
 Object.freeze(TAGS);

@@ -12,7 +12,7 @@ class OpenTraining extends ActionBase {
         super.act(id, ...params);
         $(`#${CONSTANTS.ELEMENTS.APP_CONTAINER}`).empty();
         if (id) {
-            let tag = riot.mount(document.getElementById(CONSTANTS.ELEMENTS.APP_CONTAINER), CONSTANTS.PAGES.TRAINING)[0];
+            let tag = riot.mount(document.getElementById(CONSTANTS.ELEMENTS.APP_CONTAINER), CONSTANTS.TAGS.TRAINING)[0];
             tag.update({ id: id });
             this.openSidebar();
         }
