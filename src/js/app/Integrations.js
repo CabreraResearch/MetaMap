@@ -9,7 +9,8 @@ class Integrations {
 		this._features = {
 			google: require('../integrations/Google'),
 			usersnap: require('../integrations/UserSnap'),
-			addthis: require('../integrations/AddThis')
+            addthis: require('../integrations/AddThis'),
+            youtube: require('../integrations/YouTube')
 		};
 	}
 

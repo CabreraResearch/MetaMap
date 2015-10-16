@@ -1,12 +1,18 @@
-const riot = require('riot');
-const NProgress = window.NProgress;
-const CONSTANTS = require('../../constants/constants');
+const riot = require('riot')
+const NProgress = window.NProgress
+const CONSTANTS = require('../../constants/constants')
+const VideoPlayer = require('../../tools/VideoPlayer')
 
 const html = `
 <div id="training_portlet" class="portlet light">
 				<div class="portlet-body">
 					<div class="row margin-bottom-30">
-						
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+
+				        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                            <div id="training_player"></div>
+				        </div>
 					</div>
 				</div>
 			</div>
@@ -35,6 +41,7 @@ module.exports = riot.tag(CONSTANTS.TAGS.TRAINING, html, function(opts) {
         if (opts) {
             this.config = opts
             getData()
+            this.player = new VideoPlayer('training_player', {height: 390, width: 640, videoId: 'dUqRTWCdXt4'})
         }
     });
 
