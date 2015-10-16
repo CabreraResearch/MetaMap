@@ -3,7 +3,8 @@ const TAGS = {
     HOME: 'home',
     TERMS: 'terms',
     MY_MAPS: 'my-maps',
-    SHARE: 'share'
+    SHARE: 'share',
+    COURSE_LIST: 'course_list'
 };
 
 Object.freeze(TAGS);

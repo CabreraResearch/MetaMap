@@ -82,7 +82,9 @@ class Canvas {
                         w:50,
                         h:50,
                         label:"idea",
-                        type:type
+                        type: type,
+                        children: [],
+                        labelPosition: []
                     };
                 };
 
@@ -334,7 +336,14 @@ class Canvas {
                             node.data.children = node.data.children || [];
                             var newLabel = 'Part';
 
-                            var newNode = toolkit.addNode({parent:node.id,w:newWidth,h:newHeight,label: newLabel});
+                            var newNode = toolkit.addNode({
+                                parent:node.id,
+                                w:newWidth,
+                                h:newHeight,
+                                label: newLabel,
+                                order: node.data.children.length
+                                });
+
                             node.data.children.push(newNode.id);
                             renderer.relayout();
                         },

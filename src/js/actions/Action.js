@@ -12,14 +12,20 @@ class Action extends ActionBase {
         if (!ret) {
             let Method = null;
             switch(action) {
-                case CONSTANTS.ACTIONS.MAP:
+                case CONSTANTS.ACTIONS.OPEN_MAP:
                     Method = require('./OpenMap.js');
+                    break;
+                case CONSTANTS.ACTIONS.TRAININGS:
+                    Method = require('./OpenTraining.js');
                     break;
                 case CONSTANTS.ACTIONS.NEW_MAP:
                     Method = require('./NewMap.js');
                     break;
                 case CONSTANTS.ACTIONS.COPY_MAP:
                     Method = require('./CopyMap.js');
+                    break;
+                case CONSTANTS.ACTIONS.COURSE_LIST:
+                    Method = require('./Courses');
                     break;
                 case CONSTANTS.ACTIONS.DELETE_MAP:
                     Method = require('./DeleteMap.js');

@@ -6,7 +6,7 @@ const html = `
     <a id="meta_logo" href="#home">
         <img src="src/images/metamap_cloud.png" alt="logo" class ="logo-default" />
     </a>
-    
+
     <div id="meta_menu_toggle" class="menu-toggler sidebar-toggler quick-sidebar-toggler" onclick="{ onClick }" style="visibility:{ getDisplay() };">
         <!--DOC: Remove the above "hide" to enable the sidebar toggler button on header-->
     </div>
@@ -25,7 +25,7 @@ module.exports = riot.tag('page-logo', html, function(opts) {
 
     this.getDisplay = (el) => {
 
-        if(MetaMap && MetaMap.Router && MetaMap.Router.currentPath == 'map') {
+        if(MetaMap && MetaMap.Router && MetaMap.Router.currentPath == CONSTANTS.PAGES.TRAINING) {
             return 'visible'
         } else {
             return 'hidden'

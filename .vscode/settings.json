@@ -5,5 +5,8 @@
     "editor.formatOnType": true,
     "files.trimTrailingWhitespace": true,
     "typescript.tsdk": "/typings",
-    "eslint.enable": true
+    "eslint.enable": true,
+    "compilerOptions": {
+        "target": "ES6"
+    }
 }

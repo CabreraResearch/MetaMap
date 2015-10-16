@@ -15,10 +15,9 @@ class OpenMap extends ActionBase {
             if (map) {
                 riot.mount(document.getElementById(CONSTANTS.ELEMENTS.APP_CONTAINER), CONSTANTS.TAGS.META_CANVAS);
                 map.id = id;
-                this.eventer.do(CONSTANTS.EVENTS.NAV, 'map', map, ...params);
+                this.eventer.do(CONSTANTS.EVENTS.NAV, CONSTANTS.PAGES.MAP, map, ...params);
                 this.eventer.do(CONSTANTS.EVENTS.PAGE_NAME, map, ...params);
                 this.eventer.do(CONSTANTS.EVENTS.MAP, map, ...params);
-                this.openSidebar();
             }
         });
         return true;

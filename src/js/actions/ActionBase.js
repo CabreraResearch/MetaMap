@@ -8,10 +8,10 @@ class ActionBase {
         this.metaMap = require('../../MetaMap.js');
     }
 
-    act() {
-        
+    act(id, ...params) {
+        return false;
     }
-    
+
     toggleSidebar() {
         if(this.sidebarOpen) {
             this.openSidebar();
@@ -19,12 +19,12 @@ class ActionBase {
             this.closeSidebar();
         }
     }
-    
+
     openSidebar() {
         this.sidebarOpen = true;
         this.eventer.do(CONSTANTS.EVENTS.SIDEBAR_OPEN);
     }
-    
+
     closeSidebar() {
         this.sidebarOpen = false;
         this.eventer.do(CONSTANTS.EVENTS.SIDEBAR_CLOSE);
