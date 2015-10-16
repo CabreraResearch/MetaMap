@@ -1,12 +1,10 @@
-﻿(function() {
-  var bump, gulp, gutil;
+﻿  var bump, gulp, gutil;
 
   gulp = require('gulp');
 
   gutil = require('gulp-util');
 
   bump = require('gulp-bump');
-
 
   /*
    Bump the version in bower and package json
@@ -17,5 +15,3 @@
   });
 
   gulp.task('bump', ['bumpVersion', 'compile']);
-
-}).call(this);
