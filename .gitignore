@@ -14,3 +14,4 @@ Web.config
 .idea/
 desktop.ini
 npm-debug.log
+*.log
