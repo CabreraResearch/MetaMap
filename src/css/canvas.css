@@ -16,7 +16,7 @@
     white-space: pre;
     text-align: left;
     position:absolute;
-    left:20%;
+    left:120%;
     top:20%;
 }
 
@@ -46,17 +46,14 @@
     opacity:1;
 }
 
-.segment {
-    opacity:0;
+.ideaNode:hover .segment {
+    opacity:1;
     transition:opacity 0.2s;
 }
 
-.segment:hover {
-    opacity:1;
-}
-
-.letter:hover .segment, .segment.hover .segment{
-    opacity:1;
+.segment {
+    opacity:0;
+    transition:opacity 0.2s;
 }
 
 .outer {
@@ -108,22 +105,4 @@
 
 .relationship-overlay {
     fill:#B3C2C7;
-}
-
-/* Hack to hide navigation edges */
-
-.jtk-surface-pan-right {
-    display: none;
-}
-
-.jtk-surface-pan-left {
-    display: none;
-}
-
-.jtk-surface-pan-top {
-    display: none;
-}
-
-.jtk-surface-pan-bottom {
-    display: none;
 }
