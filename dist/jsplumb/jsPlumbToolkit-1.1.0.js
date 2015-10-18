@@ -3111,7 +3111,8 @@
              * @param {Object} params Parameters for new Edge.
              * @param {String|Node|Port} params.source Source for the Edge - a Node, Port or Node/Port id.
              * @param {String|Node|Port} params.target Target for the Edge - a Node, Port or Node/Port id.
-             * @param {Integer} [params.cost=1] Edge cost.
+             * @param {Integer} [params.cost=1] Edge cost. This is used when computing shortest paths through the graph. If
+             * an Edge is not `directed`, then the same cost is applied regardless of the direction of traversal.
              * @param {Boolean} [params.directed=true] Whether or not the Edge is directed.
              * @param {Object} [data] Optional data to associate with the Edge. The default edgeIdFunction
              * @return {Edge} The Edge that was added.
@@ -4536,7 +4537,9 @@
          * @param {Object} params Method params.
          * @param {Node|String} params.source Source Node, or id of the source Node. If given as a string, this may be in "dotted" format, eg. nodeId.portId, to identify a particular port on the source Node.
          * @param {Node|String} params.target Target Node, or id of the target Node. If given as a string, this may be in "dotted" format, eg. nodeId.portId, to identify a particular port on the target Node.
-         * @param {Object} [source] The source for the =operation. For internal use.
+         * @param {Integer} [params.cost=1] Edge cost. This is used when computing shortest paths through the graph. If
+         * an Edge is not `directed`, then the same cost is applied regardless of the direction of traversal.
+         * @param {Boolean} [params.directed=true] Whether or not the Edge is directed.
          * @return {Edge} The Edge that was added.
          */
         this.addEdge = function (params, source, doNotFireEvent) {
@@ -5812,6 +5815,7 @@
         mouseleave: "mouseleave",
         mouseover: "mouseover",
         nodeAdded: "nodeAdded",
+        nodeDropped:"nodeDropped",
         nodeMoveStart: "nodeMoveStart",
         nodeMoveEnd: "nodeMoveEnd",
         nodeRemoved: "nodeRemoved",
@@ -8039,6 +8043,8 @@
      * @param {Object} params Constructor parameters.
      * @param {Object} [params.view] Parameters for Node, Port and Edge definitions. Although this is not a required parameter, the vast majority of applications will
      * @param {Boolean} [params.elementsDraggable=true] Whether or not elements should be made draggable.
+     * @param {Boolean} [params.elementsDroppable=false] If true, elements can be dragged onto other elements and events will be fired.
+     * What you choose to do with that event is up to you.
      * @param {String} [params.id] Optional id for this renderer. If you provide this you can then subsequently retrieve it via `toolkit.getRenderer(<id>)`.
      * @param {Boolean} [params.refreshAutomatically=true] Whether or not to automatically refresh the associated layout whenever a Node is added or deleted.
      * @param {Boolean} [params.enhancedView=true] If false, there will be no support for preconfigured parameters or functions in the definitions inside a view. You will want to set this for Angular if you use the 2-way data binding.
@@ -8053,6 +8059,7 @@
             _layout = new JTK.Layouts.EmptyLayout(self),
             containerElement = jsPlumb.getElement(params.container),
             draggable = !(params.elementsDraggable === false),
+            droppable = params.elementsDroppable === true,
             _suspendRendering = false,
             _refreshAutomatically = params.refreshAutomatically !== false,
             _idFunction = params.idFunction || _toolkit.getNodeId,
@@ -8124,7 +8131,8 @@
             return _toolkit;
         };
         // renderer has some events, but also exposes jsplumb events
-        var localEvents = [ _e.canvasClick, _e.canvasDblClick, _e.nodeAdded, _e.nodeRemoved, _e.nodeRendered,
+        var localEvents = [ _e.canvasClick, _e.canvasDblClick, _e.nodeAdded, _e.nodeDropped,
+                _e.nodeRemoved, _e.nodeRendered,
                 _e.nodeMoveStart, _e.nodeMoveEnd, _e.portAdded,
                 _e.portRemoved, _e.edgeAdded, _e.edgeRemoved,
                 _e.dataLoadEnd, _e.anchorChanged, _e.objectRepainted,
@@ -8692,10 +8700,10 @@
                         args.unshift(nodeEl);
                         _jsPlumb.addToPosse.apply(_jsPlumb, args);
                     }
-                    /*else {
-                    // TODO remove from Posses
-                        _jsPlumb.removeFromPosse(nodeEl);
-                    }*/
+                    else {
+                        // remove from all Posses.
+                        _jsPlumb.removeFromAllPosses(nodeEl);
+                    }
 
                     self.repaint(nodeEl);
                 }
@@ -8819,6 +8827,11 @@
                     else {
                         p[name] = portMap[portIdentifier];
                     }
+
+                    // if still null, just use the node element.
+                    if (p[name] == null) {
+                        p[name] = nodeMap[_idFunction(n.data)];
+                    }
                 }
                 else
                     p[name] = nodeMap[_idFunction(edge[name].data)];
@@ -8889,6 +8902,9 @@
                 // only for nodes.
                 if (makeDraggableIfRequired && draggable && handler.makeDraggable)
                     handler.makeDraggable(obj, def.dragOptions);
+
+                if (droppable && handler.makeDroppable)
+                    handler.makeDroppable(obj, def.dropOptions);
 
                 // -------------- events -----------------------
 
@@ -9012,11 +9028,51 @@
 
         /**
          * Gets the underlying jsPlumb connection that was rendered for the Edge with the given id.
+         * @method getRenderedConnection
          * @param {String} edgeId ID of the Edge to retrieve the Connection for.
          * @return {Connection} A jsPlumb Connection, null if not found.
          */
         this.getRenderedConnection = function (edgeId) {
             return connMap[edgeId];
+        };
+
+        //
+        // helper method to create a layout. used by setLayout and adHocLayout.
+        //
+        var _createLayout = function(layoutParams) {
+            var lp = _jsPlumb.extend({
+                container: containerElement,
+                getElementForNode: function (id) {
+                    return nodeMap[id];
+                }
+            }, layoutParams);
+            lp.jsPlumbToolkit = _toolkit;
+            lp.adapter = self;
+
+            if (!root.jsPlumbToolkit.Layouts[lp.type]) throw "no such layout [" + lp.type + "]";
+
+            // potentially insert locationFunction, if there isn't one.
+            lp.parameters = lp.parameters || {};
+            if (!lp.parameters.locationFunction) {
+                lp.parameters.locationFunction = function(node) {
+                    return [ Rotors.data(node.data, _modelLeftAttribute), Rotors.data(node.data, _modelTopAttribute) ];
+                }
+            }
+
+            return new root.jsPlumbToolkit.Layouts[lp.type](lp);
+        };
+
+        /**
+         * Applies the given layout one time to the content.
+         * @method adHocLayout
+         * @param {Object} layoutParams Parameters for the layout, including type and constructor parameters.
+         */
+        this.adHocLayout = function(layoutParams) {
+            if (layoutParams) {
+                var _originalLayout = _layout;
+                this.setLayout(layoutParams);
+                _layout = _originalLayout; // (but dont refresh)
+            }
         };
 
         /**
@@ -9027,27 +9083,7 @@
          */
         this.setLayout = function (layoutParams, doNotRefresh) {
             if (layoutParams) {
-                var lp = _jsPlumb.extend({
-                    container: containerElement,
-                    getElementForNode: function (id) {
-                        return nodeMap[id];
-                    }
-                }, layoutParams);
-                lp.jsPlumbToolkit = _toolkit;
-                lp.adapter = self;
-
-                if (!root.jsPlumbToolkit.Layouts[lp.type]) throw "no such layout [" + lp.type + "]";
-
-                // potentially insert locationFunction, if there isn't one.
-                lp.parameters = lp.parameters || {};
-                if (!lp.parameters.locationFunction) {
-                    lp.parameters.locationFunction = function(node) {
-                        return [ Rotors.data(node.data, _modelLeftAttribute), Rotors.data(node.data, _modelTopAttribute) ];
-                    }
-                }
-
-                _layout = new root.jsPlumbToolkit.Layouts[lp.type](lp);
-
+                _layout = _createLayout(layoutParams);
                 if (!doNotRefresh) self.refresh();
             }
         };
@@ -9433,7 +9469,7 @@
                                         // get port type and scope
                                         var newPortParams = _getPortParameters(portEl[0], node, nodeId);
                                         if (newPortParams.scope) {
-                                            _jsPlumb.setTargetScope(el, newPortParams.scope, newPortParams.edgeType);
+                                            _jsPlumb.setTargetScope(el, newPortParams.scope);
                                         }
                                     }
                                 });
@@ -9634,7 +9670,7 @@
         };
 
         /**
-         * Remove the given Node from the given posse.
+         * Remove the given Node from the given Posse.
          * @param {Element|String|Node} obj A DOM element representing a Node, or a Node id, or a Node.
          * @param {String} posse ID of the posse from which to remove the Node from.
          */
@@ -9642,6 +9678,17 @@
             jsPlumbToolkitUtil.each(obj, function(_obj) {
                 var info = _getObjectInfo(_obj);
                 if (info.el) _jsPlumb.removeFromPosse(info.el, posseId);
+            });
+        };
+
+        /**
+         * Remove the given Node from all Posses to which it belongs.
+         * @param {Element|String|Node} obj A DOM element representing a Node, or a Node id, or a Node.
+         */
+        this.removeFromAllPosses = function(obj) {
+            jsPlumbToolkitUtil.each(obj, function(_obj) {
+                var info = _getObjectInfo(_obj);
+                if (info.el) _jsPlumb.removeFromAllPosses(info.el);
             });
         };
 
@@ -12141,7 +12188,9 @@
         var containerElement = JP.getElement(params.container),
             canvasElement = exports.createElement({ position: _c.relative, width: _c.nominalSize, height: _c.nominalSize, left: 0, top: 0, clazz: _cl.SURFACE_CANVAS }, containerElement),
             elementsDraggable = !(params.elementsDraggable === false),
+            elementsDroppable = params.elementsDroppable === true,
             dragOptions = params.dragOptions || {},
+            dropOptions = params.dropOptions || {},
             stateHandle = params.stateHandle,
             _storePositionsInModel = params.storePositionsInModel !== false,
             _modelLeftAttribute = params.modelLeftAttribute,
@@ -12392,6 +12441,30 @@
                 _dragOptions.force = true;
 
                 _super.jsPlumb.draggable(domEl, _dragOptions, false, _super.jsPlumb);
+            }
+        };
+
+        _super.makeDroppable = function (el, nodeDefDropOptions) {
+            // init as droppable
+            if (elementsDroppable) {
+                var domEl = JP.getElement(el), id = _super.jsPlumb.getId(domEl);
+                var _dropOptions = _super.jsPlumb.extend({}, dropOptions);
+
+                if (nodeDefDropOptions != null)
+                    _super.jsPlumb.extend(_dropOptions, nodeDefDropOptions);
+
+                _dropOptions["drop"] = JUTIL.wrap(_dropOptions["drop"], function (params) {
+                    var dropInfo = {
+                        source:params.drag.el.jtk.node,
+                        sourceElement:params.drag.el,
+                        target:params.drop.el.jtk.node,
+                        targetElement:params.drop.el,
+                        e:params.e
+                    };
+                    self.fire(_e.nodeDropped, dropInfo);
+                });
+
+                _super.jsPlumb.droppable(domEl, _dropOptions);
             }
         };
 
