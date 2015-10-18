@@ -125,7 +125,7 @@ class Canvas {
                     // methods too (on the renderer, not the toolkit); these can be used
                     // when transferring a part from one parent to another.
                     assignPosse:function(node) {
-                        return node.data.parent ? [ node.data.parent, false ] : node.id;
+                        return node.data.parent ? { posse:node.data.parent, active:false } : node.id;
                     },
                     zoomToFit:false,
                     view:{
@@ -265,8 +265,12 @@ class Canvas {
                         },
                         relayout: function() {
                             //various drag/drop handler event experiments lived here
-                        }
+                        },
+						nodeDropped:function(params) {
+							alert("node " + params.source.id + " was dropped on " + params.target.id);
+						}
                     },
+					elementsDroppable:true,
                     dragOptions:{
                         filter:".segment",       // can't drag nodes by the color segments.
 						stop:function() {
