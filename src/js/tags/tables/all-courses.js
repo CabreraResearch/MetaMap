@@ -54,7 +54,7 @@ module.exports = riot.tag(CONSTANTS.TAGS.ALL_COURSES, html, function (opts) {
 
     //Events
     this.onStart = (event, ...o) => {
-        MetaMap.Router.to(`${CONSTANTS.ROUTES.TRAININGS}/${event.item.id}`);
+        MetaMap.Router.to(`trainings/${event.item.id}`);
     }
 
     this.buildTable = () => {

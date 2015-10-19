@@ -61,6 +61,7 @@ class Action extends ActionBase {
         super.act();
         let method = this._getAction(action);
         if (method) {
+            this.closeSidebar()
             return method.act(...params);
         }
     }

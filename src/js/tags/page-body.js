@@ -21,8 +21,8 @@ module.exports = riot.tag('page-body', html, function(opts) {
     const MetaMap = require('../../MetaMap');
 
     this.on('update', () => {
-        riot.mount(this.meta_page_header, 'page-header');
-        riot.mount(this.meta_page_container, 'page-container');
+        this.header = this.header || riot.mount(this.meta_page_header, 'page-header')[0];
+        this.container = this.container || riot.mount(this.meta_page_container, 'page-container')[0];
     });
 
 });

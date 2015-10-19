@@ -14,20 +14,20 @@ class ActionBase {
 
     toggleSidebar() {
         if(this.sidebarOpen) {
-            this.openSidebar();
+            this.openSidebar()
         } else {
-            this.closeSidebar();
+            this.closeSidebar()
         }
     }
 
     openSidebar() {
-        this.sidebarOpen = true;
-        this.eventer.do(CONSTANTS.EVENTS.SIDEBAR_OPEN);
+        this.sidebarOpen = true
+        this.eventer.do(CONSTANTS.EVENTS.SIDEBAR_OPEN)
     }
 
     closeSidebar() {
-        this.sidebarOpen = false;
-        this.eventer.do(CONSTANTS.EVENTS.SIDEBAR_CLOSE);
+        this.sidebarOpen = false
+        this.eventer.do(CONSTANTS.EVENTS.SIDEBAR_CLOSE)
     }
 }
 

@@ -36,16 +36,15 @@ const html = `
 
 module.exports = riot.tag('page-topmenu', html, function(opts) {
     this.onClick = (event, params) => {
-        console.log(event, params);
         return true;
     }
 
     this.on('update', () => {
         //TODO: restore notifications when logic is complete
         //riot.mount(this.header_points_bar, 'meta-points');
-        riot.mount(this.header_notification_bar, 'meta-notifications');
-        riot.mount(this.header_help_bar, 'meta-help');
-        riot.mount(this.header_user_menu, 'meta-user');
+        this.notifications=this.notifications || riot.mount(this.header_notification_bar, 'meta-notifications');
+        this.help=this.help || riot.mount(this.header_help_bar, 'meta-help');
+        this.user=this.user || riot.mount(this.header_user_menu, 'meta-user');
     });
 
 });

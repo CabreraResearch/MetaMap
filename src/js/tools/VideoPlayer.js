@@ -42,7 +42,7 @@ class VideoPlayer {
     }
 
     onPlayerStateChange(event) {
-        if (event.data == YouTube.integration.PlayerState.ENDED) {
+        if (event.data == YT.PlayerState.ENDED) {
             this.done = true;
         }
     }

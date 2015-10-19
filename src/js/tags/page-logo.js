@@ -19,13 +19,22 @@ module.exports = riot.tag('page-logo', html, function(opts) {
 
     const MetaMap = require('../../MetaMap');
 
+    this.isSidebarOpen = false;
+
+    var toggle = (state) => {
+        if(this.isSidebarOpen != state) {
+            this.isSidebarOpen = state
+            $(this.meta_menu_toggle).click()
+        }
+    };
+
     this.onClick = () => {
        // MetaMap.Eventer.do(CONSTANTS.EVENTS.SIDEBAR_TOGGLE);
     }
 
     this.getDisplay = (el) => {
-
         if(MetaMap && MetaMap.Router && MetaMap.Router.currentPath == CONSTANTS.PAGES.TRAININGS) {
+            toggle(true)
             return 'visible'
         } else {
             return 'hidden'
@@ -34,6 +43,10 @@ module.exports = riot.tag('page-logo', html, function(opts) {
 
     MetaMap.Eventer.every('pageName', (opts) => {
         this.update()
+    })
+
+    this.on('update', ()=>{
+       
     })
 
 });

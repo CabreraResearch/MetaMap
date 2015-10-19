@@ -1,5 +1,4 @@
 const riot = require('riot');
-const pageSidebar = require('./page-sidebar');
 const pageContent = require('./page-content');
 
 const html = `
@@ -14,6 +13,6 @@ module.exports = riot.tag('page-container', html, function(opts) {
     const MetaMap = require('../../MetaMap');
 
     this.on('update', () => {
-        riot.mount(this.meta_page_content, 'page-content');
+        this.content = this.content || riot.mount(this.meta_page_content, 'page-content')[0];
     });
 });

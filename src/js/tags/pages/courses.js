@@ -95,7 +95,7 @@ module.exports = riot.tag(CONSTANTS.TAGS.COURSE_LIST, html, function (opts) {
                 this[title].update();
             }
         } catch (e) {
-            debugger
+            MetaMap.error(e)
         }
     }
 

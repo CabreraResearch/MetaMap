@@ -120,4 +120,12 @@ riot.tag('quick-sidebar', html, function(opts) {
 		this.update();
 	}
 
+    MetaMap.Eventer.on(CONSTANTS.EVENTS.SIDEBAR_CLOSE, function () {
+        $('body').removeClass('page-quick-sidebar-open')
+    });
+
+    MetaMap.Eventer.on(CONSTANTS.EVENTS.SIDEBAR_OPEN, function () {
+        $('body').addClass('page-quick-sidebar-open')
+    });
+
 });
