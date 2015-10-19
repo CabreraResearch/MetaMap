@@ -5,14 +5,14 @@ const VideoPlayer = require('../../tools/VideoPlayer')
 
 const html = `
 <div id="training_portlet" class="portlet light">
-				<div class="portlet-body">
-					<div class="row margin-bottom-30">
-                        <div class="col-md-6 col-md-offset-6">
-                            <div id="training_player"></div>
-				        </div>
-					</div>
-				</div>
-			</div>
+    <div class="portlet-body">
+        <div class="row margin-bottom-30">
+            <div class="col-md-6 col-md-offset-6">
+                <div id="training_player"></div>
+            </div>
+        </div>
+    </div>
+</div>
 `;
 
 module.exports = riot.tag(CONSTANTS.TAGS.TRAINING, html, function(opts) {
@@ -21,11 +21,19 @@ module.exports = riot.tag(CONSTANTS.TAGS.TRAINING, html, function(opts) {
 
     this.training = {}
 
+    const saveTraining = () => {
+        MetaMap.MetaFire.setData(this.userTraining, `${CONSTANTS.ROUTES.TRAININGS.format(MetaMap.User.userId)}${this.config.id}`)
+    }
+
     const getData = _.once(() => {
         if (this.config.id) {
             var once = _.once(()=>{
                 MetaMap.MetaFire.on(`${CONSTANTS.ROUTES.TRAININGS.format(MetaMap.User.userId)}${this.config.id}`, (data) => {
                     this.userTraining = data
+                    if(!data) {
+                        this.userTraining = this.training
+                        saveTraining()
+                    }
                     this.update();
                     NProgress.done();
                 });
