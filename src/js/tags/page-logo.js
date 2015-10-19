@@ -44,9 +44,4 @@ module.exports = riot.tag('page-logo', html, function(opts) {
     MetaMap.Eventer.every('pageName', (opts) => {
         this.update()
     })
-
-    this.on('update', ()=>{
-       
-    })
-
 });

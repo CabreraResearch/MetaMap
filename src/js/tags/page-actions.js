@@ -7,7 +7,7 @@ require('../tools/shims');
 const Permissions = require('../app/Permissions')
 
 const html = `
-<div class="page-actions">
+<div id="page_actions" class="page-actions">
     <div class="btn-group">
         <button type="button" class="btn red-haze btn-sm dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
             <span class="hidden-sm hidden-xs">Actions&nbsp;</span>
@@ -122,6 +122,14 @@ module.exports = riot.tag('page-actions', html, function (opts) {
             return include;
         });
         this.update();
+    });
+
+    MetaMap.Eventer.on(CONSTANTS.EVENTS.SIDEBAR_CLOSE, () => {
+        $(this.page_actions).css({ 'padding-left': '0' })
+    });
+
+    MetaMap.Eventer.on(CONSTANTS.EVENTS.SIDEBAR_OPEN, () => {
+        $(this.page_actions).css({ 'padding-left': '70px' })
     });
 
 });
