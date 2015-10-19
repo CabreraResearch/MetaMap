@@ -5,6 +5,7 @@ const ROUTES = {
     TERMS_AND_CONDITIONS: 'metamap/terms-and-conditions/',
     HOME: 'metamap/home/',
     NOTIFICATIONS: 'users/{0}/notifications',
+    TRAININGS: 'users/{0}/trainings',
     COURSE_LIST: 'trainings/courses/'
 };
 

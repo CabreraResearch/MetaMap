@@ -36,16 +36,4 @@ module.exports = riot.tag('page-logo', html, function(opts) {
         this.update()
     })
 
-//
-//     MetaMap.Eventer.on(CONSTANTS.EVENTS.SIDEBAR_CLOSE, () => {
-//         this.display = false;
-//         this.update();
-//     });
-//
-//
-//     MetaMap.Eventer.on(CONSTANTS.EVENTS.SIDEBAR_OPEN, () => {
-//         this.display = true;
-//         this.update();
-//     });
-
 });

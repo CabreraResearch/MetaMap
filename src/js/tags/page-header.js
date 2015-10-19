@@ -10,12 +10,12 @@ const html = `
     <div id="header-content" class="page-header-inner">
 
         <div id="meta_page_logo"></div>
-        
+
         <div id="meta_page_actions"></div>
-        
+
         <div id="meta_page_top" class="page-top">
             <div id="meta_page_search"></div>
-            
+
             <div id="meta_page_topmenu"></div>
         </div>
 
@@ -28,7 +28,7 @@ module.exports = riot.tag('page-header', html, function(opts) {
 
     const MetaMap = require('../../MetaMap');
 
-    this.on('mount', () => {
+    this.on('update', () => {
         riot.mount(this.meta_page_logo, 'page-logo');
         riot.mount(this.meta_page_actions, 'page-actions');
         riot.mount(this.meta_page_top, 'page-search');

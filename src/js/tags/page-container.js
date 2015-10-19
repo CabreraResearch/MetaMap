@@ -13,7 +13,7 @@ module.exports = riot.tag('page-container', html, function(opts) {
 
     const MetaMap = require('../../MetaMap');
 
-    this.on('mount', () => {
+    this.on('update', () => {
         riot.mount(this.meta_page_content, 'page-content');
     });
 });

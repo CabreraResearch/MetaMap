@@ -5,7 +5,9 @@ const TAGS = {
     MY_MAPS: 'my-maps',
     SHARE: 'share',
     COURSE_LIST: 'course_list',
-    TRAINING: 'training'
+    TRAINING: 'training',
+    ALL_COURSES: 'all-courses',
+    MY_COURSES: 'my-courses'
 };
 
 Object.freeze(TAGS);

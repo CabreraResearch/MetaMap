@@ -11,7 +11,8 @@ class Courses extends ActionBase {
     act(id, ...params) {
         super.act(id, ...params);
         $(`#${CONSTANTS.ELEMENTS.APP_CONTAINER}`).empty();
-        riot.mount(document.getElementById(CONSTANTS.ELEMENTS.APP_CONTAINER), CONSTANTS.TAGS.COURSE_LIST);
+        let tag = riot.mount(document.getElementById(CONSTANTS.ELEMENTS.APP_CONTAINER), CONSTANTS.TAGS.COURSE_LIST)[0];
+        tag.update()
         this.eventer.do(CONSTANTS.PAGES.COURSE_LIST, { id: id }, ...params);
         this.eventer.do(CONSTANTS.EVENTS.PAGE_NAME, { name: 'Courses' }, ...params);
         this.closeSidebar();

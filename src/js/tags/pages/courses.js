@@ -1,112 +1,114 @@
 const riot = require('riot');
+const moment = require('moment');
 const NProgress = window.NProgress;
 const _ = require('lodash');
 const $ = require('jquery')
 require('datatables')
 require('datatables-bootstrap3-plugin')
 
-const CONSTANTS = require('../../constants/constants');
-const raw = require('../components/raw');
-const moment = require('moment');
+const CONSTANTS = require('../../constants/constants')
+const raw = require('../components/raw')
+require('../tables/all-courses')
+require('../tables/my-courses')
 
 const html = `
-<div id="trainings_page" class="portlet box grey-cascade">
+<div id="my_courses_page" class="portlet box grey-cascade">
     <div class="portlet-title">
         <div class="caption">
             <i class="fa fa-icon-th-large"></i>Courses
         </div>
+        <div if="{ menu }" class="actions">
+            <a each="{ menu.buttons }" href="{ link }" onclick="{ parent.onActionClick }" class="btn btn-default btn-sm">
+                <i class="{ icon }"></i> { title }
+            </a>
+            <div class="btn-group">
+                <a class="btn btn-default btn-sm" href="javascript:;" data-toggle="dropdown">
+                    <i class="fa fa-cogs"></i> Tools <i class="fa fa-angle-down"></i>
+                </a>
+                <ul class="dropdown-menu pull-right">
+                    <li each="{ menu.menu }" onclick="{ parent.onMenuClick }">
+                        <a href="{ link }">
+                            <i class="{ icon }"></i> { title }
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </div>
     <div class="portlet-body">
+        <ul class="nav nav-tabs portlet-tabs">
+            <li onclick="{ parent.onTabSwitch }" each="{ val, i in tabs }" class="{ active: i == 0 }">
+                <a href="#mycourses_1_{ i }" data-toggle="tab" aria-expanded="{ true: i == 0 }">
+                { val.title }</a>
+            </li>
+        </ul>
+        <div class="table-toolbar">
+
+        </div>
         <div class="tab-content">
-            <div>
-                <table class="table table-striped table-bordered table-hover" id="training_table">
-                    <thead>
-                        <tr>
-                            <th>
-                                Name
-                            </th>
-                            <th>
-                                Created On
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr if="{ data }" each="{ data }" class="odd gradeX">
-                            <td style="vertical-align: middle;"><a href="#trainings/{id}">{ name }</a></td>
-                            <td style="vertical-align: middle;">{ created_at }</td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div each="{ val, i in tabs }" class="tab-pane fase in { active: i == 0 }" id="mycourses_1_{ i }">
+
             </div>
         </div>
     </div>
 </div>
 `;
 
-module.exports = riot.tag(CONSTANTS.PAGES.COURSE_LIST, html, function (opts) {
+module.exports = riot.tag(CONSTANTS.TAGS.COURSE_LIST, html, function (opts) {
 
     const MetaMap = require('../../../MetaMap.js');
 
     this.user = MetaMap.User;
-    this.data = null;
+    this.data = [];
+    this.menu = null;
+    let tabs = [
+        { title: 'My Trainings', order: 0, editable: true, columns: [{ name: 'Check', isCheckbox: true }, { name: 'Action' }, { name: 'Created On' }, { name: 'Status' }] },
+        { title: 'All Trainings', order: 1, editable: false, columns: [{ name: 'Action' }, { name: 'Created On' }, { name: 'Owner' }] }
+    ];
+    this.tabs = _.sortBy(tabs, 'order')
 
-    this.on('update', () => {
+    this.currentTab = 'My Trainings';
 
-    })
+    //Events
+    this.onOpen = (event, ...o) => {
+        MetaMap.Router.to(`map/${event.item.id}`);
+    }
+
+    this.onTabSwitch = (event, ...o) => {
+        this.currentTab = event.item.val.title;
+    }
+
+    this.loadTable = (title, i) => {
+        try {
+            let node = this[`mycourses_1_${i}`]
+            let tag = null;
+            switch (title) {
+                case 'All Trainings':
+                    tag = CONSTANTS.TAGS.ALL_COURSES
+                    break;
+                case 'My Trainings':
+                    tag = CONSTANTS.TAGS.MY_COURSES
+                    break;
+            }
+            if (node && tag) {
+                this[title] = this[title] || riot.mount(node, tag)[0];
+                this[title].update();
+            }
+        } catch (e) {
+            debugger
+        }
+    }
+
 
     //Riot bindings
     this.on('mount', () => {
         NProgress.start();
-
-        const buildTable = (list) => {
-            try {
-                this.data = list;
-                if (this[`table`]) {
-                    this[`dataTable`].destroy();
-                }
-
-                this.update();
-
-                this[`table`] = $(this[`training_table`]);
-                this[`dataTable`] = this[`table`].DataTable({
-
-                    // Uncomment below line('dom' parameter) to fix the dropdown overflow issue in the datatable cells. The default datatable layout
-                    // setup uses scrollable div(table-scrollable) with overflow:auto to enable vertical scroll(see: assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.js).
-                    // So when dropdowns used the scrollable div should be removed.
-                    //'dom': '<'row'<'col-md-6 col-sm-12'l><'col-md-6 col-sm-12'f>r>t<'row'<'col-md-5 col-sm-12'i><'col-md-7 col-sm-12'p>>',
-                    //'bStateSave': true, // save datatable state(pagination, sort, etc) in cookie.
-                    'columns': [
-                        {
-                            name: 'Name',
-                            orderable: true
-                        }, {
-                            name: 'Created On',
-                            orderable: true
-                        }
-                    ]
-                });
-
-                var tableWrapper = this[`table`].parent().parent().parent().find(`#training_table_wrapper`);
-
-                tableWrapper.find('.dataTables_length select').addClass('form-control input-xsmall input-inline'); // modify table per page dropdown
-            } catch (e) {
-                MetaMap.error(e);
-            } finally {
-                NProgress.done();
-            }
-        };
-
-        //Fetch All maps
-        MetaMap.MetaFire.getChild(CONSTANTS.ROUTES.COURSE_LIST).on('value', (val) => {
-            const list = val.val();
-            const maps = _.map(list, (obj, key) => {
-                obj.editable = true
-                obj.id = key;
-                obj.created_at = moment(new Date(obj.created_at)).format('YYYY-MM-DD');
-                return obj;
-            });
-            buildTable(maps);
-            $('.owner-label').tooltip()
-       });
     });
+
+    this.on('update', () => {
+        _.each(this.tabs, (val, i) => {
+            this.loadTable(val.title, i)
+        })
+    })
+
 });

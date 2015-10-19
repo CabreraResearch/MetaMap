@@ -40,7 +40,7 @@ module.exports = riot.tag('page-topmenu', html, function(opts) {
         return true;
     }
 
-    this.on('mount', () => {
+    this.on('update', () => {
         //TODO: restore notifications when logic is complete
         //riot.mount(this.header_points_bar, 'meta-points');
         riot.mount(this.header_notification_bar, 'meta-notifications');

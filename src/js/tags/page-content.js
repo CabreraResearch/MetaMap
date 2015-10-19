@@ -20,7 +20,7 @@ module.exports = riot.tag('page-content', html, function (opts) {
 
     const MetaMap = require('../../MetaMap');
 
-    this.on('mount', () => {
+    this.on('update', () => {
         riot.mount(this.quick_sidebar_container, 'quick-sidebar')
         this.resize()
     })

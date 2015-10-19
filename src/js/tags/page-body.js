@@ -20,7 +20,7 @@ module.exports = riot.tag('page-body', html, function(opts) {
 
     const MetaMap = require('../../MetaMap');
 
-    this.on('mount', () => {
+    this.on('update', () => {
         riot.mount(this.meta_page_header, 'page-header');
         riot.mount(this.meta_page_container, 'page-container');
     });
