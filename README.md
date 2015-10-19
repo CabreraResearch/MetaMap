@@ -29,15 +29,13 @@ Assume the following style: ES6/ES7
 
 # Client development setup
 
-## Install pre-requisites
+## Install global pre-requisites
 
 1. `install node.js and npm`
 2. `npm install -g babel bower gulp riot tsd wiredep`
-3. `tsd install`
-    * installs all DefinitelyTyped definitions to provide Intellisense in VS Code, Atom or Sublime
-3. Optional: `npm install dev-documentation firebase-tools ncu rimraf wt yo`
+3. Optional: `npm install -g dev-documentation firebase-tools ncu rimraf wt yo`
     * firebase-tools: allows deployment of the app to the server by `gulp deploy --message="My deploy comment"`
-      * also provides its own web server. Run `firebase serve` to launch a local webserver on :5000.
+      * also provides its own web server. Run `firebase serve` to launch a local web server on :5000.
     * dev-documentation: generates documentation from JsDoc commented code
     * ncu: checks for updates to all packages
     * rimraf: quickly `sudo rm -f` delete an entire directory quickly (useful when nuking /node_modules/)
@@ -46,6 +44,8 @@ Assume the following style: ES6/ES7
 
 1. `npm install`
 2. `bower install`
+3. `tsd install`
+    * installs all DefinitelyTyped definitions to provide Intellisense in VS Code, Atom or Sublime
 
 ## Initial client build
 
@@ -55,10 +55,9 @@ Assume the following style: ES6/ES7
 
 2. Compile client:
 
-        gulp compile
+        gulp compile-all
 
-
-3. Rebuild client automatically as changes are made:
+3. Rebuild client (JS only) automatically as changes are made:
 
         gulp watch
 
@@ -68,7 +67,7 @@ Assume the following style: ES6/ES7
 
 1. (With python) `python -m SimpleHTTPServer`
     * All API calls are served through Firebase, there is no backend to configure
-2. (With Firebase) `firebase serve`
+1. (With Firebase) `firebase serve`
 2. open `http://localhost:8080/dev.html` in a browser
     * index.html is the default page, but it is often difficult to get around caching--so use dev.html for local development/testing
 
