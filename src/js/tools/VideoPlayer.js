@@ -27,6 +27,7 @@ class VideoPlayer {
         this.onReady().then(() => {
             this.player = new this.YT.Player(this.id, {
                 videoId: this.opts.videoId,
+                frameborder: 0,
                 events: {
                     onReady: this.onPlayerReady,
                     onStateChange: this.onPlayerStateChange

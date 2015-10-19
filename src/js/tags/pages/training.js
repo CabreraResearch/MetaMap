@@ -2,6 +2,7 @@ const riot = require('riot')
 const NProgress = window.NProgress
 const CONSTANTS = require('../../constants/constants')
 const VideoPlayer = require('../../tools/VideoPlayer')
+const TrainingMix = require('../mixins/training-mix')
 
 const html = `
 <div id="training_portlet" class="portlet light">
@@ -19,43 +20,14 @@ const html = `
 
 module.exports = riot.tag(CONSTANTS.TAGS.TRAINING, html, function(opts) {
 
-    const MetaMap = require('../../../MetaMap.js');
+    this.mixin(TrainingMix)
 
     this.training = {}
-
-    const saveTraining = () => {
-        MetaMap.MetaFire.setData(this.userTraining, `${CONSTANTS.ROUTES.TRAININGS.format(MetaMap.User.userId)}${this.config.id}`)
-    }
-
-    const getData = _.once(() => {
-        if (this.config.id) {
-            var once = _.once(()=>{
-                MetaMap.MetaFire.on(`${CONSTANTS.ROUTES.TRAININGS.format(MetaMap.User.userId)}${this.config.id}`, (data) => {
-                    this.userTraining = data
-                    if(!data) {
-                        this.userTraining = this.training
-                        saveTraining()
-                    }
-                    this.update();
-                    NProgress.done();
-                });
-                MetaMap.Eventer.do(CONSTANTS.EVENTS.SIDEBAR_OPEN);
-            });
-
-            MetaMap.MetaFire.on(`${CONSTANTS.ROUTES.COURSE_LIST}${this.config.id}`, (data) => {
-                this.training = data;
-                MetaMap.Eventer.do(CONSTANTS.EVENTS.PAGE_NAME, data);
-
-                this.update();
-                once()
-            });
-        }
-    });
 
     this.on('mount update', (event, opts) => {
         if (opts) {
             this.config = opts
-            getData()
+            this.getData(this.config.id)
             this.player = new VideoPlayer('training_player', {height: 390, width: 640, videoId: 'dUqRTWCdXt4'})
         }
     });

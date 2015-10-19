@@ -20,9 +20,9 @@ class ActionBase {
         }
     }
 
-    openSidebar() {
+    openSidebar(id) {
         this.sidebarOpen = true
-        this.eventer.do(CONSTANTS.EVENTS.SIDEBAR_OPEN)
+        this.eventer.do(CONSTANTS.EVENTS.SIDEBAR_OPEN, id)
     }
 
     closeSidebar() {

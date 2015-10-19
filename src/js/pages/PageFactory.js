@@ -6,7 +6,6 @@ const Actions = require('../actions/Action.js')
 const Metronic = require('../template/metronic')
 const Layout = require('../template/layout')
 const Demo = require('../template/demo')
-const QuickSidebar = require('../template/quick-sidebar')
 
 class PageFactory {
     constructor(eventer, metaFire) {
@@ -27,8 +26,7 @@ class PageFactory {
                     Metronic.init(); // init metronic core componets
                     Layout.init(); // init layout
                     Demo.init(); // init demo features
-                    QuickSidebar.init();
-                    
+
                     fulfill();
                 }, 250);
             });
