@@ -1,7 +1,7 @@
 const Promise = require('bluebird')
 
 class VideoPlayer {
-    constructor(divId, opts = { height: 390, width: 640, videoId: ''}) {
+    constructor(divId, opts = { videoId: ''}) {
         this.id = divId
         this.opts = opts
         this.metaMap = require('../../MetaMap')
@@ -26,8 +26,6 @@ class VideoPlayer {
     init() {
         this.onReady().then(() => {
             this.player = new this.YT.Player(this.id, {
-                height: this.opts.height,
-                width: this.opts.width,
                 videoId: this.opts.videoId,
                 events: {
                     onReady: this.onPlayerReady,

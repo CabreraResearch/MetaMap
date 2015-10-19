@@ -7,8 +7,10 @@ const html = `
 <div id="training_portlet" class="portlet light">
     <div class="portlet-body">
         <div class="row margin-bottom-30">
-            <div class="col-md-6 col-md-offset-6">
-                <div id="training_player"></div>
+            <div class="col-md-8 col-md-offset-4">
+                <div class="embed-responsive embed-responsive-16by9">
+                    <div id="training_player" ></div>
+                </div>
             </div>
         </div>
     </div>
