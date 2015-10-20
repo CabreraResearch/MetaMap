@@ -8,7 +8,9 @@ const PAGES = {
     DELETE_MAP: 'delete_map',
     MY_MAPS: 'mymaps',
     TERMS_AND_CONDITIONS: 'terms',
-    HOME: 'home'
+    HOME: 'home',
+    COURSE_LIST: 'course_list',
+    TRAININGS: 'trainings'
 };
 
 _.extend()

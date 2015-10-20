@@ -1,6 +1,7 @@
-const riot = require('riot');
-const NProgress = window.NProgress;
-const Canvas = require('../../canvas/canvas');
+const riot = require('riot')
+const NProgress = window.NProgress
+const Canvas = require('../../canvas/canvas')
+const CONSTANTS = require('../../constants/constants')
 require('./node')
 
 const html = `
@@ -21,12 +22,6 @@ module.exports = riot.tag('meta-canvas', html, function(opts) {
     this.buildCanvas = (map) => {
         if (!this.canvas) {
             $(this.diagram).empty();
-
-            var width = $(this.diagram).width(),
-                height =  $(this.diagram).height();
-
-            var xLoc = width/2 - 25,
-                yLoc = 100;
 
             this.canvas = new Canvas(map, this.mapId);
             this.canvas.init();
@@ -52,11 +47,11 @@ module.exports = riot.tag('meta-canvas', html, function(opts) {
             NProgress.start();
 
             MetaMap.MetaFire.on(`maps/data/${opts.id}`, this.buildCanvas);
-            MetaMap.Eventer.forget('map', this.build);
+            MetaMap.Eventer.forget(CONSTANTS.EVENTS.MAP, this.build);
         }
     }
 
-    MetaMap.Eventer.every('map', this.build);
+    MetaMap.Eventer.every(CONSTANTS.EVENTS.MAP, this.build);
 
     this.correctHeight = () => {
         $(this.diagram).css({

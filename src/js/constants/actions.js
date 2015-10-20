@@ -1,5 +1,6 @@
 const ACTIONS = {
-    MAP: 'map',
+    OPEN_MAP: 'map',
+    OPEN_TRAINING: 'open_training',
     NEW_MAP: 'new_map',
     COPY_MAP: 'copy_map',
     DELETE_MAP: 'delete_map',
@@ -8,7 +9,9 @@ const ACTIONS = {
     TERMS_AND_CONDITIONS: 'terms',
     LOGOUT: 'logout',
     FEEDBACK: 'feedback',
-    SHARE_MAP: 'share_map'
+    SHARE_MAP: 'share_map',
+    COURSE_LIST: 'course_list',
+    TRAININGS: 'trainings'
 };
 
 Object.freeze(ACTIONS);

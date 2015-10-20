@@ -28,7 +28,7 @@ gulp.task('deploy', function () {
         case 'staging':
         default:
             //run('firebase deploy --firebase=thinkwater-staging -m "' + p + '"').exec();
-            run('firebase deploy --firebase=meta-map-staging --message="' + p + '"').exec()
+            run('firebase deploy -m "' + p + '"').exec()
                 .pipe(sendToSlack(message));
             break;
     }

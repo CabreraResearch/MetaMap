@@ -8,26 +8,26 @@ class ActionBase {
         this.metaMap = require('../../MetaMap.js');
     }
 
-    act() {
-        
+    act(id, ...params) {
+        return false;
     }
-    
+
     toggleSidebar() {
         if(this.sidebarOpen) {
-            this.openSidebar();
+            this.openSidebar()
         } else {
-            this.closeSidebar();
+            this.closeSidebar()
         }
     }
-    
-    openSidebar() {
-        this.sidebarOpen = true;
-        this.eventer.do(CONSTANTS.EVENTS.SIDEBAR_OPEN);
+
+    openSidebar(id) {
+        this.sidebarOpen = true
+        this.eventer.do(CONSTANTS.EVENTS.SIDEBAR_OPEN, id)
     }
-    
+
     closeSidebar() {
-        this.sidebarOpen = false;
-        this.eventer.do(CONSTANTS.EVENTS.SIDEBAR_CLOSE);
+        this.sidebarOpen = false
+        this.eventer.do(CONSTANTS.EVENTS.SIDEBAR_CLOSE)
     }
 }
 

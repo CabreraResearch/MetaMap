@@ -98,14 +98,14 @@ class MetaFire {
                 let child = this.getChild(path);
                 let method = (snapshot) => {
                     try {
-                        if (!snapshot.exists()) {
-                            child.off(event, method);
-                            throw new Error(`There is no data at ${path}`);
-                        }
+                        // if (!snapshot.exists()) {
+                        //     child.off(event, method);
+                        //     throw new Error(`There is no data at ${path}`);
+                        // }
                         let data = snapshot.val();
                         callback(data);
                     } catch (e) {
-                        child.off(event, method);
+                        //child.off(event, method);
                         this.error(e, path);
                     }
                 };

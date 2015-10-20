@@ -4,7 +4,9 @@ const ROUTES = {
     MAPS_NEW_MAP: 'maps/new-map/',
     TERMS_AND_CONDITIONS: 'metamap/terms-and-conditions/',
     HOME: 'metamap/home/',
-    NOTIFICATIONS: 'users/{0}/notifications'
+    NOTIFICATIONS: 'users/{0}/notifications',
+    TRAININGS: 'users/{0}/trainings/',
+    COURSE_LIST: 'trainings/courses/'
 };
 
 Object.freeze(ROUTES);

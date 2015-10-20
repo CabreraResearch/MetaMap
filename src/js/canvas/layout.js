@@ -6,10 +6,10 @@
 * Layout can be suspended on a per-node basis by setting `suspendLayout` in the Node's
 * data.
 *
-* Child nodes 
+* Child nodes
 */
 ;(function() {
-	
+
 	function childNodeComparator(c1, c2) {
 		if (c2.data.order == null) return -1;
 		if (c1.data.order == null) return 1;
@@ -21,7 +21,7 @@
 
     var _oneSet = function(parent, params, toolkit) {
       params = params || {};
-      var padding = params.partPadding || 20;
+      var padding = params.partPadding || 5;
       if (parent.data.children && parent.data.suspendLayout !== true) {
 
         var c = parent.data.children,
@@ -31,8 +31,8 @@
             magnetizeNodes = [ parent.id ],
             align = (parent.data.partAlign || "right") === "left" ? 0 : 1,
             y = parentPos[1] + parentSize[1] + padding;
-		
-		// sort nodes	
+
+		// sort nodes
 		childNodes.sort(childNodeComparator);
 		// and run through them and assign order; any that didn't previously have order will get order
 		// set, and any that had order will retain the same value.
@@ -51,7 +51,7 @@
               y += (childSize[1] + padding);
             }
 		}
-          
+
 
       }
     }.bind(this);

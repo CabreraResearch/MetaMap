@@ -1,8 +1,5 @@
 const _ = require('lodash')
 
-const Twiiter = require('../integrations/Twitter');
-const Facebook = require('../integrations/Facebook');
-
 class Integrations {
 
 	constructor(metaMap, user) {
@@ -12,10 +9,8 @@ class Integrations {
 		this._features = {
 			google: require('../integrations/Google'),
 			usersnap: require('../integrations/UserSnap'),
-			intercom: require('../integrations/Intercom'),
-			zendesk: require('../integrations/Zendesk'),
-			addthis: require('../integrations/AddThis'),
-			newrelic: require('../integrations/NewRelic')
+            addthis: require('../integrations/AddThis'),
+            youtube: require('../integrations/YouTube')
 		};
 	}
 

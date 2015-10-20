@@ -106,13 +106,13 @@ module.exports = riot.tag('my-maps', html, function (opts) {
     this.data = null;
     this.menu = null;
     let tabs = [
-        { title: 'My Maps', order: 0, editable: true },
-        { title: 'Shared with Me', order: 1, editable: false },
-        { title: 'Public', order: 2, editable: false }
+        { title: 'My Maps', order: 0, editable: true, columns: [{ name: 'Check', isCheckbox: true }, { name: 'Action' }, { name: 'Created On' }, { name: 'Status' }] },
+        { title: 'Shared with Me', order: 1, editable: false, columns: [{ name: 'Action' }, { name: 'Created On' }, { name: 'Owner' }] },
+        { title: 'Public', order: 2, editable: false, columns: [{ name: 'Action' }, { name: 'Created On' }, { name: 'Owner' }] }
     ];
     if (this.user.isAdmin) {
-        tabs.push({ title: 'All Maps', order: 3, editable: true })
-        tabs.push({ title: 'Templates', order: 4, editable: true })
+        tabs.push({ title: 'All Maps', order: 3, editable: true, columns: [{ name: 'Action' }, { name: 'Created On' }, { name: 'Owner' }] })
+        tabs.push({ title: 'Templates', order: 4, editable: true, columns: [{ name: 'Action' }, { name: 'Created On' }, { name: 'Owner' }] })
     }
     this.tabs = _.sortBy(tabs, 'order')
 

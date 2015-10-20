@@ -82,7 +82,9 @@ class Canvas {
                         w:50,
                         h:50,
                         label:"idea",
-                        type:type
+                        type: type,
+                        children: [],
+                        labelPosition: []
                     };
                 };
 
@@ -338,7 +340,14 @@ class Canvas {
                             node.data.children = node.data.children || [];
                             var newLabel = 'Part';
 
-                            var newNode = toolkit.addNode({parent:node.id,w:newWidth,h:newHeight,label: newLabel});
+                            var newNode = toolkit.addNode({
+                                parent:node.id,
+                                w:newWidth,
+                                h:newHeight,
+                                label: newLabel,
+                                order: node.data.children.length
+                                });
+
                             node.data.children.push(newNode.id);
                             renderer.relayout();
                         },
@@ -536,49 +545,6 @@ class Canvas {
                         }
                     }
                 })
-
-                //KLUDGE:
-                //The SVG segments for letters and buttons are not grouped together, so the css:hover trick doesn't work
-                //Instead, use jQuery
-                const toggleOpacity = (node, on) => {
-                    //Mouse Over
-                    let letter = $(node)
-                    let cssClass = node.classList[1]
-                    let button = ''
-                    switch (cssClass.toLowerCase()) {
-                        case 'p':
-                            button = 'orange'
-                            break;
-                        case 'd':
-                            button = 'red'
-                            break;
-                        case 'r':
-                            button = 'blue'
-                            break;
-                        case 's':
-                            button = 'green'
-                            break;
-                        default:
-                            break;
-                    }
-                    $(letter).parent().parent().find(`.${button}.segment`).css('opacity', on)
-                }
-
-                $('.letter').hover(function () {
-                    //Mouse Over
-                    toggleOpacity(this, 1);
-                }, function () {
-                    //Mouse Out
-                    })
-
-                $('.segment').hover(function () {
-                    //Mouse Over
-                    $(this).css('opacity', 1)
-                }, function () {
-                    //Mouse Out
-                    $(this).css('opacity', 0)
-                })
-
             })
         });
 
@@ -588,7 +554,5 @@ class Canvas {
 
     }
 }
-
-// get a new instance of the Toolkit. provide a set of methods that control who can connect to what, and when.
 
 module.exports = Canvas;

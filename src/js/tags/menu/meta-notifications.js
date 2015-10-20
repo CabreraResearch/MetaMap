@@ -6,7 +6,11 @@ const moment = require('moment')
 const CONSTANTS = require('../../constants/constants')
 require('../../tools/shims')
 
-const html = `<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+const html = `<a href="javascript:;"
+                 class="dropdown-toggle"
+                 data-toggle="dropdown"
+                 data-hover="dropdown"
+                 data-close-others="true">
                     <i class="fa fa-bell-o"></i>
                     <span class="badge badge-success">
                         { notifications.length }
@@ -25,8 +29,8 @@ const html = `<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdo
                                 each="{ val, i in notifications }"
                                 onclick="{ parent.onClick }">
                                 <a>
-                                    <span if="{ val && val.photo }" class="photo">
-										<img src="{ val.photo }" class="img-circle" alt="">
+                                    <span if="{ val.photo != null }" class="photo">
+										<img src="{val.photo}" class="img-circle" alt="">
                                     </span>
                                     <span class="subject">
 										<span class="from">{ val.from }</span>
