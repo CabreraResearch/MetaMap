@@ -7,7 +7,7 @@ const CONSTANTS = require('../../constants/constants')
 const TrainingMix = require('../mixins/training-mix')
 
 const html =
-	`
+`
 <div class="page-quick-sidebar-wrapper">
     <div class="page-quick-sidebar">
         <div class="nav-justified">
@@ -56,8 +56,9 @@ const html =
                 </div>
                 <div class="tab-pane page-quick-sidebar-alerts" id="quick_sidebar_tab_2">
                     <div class="page-quick-sidebar-alerts-list">
-                        <h3 class="list-heading">Intro</h3>
-                        <h3 class="list-heading">Section 1</h3>
+                        <ol>
+                            <li each="{ cortex.getOutline() }"><a class="list-heading">{ Section }</a></li>
+                        </ol>
                     </div>
                 </div>
             </div>
@@ -65,6 +66,60 @@ const html =
     </div>
 </div>
 `
+
+riot.tag(CONSTANTS.TAGS.SIDEBAR, html, function(opts) {
+
+    this.mixin(TrainingMix)
+
+	const MetaMap = require('../../../MetaMap');
+
+
+    this.userPicture = ''
+
+	this.on('update', () => {
+        handleQuickSidebarToggler(); // handles quick sidebar's toggler
+        handleQuickSidebarChat(); // handles quick sidebar's chats
+        handleQuickSidebarAlerts(); // handles quick sidebar's alerts
+        this.userPicture = MetaMap.User.picture
+        $(this.cortex_messages).slimScroll({ scrollBy: '100px' })
+	});
+
+	this.getDisplay = () => {
+		if (!this.display) {
+			return 'display: none;';
+		} else {
+			return '';
+		}
+	}
+
+	this.getRelativeTime = (date = new Date()) => {
+		return moment(date).fromNow();
+	}
+
+	this.onSubmit = (obj) => {
+		this.userTraining.messages.push({
+			message: this.chat_input.value,
+			time: `${new Date()}`
+        })
+
+        this.saveUserTraining(this.trainingId)
+		this.chat_input.value = ''
+		this.update()
+	}
+
+    MetaMap.Eventer.on(CONSTANTS.EVENTS.SIDEBAR_CLOSE, () => {
+        $('body').removeClass('page-quick-sidebar-open')
+    });
+
+    MetaMap.Eventer.on(CONSTANTS.EVENTS.SIDEBAR_OPEN, (id) => {
+        this.trainingId = id
+        this.getData(id)
+        $('body').addClass('page-quick-sidebar-open')
+    });
+
+});
+
+//Template logic
 
 // Handles quick sidebar toggler
 var handleQuickSidebarToggler = function () {
@@ -131,54 +186,3 @@ var handleQuickSidebarAlerts = function () {
     initAlertsSlimScroll();
     Metronic.addResizeHandler(initAlertsSlimScroll); // reinitialize on window resize
 };
-
-riot.tag(CONSTANTS.TAGS.SIDEBAR, html, function(opts) {
-
-    this.mixin(TrainingMix)
-
-	const MetaMap = require('../../../MetaMap');
-
-    this.userPicture = ''
-
-	this.on('update', () => {
-        handleQuickSidebarToggler(); // handles quick sidebar's toggler
-        handleQuickSidebarChat(); // handles quick sidebar's chats
-        handleQuickSidebarAlerts(); // handles quick sidebar's alerts
-        this.userPicture = MetaMap.User.picture
-        $(this.cortex_messages).slimScroll({ scrollBy: '100px' })
-	});
-
-	this.getDisplay = () => {
-		if (!this.display) {
-			return 'display: none;';
-		} else {
-			return '';
-		}
-	}
-
-	this.getRelativeTime = (date = new Date()) => {
-		return moment(date).fromNow();
-	}
-
-	this.onSubmit = (obj) => {
-		this.userTraining.messages.push({
-			message: this.chat_input.value,
-			time: new Date()
-        })
-
-        this.saveUserTraining(this.trainingId)
-		this.chat_input.value = ''
-		this.update()
-	}
-
-    MetaMap.Eventer.on(CONSTANTS.EVENTS.SIDEBAR_CLOSE, () => {
-        $('body').removeClass('page-quick-sidebar-open')
-    });
-
-    MetaMap.Eventer.on(CONSTANTS.EVENTS.SIDEBAR_OPEN, (id) => {
-        this.trainingId = id
-        this.getData(id)
-        $('body').addClass('page-quick-sidebar-open')
-    });
-
-});

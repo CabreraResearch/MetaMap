@@ -2,11 +2,14 @@ const CONSTANTS = require('../../constants/constants')
 const NProgress = window.NProgress
 const moment = require('moment')
 
+const Cortex = require('../../training/cortex')
+
 let TrainingMix = {
     init: function() {
         this.MetaMap = require('../../../MetaMap.js')
     },
 
+    cortex: new Cortex(),
     userTraining: { messages: [] },
     training: {},
 
@@ -43,9 +46,10 @@ let TrainingMix = {
                             that.saveUserTraining(id)
                         }
                         if (!that.userTraining.messages) {
-                            that.userTraining.messages = [that.getDefaultMessage()];
+                            that.userTraining.messages = [that.getDefaultMessage(that.training.name)];
                             that.saveUserTraining(id)
                         }
+                        that.cortex.update(that.userTraining)
                         that.update();
                         NProgress.done();
                     });
@@ -68,11 +72,11 @@ let TrainingMix = {
 
     cortexPicture: 'src/images/cortex-avatar-small.jpg',
 
-    getDefaultMessage: function () {
+    getDefaultMessage: function (name) {
         return {
-            message: `Hello, I'm Cortex Man. Ask me anything. Try <code>/help</code> if you get lost.`,
+            message: `Hello, I'm Cortex Man. I will be your guide through ${name}`,
             author: 'cortex',
-            time: new Date()
+            time: `${new Date()}`
         }
     },
 
