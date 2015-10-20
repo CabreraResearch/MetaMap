@@ -1,5 +1,6 @@
 const CONSTANTS = require('../../constants/constants')
 const NProgress = window.NProgress
+const moment = require('moment')
 
 let TrainingMix = {
     init: function() {
@@ -9,12 +10,24 @@ let TrainingMix = {
     userTraining: { messages: [] },
     training: {},
 
+    getDate: function (date) {
+        return moment(new Date(date)).format('YYYY-MM-DD')
+    },
+
     saveUserTraining: function(id) {
         this.MetaMap.MetaFire.setData(this.userTraining, `${CONSTANTS.ROUTES.TRAININGS.format(this.MetaMap.User.userId)}${id}`)
     },
 
     saveTraining: function (id, data) {
-        this.MetaMap.MetaFire.setData(data, `${CONSTANTS.ROUTES.COURSE_LIST}${id}/course`)
+        this.MetaMap.MetaFire.updateData({
+            course: data,
+            updated_date: `${new Date()}`,
+            updated_by: {
+                user_id: this.MetaMap.User.userId,
+                name: this.MetaMap.User.displayName,
+                picture: this.MetaMap.User.picture
+            }
+        }, `${CONSTANTS.ROUTES.COURSE_LIST}${id}`)
     },
 
     getData: function(id) {

@@ -143,6 +143,22 @@ class MetaFire {
         }
     }
 
+    updateData(data, path) {
+        var child = this.fb;
+        if (path) {
+            child = this.getChild(path);
+        }
+        try {
+            return child.update(data, (e) => {
+                if (e) {
+                    this.error(e, path);
+                }
+            });
+        } catch (e) {
+            this.error(e, path);
+        }
+    }
+
     deleteData(path) {
         return this.setData(null, path);
     }

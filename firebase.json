@@ -2,30 +2,20 @@
   "firebase": "meta-map-staging",
   "public": ".",
   "ignore": [
-    "*.json",
-    "*.log",
     ".gitignore",
     "Gulpfile.js",
     "*.md",
+    "*.json",
+    "*.log",
+    "*.config",
     "**/.*",
     "**/node_modules/**",
     "**/bower_components/**",
-    "bin/**",
-    "obj/**",
+    "**/typings/**",
     "gulp/**",
     ".vs/**",
     ".vscode/**",
-    "*.config",
-    "*.tmpl",
-    ".git/**",
-    "typings/**"
-  ],
-  "redirects": [
-    {
-      "source": "/stms",
-      "destination": "/#stms",
-      "type": 301
-    }
+    ".git/**"
   ],
   "rewrites": [
     {

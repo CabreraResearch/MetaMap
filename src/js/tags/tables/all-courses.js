@@ -1,5 +1,4 @@
 const riot = require('riot')
-const moment = require('moment')
 const NProgress = window.NProgress
 const _ = require('lodash')
 const $ = require('jquery')
@@ -22,11 +21,27 @@ const html = `
     </thead>
     <tbody>
         <tr if="{ data }" each="{ data }" class="odd gradeX">
-            <td>
+            <td style="vertical-align: middle;">
                 <a class="btn btn-sm red" onclick="{ parent.onStart }">Start <i class="fa fa-play"></i></a>
+                <a if="{ parent.user.isAdmin }" class="btn btn-sm blue" onclick="{ parent.onDownload }">Save <i class="fa fa-cloud-download"></i></a>
             </td>
-            <td class="{ meta_editable: parent.editable}" data-pk="{ id }" data-name="name" data-title="Edit Course Name" style="vertical-align: middle;">{ name }</td>
-            <td class="{ meta_editable: parent.editable}" data-pk="{ id }" data-name="description" data-title="Edit Course Description" style="vertical-align: middle;">{ description }</td>
+            <td class="{ meta_editable: parent.editable}" data-pk="{ id }" data-name="name" data-title="Edit Course Name" style="vertical-align: middle;">
+                { name }
+            </td>
+            <td class="{ meta_editable: parent.editable}" data-pk="{ id }" data-name="description" data-title="Edit Course Description" style="vertical-align: middle;">
+                { description }
+            </td>
+            <td style="vertical-align: middle;">
+                { course ? course.length : 0 } Steps
+            </td>
+            <td if="{ parent.user.isAdmin }" style="vertical-align: middle;">
+                { parent.getDate(updated_date) }
+            </td>
+            <td if="{ parent.user.isAdmin }" style="vertical-align: middle;">
+                <span class="label owner-label" data-toggle="tooltip" data-placement="bottom" title="{ updated_by.name }">
+                    <img alt="{ updated_by.name }" height="30" width="30" class="img-circle" src="{ updated_by.picture }" />
+                </span>
+            </td>
             <td if="{ parent.user.isAdmin }" >
                 <form  method="{ parent.onUpload }" url="/noupload" class="dropzone" id="training_upload_{ id }"></form>
             </td>
@@ -59,9 +74,15 @@ module.exports = riot.tag(CONSTANTS.TAGS.ALL_COURSES, html, function (opts) {
         }, {
             name: 'Description',
             orderable: true
+        }, {
+            name: 'Length',
+            orderable: true
         }
+
     ]
     if (this.user.isAdmin) {
+        this.columns.push({name: 'Last Updated', orderable: true})
+        this.columns.push({name: 'Last Updated By', orderable: true})
         this.columns.push({name: 'Upload Training', orderable: false})
     }
 
@@ -70,8 +91,17 @@ module.exports = riot.tag(CONSTANTS.TAGS.ALL_COURSES, html, function (opts) {
         MetaMap.Router.to(`trainings/${event.item.id}`);
     }
 
-    this.onUpload = (files) => {
-        console.log(files)
+    this.onDownload = (event, ...o) => {
+        let id = event.item.id
+        if (id && this._data[id]) {
+            let csv = 'data:text/csv;charset=utf-8,' + Papa.unparse(this._data[id].course)
+            let encodedUri = encodeURI(csv);
+            let link = document.createElement('a');
+            link.setAttribute('href', encodedUri);
+            link.setAttribute('download', this._data[id].name + '.csv');
+
+            link.click();
+        }
     }
 
     this.initDropzone = (id) => {
@@ -95,10 +125,10 @@ module.exports = riot.tag(CONSTANTS.TAGS.ALL_COURSES, html, function (opts) {
                         });
                         dzThis.on('addedfile', function (file) {
                             Papa.parse(file, {
+                                header: true,
                                 complete: function (results, file) {
-                                    tagThis.saveTraining(id, results.data);
+                                    tagThis.saveTraining(id, results.data)
                                     dzThis.removeAllFiles(true)
-                                    window.alert('Your training has been successfully parsed!')
                                 }
                             });
                         });
@@ -152,10 +182,11 @@ module.exports = riot.tag(CONSTANTS.TAGS.ALL_COURSES, html, function (opts) {
 
     const once = _.once(() => {
         MetaMap.MetaFire.on(CONSTANTS.ROUTES.COURSE_LIST, (list) => {
-            this.data = _.map(list, (obj, key) => {
-                obj.id = key;
-                obj.created_at = moment(new Date(obj.created_at)).format('YYYY-MM-DD');
-                return obj;
+            this._data = list
+            this.data = _.map(this._data, (obj, key) => {
+                obj.id = key
+                obj.created_at = this.getDate(obj.created_at)
+                return obj
             });
             if (this.data) {
                 this.update()
