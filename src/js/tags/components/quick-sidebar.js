@@ -1,6 +1,5 @@
 const riot = require('riot');
 const moment = require('moment')
-const Ps = require('perfect-scrollbar');
 
 const Metronic = require('../../template/metronic')
 const raw = require('./raw');
