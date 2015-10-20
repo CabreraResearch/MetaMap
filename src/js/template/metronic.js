@@ -688,7 +688,8 @@ var Metronic = function() {
                     height: height,
                     alwaysVisible: ($(this).attr("data-always-visible") == "1" ? true : false),
                     railVisible: ($(this).attr("data-rail-visible") == "1" ? true : false),
-                    disableFadeOut: true
+                    disableFadeOut: true,
+                    start: '.page-quick-sidebar-chat-user-form'
                 });
 
                 $(this).attr("data-initialized", "1");

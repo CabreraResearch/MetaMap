@@ -29,7 +29,7 @@ const html =
                     </div>
                     <div class="page-quick-sidebar-item">
                         <div class="page-quick-sidebar-chat-user">
-                            <div class="page-quick-sidebar-chat-user-messages">
+                            <div id="cortex_messages" class="page-quick-sidebar-chat-user-messages">
                                 <div each="{ userTraining.messages }" class="post { out: author == 'cortex', in: author != 'cortex' }">
                                     <img height="39" width="39" class="avatar" alt="" src="{ author == 'cortex' ? parent.cortexPicture : parent.userPicture }"/>
                                     <div class="message">
@@ -140,11 +140,12 @@ riot.tag(CONSTANTS.TAGS.SIDEBAR, html, function(opts) {
 
     this.userPicture = ''
 
-	this.on('mount', () => {
+	this.on('update', () => {
         handleQuickSidebarToggler(); // handles quick sidebar's toggler
         handleQuickSidebarChat(); // handles quick sidebar's chats
         handleQuickSidebarAlerts(); // handles quick sidebar's alerts
-		this.userPicture = MetaMap.User.picture
+        this.userPicture = MetaMap.User.picture
+        $(this.cortex_messages).slimScroll({ scrollBy: '100px' })
 	});
 
 	this.getDisplay = () => {
