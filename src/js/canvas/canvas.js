@@ -269,7 +269,33 @@ class Canvas {
                             //various drag/drop handler event experiments lived here
                         },
 						nodeDropped:function(params) {
-							alert("node " + params.source.id + " was dropped on " + params.target.id);
+                            let target = params.target
+                            let source = params.source
+                            let sourceId = params.source.data.id
+                            let targetId = params.target.data.id
+
+                            //If the source was previously a child of any parent, disassociate
+                            if (source.data.parent) {
+                                let oldParent = toolkit.getNode(source.data.parent)
+                                if (oldParent) {
+                                    oldParent.data.children = _.remove(oldParent.data.children, (id) => { return id == sourceId })
+                                    toolkit.updateNode(oldParent);
+                                }
+                            }
+
+                            //Assign the source to the new parent
+                            target.data.children = target.data.children || []
+                            target.data.children.push(source.data.id)
+                            toolkit.updateNode(target)
+
+                            //Update the source
+                            source.data.parent = targetId
+                            source.data.h = target.data.h * 0.667
+                            source.data.w = target.data.w * 0.667
+                            source.data.order = target.children.length
+                            toolkit.updateNode(source)
+
+                            renderer.refresh()
 						}
                     },
 					elementsDroppable:true,
@@ -419,10 +445,10 @@ class Canvas {
 
                     // make the label draggable (see note above).
                     labelDragHandler.draggable(label, {
-                        start:function() {
-                        labelDragHandler.setZoom(renderer.getZoom());
+                        start: function () {
+                            labelDragHandler.setZoom(renderer.getZoom());
                         },
-                        stop:function(e) {
+                        stop: function (e) {
                             node.data.labelPosition = [
                                 parseInt(label.style.left, 10),
                                 parseInt(label.style.top, 10)
@@ -432,15 +458,15 @@ class Canvas {
                     });
 
                     // make the label editable via a dialog
-                    jsPlumb.on(label, "dblclick", function() {
-                    jsPlumbToolkit.Dialogs.show({
+                    jsPlumb.on(label, "dblclick", function () {
+                        jsPlumbToolkit.Dialogs.show({
                             id: "dlgText",
                             title: "Enter label:",
                             onOK: function (d) {
-                                toolkit.updateNode(node, { label:d.text });
+                                toolkit.updateNode(node, { label: d.text });
                             },
-                            data:{
-                            text:node.data.label
+                            data: {
+                                text: node.data.label
                             }
                         });
                     });
