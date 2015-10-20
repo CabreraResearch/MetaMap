@@ -9,8 +9,12 @@ let TrainingMix = {
     userTraining: { messages: [] },
     training: {},
 
-    saveTraining: function(id) {
+    saveUserTraining: function(id) {
         this.MetaMap.MetaFire.setData(this.userTraining, `${CONSTANTS.ROUTES.TRAININGS.format(this.MetaMap.User.userId)}${id}`)
+    },
+
+    saveTraining: function (id, data) {
+        this.MetaMap.MetaFire.setData(data, `${CONSTANTS.ROUTES.COURSE_LIST}${id}/course`)
     },
 
     getData: function(id) {
@@ -23,11 +27,11 @@ let TrainingMix = {
                         that.userTraining = data
                         if (!data) {
                             that.userTraining = that.training
-                            that.saveTraining(id)
+                            that.saveUserTraining(id)
                         }
                         if (!that.userTraining.messages) {
                             that.userTraining.messages = [that.getDefaultMessage()];
-                            that.saveTraining(id)
+                            that.saveUserTraining(id)
                         }
                         that.update();
                         NProgress.done();

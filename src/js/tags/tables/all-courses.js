@@ -1,15 +1,17 @@
-const riot = require('riot');
-const moment = require('moment');
-const NProgress = window.NProgress;
-const _ = require('lodash');
+const riot = require('riot')
+const moment = require('moment')
+const NProgress = window.NProgress
+const _ = require('lodash')
 const $ = require('jquery')
 const Dropzone = require('dropzone')
+const Papa = require('papaparse')
 
 require('datatables')
 require('datatables-bootstrap3-plugin')
 
-const CONSTANTS = require('../../constants/constants');
-const raw = require('../components/raw');
+const CONSTANTS = require('../../constants/constants')
+const raw = require('../components/raw')
+const TrainingMix = require('../mixins/training-mix')
 
 const html = `
 <table class="table table-striped table-bordered table-hover" id="{tableId}">
@@ -34,6 +36,8 @@ const html = `
 `;
 
 module.exports = riot.tag(CONSTANTS.TAGS.ALL_COURSES, html, function (opts) {
+
+    this.mixin(TrainingMix)
 
     const MetaMap = require('../../../MetaMap.js');
 
@@ -72,25 +76,33 @@ module.exports = riot.tag(CONSTANTS.TAGS.ALL_COURSES, html, function (opts) {
 
     this.initDropzone = (id) => {
         try {
-            this.dropzones[id] = this.dropzones[id] ||
-            new Dropzone('#training_upload_' + id, {
-                url: '/noup',
-                paramName: "file", // The name that will be used to transfer the file
-                maxFiles: 0,
-                addRemoveLinks: true,
-                autoProcessQueue: false,
-                dictMaxFilesExceeded: 'One training at a time!',
-                acceptedFiles: '.csv',
-                init: function() {
-                    this.on('drop', function (e) {
-                        if (!e.dataTransfer.files[0].name.endsWith('.csv')) {
-                            throw Error('Invalid file type')
-                        }
-                    });
-                    this.on("addedfile", function (file) {
-                        console.log(file)
-                    });
-                }
+            const tagThis = this
+            tagThis.dropzones[id] = tagThis.dropzones[id] ||
+                new Dropzone('#training_upload_' + id, {
+                    url: '/noup',
+                    paramName: "file", // The name that will be used to transfer the file
+                    maxFiles: 0,
+                    addRemoveLinks: true,
+                    autoProcessQueue: false,
+                    dictMaxFilesExceeded: 'One training at a time!',
+                    acceptedFiles: '.csv',
+                    init: function() {
+                        const dzThis = this
+                        dzThis.on('drop', function (e) {
+                            if (dzThis.files.length > 0 || !e.dataTransfer.files[0].name.endsWith('.csv')) {
+                                throw new Error('Only 1 CSV file at a time.')
+                            }
+                        });
+                        dzThis.on('addedfile', function (file) {
+                            Papa.parse(file, {
+                                complete: function (results, file) {
+                                    tagThis.saveTraining(id, results.data);
+                                    dzThis.removeAllFiles(true)
+                                    window.alert('Your training has been successfully parsed!')
+                                }
+                            });
+                        });
+                    }
             })
         } catch (e) {
             console.log(e)

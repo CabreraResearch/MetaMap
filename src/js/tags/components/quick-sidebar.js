@@ -1,9 +1,9 @@
-const riot = require('riot');
+const riot = require('riot')
 const moment = require('moment')
 
 const Metronic = require('../../template/metronic')
-const raw = require('./raw');
-const CONSTANTS = require('../../constants/constants');
+const raw = require('./raw')
+const CONSTANTS = require('../../constants/constants')
 const TrainingMix = require('../mixins/training-mix')
 
 const html =
@@ -166,7 +166,7 @@ riot.tag(CONSTANTS.TAGS.SIDEBAR, html, function(opts) {
 			time: new Date()
         })
 
-        this.saveTraining(this.trainingId)
+        this.saveUserTraining(this.trainingId)
 		this.chat_input.value = ''
 		this.update()
 	}
