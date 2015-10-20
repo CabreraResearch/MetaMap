@@ -3,6 +3,8 @@ const moment = require('moment');
 const NProgress = window.NProgress;
 const _ = require('lodash');
 const $ = require('jquery')
+const Dropzone = require('dropzone')
+
 require('datatables')
 require('datatables-bootstrap3-plugin')
 
@@ -23,6 +25,9 @@ const html = `
             </td>
             <td class="{ meta_editable: parent.editable}" data-pk="{ id }" data-name="name" data-title="Edit Course Name" style="vertical-align: middle;">{ name }</td>
             <td class="{ meta_editable: parent.editable}" data-pk="{ id }" data-name="description" data-title="Edit Course Description" style="vertical-align: middle;">{ description }</td>
+            <td if="{ parent.user.isAdmin }" >
+                <form  method="{ parent.onUpload }" url="/noupload" class="dropzone" id="training_upload_{ id }"></form>
+            </td>
         </tr>
     </tbody>
 </table>
@@ -36,6 +41,7 @@ module.exports = riot.tag(CONSTANTS.TAGS.ALL_COURSES, html, function (opts) {
     this.data = []
     this.editable = false
     this.tableId = 'all_courses'
+    this.dropzones = {}
 
     this.columns = [
         {
@@ -51,10 +57,44 @@ module.exports = riot.tag(CONSTANTS.TAGS.ALL_COURSES, html, function (opts) {
             orderable: true
         }
     ]
+    if (this.user.isAdmin) {
+        this.columns.push({name: 'Upload Training', orderable: false})
+    }
 
     //Events
     this.onStart = (event, ...o) => {
         MetaMap.Router.to(`trainings/${event.item.id}`);
+    }
+
+    this.onUpload = (files) => {
+        console.log(files)
+    }
+
+    this.initDropzone = (id) => {
+        try {
+            this.dropzones[id] = this.dropzones[id] ||
+            new Dropzone('#training_upload_' + id, {
+                url: '/noup',
+                paramName: "file", // The name that will be used to transfer the file
+                maxFiles: 0,
+                addRemoveLinks: true,
+                autoProcessQueue: false,
+                dictMaxFilesExceeded: 'One training at a time!',
+                acceptedFiles: '.csv',
+                init: function() {
+                    this.on('drop', function (e) {
+                        if (!e.dataTransfer.files[0].name.endsWith('.csv')) {
+                            throw Error('Invalid file type')
+                        }
+                    });
+                    this.on("addedfile", function (file) {
+                        console.log(file)
+                    });
+                }
+            })
+        } catch (e) {
+            console.log(e)
+        }
     }
 
     this.buildTable = () => {
@@ -108,6 +148,9 @@ module.exports = riot.tag(CONSTANTS.TAGS.ALL_COURSES, html, function (opts) {
             if (this.data) {
                 this.update()
                 this.buildTable(0, this.data);
+                _.each(this.data, (d) => {
+                    this.initDropzone(d.id)
+                })
             }
         });
     })
