@@ -1244,6 +1244,10 @@
         if (idx != -1) this.splice(idx, 1);
     };
 
+    var _isString = function(f) {
+        return f == null ? false : (typeof f === "string" || f.constructor == String);
+    };
+
     var getOffsetRect = function (elem) {
         // (1)
         var box = elem.getBoundingClientRect(),
@@ -1330,7 +1334,7 @@
         },
         _each = function(obj, fn) {
             if (obj == null) return;
-            obj = (typeof obj !== "string" && obj.constructor != String) && (obj.tagName == null && obj.length != null) ? obj : [ obj ];
+            obj = !_isString(obj) && (obj.tagName == null && obj.length != null) ? obj : [ obj ];
             for (var i = 0; i < obj.length; i++)
                 fn.apply(obj[i], [ obj[i] ]);
         },
@@ -1472,7 +1476,7 @@
                     _filters[key] = [
                         function(e) {
                             var t = e.srcElement || e.target, m;
-                            if (typeof f === "string" || f.constructor == String) {
+                            if (_isString(f)) {
                                 m = matchesSelector(t, f, el);
                             }
                             else if (typeof f === "function") {
@@ -1714,10 +1718,11 @@
     var Drop = function(el, params, css, scope) {
         this._class = css.droppable;
         this.params = params || {};
-        this._activeClass = params.activeClass || css.active;
-        this._hoverClass = params.hoverClass || css.hover;
+        this._activeClass = this.params.activeClass || css.active;
+        this._hoverClass = this.params.hoverClass || css.hover;
         Super.apply(this, arguments);
         var hover = false;
+        this.allowLoopback = this.params.allowLoopback !== false;
 
         this.setActive = function(val) {
             this.params[val ? "addClass" : "removeClass"](this.el, this._activeClass);
@@ -1784,22 +1789,27 @@
         this._dropsByScope = {};
         var _zoom = 1,
             _reg = function(obj, map) {
-                for(var i = 0; i < obj.scopes.length; i++) {
-                    map[obj.scopes[i]] = map[obj.scopes[i]] || [];
-                    map[obj.scopes[i]].push(obj);
-                }
+                _each(obj, function(_obj) {
+                    for(var i = 0; i < _obj.scopes.length; i++) {
+                        map[_obj.scopes[i]] = map[_obj.scopes[i]] || [];
+                        map[_obj.scopes[i]].push(_obj);
+                    }
+                });
             },
             _unreg = function(obj, map) {
                 var c = 0;
-                for(var i = 0; i < obj.scopes.length; i++) {
-                    if (map[obj.scopes[i]]) {
-                        var idx = katavorioParams.indexOf(map[obj.scopes[i]], obj);
-                        if (idx != -1) {
-                            map[obj.scopes[i]].splice(idx, 1);
-                            c++;
+                _each(obj, function(_obj) {
+                    for(var i = 0; i < _obj.scopes.length; i++) {
+                        if (map[_obj.scopes[i]]) {
+                            var idx = katavorioParams.indexOf(map[_obj.scopes[i]], _obj);
+                            if (idx != -1) {
+                                map[_obj.scopes[i]].splice(idx, 1);
+                                c++;
+                            }
                         }
                     }
-                }
+                });
+
                 return c > 0 ;
             },
             _getMatchingDroppables = this.getMatchingDroppables = function(drag) {
@@ -1808,7 +1818,7 @@
                     var _dd = this._dropsByScope[drag.scopes[i]];
                     if (_dd) {
                         for (var j = 0; j < _dd.length; j++) {
-                            if (_dd[j].canDrop(drag) &&  !_m[_dd[j].uuid]/* && _dd[j].el !== drag.el*/) {
+                            if (_dd[j].canDrop(drag) &&  !_m[_dd[j].uuid] && (_dd[j].allowLoopback || _dd[j].el !== drag.el)) {
                                 _m[_dd[j].uuid] = true;
                                 dd.push(_dd[j]);
                             }
@@ -1821,7 +1831,7 @@
                 p = p || {};
                 var _p = {
                     events:{}
-                    }, i;
+                }, i;
                 for (i in katavorioParams) _p[i] = katavorioParams[i];
                 for (i in p) _p[i] = p[i];
                 // events
@@ -1892,9 +1902,11 @@
             _each(el, function(_el) {
                 _el = _gel(_el);
                 if (_el != null) {
-                    _el._katavorioDrop = new Drop(_el, _prepareParams(params), _css, _scope);
-                    _reg(_el._katavorioDrop, this._dropsByScope);
-                    o.push(_el._katavorioDrop);
+                    var drop = new Drop(_el, _prepareParams(params), _css, _scope);
+                    _el._katavorioDrop = _el._katavorioDrop || [];
+                    _el._katavorioDrop.push(drop);
+                    _reg(drop, this._dropsByScope);
+                    o.push(drop);
                     katavorioParams.addClass(_el, _css.droppable);
                 }
             }.bind(this));
@@ -2018,11 +2030,11 @@
 
         // does the work of changing scopes
         var _scopeManip = function(kObj, scopes, map, fn) {
-            if (kObj != null) {
-                _unreg(kObj, map);  // deregister existing scopes
-                kObj[fn](scopes); // set scopes
-                _reg(kObj, map); // register new ones
-            }
+            _each(kObj, function(_kObj) {
+                _unreg(_kObj, map);  // deregister existing scopes
+                _kObj[fn](scopes); // set scopes
+                _reg(_kObj, map); // register new ones
+            });
         };
 
         _each([ "set", "add", "remove", "toggle"], function(v) {
@@ -2050,8 +2062,10 @@
         var _destroy = function(el, type, map) {
             el = _gel(el);
             if (el[type]) {
-                if (_unreg(el[type], map))
-                    el[type].destroy();
+                if (_unreg(el[type], map)) {
+                    _each(el[type], function(kObj) { kObj.destroy() });
+                }
+
                 el[type] = null;
             }
         };
@@ -2082,42 +2096,78 @@
         /**
          * Add the given element to the posse with the given id, creating the group if it at first does not exist.
          * @param {Element} el Element to add.
-         * @param {String} posseId ID of the group to add the element to.
-         * @param {Boolean} [master=true] Indicates whether or not dragging this element should cause the whole posse to drag. Default is true.
+         * @param {String...|Object...} spec Variable args parameters. Each argument can be a either a String, indicating
+         * the ID of a Posse to which the element should be added as an active participant, or an Object containing
+         * `{ id:"posseId", active:false/true}`. In the latter case, if `active` is not provided it is assumed to be
+         * true.
          * @returns {Posse} The Posse to which the element(s) was/were added.
          */
-        this.addToPosse = function(el, posseId, master) {
-            var posse = _posses[posseId] || (function() {
-                var g = {name:posseId, members:[]};
-                _posses[posseId] = g;
-                return g;
-            })();
-            _each(el, function(_el) {
-                if (_el._katavorioDrag) {
-                    posse.members.suggest(_el._katavorioDrag);
-                    _el._katavorioDrag.posses.suggest(posse.name);
-                    _el._katavorioDrag.posseRoles[posse.name] = !(master === false);
-                }
-            });
+        this.addToPosse = function(el, spec) {
 
-            return posse;
+            var posses = [], posseId, active;
+
+            var _one = function(_spec) {
+                posseId = _isString(_spec) ? _spec : _spec.id;
+                active = _isString(_spec) ? true : _spec.active !== false;
+                var posse = _posses[posseId] || (function() {
+                    var g = {name:posseId, members:[]};
+                    _posses[posseId] = g;
+                    return g;
+                })();
+                _each(el, function(_el) {
+                    if (_el._katavorioDrag) {
+                        posse.members.suggest(_el._katavorioDrag);
+                        _el._katavorioDrag.posses.suggest(posse.name);
+                        _el._katavorioDrag.posseRoles[posse.name] = active;
+                    }
+                });
+                posses.push(posse);
+            };
+
+            for (var i = 1; i < arguments.length; i++) {
+                _one(arguments[i]);
+            }
+
+
+
+            return posses.length == 1 ? posses[0] : posses;
         };
 
         /**
          * Remove the given element from the given posse(s).
          * @param {Element} el Element to remove.
-         * @param {String|String[]} posseId Either a single posse ID, or an array of them.
+         * @param {String...} posseId Varargs parameter: one value for each posse to remove the element from.
          */
         this.removeFromPosse = function(el, posseId) {
-            if (posseId == null) throw new TypeError("No posse id provided for remove operation");
+            if (arguments.length < 2) throw new TypeError("No posse id provided for remove operation");
+            for(var i = 1; i < arguments.length; i++) {
+                posseId = arguments[i];
+                _each(el, function (_el) {
+                    if (_el._katavorioDrag && _el._katavorioDrag.posses) {
+                        var d = _el._katavorioDrag;
+                        _each(posseId, function (p) {
+                            _posses[p].members.vanquish(d);
+                            d.posses.vanquish(p);
+                            delete d.posseRoles[p];
+                        });
+                    }
+                });
+            }
+        };
+
+        /**
+         * Remove the given element from all Posses to which it belongs.
+         * @param {Element|Element[]} el Element to remove from Posses.
+         */
+        this.removeFromAllPosses = function(el) {
             _each(el, function(_el) {
                 if (_el._katavorioDrag && _el._katavorioDrag.posses) {
                     var d = _el._katavorioDrag;
-                    _each(posseId, function(p) {
+                    _each(d.posses, function(p) {
                         _posses[p].members.vanquish(d);
-                        d.posses.vanquish(p);
-                        delete d.posseRoles[p];
                     });
+                    d.posses.length = 0;
+                    d.posseRoles = {};
                 }
             });
         };
@@ -2707,6 +2757,17 @@
         _mapType = function(map, obj, typeId) {
             for (var i in obj)
                 map[i] = typeId;
+        },
+        _each = function(fn, obj) {
+            obj = jsPlumbUtil.isArray(obj) || (obj.length != null && !jsPlumbUtil.isString(obj)) ? obj : [ obj ];
+            for (var i = 0; i < obj.length; i++) {
+                try {
+                    fn.apply(obj[i], [ obj[i] ]);
+                }
+                catch (e) {
+                    jsPlumbUtil.log(".each iteration failed : " + e);
+                }
+            }
         },
         _applyTypes = function (component, params, doNotRepaint) {
             if (component.getDefaultType) {
@@ -3396,28 +3457,17 @@
                                     ui.left += _ancestorOffset.left;
                                     ui.top += _ancestorOffset.top;
                                     _draw(element, ui, null, true);
-                                    if (_started) _currentInstance.addClass(element, "jsPlumb_dragged");
+                                    if (_started) _currentInstance.addClass(element, "jsplumb-dragged");
                                     _started = true;
                                 });
                                 options[stopEvent] = _ju.wrap(options[stopEvent], function () {
-                                    var elements = [];
-
-                                    // TODO once jquery is no longer supported, remove this, as we will know
-                                    // exactly what the method signature is. For now, we need to cater for the
-                                    // fact that jquery ui provides two args and katavorio provides only one.
-                                    if (arguments.length == 1 && arguments[0].selection && arguments[0].selection.length > 0) {
-                                        elements = arguments[0].selection;
-                                    }
-                                    else {
-                                        elements = [
-                                            [ element, _currentInstance.getUIPosition(arguments, _currentInstance.getZoom(), true) ]
-                                        ];
-                                    }
+                                    var elements = arguments[0].selection;
+                                    var uip = _currentInstance.getUIPosition(arguments);
 
                                     // this is one element
                                     var _one = function (_e) {
-                                        _draw(_e[0], _e[1]);
-                                        _currentInstance.removeClass(_e[0], "jsPlumb_dragged");
+                                        _draw(_e[0], uip);
+                                        _currentInstance.removeClass(_e[0], "jsplumb-dragged");
                                         _currentInstance.select({source: _e[0]}).removeClass(_currentInstance.elementDraggingClass + " " + _currentInstance.sourceElementDraggingClass, true);
                                         _currentInstance.select({target: _e[0]}).removeClass(_currentInstance.elementDraggingClass + " " + _currentInstance.targetElementDraggingClass, true);
                                         _currentInstance.getDragManager().dragEnded(_e[0]);
@@ -4235,19 +4285,22 @@
         };
 
         this.draggable = function (el, options) {
-            var i, j, info;
-            // allows for array or jquery selector
-            if (typeof el == 'object' && el.length) {
-                for (i = 0, j = el.length; i < j; i++) {
-                    info = _info(el[i]);
-                    if (info.el) _initDraggableIfNecessary(info.el, true, options, info.id);
-                }
-            }
-            else {
-                //ele = _currentInstance.getElement(el);
-                info = _info(el);
+            var info;
+            _each(function(_el) {
+                 info = _info(_el);
                 if (info.el) _initDraggableIfNecessary(info.el, true, options, info.id);
-            }
+            }, el);
+            return _currentInstance;
+        };
+
+        this.droppable = function(el, options) {
+            var info;
+            options = options || {};
+            options.allowLoopback = false;
+            _each(function(_el) {
+                info = _info(_el);
+                if (info.el) _currentInstance.initDroppable(info.el, options);
+            }, el);
             return _currentInstance;
         };
 
@@ -4940,7 +4993,7 @@
             p.endpoint = p.endpoint || aae.endpoints[0];
             p.anchor = p.anchor || aae.anchors[0];
             _setEndpointPaintStylesAndAnchor(p, 0, this);
-            var maxConnections = p.maxConnections || 1,
+            var maxConnections = p.maxConnections || -1,
                 onMaxConnections = p.onMaxConnections,
                 _doOne = function (elInfo) {
                     // get the element's id and store the endpoint definition for it.  jsPlumb.connect calls will look for one of these,
@@ -5041,7 +5094,7 @@
 
                         // if maxConnections reached
                         var sourceCount = this.select({source: elid}).length;
-                        if (def.maxConnections >= 0 && (def.uniqueEndpoint && sourceCount >= def.maxConnections)) {
+                        if (def.maxConnections >= 0 && (sourceCount >= def.maxConnections)) {
                             if (onMaxConnections) {
                                 onMaxConnections({
                                     element: elInfo.el,
@@ -5210,7 +5263,8 @@
         };
         this.setSourceScope = function (el, scope, connectionType) {
             _setScope(el, scope, "sourceEndpointDefinitions", connectionType);
-            // TODO should we setDragScope here? i'm not sure yet. we get the source scope during the mousedown event.
+            // we get the source scope during the mousedown event, but we also want to set this.
+            this.setDragScope(el, scope);
         };
         this.setTargetScope = function (el, scope, connectionType) {
             _setScope(el, scope, "targetEndpointDefinitions", connectionType);
@@ -5634,10 +5688,21 @@
         },
         registerEndpointType: function (id, type) {
             this._endpointTypes[id] = jsPlumb.extend({}, type);
+            if (type.overlays) {
+                var to = {};
+                for (var i = 0; i < type.overlays.length; i++) {
+                    // if a string, convert to object representation so that we can store the typeid on it.
+                    // also assign an id.
+                    var fo = this.convertToFullOverlaySpec(type.overlays[i]);
+                    to[fo[1].id] = fo;
+                }
+                this._endpointTypes[id].overlays = to;
+            }
         },
         registerEndpointTypes: function (types) {
             for (var i in types)
-                this._endpointTypes[i] = jsPlumb.extend({}, types[i]);
+                //this._endpointTypes[i] = jsPlumb.extend({}, types[i]);
+                this.registerEndpointType(i, types[i]);
         },
         getType: function (id, typeDescriptor) {
             return typeDescriptor === "connection" ? this._connectionTypes[id] : this._endpointTypes[id];
@@ -5737,19 +5802,6 @@
 
     var svgAvailable = !!window.SVGAngle || document.implementation.hasFeature("http://www.w3.org/TR/SVG11/feature#BasicStructure", "1.1"),
 
-    // TODO: remove this once we remove all library adapter versions and have only vanilla jsplumb: this functionality
-    // comes from Mottle.
-        iev = (function () {
-            var rv = -1;
-            if (navigator.appName == 'Microsoft Internet Explorer') {
-                var ua = navigator.userAgent,
-                    re = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})");
-                if (re.exec(ua) != null)
-                    rv = parseFloat(RegExp.$1);
-            }
-            return rv;
-        })(),
-        isIELT9 = iev > -1 && iev < 9,
         _genLoc = function (e, prefix) {
             if (e == null) return [ 0, 0 ];
             var ts = _touches(e), t = _getTouch(ts, 0);
@@ -5757,12 +5809,7 @@
         },
         _pageLocation = function (e) {
             if (e == null) return [ 0, 0 ];
-            if (isIELT9) {
-                return [ e.clientX + document.documentElement.scrollLeft, e.clientY + document.documentElement.scrollTop ];
-            }
-            else {
-                return _genLoc(e, "page");
-            }
+            return _genLoc(e, "page");
         },
         _screenLocation = function (e) {
             return _genLoc(e, "screen");
@@ -6139,9 +6186,9 @@
 
             return sel;
         },
-        getOffset:function(el, relativeToRoot) {
+        getOffset:function(el, relativeToRoot, container) {
             el = jsPlumb.getElement(el);
-            var container = this.getContainer();
+            container = container || this.getContainer();
             var out = {
                     left: el.offsetLeft,
                     top: el.offsetTop
@@ -6531,7 +6578,7 @@
                 }
 
                 if (placeholder.element) {
-                    var _ui = _jp.getUIPosition(arguments, _jsPlumb.getZoom());
+                    var _ui = _jsPlumb.getUIPosition(arguments, _jsPlumb.getZoom());
                     jsPlumb.setPosition(placeholder.element, _ui);
                     _jsPlumb.repaint(placeholder.element, _ui);
                     // always repaint the source endpoint, because only continuous/dynamic anchors cause the endpoint
@@ -12248,7 +12295,9 @@
                 unbind: e.off,
                 getSize: jsPlumb.getSize,
                 getPosition: function (el) {
-                    var o = instance.getOffset(el);
+                    // if this is a nested draggable then compute the offset against its own offsetParent, otherwise
+                    // compute against the Container's origin. see also the getUIPosition method below.
+                    var o = instance.getOffset(el, false, el._katavorioDrag ? el.offsetParent : null);
                     return [o.left, o.top];
                 },
                 setPosition: function (el, xy) {
@@ -12376,14 +12425,20 @@
         getDropEvent: function (args) {
             return args[0].e;
         },
-        getDropScope: function (el) {
-            return el._katavorioDrop && el._katavorioDrop.scopes.join(" ") || "";
-        },
         getUIPosition: function (eventArgs, zoom) {
-            return {
-                left: eventArgs[0].pos[0],
-                top: eventArgs[0].pos[1]
-            };
+            // here the position reported to us by Katavorio is relative to the element's offsetParent. For top
+            // level nodes that is fine, but if we have a nested draggable then its offsetParent is actually
+            // not going to be the jsplumb container; it's going to be some child of that element. In that case
+            // we want to adjust the UI position to account for the offsetParent's position relative to the Container
+            // origin.
+            var el = eventArgs[0].el;
+            var p = { left:eventArgs[0].pos[0], top:eventArgs[0].pos[1] };
+            if (el._katavorioDrag && el.offsetParent !== this.getContainer()) {
+                var oc = this.getOffset(el.offsetParent);
+                p.left += oc.left;
+                p.top += oc.top;
+            }
+            return p;
         },
         setDragFilter: function (el, filter, _exclude) {
             if (el._katavorioDrag) {
@@ -12400,16 +12455,31 @@
                 el._katavorioDrag.k.setDragScope(el, scope);
         },
         setDropScope:function(el, scope) {
-            if (el._katavorioDrop)
-                el._katavorioDrop.k.setDropScope(el, scope);
+            if (el._katavorioDrop && el._katavorioDrop.length > 0) {
+                el._katavorioDrop[0].k.setDropScope(el, scope);
+            }
         },
-        addToPosse:function(el, posse, master) {
+        addToPosse:function(el, spec) {
+            var specs = Array.prototype.slice.call(arguments, 1);
             var dm = _getDragManager(this);
-            jsPlumb.each(el, function(_el) { dm.addToPosse(jsPlumb.getElement(_el), posse, master); });
+            jsPlumb.each(el, function(_el) {
+                _el = [ jsPlumb.getElement(_el) ];
+                _el.push.apply(_el, specs );
+                dm.addToPosse.apply(dm, _el);
+            });
         },
         removeFromPosse:function(el, posseId) {
+            var specs = Array.prototype.slice.call(arguments, 1);
             var dm = _getDragManager(this);
-            jsPlumb.each(el, function(_el) { dm.removeFromPosse(jsPlumb.getElement(_el), posseId); });
+            jsPlumb.each(el, function(_el) {
+                _el = [ jsPlumb.getElement(_el) ];
+                _el.push.apply(_el, specs );
+                dm.removeFromPosse.apply(dm, _el);
+            });
+        },
+        removeFromAllPosses:function(el) {
+            var dm = _getDragManager(this);
+            jsPlumb.each(el, function(_el) { dm.removeFromAllPosses(jsPlumb.getElement(_el)); });
         },
         dragEvents: {
             'start': 'start', 'stop': 'stop', 'drag': 'drag', 'step': 'step',
