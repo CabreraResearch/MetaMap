@@ -1,8 +1,7 @@
 const riot = require('riot')
-const NProgress = window.NProgress
-const CONSTANTS = require('../../constants/constants')
 const VideoPlayer = require('../../tools/VideoPlayer')
-const TrainingMix = require('../mixins/training-mix')
+const AllTags = require('../mixins/all-tags')
+const CONSTANTS = require('../../constants/constants')
 
 const html = `
 <div id="training_portlet" class="portlet light">
@@ -20,14 +19,18 @@ const html = `
 
 module.exports = riot.tag(CONSTANTS.TAGS.TRAINING, html, function(opts) {
 
-    this.mixin(TrainingMix)
-
+    this.mixin(AllTags)
     this.training = {}
 
     this.on('mount update', (event, opts) => {
         if (opts) {
             this.config = opts
-            this.getData(this.config.id)
+            if (!this.cortex) {
+                this.cortex = this.getCortex(this.config.id)
+                this.cortex.getData(() => {
+                    this.update()
+                })
+            }
             //this.player = new VideoPlayer('training_player', {height: 390, width: 640, videoId: 'dUqRTWCdXt4'})
         }
     });

@@ -1,20 +1,66 @@
 var gulp = require('gulp');
 var runSequence = require('run-sequence');
 
-gulp.task('build', ['compile', 'test', 'watch']);
+gulp.task('default', ['compile']);
 
-gulp.task('compile', ['compile-src']);
+gulp.task('compile', function (cb) {
+    runSequence(
+        'browserify-dev',
+        function (error) {
+            if (error) {
+                console.log(error.message);
+            } else {
+                console.log('Compile finished');
+            }
+            cb(error);
+        });
 
-gulp.task('compile-src', ['browserify-dev']);
+    gulp.on('stop', function () {
+        process.nextTick(function () {
+            process.exit(0);
+        });
+    });
+})
 
-gulp.task('compile-all', ['vendor', 'browserify']);
+gulp.task('compile-all', function (cb) {
+    runSequence(
+        'vendor',
+        'browserify',
+        'css',
+        function (error) {
+            if (error) {
+                console.log(error.message);
+            } else {
+                console.log('Compile finished');
+            }
+            cb(error);
+        });
 
-gulp.task('default', ['build']);
+    gulp.on('stop', function () {
+        process.nextTick(function () {
+            process.exit(0);
+        });
+    });
+})
+
+gulp.task('compile-test', function (cb) {
+    runSequence(
+        'compile-all',
+        'test',
+        'watch',
+        function (error) {
+            if (error) {
+                console.log(error.message);
+            } else {
+                console.log('Compile finished');
+            }
+            cb(error);
+        });
+})
 
 gulp.task('release', function (cb) {
     runSequence(
         'compile-all',
-        'css',
         'deploy',
         function (error) {
             if (error) {
@@ -24,10 +70,11 @@ gulp.task('release', function (cb) {
             }
             cb(error);
         });
+
+    gulp.on('stop', function () {
+        process.nextTick(function () {
+            process.exit(0);
+        });
+    });
 })
 
-gulp.on('stop', function () {
-  process.nextTick(function () {
-    process.exit(0);
-  });
-});
