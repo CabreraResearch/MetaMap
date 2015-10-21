@@ -14,6 +14,15 @@ class CortexMan {
         this.currentMessage = 0
     }
 
+    restart() {
+        this.messages = []
+        this.userTraining = { messages: [] }
+        this.currentMessage = 0
+        this._messageGen = null
+        this._messages = null
+        this.MetaMap.MetaFire.deleteData(`${CONSTANTS.ROUTES.TRAININGS.format(this.MetaMap.User.userId) }${this.trainingId}`)
+    }
+
     get picture() { return 'src/images/cortex-avatar-small.jpg' }
 
     getOutline() {
@@ -23,23 +32,50 @@ class CortexMan {
     }
 
     processUserResponse(obj) {
-        let currentStep = this.training.course[this.currentMessage]
-        //TODO: add validation logic here
-        if (obj.message == currentStep.Line) {
+        if(obj) {
+            let response = {
+                time: `${new Date() }`
+            }
+            _.extend(obj, response)
+            this.userTraining.messages.push(obj)
 
-        }
-        let response = {
-            time: `${new Date() }`
-        }
-        _.extend(obj, response)
-        this.userTraining.messages.push(obj)
-        let nextStep = this.getNextMessage()
-        this.userTraining.messages.push({
-            author: 'cortex',
-            time: `${new Date() }`,
-            message: nextStep.message.Line
-        })
+            switch(obj.message.toLowerCase().trim()) {
+                case 'help':
+                    this.userTraining.messages.push({
+                        author: 'cortex',
+                        time: `${new Date() }`,
+                        message: `<span>Help? You got it. Here are some of the things I can do for you:
+                                    <ul>
+                                        <li><code>help</code> - Return help</li>
+                                        <li><code>restart</code> - Restart this course from the beginning. Warning: this will delete your progress!</li>
+                                    </ul>
+                                  </span>`
+                    })
+                    break;
+                case 'restart':
+                    if(confirm('Are you sure? All of your progress will be lost!')) {
+                        this.restart()
+                    }
+                    break;
 
+                default:
+                    //TODO: add validation logic here
+                    let currentStep = this.training.course[this.currentMessage]
+                    if (obj.message == currentStep.Line) {
+
+                    }
+                    let nextStep = this.getNextMessage()
+                    this.userTraining.messages.push({
+                        author: 'cortex',
+                        time: `${new Date() }`,
+                        message: nextStep.message.message
+                    })
+                    this.saveUserTraining()
+            }
+        }
+    }
+
+    saveUserTraining() {
         this.MetaMap.MetaFire.updateData(this.userTraining, `${CONSTANTS.ROUTES.TRAININGS.format(this.MetaMap.User.userId) }${this.trainingId}`)
     }
 
@@ -67,12 +103,11 @@ class CortexMan {
                     this.userTraining = data
                     if (!data) {
                         this.userTraining = this.training
-                        this.saveUserTraining(this.trainingId)
                     }
                     if (!this.userTraining.messages) {
                         this.userTraining.messages = [this.getDefaultMessage(this.training.name)]
-                        this.saveUserTraining(this.trainingId)
                     }
+                    this.saveUserTraining()
                     _.each(this._callbacks, (cb) => {
                         cb(this)
                     })
@@ -95,8 +130,31 @@ class CortexMan {
 
     }
 
+    _massageTrainingMessage(idx=0) {
+        let ret = null
+        if (this.userTraining) {
+            let messages = this.getMessages()
+            let courseMsg = messages[idx]
+            if (courseMsg) {
+                ret = {
+                    message: courseMsg.Line,
+                    author: 'cortex',
+                    time: `${new Date() }`
+                }
+                this.userTraining.course[courseMsg.id].archived = true
+            }
+        }
+        return ret;
+    }
+
+
+    getMessages() {
+        this._messages = this._messages || _.filter(_.map(this.userTraining.course, (m, idx)=>{ m.id = idx; return m }), (msg) => { return msg.Line && msg.Line.length > 0 && true != msg.archived })
+        return this._messages
+    }
+
     getDefaultMessage(name) {
-        return {
+        return this._massageTrainingMessage(0) || {
             message: `Hello, I'm Cortex Man. I will be your guide through ${name}`,
             author: 'cortex',
             time: `${new Date() }`
@@ -108,12 +166,14 @@ class CortexMan {
         this.__messageGen = this.__messageGen ||
          function* (idx = 0) {
              state.currentMessage = idx
-             let messages = _.filter(state.training.course, (msg) => { return msg.Line && msg.Line.length > 0 })
+             let messages = state.getMessages()
              while (idx < messages.length) {
                 let now = idx
                 idx += 1
                 state.currentMessage = now
-                yield { idx: now, message: messages[now] }
+                let next = { idx: now, message: state._massageTrainingMessage(now) }
+                state.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, next)
+                yield next
             }
         }
         return this.__messageGen
