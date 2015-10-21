@@ -92,8 +92,8 @@ riot.tag(CONSTANTS.TAGS.SIDEBAR, html, function(opts) {
 		}
 	}
 
-	this.getRelativeTime = (date = new Date()) => {
-		return moment(date).fromNow();
+	this.getRelativeTime = (date = '') => {
+		return moment(new Date(date)).fromNow();
 	}
 
 	this.onSubmit = (obj) => {

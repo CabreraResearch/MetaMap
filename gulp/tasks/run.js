@@ -28,5 +28,5 @@ gulp.task('deploy', function () {
     }).then(function () {
       sendToSlack(message)
     })
-
+    return true
 })
