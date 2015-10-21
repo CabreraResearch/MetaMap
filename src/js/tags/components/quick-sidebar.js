@@ -83,9 +83,10 @@ riot.tag(CONSTANTS.TAGS.SIDEBAR, html, function(opts) {
 	})
 
 	this.onSubmit = (obj) => {
-		this.cortex.saveUserResponse({
+		this.cortex.processUserResponse({
 			message: this.chat_input.value
         })
+        
 		this.chat_input.value = ''
 		this.update()
 	}

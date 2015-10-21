@@ -11,6 +11,7 @@ class CortexMan {
         this.trainingId = trainingId
         this.userTraining = { messages: [] }
         this._callbacks = []
+        this.currentMessage = 0
     }
 
     get picture() { return 'src/images/cortex-avatar-small.jpg' }
@@ -21,12 +22,24 @@ class CortexMan {
         })
     }
 
-    saveUserResponse(obj) {
+    processUserResponse(obj) {
+        let currentStep = this.training.course[this.currentMessage]
+        //TODO: add validation logic here
+        if (obj.message == currentStep.Line) {
+
+        }
         let response = {
             time: `${new Date() }`
         }
-        _.extend(response, obj)
-        this.userTraining.push(response)
+        _.extend(obj, response)
+        this.userTraining.messages.push(obj)
+        let nextStep = this.getNextMessage()
+        this.userTraining.messages.push({
+            author: 'cortex',
+            time: `${new Date() }`,
+            message: nextStep.message.Line
+        })
+
         this.MetaMap.MetaFire.updateData(this.userTraining, `${CONSTANTS.ROUTES.TRAININGS.format(this.MetaMap.User.userId) }${this.trainingId}`)
     }
 
@@ -43,7 +56,7 @@ class CortexMan {
         this.MetaMap.MetaFire.updateData(updateObj, `${CONSTANTS.ROUTES.COURSE_LIST}${this.trainingId}`)
     }
 
-    getData(callback) {
+    getData(callback = _.noop) {
         if (callback && !_.contains(this._callbacks, callback)) {
             this._callbacks.push(callback)
         }
@@ -88,6 +101,30 @@ class CortexMan {
             author: 'cortex',
             time: `${new Date() }`
         }
+    }
+
+    getMessageGenerator() {
+        const state = this
+        this.__messageGen = this.__messageGen ||
+         function* (idx = 0) {
+             state.currentMessage = idx
+             let messages = _.filter(state.training.course, (msg) => { return msg.Line && msg.Line.length > 0 })
+             while (idx < messages.length) {
+                let now = idx
+                idx += 1
+                state.currentMessage = now
+                yield { idx: now, message: messages[now] }
+            }
+        }
+        return this.__messageGen
+    }
+
+    getNextMessage() {
+        if (!this._messageGen) {
+            let generator = this.getMessageGenerator()
+            this._messageGen = generator()
+        }
+        return this._messageGen.next().value
     }
 
 }

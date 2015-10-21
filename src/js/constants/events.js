@@ -4,7 +4,8 @@ const EVENTS = {
 	SIDEBAR_TOGGLE: 'sidebar-toggle',
 	PAGE_NAME: 'pageName',
 	NAV: 'nav',
-	MAP: 'map'
+    MAP: 'map',
+    TRAINING_NEXT_STEP: 'training-next-step'
 }
 
 Object.freeze(EVENTS);
