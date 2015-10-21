@@ -25,3 +25,9 @@ gulp.task('release', function (cb) {
             cb(error);
         });
 })
+
+gulp.on('stop', function () {
+  process.nextTick(function () {
+    process.exit(0);
+  });
+});
