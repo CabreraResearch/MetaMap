@@ -27,6 +27,11 @@ gulp.task('deploy', function () {
         message: p
     }).then(function () {
       sendToSlack(message)
+      setTimeout(function () {
+            process.nextTick(function () {
+                process.exit(0);
+            });
+        }, 5000)
     })
-    return true
+
 })
