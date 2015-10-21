@@ -31,6 +31,14 @@ class CortexMan {
         })
     }
 
+    massageConstant(action) {
+        let ret = ''
+        if(action && action.length > 0) {
+            ret = action.trim().split(' ')[0].toLowerCase().trim()
+        }
+        return ret
+    }
+
     processUserResponse(obj) {
         if(obj) {
             let response = {
@@ -39,38 +47,66 @@ class CortexMan {
             _.extend(obj, response)
             this.userTraining.messages.push(obj)
 
-            switch(obj.message.toLowerCase().trim()) {
-                case 'help':
+            const moveToNextMessage = () => {
+                //TODO: add validation logic here
+                let currentStep = this.training.course[this.currentMessage]
+                if (obj.message == currentStep.Line) {
+
+                }
+                let nextStep = this.getNextMessage()
+                if(nextStep) {
                     this.userTraining.messages.push({
                         author: 'cortex',
                         time: `${new Date() }`,
-                        message: `<span>Help? You got it. Here are some of the things I can do for you:
-                                    <ul>
-                                        <li><code>help</code> - Return help</li>
-                                        <li><code>restart</code> - Restart this course from the beginning. Warning: this will delete your progress!</li>
-                                    </ul>
-                                  </span>`
+                        message: nextStep.message.message,
+                        data: nextStep.message._orig
                     })
-                    break;
-                case 'restart':
-                    if(confirm('Are you sure? All of your progress will be lost!')) {
-                        this.restart()
+                    switch(this.massageConstant(nextStep.message._orig.Action)) {
+                        case CONSTANTS.CORTEX.RESPONSE_TYPE.TIMER:
+                            _.delay(()=>{
+                                this.processUserResponse({
+                                    action: CONSTANTS.CORTEX.RESPONSE_TYPE.TIMER
+                                })
+                            }, 5000)
+                            break
                     }
-                    break;
+                }
+                this.saveUserTraining()
+            }
 
-                default:
-                    //TODO: add validation logic here
-                    let currentStep = this.training.course[this.currentMessage]
-                    if (obj.message == currentStep.Line) {
+            if(obj.action) {
+                switch(this.massageConstant(obj.action)) {
+                    case CONSTANTS.CORTEX.RESPONSE_TYPE.OK:
+                        moveToNextMessage()
+                        break;
+                    case CONSTANTS.CORTEX.RESPONSE_TYPE.TIMER:
+                        moveToNextMessage()
+                        break;
+                }
+            } else if(obj.message) {
+                switch(this.massageConstant(obj.message)) {
+                    case 'help':
+                        this.userTraining.messages.push({
+                            author: 'cortex',
+                            time: `${new Date() }`,
+                            message: `<span>Help? You got it. Here are some of the things I can do for you:
+                                        <ul>
+                                            <li><code>help</code> - Return help</li>
+                                            <li><code>restart</code> - Restart this course from the beginning. Warning: this will delete your progress!</li>
+                                        </ul>
+                                    </span>`
+                        })
+                        break;
+                    case 'restart':
+                        if(confirm('Are you sure? All of your progress will be lost!')) {
+                            this.restart()
+                        }
+                        break;
 
-                    }
-                    let nextStep = this.getNextMessage()
-                    this.userTraining.messages.push({
-                        author: 'cortex',
-                        time: `${new Date() }`,
-                        message: nextStep.message.message
-                    })
-                    this.saveUserTraining()
+                    default:
+                        moveToNextMessage()
+                        break
+                }
             }
         }
     }
@@ -105,7 +141,7 @@ class CortexMan {
                         this.userTraining = this.training
                     }
                     if (!this.userTraining.messages) {
-                        this.userTraining.messages = [this.getDefaultMessage(this.training.name)]
+                        this.userTraining.messages = [this.getNextMessage().message]
                     }
                     this.saveUserTraining()
                     _.each(this._callbacks, (cb) => {
@@ -139,7 +175,8 @@ class CortexMan {
                 ret = {
                     message: courseMsg.Line,
                     author: 'cortex',
-                    time: `${new Date() }`
+                    time: `${new Date() }`,
+                    _orig: courseMsg
                 }
                 this.userTraining.course[courseMsg.id].archived = true
             }

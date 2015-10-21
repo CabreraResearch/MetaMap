@@ -1,6 +1,7 @@
 const CONSTANTS = {
 	ACTIONS: require('./actions'),
 	CANVAS: require('./canvas'),
+	CORTEX: require('./cortex'),
 	DSRP: require('./dsrp'),
 	EDIT_STATUS: require('./editStatus'),
 	ELEMENTS: require('./elements'),

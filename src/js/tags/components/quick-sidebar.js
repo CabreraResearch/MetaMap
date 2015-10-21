@@ -31,13 +31,16 @@ const html =
                         <div class="page-quick-sidebar-chat-user">
                             <div id="cortex_messages" class="page-quick-sidebar-chat-user-messages">
                                 <div if="{cortex}" each="{ cortex.userTraining.messages }" class="post { out: author == 'cortex', in: author != 'cortex' }">
-                                    <img height="39" width="39" class="avatar" alt="" src="{ author == 'cortex' ? parent.cortex.picture : parent.userPicture }"/>
-                                    <div class="message">
+                                    <img if="{message}" height="39" width="39" class="avatar" alt="" src="{ author == 'cortex' ? parent.cortex.picture : parent.userPicture }"/>
+                                    <div if="{message}" class="message">
                                         <span class="arrow"></span>
                                         <a href="javascript:" class="name">{ name }</a>
                                         <span class="datetime">{ parent.getRelativeTime(time) }</span>
-                                        <span class="body">
-                                        <raw content="{ message }"></raw> </span>
+                                        <span if="{author == 'cortex'}" class="body">
+                                            <raw content="{ message }"></raw>
+                                            <raw onclick="{parent.onActionClick}" content="{ parent.getActionItem(_orig) }"></raw>
+                                        </span>
+                                        <span if="{author != 'cortex'}" class="body">{message}</span>
                                     </div>
                                 </div>
                             </div>
@@ -82,11 +85,31 @@ riot.tag(CONSTANTS.TAGS.SIDEBAR, html, function(opts) {
         $(this.cortex_messages).slimScroll({ scrollBy: '100px' })
 	})
 
+    this.onActionClick = (e) => {
+        if(e.item._orig && e.item._orig.Action) {
+            this.cortex.processUserResponse({
+                action: e.item._orig.Action
+            })
+        }
+    }
+
+    this.getActionItem = (data) => {
+        let ret = ''
+        if(data) {
+            switch(data.Action.toLowerCase().trim()) {
+                case CONSTANTS.CORTEX.RESPONSE_TYPE.OK:
+                    ret = '<a class="btn btn-sm blue">OK <i class="fa fa-caret-right"></i></a>'
+                    break;
+            }
+        }
+        return ret;
+    }
+
 	this.onSubmit = (obj) => {
 		this.cortex.processUserResponse({
 			message: this.chat_input.value
         })
-        
+
 		this.chat_input.value = ''
 		this.update()
 	}
