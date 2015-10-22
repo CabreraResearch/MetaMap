@@ -35,6 +35,10 @@ module.exports = riot.tag(CONSTANTS.TAGS.TRAINING, html, function(opts) {
         }
     });
 
+    this.MetaMap.Eventer.on(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, (message) => {
+        console.log(message)
+    })
+
     this.correctHeight = () => {
         $(this.training_portlet).css({
             height: window.innerHeight - 120 + 'px'
@@ -48,5 +52,7 @@ module.exports = riot.tag(CONSTANTS.TAGS.TRAINING, html, function(opts) {
     $(window).resize(() => {
         this.correctHeight();
     });
+
+
 
 });

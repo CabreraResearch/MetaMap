@@ -11,13 +11,13 @@ class CortexMan {
         this.trainingId = trainingId
         this.userTraining = { messages: [] }
         this._callbacks = []
-        this.currentMessage = 0
+        this.currentMessageKey = 0
     }
 
     restart() {
         this.messages = []
         this.userTraining = { messages: [] }
-        this.currentMessage = 0
+        this.currentMessageKey = 0
         this._messageGen = null
         this._messages = null
         this.MetaMap.MetaFire.deleteData(`${CONSTANTS.ROUTES.TRAININGS.format(this.MetaMap.User.userId) }${this.trainingId}`)
@@ -45,23 +45,19 @@ class CortexMan {
                 time: `${new Date() }`
             }
             _.extend(obj, response)
-            this.userTraining.messages.push(obj)
 
             const moveToNextMessage = () => {
+                this.userTraining.messages.push(obj)
+
                 //TODO: add validation logic here
-                let currentStep = this.training.course[this.currentMessage]
+                let currentStep = this.training.course[this.currentMessageKey]
                 if (obj.message == currentStep.Line) {
 
                 }
                 let nextStep = this.getNextMessage()
                 if(nextStep) {
-                    this.userTraining.messages.push({
-                        author: 'cortex',
-                        time: `${new Date() }`,
-                        message: nextStep.message.message,
-                        data: nextStep.message._orig
-                    })
-                    switch(this.massageConstant(nextStep.message._orig.Action)) {
+                    this.userTraining.messages.push(nextStep)
+                    switch(this.massageConstant(nextStep.Action)) {
                         case CONSTANTS.CORTEX.RESPONSE_TYPE.TIMER:
                             _.delay(()=>{
                                 this.processUserResponse({
@@ -77,6 +73,7 @@ class CortexMan {
             if(obj.action) {
                 switch(this.massageConstant(obj.action)) {
                     case CONSTANTS.CORTEX.RESPONSE_TYPE.OK:
+                        obj.message = 'OK'
                         moveToNextMessage()
                         break;
                     case CONSTANTS.CORTEX.RESPONSE_TYPE.TIMER:
@@ -141,7 +138,7 @@ class CortexMan {
                         this.userTraining = this.training
                     }
                     if (!this.userTraining.messages) {
-                        this.userTraining.messages = [this.getNextMessage().message]
+                        this.userTraining.messages = [this.getNextMessage()]
                     }
                     this.saveUserTraining()
                     _.each(this._callbacks, (cb) => {
@@ -172,13 +169,21 @@ class CortexMan {
             let messages = this.getMessages()
             let courseMsg = messages[idx]
             if (courseMsg) {
-                ret = {
-                    message: courseMsg.Line,
-                    author: 'cortex',
-                    time: `${new Date() }`,
-                    _orig: courseMsg
+                courseMsg.message = courseMsg.Line
+                courseMsg.author = 'cortex'
+                courseMsg.time = `${new Date() }`
+                ret = courseMsg
+
+                if (this.userTraining.messages) {
+                    //guarantee that all previous messages are archived
+                    let back = 1
+                    let lastMessage = this.userTraining.messages[idx-back]
+                    while(lastMessage && true != lastMessage.archived) {
+                        lastMessage.archived=true
+                        back += 1
+                        lastMessage = this.userTraining.messages[idx-back]
+                    }
                 }
-                this.userTraining.course[courseMsg.id].archived = true
             }
         }
         return ret;
@@ -186,7 +191,7 @@ class CortexMan {
 
 
     getMessages() {
-        this._messages = this._messages || _.filter(_.map(this.userTraining.course, (m, idx)=>{ m.id = idx; return m }), (msg) => { return msg.Line && msg.Line.length > 0 && true != msg.archived })
+        this._messages = this._messages || _.filter(_.map(this.userTraining.course, (m, idx)=>{ let n = _.extend({}, m); n.id = idx; return n }), (msg) => { return msg.Line && msg.Line.length > 0 && true != msg.archived })
         return this._messages
     }
 
@@ -202,13 +207,14 @@ class CortexMan {
         const state = this
         this.__messageGen = this.__messageGen ||
          function* (idx = 0) {
-             state.currentMessage = idx
+             state.currentMessageKey = idx
              let messages = state.getMessages()
              while (idx < messages.length) {
                 let now = idx
                 idx += 1
-                state.currentMessage = now
-                let next = { idx: now, message: state._massageTrainingMessage(now) }
+                state.currentMessageKey = now
+                let next = state._massageTrainingMessage(now)
+                state.currentMessage = next
                 state.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, next)
                 yield next
             }

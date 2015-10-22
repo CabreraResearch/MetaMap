@@ -38,7 +38,7 @@ const html =
                                         <span class="datetime">{ parent.getRelativeTime(time) }</span>
                                         <span if="{author == 'cortex'}" class="body">
                                             <raw content="{ message }"></raw>
-                                            <raw onclick="{parent.onActionClick}" content="{ parent.getActionItem(_orig) }"></raw>
+                                            <raw onclick="{parent.onActionClick}" content="{ parent.getActionItem(this) }"></raw>
                                         </span>
                                         <span if="{author != 'cortex'}" class="body">{message}</span>
                                     </div>
@@ -86,9 +86,9 @@ riot.tag(CONSTANTS.TAGS.SIDEBAR, html, function(opts) {
 	})
 
     this.onActionClick = (e) => {
-        if(e.item._orig && e.item._orig.Action) {
+        if(e.item && e.item.Action) {
             this.cortex.processUserResponse({
-                action: e.item._orig.Action
+                action: e.item.Action
             })
         }
     }
@@ -96,9 +96,11 @@ riot.tag(CONSTANTS.TAGS.SIDEBAR, html, function(opts) {
     this.getActionItem = (data) => {
         let ret = ''
         if(data) {
-            switch(data.Action.toLowerCase().trim()) {
+            switch(this.cortex.massageConstant(data.Action)) {
                 case CONSTANTS.CORTEX.RESPONSE_TYPE.OK:
-                    ret = '<a class="btn btn-sm blue">OK <i class="fa fa-caret-right"></i></a>'
+                    if(true != data.archived) {
+                        ret = '<a class="btn btn-sm blue">OK <i class="fa fa-caret-right"></i></a>'
+                    }
                     break;
             }
         }
