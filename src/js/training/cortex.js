@@ -12,6 +12,7 @@ class CortexMan {
         this.userTraining = { messages: [] }
         this._callbacks = []
         this.currentMessageKey = 0
+        this.isTimerOff = true
     }
 
     restart() {
@@ -21,6 +22,9 @@ class CortexMan {
         this._messageGen = null
         this._messages = null
         this.MetaMap.MetaFire.deleteData(`${CONSTANTS.ROUTES.TRAININGS.format(this.MetaMap.User.userId) }${this.trainingId}`)
+        this._onceGetData = null
+        this.isTimerOff = true
+        this.getData()
     }
 
     get picture() { return 'src/images/cortex-avatar-small.jpg' }
@@ -39,7 +43,13 @@ class CortexMan {
         return ret
     }
 
-    processUserResponse(obj) {
+    runCallbacks() {
+        _.each(this._callbacks, (cb) => {
+            cb(this)
+        })
+    }
+
+    processUserResponse(obj, originalMessage) {
         if(obj) {
             let response = {
                 time: `${new Date() }`
@@ -50,22 +60,32 @@ class CortexMan {
                 this.userTraining.messages.push(obj)
 
                 //TODO: add validation logic here
-                let currentStep = this.training.course[this.currentMessageKey]
-                if (obj.message == currentStep.Line) {
-
-                }
+//                 let currentStep = this.training.course[this.currentMessageKey]
+//                 if (obj.message == currentStep.Line) {
+//
+//                 }
                 let nextStep = this.getNextMessage()
                 if(nextStep) {
                     this.userTraining.messages.push(nextStep)
                     switch(this.massageConstant(nextStep.Action)) {
+                        case CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO:
+                            this.processUserResponse({
+                                action: CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO
+                            }, nextStep)
+                            break
                         case CONSTANTS.CORTEX.RESPONSE_TYPE.TIMER:
-                            _.delay(()=>{
+                            this.isTimerOff = false
+                            this.runCallbacks()
+                            _.delay(() => {
                                 this.processUserResponse({
                                     action: CONSTANTS.CORTEX.RESPONSE_TYPE.TIMER
-                                })
+                                }, nextStep)
+                                this.isTimerOff = true
                             }, 5000)
                             break
                     }
+                } else {
+                    this.currentMessage.archived = true
                 }
                 this.saveUserTraining()
             }
@@ -78,6 +98,24 @@ class CortexMan {
                         break;
                     case CONSTANTS.CORTEX.RESPONSE_TYPE.TIMER:
                         moveToNextMessage()
+                        break;
+                    case CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO:
+                        let button = 'Play';
+                        if (obj.data && obj.data.buttonName) {
+                            button = obj.data.buttonName
+                        }
+                        switch (button) {
+                            case 'OK':
+                                this.MetaMap.Eventer.do(CONSTANTS.EVENTS.STOP_VIDEO, originalMessage)
+                                if (!originalMessage.archived) {
+                                    obj.message = 'OK'
+                                    moveToNextMessage()
+                                }
+                                break;
+                            case 'Play':
+                                this.MetaMap.Eventer.do(CONSTANTS.EVENTS.PLAY_VIDEO, originalMessage)
+                                break;
+                        }
                         break;
                 }
             } else if(obj.message) {
@@ -105,6 +143,7 @@ class CortexMan {
                         break
                 }
             }
+            this.runCallbacks()
         }
     }
 
@@ -132,33 +171,32 @@ class CortexMan {
         this._onceGetData = this._onceGetData || _.once(function () {
 
             var once = _.once(() => {
-                this.MetaMap.MetaFire.on(`${CONSTANTS.ROUTES.TRAININGS.format(this.MetaMap.User.userId) }${this.trainingId}`, (data) => {
+                this.MetaMap.MetaFire.getData(`${CONSTANTS.ROUTES.TRAININGS.format(this.MetaMap.User.userId) }${this.trainingId}`).then((data) => {
                     this.userTraining = data
                     if (!data) {
                         this.userTraining = this.training
+                        this.runCallbacks()
                     }
                     if (!this.userTraining.messages) {
                         this.userTraining.messages = [this.getNextMessage()]
                     } else {
-                        let lastStep = this.userTraining.messages[this.userTraining.messages.length-1]
-                        this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, lastStep)
+                        this.currentMessageKey = this.userTraining.messages.length - 1
+                        this.currentMessage = this.userTraining.messages[this.currentMessageKey]
+                        if (this.currentMessage.Action) {
+                            this.processUserResponse({ action: this.currentMessage.Action, data: {}}, this.currentMessage)
+                        }
+                        this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, this.currentMessage)
                     }
                     this.saveUserTraining()
-                    _.each(this._callbacks, (cb) => {
-                        cb(this)
-                    })
+                    this.runCallbacks()
                     NProgress.done()
                 })
                 this.MetaMap.Eventer.do(CONSTANTS.EVENTS.SIDEBAR_OPEN, this.trainingId)
             })
 
-            this.MetaMap.MetaFire.on(`${CONSTANTS.ROUTES.COURSE_LIST}${this.trainingId}`, (data) => {
+            this.MetaMap.MetaFire.getData(`${CONSTANTS.ROUTES.COURSE_LIST}${this.trainingId}`).then((data) => {
                 this.training = data
                 this.MetaMap.Eventer.do(CONSTANTS.EVENTS.PAGE_NAME, data)
-
-                _.each(this._callbacks, (cb) => {
-                    cb(this)
-                })
                 once()
             })
         })
@@ -180,13 +218,15 @@ class CortexMan {
                 if (this.userTraining.messages) {
                     //guarantee that all previous messages are archived
                     let back = 1
-                    let lastMessage = this.userTraining.messages[idx-back]
+                    let len = this.userTraining.messages.length
+                    let lastMessage = this.userTraining.messages[len-back]
                     while(lastMessage && true != lastMessage.archived) {
                         lastMessage.archived=true
                         back += 1
-                        lastMessage = this.userTraining.messages[idx-back]
+                        lastMessage = this.userTraining.messages[len-back]
                     }
                 }
+                this.userTraining.course[courseMsg.id].archived = true
             }
         }
         return ret;
@@ -196,14 +236,6 @@ class CortexMan {
     getMessages() {
         this._messages = this._messages || _.filter(_.map(this.userTraining.course, (m, idx)=>{ let n = _.extend({}, m); n.id = idx; return n }), (msg) => { return msg.Line && msg.Line.length > 0 && true != msg.archived })
         return this._messages
-    }
-
-    getDefaultMessage(name) {
-        return this._massageTrainingMessage(0) || {
-            message: `Hello, I'm Cortex Man. I will be your guide through ${name}`,
-            author: 'cortex',
-            time: `${new Date() }`
-        }
     }
 
     getMessageGenerator() {
@@ -230,7 +262,8 @@ class CortexMan {
             let generator = this.getMessageGenerator()
             this._messageGen = generator()
         }
-        return this._messageGen.next().value
+        let ret = this._messageGen.next().value
+        return ret
     }
 
 }

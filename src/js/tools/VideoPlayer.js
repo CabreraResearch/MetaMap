@@ -54,6 +54,16 @@ class VideoPlayer {
         this.player.stopVideo();
     }
 
+    destroy() {
+        if (this.player) {
+            try {
+                this.player.destroy()
+            } catch (e) {
+                console.log(e)
+            }
+        }
+    }
+
 }
 
 module.exports = VideoPlayer;

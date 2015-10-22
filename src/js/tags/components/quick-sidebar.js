@@ -43,6 +43,15 @@ const html =
                                         <span if="{author != 'cortex'}" class="body">{message}</span>
                                     </div>
                                 </div>
+                                <div id="cortex_on_timer" class="post out" style="display: { none: cortex.isTimerOff };">
+                                    <img height="39" width="39" class="avatar" alt="" src="{ cortex.picture }"/>
+                                    <div class="message">
+                                        <span class="arrow"></span>
+                                        <span class="body">
+                                            <img alt="" src="src/images/typing.gif"/>
+                                        </span>
+                                    </div>
+                                </div>
                             </div>
                             <div class="page-quick-sidebar-chat-user-form">
                                 <form id="chat_input_form" onsubmit="{ onSubmit }">
@@ -88,28 +97,29 @@ riot.tag(CONSTANTS.TAGS.SIDEBAR, html, function(opts) {
     this.onActionClick = (e) => {
         if(e.item && e.item.Action) {
             this.cortex.processUserResponse({
-                action: e.item.Action
-            })
+                action: e.item.Action,
+                data: _.extend({}, e.target.dataset)
+            }, e.item)
         }
     }
 
     this.getActionItem = (data) => {
         let ret = ''
-        if(data) {
+        if (data && data.Action) {
+            ret = '<p>'
             switch(this.cortex.massageConstant(data.Action)) {
                 case CONSTANTS.CORTEX.RESPONSE_TYPE.OK:
                     if(true != data.archived) {
-                        ret = '<a class="btn btn-sm blue">OK <i class="fa fa-caret-right"></i></a>'
+                        ret += '<a data-button-name="OK" class="btn btn-sm blue">OK <i class="fa fa-caret-right"></i></a>'
                     }
                     break;
                 case CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO:
-                    if (true != data.archived) {
-                        ret = '<a class="btn btn-sm blue">Done <i class="fa fa-caret-right"></i></a>'
-                    } else {
-                        ret = '<a class="btn btn-sm blue">Play <i class="fa fa-youtube-play"></i></a>'
-                    }
+                    let isPlaying = this.currentVideo == data.id || true != data.archived
+                    ret += `<button id="${data.id}_video_done" data-button-name="OK" class="btn btn-sm blue video-done" style="${ isPlaying ? '' : 'display: none;' }">Done <i class="fa fa-caret-right"></i></button>`
+                    ret += `<button id="${data.id}_video_play" data-button-name="Play" class="btn btn-sm blue video-play" style="${ isPlaying ? 'display: none;' : '' }">Play <i class="fa fa-youtube-play"></i></button>`
                     break;
             }
+            ret += '</p>'
         }
         return ret;
     }
@@ -122,6 +132,22 @@ riot.tag(CONSTANTS.TAGS.SIDEBAR, html, function(opts) {
 		this.chat_input.value = ''
 		this.update()
 	}
+
+    this.MetaMap.Eventer.on(CONSTANTS.EVENTS.PLAY_VIDEO, (data) => {
+        if (data) {
+            this.currentVideo = data.id
+            $(`#${data.id}_video_done`).show()
+            $(`#${data.id}_video_play`).hide()
+        }
+    })
+
+    this.MetaMap.Eventer.on(CONSTANTS.EVENTS.STOP_VIDEO, (data) => {
+        if (data) {
+            this.currentVideo = null
+            $(`#${data.id}_video_done`).hide()
+            $(`#${data.id}_video_play`).show()
+        }
+    })
 
     MetaMap.Eventer.on(CONSTANTS.EVENTS.SIDEBAR_CLOSE, () => {
         $('body').removeClass('page-quick-sidebar-open')

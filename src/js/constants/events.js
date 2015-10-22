@@ -5,7 +5,9 @@ const EVENTS = {
 	PAGE_NAME: 'pageName',
 	NAV: 'nav',
     MAP: 'map',
-    TRAINING_NEXT_STEP: 'training-next-step'
+    TRAINING_NEXT_STEP: 'training-next-step',
+    PLAY_VIDEO: 'play-video',
+    STOP_VIDEO: 'stop-video'
 }
 
 Object.freeze(EVENTS);

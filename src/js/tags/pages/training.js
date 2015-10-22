@@ -39,8 +39,27 @@ module.exports = riot.tag(CONSTANTS.TAGS.TRAINING, html, function(opts) {
         if(message) {
             switch (this.cortex.massageConstant(message.Action)) {
                 case CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO:
-                    this.player = new VideoPlayer('training_player', {height: 390, width: 640, videoId: message['Action Data']})
+
                     break
+                default:
+                    if (this.player) {
+                        this.player.destroy()
+                    }
+                    break
+            }
+        }
+    })
+
+    this.MetaMap.Eventer.on(CONSTANTS.EVENTS.PLAY_VIDEO, (message) => {
+        if(message) {
+            this.player = new VideoPlayer('training_player', {height: 390, width: 640, videoId: message['Action Data']})
+        }
+    })
+
+    this.MetaMap.Eventer.on(CONSTANTS.EVENTS.STOP_VIDEO, (message) => {
+        if(message) {
+            if (this.player) {
+                this.player.destroy()
             }
         }
     })
