@@ -15,7 +15,7 @@ const html = `
         </div>
     </div>
 </div>
-`;
+`
 
 module.exports = riot.tag(CONSTANTS.TAGS.TRAINING, html, function(opts) {
 
@@ -31,28 +31,34 @@ module.exports = riot.tag(CONSTANTS.TAGS.TRAINING, html, function(opts) {
                     this.update()
                 })
             }
-            //this.player = new VideoPlayer('training_player', {height: 390, width: 640, videoId: 'dUqRTWCdXt4'})
+            //
         }
-    });
+    })
 
     this.MetaMap.Eventer.on(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, (message) => {
-        console.log(message)
+        if(message) {
+            switch (this.cortex.massageConstant(message.Action)) {
+                case CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO:
+                    this.player = new VideoPlayer('training_player', {height: 390, width: 640, videoId: message['Action Data']})
+                    break
+            }
+        }
     })
 
     this.correctHeight = () => {
         $(this.training_portlet).css({
             height: window.innerHeight - 120 + 'px'
-        });
+        })
     }
 
     this.on('update', () => {
-        this.correctHeight();
-    });
+        this.correctHeight()
+    })
 
     $(window).resize(() => {
-        this.correctHeight();
-    });
+        this.correctHeight()
+    })
 
 
 
-});
+})

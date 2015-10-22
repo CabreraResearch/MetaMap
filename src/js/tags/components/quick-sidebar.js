@@ -102,6 +102,13 @@ riot.tag(CONSTANTS.TAGS.SIDEBAR, html, function(opts) {
                         ret = '<a class="btn btn-sm blue">OK <i class="fa fa-caret-right"></i></a>'
                     }
                     break;
+                case CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO:
+                    if (true != data.archived) {
+                        ret = '<a class="btn btn-sm blue">Done <i class="fa fa-caret-right"></i></a>'
+                    } else {
+                        ret = '<a class="btn btn-sm blue">Play <i class="fa fa-youtube-play"></i></a>'
+                    }
+                    break;
             }
         }
         return ret;
