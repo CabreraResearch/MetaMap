@@ -139,6 +139,9 @@ class CortexMan {
                     }
                     if (!this.userTraining.messages) {
                         this.userTraining.messages = [this.getNextMessage()]
+                    } else {
+                        let lastStep = this.userTraining.messages[this.userTraining.messages.length-1]
+                        this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, lastStep)
                     }
                     this.saveUserTraining()
                     _.each(this._callbacks, (cb) => {
