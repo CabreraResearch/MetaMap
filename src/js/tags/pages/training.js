@@ -51,7 +51,7 @@ module.exports = riot.tag(CONSTANTS.TAGS.TRAINING, html, function(opts) {
     })
 
     this.MetaMap.Eventer.on(CONSTANTS.EVENTS.PLAY_VIDEO, (message) => {
-        if(message) {
+        if(message && message.action_data && message.action_data.youtubeid) {
             this.player = new VideoPlayer('training_player', {
                 height: 390,
                 width: 640,

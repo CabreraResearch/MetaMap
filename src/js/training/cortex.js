@@ -47,13 +47,27 @@ class CortexMan {
         })
     }
 
-    processFeedback(obj) {
-        this.userTraining.messages.push({
-                message: obj.line,
-                author: 'cortex',
-                time: `${new Date() }`
+    buffer(time = 1000) {
+        this.isTimerOff = false
+        this.runCallbacks()
+        return new Promise((resolve) => {
+            _.delay(() => {
+                this.isTimerOff = true
+                this.runCallbacks()
+                resolve()
+            }, time)
         })
-        this.saveUserTraining()
+    }
+
+    processFeedback(obj) {
+        this.buffer(750).then(()=>{
+            this.userTraining.messages.push({
+                    message: obj.line,
+                    author: 'cortex',
+                    time: `${new Date() }`
+            })
+            this.saveUserTraining()
+        })
     }
 
     processUserResponse(obj, originalMessage) {
@@ -69,32 +83,28 @@ class CortexMan {
                 if (feedback) {
                     this.processFeedback(feedback)
                 }
-                //TODO: add validation logic here
-//                 let currentStep = this.training.course[this.currentMessageKey]
-//                 if (obj.message == currentStep.line) {
-//
-//                 }
                 if (!this.userTraining.isWaitingOnFeedback) {
                     let nextStep = this.getNextMessage()
                     if (nextStep) {
-                        this.userTraining.messages.push(nextStep)
-                        switch (this.massageConstant(nextStep.action)) {
-                            case CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO:
-                                this.processUserResponse({
-                                    action: CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO
-                                }, nextStep)
-                                break
-                            case CONSTANTS.CORTEX.RESPONSE_TYPE.TIMER:
-                                this.isTimerOff = false
-                                this.runCallbacks()
-                                _.delay(() => {
+                        let timer = (nextStep.action == CONSTANTS.CORTEX.RESPONSE_TYPE.TIMER) ? 2500 : 750
+                        this.buffer(timer).then(() => {
+                            this.userTraining.messages.push(nextStep)
+                            switch (nextStep.action) {
+                                case CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO:
+                                    this.processUserResponse({
+                                        action: CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO
+                                    }, nextStep)
+                                    break
+                                case CONSTANTS.CORTEX.RESPONSE_TYPE.TIMER:
                                     this.processUserResponse({
                                         action: CONSTANTS.CORTEX.RESPONSE_TYPE.TIMER
                                     }, nextStep)
-                                    this.isTimerOff = true
-                                }, 5000)
-                                break
-                        }
+                                    break;
+                            }
+                            this.saveUserTraining()
+                            this.runCallbacks()
+                        })
+
                     } else {
                         this.currentMessage.archived = true
                     }
