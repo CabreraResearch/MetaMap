@@ -884,8 +884,8 @@ Quick Sidebar Layout
   position: fixed;
   top: 95px;
   bottom: 25px;
-  right: -320px;
-  width: 320px;
+  right: -340px;
+  width: 340px;
   opacity: 0.8;
 }
 .page-quick-sidebar-open .page-quick-sidebar-wrapper {
@@ -923,7 +923,7 @@ Quick Sidebar Toggler
 Quick Sidebar Content
 ***/
 .page-quick-sidebar-wrapper {
-  right: -320px;
+  right: -340px;
   overflow: hidden;
 }
 .page-quick-sidebar-wrapper .page-quick-sidebar {
@@ -1022,15 +1022,15 @@ Quick Sidebar Content
 }
 .page-quick-sidebar-wrapper .page-quick-sidebar .page-quick-sidebar-list {
   position: absolute !important;
-  width: 320px !important;
+  width: 340px !important;
   transition: margin 0.3s;
 }
 .page-quick-sidebar-wrapper .page-quick-sidebar .page-quick-sidebar-item {
-  width: 320px;
+  width: 340px;
   position: absolute !important;
-  width: 320px !important;
+  width: 340px !important;
   transition: margin 0.3s;
-  margin-left: 320px;
+  margin-left: 340px;
 }
 .page-quick-sidebar-wrapper .page-quick-sidebar .page-quick-sidebar-item .page-quick-sidebar-nav {
   padding: 15px 10px 0px 10px;
@@ -1048,7 +1048,7 @@ Quick Sidebar Content
 }
 .page-quick-sidebar-wrapper .page-quick-sidebar .page-quick-sidebar-content-item-shown .page-quick-sidebar-list {
   transition: margin 0.3s;
-  margin-left: -320px;
+  margin-left: -340px;
 }
 .page-quick-sidebar-wrapper .page-quick-sidebar .page-quick-sidebar-content-item-shown .page-quick-sidebar-list .slimScrollBar,
 .page-quick-sidebar-wrapper .page-quick-sidebar .page-quick-sidebar-content-item-shown .page-quick-sidebar-list .slimScrollRail {

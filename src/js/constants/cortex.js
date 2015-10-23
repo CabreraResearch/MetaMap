@@ -3,7 +3,8 @@ const CORTEX = {
         OK: 'ok',
         VIDEO: 'video',
         TIMER: 'timer',
-        LIKERT: 'likert'
+        LIKERT: 'likert',
+        MULTIPLE_CHOICE: 'multiple_choice'
     }
 }
 

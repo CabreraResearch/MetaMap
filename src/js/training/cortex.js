@@ -182,7 +182,7 @@ class CortexMan {
                     } else {
                         this.currentMessageKey = this.userTraining.messages.length - 1
                         this.currentMessage = this.userTraining.messages[this.currentMessageKey]
-                        if (this.currentMessage.Action) {
+                        if (this.currentMessage.Action && this.currentMessage.Action != 'OK') {
                             this.processUserResponse({ action: this.currentMessage.Action, data: {}}, this.currentMessage)
                         }
                         this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, this.currentMessage)

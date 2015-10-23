@@ -5,6 +5,7 @@ const raw = require('./raw')
 const CONSTANTS = require('../../constants/constants')
 const Cortex = require('../../training/cortex')
 const AllTags = require('../mixins/all-tags')
+const ActionFactory = require('../actions/ActionFactory')
 
 const html =
 `
@@ -38,7 +39,9 @@ const html =
                                         <span class="datetime">{ parent.getRelativeTime(time) }</span>
                                         <span if="{author == 'cortex'}" class="body">
                                             <raw content="{ message }"></raw>
-                                            <raw onclick="{parent.onActionClick}" content="{ parent.getActionItem(this) }"></raw>
+                                            <likert if="{Action=='Likert'}" opts="{this}"></likert>
+                                            <ok if="{Action=='OK'}" opts="{this}"></ok>
+                                            <video-button if="{Action=='Video'}" opts="{this}"></video-button>
                                         </span>
                                         <span if="{author != 'cortex'}" class="body">{message}</span>
                                     </div>
@@ -86,11 +89,14 @@ riot.tag(CONSTANTS.TAGS.SIDEBAR, html, function(opts) {
 
     this.userPicture = ''
 
+    this.on('mount', () => {
+        this.userPicture = MetaMap.User.picture
+    })
+
 	this.on('update', () => {
         handleQuickSidebarToggler() // handles quick sidebar's toggler
         handleQuickSidebarChat() // handles quick sidebar's chats
         handleQuickSidebarAlerts() // handles quick sidebar's alerts
-        this.userPicture = MetaMap.User.picture
         $(this.cortex_messages).slimScroll({ scrollBy: '100px' })
 	})
 
@@ -101,27 +107,6 @@ riot.tag(CONSTANTS.TAGS.SIDEBAR, html, function(opts) {
                 data: _.extend({}, e.target.dataset)
             }, e.item)
         }
-    }
-
-    this.getActionItem = (data) => {
-        let ret = ''
-        if (data && data.Action) {
-            ret = '<p>'
-            switch(this.cortex.massageConstant(data.Action)) {
-                case CONSTANTS.CORTEX.RESPONSE_TYPE.OK:
-                    if(true != data.archived) {
-                        ret += '<a data-button-name="OK" class="btn btn-sm blue">OK <i class="fa fa-caret-right"></i></a>'
-                    }
-                    break;
-                case CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO:
-                    let isPlaying = this.currentVideo == data.id || true != data.archived
-                    ret += `<button id="${data.id}_video_done" data-button-name="OK" class="btn btn-sm blue video-done" style="${ isPlaying ? '' : 'display: none;' }">Done <i class="fa fa-caret-right"></i></button>`
-                    ret += `<button id="${data.id}_video_play" data-button-name="Play" class="btn btn-sm blue video-play" style="${ isPlaying ? 'display: none;' : '' }">Play <i class="fa fa-youtube-play"></i></button>`
-                    break;
-            }
-            ret += '</p>'
-        }
-        return ret;
     }
 
 	this.onSubmit = (obj) => {
@@ -154,7 +139,8 @@ riot.tag(CONSTANTS.TAGS.SIDEBAR, html, function(opts) {
     })
 
     MetaMap.Eventer.on(CONSTANTS.EVENTS.SIDEBAR_OPEN, (id) => {
-        this.cortex = MetaMap.getCortex(id)
+        this.cortex = this.cortex || MetaMap.getCortex(id)
+        this.actionFactory = this.actionFactory || new ActionFactory(this.cortex)
 
         this.cortex.getData((data) => {
             this.update()
