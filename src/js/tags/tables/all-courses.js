@@ -127,7 +127,9 @@ module.exports = riot.tag(CONSTANTS.TAGS.ALL_COURSES, html, function (opts) {
                             Papa.parse(file, {
                                 header: true,
                                 complete: function (results, file) {
-                                    let course = _.map(results.data, (line) => {
+                                    let outline = _.map(_.filter(results.data, (line) => { return line.Section }), (line) => { return { section: line.Section, section_no: line['Section No'] }  })
+
+                                    let course = _.map(_.filter(results.data, (line) => { return line.Line }), (line) => {
                                         let ret = {
                                             section: line.Section,
                                             section_no: line['Section No'],
@@ -146,7 +148,7 @@ module.exports = riot.tag(CONSTANTS.TAGS.ALL_COURSES, html, function (opts) {
                                         }
                                         return ret;
                                     })
-                                    tagThis.saveTraining(id, { course: course })
+                                    tagThis.saveTraining(id, { course: course, outline: outline })
                                     dzThis.removeAllFiles(true)
                                 }
                             })

@@ -14,12 +14,12 @@ const html =
         <div class="nav-justified">
             <ul class="nav nav-tabs nav-justified">
                 <li class="active">
-                    <a href="#quick_sidebar_tab_1" data-toggle="tab">
+                    <a id="cortex_man_tab" href="#quick_sidebar_tab_1" data-toggle="tab">
                     Cortex Man
                     </a>
                 </li>
                 <li>
-                    <a href="#quick_sidebar_tab_2" data-toggle="tab">
+                    <a id="outline_tab" href="#quick_sidebar_tab_2" data-toggle="tab">
                     Outline
                     </a>
                 </li>
@@ -32,6 +32,7 @@ const html =
                         <div class="page-quick-sidebar-chat-user">
                             <div id="cortex_messages" class="page-quick-sidebar-chat-user-messages">
                                 <div if="{cortex}" each="{ cortex.userTraining.messages }" class="post { out: author == 'cortex', in: author != 'cortex' }">
+                                    <div if="{ section_no }" id="training_section_{ section_no }"></div>
                                     <img if="{message}" height="39" width="39" class="avatar" alt="" src="{ author == 'cortex' ? parent.cortex.picture : parent.userPicture }"/>
                                     <div if="{message}" class="message">
                                         <span class="arrow"></span>
@@ -55,6 +56,7 @@ const html =
                                         </span>
                                     </div>
                                 </div>
+                                <div id="cortex_messages_bottom"></div>
                             </div>
                             <div class="page-quick-sidebar-chat-user-form">
                                 <form id="chat_input_form" onsubmit="{ onSubmit }">
@@ -72,7 +74,10 @@ const html =
                 <div class="tab-pane page-quick-sidebar-alerts" id="quick_sidebar_tab_2">
                     <div class="page-quick-sidebar-alerts-list">
                         <ol>
-                            <li each="{ cortex.getOutline() }"><a class="list-heading">{ section }</a></li>
+                            <li each="{ cortex.getOutline() }" onclick="{ parent.onOutlineClick }" >
+                                <a if="{ true == archived }" class="list-heading">{ section }</a>
+                                <span if="{ true != archived }" class="list-heading">{ section }</span>
+                            </li>
                         </ol>
                     </div>
                 </div>
@@ -88,6 +93,7 @@ riot.tag(CONSTANTS.TAGS.SIDEBAR, html, function(opts) {
     const MetaMap = require('../../../MetaMap')
 
     this.userPicture = ''
+    this.scrollToBottom = true
 
     this.on('mount', () => {
         this.userPicture = MetaMap.User.picture
@@ -98,11 +104,28 @@ riot.tag(CONSTANTS.TAGS.SIDEBAR, html, function(opts) {
         handleQuickSidebarChat() // handles quick sidebar's chats
         handleQuickSidebarAlerts() // handles quick sidebar's alerts
         if (this.cortex_messages) {
-            _.delay(() => {
-                $(this.cortex_messages).slimScroll({ scrollBy: '600px' })
-            }, 250)
+            if (this.scrollToBottom == true) {
+                _.delay(() => {
+                    $(this.cortex_messages).slimScroll({ scrollTo: `1000px` })
+                }, 250)
+            }
         }
 	})
+
+    this.onOutlineClick = (e) => {
+        $(this.cortex_man_tab).tab('show')
+        this.scrollToBottom = false
+        let offset = ((+e.item.section_no.split('-').join('.'))-1)*100
+
+        $(this.cortex_messages).slimScroll({ scrollTo: offset + 'px' })
+        let that = this
+        let cb = (e, pos) => {
+            that.scrollToBottom = true
+            $(that.cortex_messages).slimScroll().off('slimscroll', cb)
+        }
+        $(this.cortex_messages).slimScroll().on('slimscroll', cb)
+
+    }
 
     this.onActionClick = (e) => {
         if(e.item && e.item.action) {

@@ -30,9 +30,7 @@ class CortexMan {
     get picture() { return 'src/images/cortex-avatar-small.jpg' }
 
     getOutline() {
-        return _.filter(this.training.course, (item) => {
-            return item.section && item.section.length > 0
-        })
+        return _.sortBy(this.userTraining.outline, 'section_no')
     }
 
     massageConstant(action) {
@@ -284,6 +282,13 @@ class CortexMan {
                 state.currentMessageKey = now
                 let next = state._massageTrainingMessage(now)
                 state.currentMessage = next
+                if (next.section_no) {
+                    _.each(state.userTraining.outline, (item) => {
+                        if (item.section_no == next.section_no) {
+                            item.archived=true
+                        }
+                    })
+                }
                 state.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, next)
                 yield next
             }
