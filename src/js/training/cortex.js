@@ -49,6 +49,15 @@ class CortexMan {
         })
     }
 
+    processFeedback(obj) {
+        this.userTraining.messages.push({
+                message: obj.line,
+                author: 'cortex',
+                time: `${new Date() }`
+        })
+        this.saveUserTraining()
+    }
+
     processUserResponse(obj, originalMessage) {
         if(obj) {
             let response = {
@@ -56,36 +65,41 @@ class CortexMan {
             }
             _.extend(obj, response)
 
-            const moveToNextMessage = () => {
+            const moveToNextMessage = (feedback) => {
                 this.userTraining.messages.push(obj)
 
+                if (feedback) {
+                    this.processFeedback(feedback)
+                }
                 //TODO: add validation logic here
 //                 let currentStep = this.training.course[this.currentMessageKey]
 //                 if (obj.message == currentStep.line) {
 //
 //                 }
-                let nextStep = this.getNextMessage()
-                if(nextStep) {
-                    this.userTraining.messages.push(nextStep)
-                    switch(this.massageConstant(nextStep.action)) {
-                        case CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO:
-                            this.processUserResponse({
-                                action: CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO
-                            }, nextStep)
-                            break
-                        case CONSTANTS.CORTEX.RESPONSE_TYPE.TIMER:
-                            this.isTimerOff = false
-                            this.runCallbacks()
-                            _.delay(() => {
+                if (!this.userTraining.isWaitingOnFeedback) {
+                    let nextStep = this.getNextMessage()
+                    if (nextStep) {
+                        this.userTraining.messages.push(nextStep)
+                        switch (this.massageConstant(nextStep.action)) {
+                            case CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO:
                                 this.processUserResponse({
-                                    action: CONSTANTS.CORTEX.RESPONSE_TYPE.TIMER
+                                    action: CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO
                                 }, nextStep)
-                                this.isTimerOff = true
-                            }, 5000)
-                            break
+                                break
+                            case CONSTANTS.CORTEX.RESPONSE_TYPE.TIMER:
+                                this.isTimerOff = false
+                                this.runCallbacks()
+                                _.delay(() => {
+                                    this.processUserResponse({
+                                        action: CONSTANTS.CORTEX.RESPONSE_TYPE.TIMER
+                                    }, nextStep)
+                                    this.isTimerOff = true
+                                }, 5000)
+                                break
+                        }
+                    } else {
+                        this.currentMessage.archived = true
                     }
-                } else {
-                    this.currentMessage.archived = true
                 }
                 this.saveUserTraining()
             }
@@ -95,12 +109,24 @@ class CortexMan {
                     case CONSTANTS.CORTEX.RESPONSE_TYPE.OK:
                         obj.message = 'OK'
                         moveToNextMessage()
-                        break;
+                        break
                     case CONSTANTS.CORTEX.RESPONSE_TYPE.TIMER:
                         moveToNextMessage()
-                        break;
+                        break
+                    case CONSTANTS.CORTEX.RESPONSE_TYPE.LIKERT:
+                        _.each(obj.data, (val, key) => {
+                            obj[key] = val
+                            delete obj.data[key]
+                        })
+                        if (obj.request_feedback) {
+                            this.userTraining.isWaitingOnFeedback = true
+                            moveToNextMessage({ line: 'I\'m sorry to hear that! How can we make improve this for the next version of this training?' })
+                        } else {
+                            moveToNextMessage({ line: 'Thanks for the feedback!' })
+                        }
+                        break
                     case CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO:
-                        let button = 'Play';
+                        let button = 'Play'
                         if (obj.data && obj.data.buttonName) {
                             button = obj.data.buttonName
                         }
@@ -111,12 +137,12 @@ class CortexMan {
                                     obj.message = 'OK'
                                     moveToNextMessage()
                                 }
-                                break;
+                                break
                             case 'Play':
                                 this.MetaMap.Eventer.do(CONSTANTS.EVENTS.PLAY_VIDEO, originalMessage)
-                                break;
+                                break
                         }
-                        break;
+                        break
                 }
             } else if(obj.message) {
                 switch(this.massageConstant(obj.message)) {
@@ -131,15 +157,18 @@ class CortexMan {
                                         </ul>
                                     </span>`
                         })
-                        break;
+                        break
                     case 'restart':
                         if(confirm('Are you sure? All of your progress will be lost!')) {
                             this.restart()
                         }
-                        break;
+                        break
 
                     default:
-                        moveToNextMessage()
+                        if (this.userTraining.isWaitingOnFeedback) {
+                            this.userTraining.isWaitingOnFeedback = false
+                            moveToNextMessage({ line: 'Thanks for the feedback! We\'ll use this to improve the next training!' })
+                        }
                         break
                 }
             }
@@ -229,12 +258,17 @@ class CortexMan {
                 this.userTraining.course[courseMsg.id].archived = true
             }
         }
-        return ret;
+        return ret
     }
 
-
     getMessages() {
-        this._messages = this._messages || _.filter(_.map(this.userTraining.course, (m, idx)=>{ let n = _.extend({}, m); n.id = idx; return n }), (msg) => { return msg.line && msg.line.length > 0 && true != msg.archived })
+        this._messages = this._messages || _.filter(_.map(this.userTraining.course, (m, idx) => {
+                let n = _.extend({}, m)
+                n.id = idx
+                return n
+        }), (msg) => {
+                return msg.line && msg.line.length > 0 && true != msg.archived
+            })
         return this._messages
     }
 

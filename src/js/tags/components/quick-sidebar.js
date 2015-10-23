@@ -97,7 +97,11 @@ riot.tag(CONSTANTS.TAGS.SIDEBAR, html, function(opts) {
         handleQuickSidebarToggler() // handles quick sidebar's toggler
         handleQuickSidebarChat() // handles quick sidebar's chats
         handleQuickSidebarAlerts() // handles quick sidebar's alerts
-        $(this.cortex_messages).slimScroll({ scrollBy: '100px' })
+        if (this.cortex_messages) {
+            _.delay(() => {
+                $(this.cortex_messages).slimScroll({ scrollBy: '600px' })
+            }, 250)
+        }
 	})
 
     this.onActionClick = (e) => {
