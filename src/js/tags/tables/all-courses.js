@@ -127,7 +127,26 @@ module.exports = riot.tag(CONSTANTS.TAGS.ALL_COURSES, html, function (opts) {
                             Papa.parse(file, {
                                 header: true,
                                 complete: function (results, file) {
-                                    tagThis.saveTraining(id, { course: results.data })
+                                    let course = _.map(results.data, (line) => {
+                                        let ret = {
+                                            section: line.Section,
+                                            section_no: line['Section No'],
+                                            person: line.Person,
+                                            line: line.Line,
+                                            action: (line.Action || '').toLowerCase().trim().split(' ')[0].trim(),
+                                            display: line.Display
+                                        }
+                                        try {
+                                            if (line['Action Data']) {
+                                                ret.action_data = JSON.parse(line['Action Data'])
+                                            }
+                                        } catch (e) {
+                                            ret.action_data = line['Action Data']
+                                            MetaMap.error(e)
+                                        }
+                                        return ret;
+                                    })
+                                    tagThis.saveTraining(id, { course: course })
                                     dzThis.removeAllFiles(true)
                                 }
                             })

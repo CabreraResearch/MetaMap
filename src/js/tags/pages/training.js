@@ -37,7 +37,7 @@ module.exports = riot.tag(CONSTANTS.TAGS.TRAINING, html, function(opts) {
 
     this.MetaMap.Eventer.on(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, (message) => {
         if(message) {
-            switch (this.cortex.massageConstant(message.Action)) {
+            switch (this.cortex.massageConstant(message.action)) {
                 case CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO:
 
                     break
@@ -55,7 +55,7 @@ module.exports = riot.tag(CONSTANTS.TAGS.TRAINING, html, function(opts) {
             this.player = new VideoPlayer('training_player', {
                 height: 390,
                 width: 640,
-                videoId: message['Action Data'],
+                videoId: message.action_data.youtubeid,
                 onFinish: () => {
                     this.cortex.processUserResponse({
                         action: CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO,

@@ -39,9 +39,9 @@ const html =
                                         <span class="datetime">{ parent.getRelativeTime(time) }</span>
                                         <span if="{author == 'cortex'}" class="body">
                                             <raw content="{ message }"></raw>
-                                            <likert if="{Action=='Likert'}" opts="{this}"></likert>
-                                            <ok if="{Action=='OK'}" opts="{this}"></ok>
-                                            <video-button if="{Action=='Video'}" opts="{this}"></video-button>
+                                            <likert if="{action=='likert'}" opts="{this}"></likert>
+                                            <ok if="{action=='ok'}" opts="{this}"></ok>
+                                            <video-button if="{action=='video'}" opts="{this}"></video-button>
                                         </span>
                                         <span if="{author != 'cortex'}" class="body">{message}</span>
                                     </div>
@@ -72,7 +72,7 @@ const html =
                 <div class="tab-pane page-quick-sidebar-alerts" id="quick_sidebar_tab_2">
                     <div class="page-quick-sidebar-alerts-list">
                         <ol>
-                            <li each="{ cortex.getOutline() }"><a class="list-heading">{ Section }</a></li>
+                            <li each="{ cortex.getOutline() }"><a class="list-heading">{ section }</a></li>
                         </ol>
                     </div>
                 </div>
@@ -101,9 +101,9 @@ riot.tag(CONSTANTS.TAGS.SIDEBAR, html, function(opts) {
 	})
 
     this.onActionClick = (e) => {
-        if(e.item && e.item.Action) {
+        if(e.item && e.item.action) {
             this.cortex.processUserResponse({
-                action: e.item.Action,
+                action: e.item.action,
                 data: _.extend({}, e.target.dataset)
             }, e.item)
         }

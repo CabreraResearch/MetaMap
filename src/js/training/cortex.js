@@ -31,7 +31,7 @@ class CortexMan {
 
     getOutline() {
         return _.filter(this.training.course, (item) => {
-            return item.Section && item.Section.length > 0
+            return item.section && item.section.length > 0
         })
     }
 
@@ -61,13 +61,13 @@ class CortexMan {
 
                 //TODO: add validation logic here
 //                 let currentStep = this.training.course[this.currentMessageKey]
-//                 if (obj.message == currentStep.Line) {
+//                 if (obj.message == currentStep.line) {
 //
 //                 }
                 let nextStep = this.getNextMessage()
                 if(nextStep) {
                     this.userTraining.messages.push(nextStep)
-                    switch(this.massageConstant(nextStep.Action)) {
+                    switch(this.massageConstant(nextStep.action)) {
                         case CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO:
                             this.processUserResponse({
                                 action: CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO
@@ -182,8 +182,8 @@ class CortexMan {
                     } else {
                         this.currentMessageKey = this.userTraining.messages.length - 1
                         this.currentMessage = this.userTraining.messages[this.currentMessageKey]
-                        if (this.currentMessage.Action && this.currentMessage.Action != 'OK') {
-                            this.processUserResponse({ action: this.currentMessage.Action, data: {}}, this.currentMessage)
+                        if (this.currentMessage.action && this.currentMessage.action != CONSTANTS.CORTEX.RESPONSE_TYPE.OK) {
+                            this.processUserResponse({ action: this.currentMessage.action, data: {}}, this.currentMessage)
                         }
                         this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, this.currentMessage)
                     }
@@ -210,7 +210,7 @@ class CortexMan {
             let messages = this.getMessages()
             let courseMsg = messages[idx]
             if (courseMsg) {
-                courseMsg.message = courseMsg.Line
+                courseMsg.message = courseMsg.line
                 courseMsg.author = 'cortex'
                 courseMsg.time = `${new Date() }`
                 ret = courseMsg
@@ -234,7 +234,7 @@ class CortexMan {
 
 
     getMessages() {
-        this._messages = this._messages || _.filter(_.map(this.userTraining.course, (m, idx)=>{ let n = _.extend({}, m); n.id = idx; return n }), (msg) => { return msg.Line && msg.Line.length > 0 && true != msg.archived })
+        this._messages = this._messages || _.filter(_.map(this.userTraining.course, (m, idx)=>{ let n = _.extend({}, m); n.id = idx; return n }), (msg) => { return msg.line && msg.line.length > 0 && true != msg.archived })
         return this._messages
     }
 
