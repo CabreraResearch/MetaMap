@@ -12,7 +12,7 @@ class VideoPlayer {
         this._onReady = this._onReady || new Promise((resolve, reject) => {
             let wait = () => {
                 if (window.YT && window.YT.loaded==1) {
-                    this.YT = window.YT;
+                    this.YT = window.YT
                     resolve(window.YT)
                 } else {
                     setTimeout(wait, 250)
@@ -20,7 +20,7 @@ class VideoPlayer {
             }
             wait()
         })
-        return this._onReady;
+        return this._onReady
     }
 
     init() {
@@ -29,20 +29,27 @@ class VideoPlayer {
                 videoId: this.opts.videoId,
                 frameborder: 0,
                 events: {
-                    onReady: this.onPlayerReady,
-                    onStateChange: this.onPlayerStateChange
+                    onReady: (event) => {
+                        this.onPlayerReady(event)
+                    },
+                    onStateChange: (event) => {
+                        this.onPlayerStateChange(event)
+                    }
                 }
-            });
-        });
+            })
+        })
     }
 
     onPlayerReady(event) {
-        event.target.playVideo();
+        event.target.playVideo()
     }
 
     onPlayerStateChange(event) {
-        if (event.data == YT.PlayerState.ENDED) {
-            this.done = true;
+        if (event.data == window.YT.PlayerState.ENDED) {
+            this.done = true
+            if (this.opts.onFinish) {
+                this.opts.onFinish()
+            }
         }
     }
 
@@ -51,7 +58,7 @@ class VideoPlayer {
     }
 
     stopVideo() {
-        this.player.stopVideo();
+        this.player.stopVideo()
     }
 
     destroy() {
@@ -66,4 +73,4 @@ class VideoPlayer {
 
 }
 
-module.exports = VideoPlayer;
+module.exports = VideoPlayer

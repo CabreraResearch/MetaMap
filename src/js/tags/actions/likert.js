@@ -7,7 +7,7 @@ const html = `
     <div>On a scale of 1 to {range.length}, where 1 is <em>{left}</em> and {range.length} is <em>{right}</em>, how would you rate this</div>
     <ul class="likert">
         <li each="{ val, i in range }">
-            <input onclick="{ parent.onClick }" type="radio" name="{name}" value="{i}" /><p style="text-align: center;">{i}</p>
+            <input onclick="{ parent.onClick }" type="radio" name="{name}" value="{i+1}" /><p style="text-align: center;">{i+1}</p>
         </li>
     </ul>
 </div>
@@ -18,12 +18,20 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.LIKERT, html, function(
     this.mixin(AllTags)
 
     const update = (o) => {
-        if (o && o.Action == 'Likert' && o['Action Data']) {
+        if (o && o.if) {
+            if (o.opts.cortex) {
+                this.sidebar = o.opts
+            } else if (o.opts.parent.cortex) {
+                this.sidebar = o.opts.parent
+            } else if (o.opts.parent.parent.cortex) {
+                this.sidebar = o.opts.parent.parent
+            }
+            this.data = o.opts
             this.range = []
-            this.range.length = o['Action Data'].length || 10
-            this.left = o['Action Data'].left
-            this.right = o['Action Data'].right
-            this.name = o['Action Data'].name
+            this.range.length = this.data['Action Data'].length || 10
+            this.left = this.data['Action Data'].left
+            this.right = this.data['Action Data'].right
+            this.name = this.data['Action Data'].name
         }
     }
     update(opts)

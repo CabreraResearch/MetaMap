@@ -52,7 +52,17 @@ module.exports = riot.tag(CONSTANTS.TAGS.TRAINING, html, function(opts) {
 
     this.MetaMap.Eventer.on(CONSTANTS.EVENTS.PLAY_VIDEO, (message) => {
         if(message) {
-            this.player = new VideoPlayer('training_player', {height: 390, width: 640, videoId: message['Action Data']})
+            this.player = new VideoPlayer('training_player', {
+                height: 390,
+                width: 640,
+                videoId: message['Action Data'],
+                onFinish: () => {
+                    this.cortex.processUserResponse({
+                        action: CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO,
+                        data: { buttonName: 'OK' }
+                    }, message)
+                }
+            })
         }
     })
 
