@@ -49,11 +49,38 @@ class MetaMap {
         return this._onReady
     }
 
+    get _doCustomLogin() {
+        return this.debug && localStorage['mm_fb_token'] && localStorage['mm_user_id']
+    }
+
     init() {
         this.onReady().then(() => {
-            this.Auth0.login().then((profile) => {
-                this.MetaFire.login().then((auth) => {
-                    this.User = new User(profile, auth, this.Eventer, this.MetaFire)
+            if(this._doCustomLogin) {
+                this.doCustomLogin()
+            } else {
+                this.Auth0.login().then((profile) => {
+                    this.MetaFire.login().then((auth) => {
+                        this.User = new User(profile, auth, this.Eventer, this.MetaFire)
+                        this.Integrations = new Integrations(this, this.User)
+                        this.User.onReady().then((user) => {
+                            this.PageFactory = new PageFactory(this.Eventer, this.MetaFire)
+                            this.Router = new Router(this)
+                            this.Router.init()
+                            this.Integrations.init()
+                        })
+                    })
+                })
+            }
+        })
+    }
+
+    doCustomLogin(fbToken, userId) {
+        fbToken = fbToken || localStorage['mm_fb_token']
+        userId = userId || localStorage['mm_user_id']
+        this.Auth0.doCustomLogin(fbToken, userId).then(() => {
+            this.MetaFire.doCustomLogin(fbToken, userId).then((data) => {
+                if (data.auth && data.profile) {
+                    this.User = new User(data.profile, data.auth, this.Eventer, this.MetaFire)
                     this.Integrations = new Integrations(this, this.User)
                     this.User.onReady().then((user) => {
                         this.PageFactory = new PageFactory(this.Eventer, this.MetaFire)
@@ -61,7 +88,7 @@ class MetaMap {
                         this.Router.init()
                         this.Integrations.init()
                     })
-                })
+                }
             })
         })
     }

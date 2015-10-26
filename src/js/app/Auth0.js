@@ -14,6 +14,17 @@ class Auth0 {
         })
     }
 
+    doCustomLogin(fbToken, userId) {
+        return new Promise((resolve, reject) => {
+            if (fbToken && userId) {
+                this.lock.hide()
+                resolve()
+            } else {
+                this.onFail(new Error('Invalid method invocation'), reject)
+            }
+        })
+    }
+
     login() {
         if (!this._login) {
             this._login = new Promise((fulfill, reject) => {
@@ -46,10 +57,10 @@ class Auth0 {
                     if (profile) {
                         fulfill(profile)
                     } else {
-                        showLogin()
+                        this.onFail(new Error('No profile found for this user'), reject)
                     }
                 }).catch((err) => {
-                    showLogin()
+                    this.onFail(err, reject)
                 })
             })
         }
@@ -103,7 +114,7 @@ class Auth0 {
                             }
                         })
                     } else {
-                        return reject(new Error('No session'))
+                        this.onFail(new Error('No session could be found'), reject)
                     }
                 })
             })

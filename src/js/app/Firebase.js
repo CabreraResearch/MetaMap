@@ -16,33 +16,64 @@ class MetaFire {
         return this._metaMap;
     }
 
+    doCustomLogin(fbToken, userId) {
+        return new Promise((resolve, reject) => {
+            if (fbToken && userId) {
+                this.fb.authWithCustomToken(fbToken, (error, authData) => {
+                    if (error) {
+                        reject()
+                    } else {
+                        this.fb.child(`users/${userId}`).once('value', (val) => {
+                            let profile = val.val()
+                            if (profile) {
+                                localStorage['mm_fb_token'] = fbToken
+                                localStorage['mm_user_id'] = userId
+                                authData.uid = userId
+                                resolve({ profile: profile, auth: authData })
+                            } else {
+                                reject()
+                            }
+                        })
+                    }
+                })
+            } else {
+                reject()
+            }
+        })
+    }
+
     login() {
         if (!this._login) {
-            this._login = new Promise((fulfill, reject) => {
-                window.MetaMap.Auth0.getSession()
+            this._login = new Promise((resolve, reject) => {
+                this.metaMap.Auth0.getSession()
                     .then((profile) => {
 
-                        window.MetaMap.Auth0.lock.getClient().getDelegationToken({
-                            target: this.config.site.auth0.api,
-                            id_token: profile.id_token,
-                            api_type: 'firebase'
-                        }, (err, delegationResult) => {
-                            if (err) {
-                                reject(err);
-                            } else {
-                                profile.firebase_token = delegationResult.id_token;
-                                this.firebase_token = delegationResult.id_token;
-                                localforage.setItem('firebase_token', this.firebase_token);
-                                this.fb.authWithCustomToken(this.firebase_token, (error, authData, ...params) => {
-                                    if (error) {
-                                        this.metaMap.error(error);
-                                        reject(error);
-                                    } else {
-                                        fulfill(authData);
-                                    }
-                                });
-                            }
-                        });
+                        if (profile.firebase && profile.profile) {
+                            this.fb = profile.firebase
+                            resolve(profile.authData)
+                        } else {
+                            this.metaMap.Auth0.lock.getClient().getDelegationToken({
+                                target: this.config.site.auth0.api,
+                                id_token: profile.id_token,
+                                api_type: 'firebase'
+                            }, (err, delegationResult) => {
+                                if (err) {
+                                    reject(err);
+                                } else {
+                                    profile.firebase_token = delegationResult.id_token;
+                                    this.firebase_token = delegationResult.id_token;
+                                    localforage.setItem('firebase_token', this.firebase_token);
+                                    this.fb.authWithCustomToken(this.firebase_token, (error, authData, ...params) => {
+                                        if (error) {
+                                            this.metaMap.error(error);
+                                            reject(error);
+                                        } else {
+                                            resolve(authData);
+                                        }
+                                    });
+                                }
+                            });
+                        }
                     })
                     .catch((err) => {
                         console.log(err);
@@ -56,8 +87,8 @@ class MetaFire {
 
     onReady() {
         if (!this._onReady) {
-            this._onReady = new Promise((fulfill, reject) => {
-                fulfill();
+            this._onReady = new Promise((resolve, reject) => {
+                resolve();
             });
         }
         return this._onReady;
