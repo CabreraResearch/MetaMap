@@ -18,8 +18,8 @@ class UserSnap extends IntegrationsBase {
                 consoleRecorder: true,
                 mode: 'report',
                 shortcut: true,
-                beforeOpen: function (obj) {
-                    Google.sendEvent('feedback', 'usersnap', 'widget', window.location.href);
+                beforeOpen: (obj) => {
+                    this.metaMap.Integrations.sendEvent(obj, 'feedback', 'usersnap', 'widget', window.location.href)
                 }
             };
             window.usersnapconfig = window._usersnapconfig = usConf;

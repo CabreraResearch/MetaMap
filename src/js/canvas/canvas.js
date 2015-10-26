@@ -31,7 +31,7 @@ class Canvas {
                     }
                 };
                 this.metaMap.MetaFire.setDataInTransaction(postData, `maps/data/${this.mapId}`);
-                this.metaMap.Integrations.sendEvent(this.mapId, 'event', 'autosave', 'autosave')
+                this.metaMap.Integrations.sendEvent(this.mapId, 'autosave', this.mapInfo.name)
             }
         }, 500);
 

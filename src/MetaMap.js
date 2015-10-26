@@ -89,7 +89,7 @@ class MetaMap {
     error(val) {
         window.console.error(val)
         if (!this.debug) {
-            this.Integrations.sendEvent(val, 'exception')
+            this.Integrations.sendError(val)
         }
     }
 

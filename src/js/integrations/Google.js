@@ -3,13 +3,23 @@ const IntegrationsBase = require('./_IntegrationsBase')
 class Google extends IntegrationsBase {
   constructor(config, user) {
     super(config, user);
+
+    (function () {
+        let a = undefined, m = undefined
+        window['GoogleAnalyticsObject'] = 'ga'; window['ga'] = window['ga'] ||
+            function () {
+                (window['ga'].q = window['ga'].q || []).push(arguments)
+        }, window['ga'].l = 1 * new Date(); a = document.createElement('script'),
+        m=document.getElementsByTagName('script')[0];a.async=1;a.src='//www.google-analytics.com/analytics.js';m.parentNode.insertBefore(a,m)
+    })();
+
     // Google Plus API
     (function () {
       let po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
       po.src = 'https://apis.google.com/js/platform.js';
       let s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
     })();
-      
+
     //Google Tag Manager API
     (function (w, d, s, l, i) {
       w[l] = w[l] || []; w[l].push({
@@ -20,19 +30,10 @@ class Google extends IntegrationsBase {
         '//www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
     })(window, document, 'script', 'dataLayer', this.config.tagmanager);
 
-    (function (i, s, o, g, r, a, m) {
-      i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
-        (i[r].q = i[r].q || []).push(arguments);
-      }, i[r].l = 1 * new Date(); a = s.createElement(o),
-      m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g;
-      m.parentNode.insertBefore(a, m);
-    })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
-
   }
 
   get integration() {
-    this.ga = this.ga || window.ga;
-    return this.ga;
+    return window.ga;
   }
 
   init() {
@@ -43,6 +44,7 @@ class Google extends IntegrationsBase {
       mode = 'none';
     }
     this.integration('create', this.config.analytics, mode);
+    this.integration('require', 'displayfeatures');
     this.integration('send', 'pageview');
   }
 
@@ -57,22 +59,39 @@ class Google extends IntegrationsBase {
     }
   }
 
-  sendEvent(val, event, source, type) {
-    super.sendEvent(val, event, source, type);
+  sendEvent(label = '', category = '', action = '', val = 0) {
+    super.sendEvent(label, category, action);
     if (this.integration) {
-      if (source && type) {
-        this.integration('send', event, source, type, val);
+        if (label) {
+          this.integration('send', {
+            hitType: 'event',
+            eventCategory: category,
+            eventAction: action,
+            eventLabel: label,
+            eventValue: val
+          });
       } else {
-        this.integration('send', event, val);
+        this.integration('send', 'event', label);
       }
     }
   }
-  
-  updatePath(path) {
+
+  sendError(message, isFatal = false) {
+    super.sendEvent(message, isFatal);
+    if (this.integration) {
+        this.integration('send', 'exception', {
+            exDescription: message,
+            exFatal: isFatal
+        });
+    }
+  }
+
+  updatePath(path, title = '') {
     super.updatePath(path);
     if (this.integration) {
         this.integration('set', {
-            page: path
+            page: path,
+            title: title
         });
         this.integration('send', 'pageview');
     }

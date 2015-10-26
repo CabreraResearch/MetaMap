@@ -181,6 +181,7 @@ class CortexMan {
                 }
             }
             this.runCallbacks()
+            this.MetaMap.Integrations.sendEvent(obj.message, 'cortex', 'chat')
         }
     }
 

@@ -29,46 +29,36 @@ class Integrations {
         });
     }
 
-	setUser() {
-		_.each(this._features, (Feature, name) => {
-            if (name) {
+    _all(callback, ...params) {
+        _.each(this._features, (Feature, name) => {
+            if (name && this[name]) {
                 try {
-                    this[name].setUser();
+                    this[name][callback](...params);
                 } catch (e) {
                     console.error(e);
                 }
 			}
         });
+    }
+
+	setUser() {
+        this._all('setUser')
 	}
 
-	sendEvent(val, ...params) {
-        if (!this.metaMap.debug) {
-            _.each(this._features, (Feature, name) => {
-                if (name) {
-                    try {
-                        this[name].sendEvent(val, ...params);
-                    } catch (e) {
-                        console.log(e);
-                    }
-                }
-            });
-        }
+	sendEvent(...params) {
+        this._all('sendEvent', ...params)
+    }
+
+    sendError(message, isFatal = false) {
+        this._all(message, isFatal)
+    }
+
+	updatePath(...params) {
+        this._all('updatePath', ...params)
 	}
 
-	updatePath() {
-
-	}
-
-	logout() {
-		_.each(this._features, (Feature, name) => {
-            if (name) {
-				try {
-					this[name].logout();
-				} catch(e) {
-					this.metaMap.error(e);
-				}
-			}
-        });
+	logout(...params) {
+		this._all('logout', ...params)
 	}
 
 }

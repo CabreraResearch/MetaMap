@@ -14,12 +14,16 @@ class Router {
     init() {
         riot.route.start();
         riot.route((target, id = '', action = '', ...params) => {
-            this.path = this.getPath(target);
+            if (!target.startsWith('!')) {
+                this.to('!' + target)
+            } else {
+                this.path = this.getPath(target);
 
-            this.toggleMain(true, this.path);
-            this.PageFactory.navigate(this.path, id, action, ...params);
+                this.toggleMain(true, this.path);
+                this.PageFactory.navigate(this.path, id, action, ...params);
 
-            this.eventer.do('history', window.location.hash);
+                this.eventer.do('history', window.location.hash);
+            }
         });
         this.to(this.currentPage);
     }
@@ -53,7 +57,7 @@ class Router {
     }
 
     track(path) {
-        this.integrations.updatePath(path);
+        this.integrations.updatePath(`/${path}.html`);
     }
 
     toggleMain(hide, path) {
@@ -67,7 +71,7 @@ class Router {
 
     getPath(path) {
         if (path) {
-            while (path.startsWith('!') || path.startsWith('#')) {
+            while (path.startsWith('!') || path.startsWith('#') || path.startsWith('?')) {
                 path = path.substr(1);
             }
         }
@@ -77,8 +81,7 @@ class Router {
     to(path) {
         path = this.getPath(path);
         if (path) {
-            this.toggleMain(true, path);
-            riot.route(`${path}`);
+            riot.route(`!${path}`);
         }
     }
 
