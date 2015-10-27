@@ -1,9 +1,9 @@
 const riot = require('riot');
 const pageContent = require('./page-content');
+const CONSTANTS = require('../constants/constants');
 
 const html = `
 <div class="page-container">
-
     <div id="meta_page_content"></div>
 </div>
 `;

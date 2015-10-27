@@ -25,11 +25,12 @@ for (key in _ref) {
 
 gulp.task('watch', function () {
     lr({start: true});
-    gulp.watch(['./src/**/*.tag', './src/**/*.js'], watch_opts, ['browserify-dev']);
+    gulp.watch(['./src/**/*.js'], watch_opts, ['browserify-dev']);
+    
     gulp.watch(['./dist/MetaMap.js']).on('change', lr.changed);
-    gulp.watch(['./test/**/*.coffee'], watch_opts, ['browserify-test']);
-    gulp.watch(['./**/*.cson'], watch_opts, ['cson']);
-    return gulp.watch(['./src/**/*.tmpl'], watch_opts, ['inject']);
+    gulp.watch(['./dist/MetaMap.css']).on('change', lr.changed);
+
+    return gulp.watch(['./src/**/*.css'], watch_opts, ['css']);
 });
 
 gulp.task('watch-src', ['compile-src'], function () {

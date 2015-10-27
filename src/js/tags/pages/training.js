@@ -2,12 +2,16 @@ const riot = require('riot')
 const VideoPlayer = require('../../tools/VideoPlayer')
 const AllTags = require('../mixins/all-tags')
 const CONSTANTS = require('../../constants/constants')
+require('../components/quick-sidebar')
 
 const html = `
 <div id="training_portlet" class="portlet light">
     <div class="portlet-body">
-        <div class="row margin-bottom-30">
-            <div class="col-md-8 col-md-offset-4">
+        <div class="row">
+            <div id="quick_sidebar_cell" class="col-md-4">
+                <div id="quick_sidebar_container"></div>
+            </div>
+            <div class="col-md-8">
                 <div class="embed-responsive embed-responsive-16by9">
                     <div id="training_player" ></div>
                 </div>
@@ -23,6 +27,7 @@ module.exports = riot.tag(CONSTANTS.TAGS.TRAINING, html, function(opts) {
     this.training = {}
 
     this.on('mount update', (event, opts) => {
+        this.sidebar = this.sidebar || riot.mount(this.quick_sidebar_container, 'quick-sidebar')[0]
         if (opts) {
             this.config = opts
             if (!this.cortex) {
@@ -31,7 +36,6 @@ module.exports = riot.tag(CONSTANTS.TAGS.TRAINING, html, function(opts) {
                     this.update()
                 })
             }
-            //
         }
     })
 
@@ -89,5 +93,14 @@ module.exports = riot.tag(CONSTANTS.TAGS.TRAINING, html, function(opts) {
     })
 
 
+    this.MetaMap.Eventer.on(CONSTANTS.EVENTS.SIDEBAR_CLOSE, () => {
+        $(this.quick_sidebar_cell).addClass('hidden')
+        $(this.quick_sidebar_cell).removeClass('show')
+    })
+
+    this.MetaMap.Eventer.on(CONSTANTS.EVENTS.SIDEBAR_OPEN, (id) => {
+        $(this.quick_sidebar_cell).addClass('show')
+        $(this.quick_sidebar_cell).removeClass('hidden')
+     })
 
 })
