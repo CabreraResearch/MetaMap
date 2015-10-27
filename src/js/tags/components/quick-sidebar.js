@@ -42,7 +42,6 @@ const html =
                                 <div if="{message}">
                                     <span if="{author == 'cortex'}">
                                         <raw content="{ message }"></raw>
-                                        <likert if="{action=='likert'}" opts="{this}"></likert>
                                         <ok if="{action=='ok'}" opts="{this}"></ok>
                                         <video-button if="{action=='video'}" opts="{this}"></video-button>
                                     </span>

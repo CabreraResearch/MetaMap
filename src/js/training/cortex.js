@@ -86,7 +86,7 @@ class CortexMan {
                 if (!this.userTraining.isWaitingOnFeedback) {
                     let nextStep = this.getNextMessage()
                     if (nextStep) {
-                        let timer = (nextStep.action == CONSTANTS.CORTEX.RESPONSE_TYPE.TIMER) ? 2500 : 750
+                        let timer = (nextStep.action == CONSTANTS.CORTEX.RESPONSE_TYPE.TIMER) ? 5000 : 750
                         this.buffer(timer).then(() => {
                             this.userTraining.messages.push(nextStep)
                             switch (nextStep.action) {
@@ -100,9 +100,12 @@ class CortexMan {
                                         action: CONSTANTS.CORTEX.RESPONSE_TYPE.TIMER
                                     }, nextStep)
                                     break;
+                                case CONSTANTS.CORTEX.RESPONSE_TYPE.LIKERT:
+                                    this.userTraining.isWaitingOnFeedback = true
+                                    this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, nextStep)
+                                    break;
                             }
                             this.saveUserTraining()
-                            this.runCallbacks()
                         })
 
                     } else {
@@ -126,11 +129,17 @@ class CortexMan {
                             obj[key] = val
                             delete obj.data[key]
                         })
-                        if (obj.request_feedback) {
-                            this.userTraining.isWaitingOnFeedback = true
-                            moveToNextMessage({ line: 'I\'m sorry to hear that! How can we make improve this for the next version of this training?' })
+                        if (!this.userTraining.isWaitingOnFeedback || obj.request_feedback == true || obj.request_feedback == false) {
+                            if (obj.request_feedback) {
+                                this.userTraining.isWaitingOnFeedback = true
+                                moveToNextMessage({ line: 'I\'m sorry to hear that! How can we make improve this for the next version of this training?' })
+                            } else {
+                                this.userTraining.isWaitingOnFeedback = false
+                                moveToNextMessage({ line: 'Thanks for the feedback!' })
+                            }
                         } else {
-                            moveToNextMessage({ line: 'Thanks for the feedback!' })
+                            let msg = (obj.action_data) ? obj : originalMessage
+                            this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, msg)
                         }
                         break
                     case CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO:
@@ -187,6 +196,7 @@ class CortexMan {
 
     saveUserTraining() {
         this.MetaMap.MetaFire.updateData(this.userTraining, `${CONSTANTS.ROUTES.TRAININGS.format(this.MetaMap.User.userId) }${this.trainingId}`)
+        this.runCallbacks()
     }
 
     saveTraining(data) {
@@ -223,10 +233,9 @@ class CortexMan {
                         if (this.currentMessage.action && this.currentMessage.action != CONSTANTS.CORTEX.RESPONSE_TYPE.OK) {
                             this.processUserResponse({ action: this.currentMessage.action, data: {}}, this.currentMessage)
                         }
-                        this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, this.currentMessage)
+                        //this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, this.currentMessage)
                     }
                     this.saveUserTraining()
-                    this.runCallbacks()
                     NProgress.done()
                 })
                 this.MetaMap.Eventer.do(CONSTANTS.EVENTS.SIDEBAR_OPEN, this.trainingId)
@@ -300,7 +309,7 @@ class CortexMan {
                         }
                     })
                 }
-                state.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, next)
+                //state.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, next)
                 yield next
             }
         }

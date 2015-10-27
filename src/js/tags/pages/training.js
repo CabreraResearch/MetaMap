@@ -3,6 +3,7 @@ const VideoPlayer = require('../../tools/VideoPlayer')
 const AllTags = require('../mixins/all-tags')
 const CONSTANTS = require('../../constants/constants')
 require('../components/quick-sidebar')
+require('../actions/likert')
 
 const html = `
 <div id="training_portlet" class="portlet light">
@@ -12,6 +13,7 @@ const html = `
                 <div id="quick_sidebar_container"></div>
             </div>
             <div class="col-md-8">
+                <div id="training_next_step"></div>
                 <div class="embed-responsive embed-responsive-16by9">
                     <div id="training_player" ></div>
                 </div>
@@ -40,8 +42,18 @@ module.exports = riot.tag(CONSTANTS.TAGS.TRAINING, html, function(opts) {
     })
 
     this.MetaMap.Eventer.on(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, (message) => {
-        if(message) {
+        if (message) {
+
+            if (this.step) {
+                
+            }
+
             switch (this.cortex.massageConstant(message.action)) {
+                case CONSTANTS.CORTEX.RESPONSE_TYPE.LIKERT:
+                    let opts = { message: message, cortex: this.cortex }
+                    this.step = riot.mount(this.training_next_step, 'likert', opts)[0]
+                    this.step.update(opts)
+                    break
                 case CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO:
 
                     break
