@@ -65,14 +65,14 @@ const html =
                         <ol>
                             <li each="{ cortex.getOutline() }" onclick="{ parent.onOutlineClick }" >
                                 <h3>
-                                    <a if="{ true == archived }" class="list-heading">{ section }</a>
-                                    <span if="{ true != archived }" class="list-heading">{ section }</span>
+                                    <a if="{ true == archived }" class="list-heading"><i class="fa fa-check-circle"></i> { section }</a>
+                                    <span if="{ true != archived }" class="list-heading"><i class="fa fa-circle-thin"></i> { section }</span>
                                 </h3>
                                 <ol if="{ submenu }">
                                     <li each="{ submenu }" onclick="{ parent.onOutlineClick }" >
                                         <h4>
-                                            <a if="{ true == archived }" class="list-heading">{ section }</a>
-                                            <span if="{ true != archived }" class="list-heading">{ section }</span>
+                                            <a if="{ true == archived }" class="list-heading"><i class="fa fa-check-circle"></i> { section }</a>
+                                            <span if="{ true != archived }" class="list-heading"><i class="fa fa-circle-thin"></i> { section }</span>
                                         </h4>
                                     </li>
                                 </ol>

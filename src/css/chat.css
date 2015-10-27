@@ -4,7 +4,7 @@
 }
 
 .cortex-tabs {
-    font-size: 24px !important;
+    font-size: 20px !important;
     color: #7FB0DA !important;
 }
 
@@ -13,13 +13,13 @@
 */
 .cortex-chat {
     font-family: "Helvetica Neue";
-    font-size: 20px;
+    font-size: 16px;
     font-weight: normal;
 }
 .cortex-chat div {
   word-wrap: break-word;
   margin-bottom: 8px;
-  line-height: 24px;
+  line-height: 23px;
 }
 
 .clear {
