@@ -19,7 +19,7 @@ const html = `
                 </div>
             </div>
             <div class="right">
-                <a onclick="{ onFinishVideo }" class="btn red">Finished</a>
+                <a onclick="{ onFinishVideo }" class="btn red">Finished <i class="fa fa-check-circle"></i></a>
             </div>
         </div>
     </div>
@@ -77,7 +77,7 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO, html, function(o
         }
     }
 
-    this.on('mount update', (event, opts) => {
+    this.on('update', (opts) => {
         update(opts)
     })
 

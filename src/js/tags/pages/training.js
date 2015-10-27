@@ -43,14 +43,16 @@ module.exports = riot.tag(CONSTANTS.TAGS.TRAINING, html, function(opts) {
 
     this.MetaMap.Eventer.on(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, (message) => {
         if (message) {
+            let opts = { message: message, cortex: this.cortex }
             switch (this.cortex.massageConstant(message.action)) {
                 case CONSTANTS.CORTEX.RESPONSE_TYPE.LIKERT:
-                    let opts = { message: message, cortex: this.cortex }
                     this.step = riot.mount(this.training_next_step, CONSTANTS.CORTEX.RESPONSE_TYPE.LIKERT, opts)[0]
-                    this.step.update(opts)
                     break
                 case CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO:
 
+                    break
+                case CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS:
+                    this.step = riot.mount(this.training_next_step, CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS, opts)[0]
                     break
                 default:
                     if (this.step) {
@@ -58,6 +60,9 @@ module.exports = riot.tag(CONSTANTS.TAGS.TRAINING, html, function(opts) {
                         this.step = null
                     }
                     break
+            }
+            if (this.step) {
+                this.step.update(opts)
             }
         }
     })

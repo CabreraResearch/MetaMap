@@ -149,6 +149,10 @@ class CortexMan {
                     case CONSTANTS.CORTEX.RESPONSE_TYPE.TIMER:
                         moveToNextMessage()
                         break
+                    case CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS:
+                        let msg = (obj.action_data) ? obj : originalMessage
+                        this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, msg)
+                        break
                     case CONSTANTS.CORTEX.RESPONSE_TYPE.LIKERT:
                         _.each(obj.data, (val, key) => {
                             obj[key] = val

@@ -2,6 +2,7 @@ class Permissions {
 
     constructor(map) {
         this.map = map
+        this.permitAll = this.map.isTraining || false
         this.metaMap = require('../../MetaMap')
     }
 
@@ -14,22 +15,24 @@ class Permissions {
     }
 
     isMapOwner() {
-        return this.map && this.map.owner.userId == this.metaMap.User.userId
+        return this.permitAll || (this.map && this.map.owner.userId == this.metaMap.User.userId)
     }
 
     isSharedEdit() {
-        return this.map &&
-            this.map.shared_with &&
-                (this.metaMap.User.isAdmin ||
-                (this.map.shared_with[this.metaMap.User.userId] && this.map.shared_with[this.metaMap.User.userId].write == true) ||
-                (this.map.shared_with['*'] && this.map.shared_with['*'].write == true))
+        return this.permitAll ||
+            (this.map &&
+                this.map.shared_with &&
+                    (this.metaMap.User.isAdmin ||
+                    (this.map.shared_with[this.metaMap.User.userId] && this.map.shared_with[this.metaMap.User.userId].write == true) ||
+                    (this.map.shared_with['*'] && this.map.shared_with['*'].write == true)))
     }
 
     isSharedView() {
-        return this.map &&
-            this.isSharedEdit() ||
-                (this.map.shared_with[this.metaMap.User.userId] && this.map.shared_with[this.metaMap.User.userId].read == true) ||
-                (this.map.shared_with['*'] && this.map.shared_with['*'].read == true)
+        return this.permitAll ||
+            (this.map &&
+                this.isSharedEdit() ||
+                    (this.map.shared_with[this.metaMap.User.userId] && this.map.shared_with[this.metaMap.User.userId].read == true) ||
+                    (this.map.shared_with['*'] && this.map.shared_with['*'].read == true))
     }
 }
 
