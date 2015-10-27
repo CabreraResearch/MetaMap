@@ -1,4 +1,5 @@
 const $ = require('jquery')
+const Ps = require('perfect-scrollbar');
 
 /**
 Core script to handle the entire theme and core functions
@@ -657,11 +658,14 @@ var Metronic = function() {
                     pos = pos - $('.page-header-menu').height();
                 }
                 pos = pos + (offeset ? offeset : -1 * el.height());
+                el[0].scrollTop = pos
+                Ps.update(el[0])
             }
 
             $('html,body').animate({
                 scrollTop: pos
             }, 'slow');
+
         },
 
         initSlimScroll: function(el) {
@@ -678,7 +682,7 @@ var Metronic = function() {
                     height = $(this).css('height');
                 }
 
-                $(this).slimScroll({
+                Ps.initialize(this, {
                     allowPageScroll: true, // allow page scroll when the element scroll is ended
                     size: '7px',
                     color: ($(this).attr("data-handle-color") ? $(this).attr("data-handle-color") : '#bbb'),
@@ -721,7 +725,7 @@ var Metronic = function() {
                         attrList["data-rail-visible"] = $(this).attr("data-rail-visible");
                     }
 
-                    $(this).slimScroll({
+                    Ps.initialize(this, {
                         wrapperClass: ($(this).attr("data-wrapper-class") ? $(this).attr("data-wrapper-class") : 'slimScrollDiv'),
                         destroy: true
                     });
@@ -1023,5 +1027,5 @@ var Metronic = function() {
     };
 
 } ();
-
+window.Metronic = Metronic
 module.exports = Metronic;

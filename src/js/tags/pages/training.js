@@ -7,7 +7,7 @@ require('../actions/likert')
 
 const html = `
 <div id="training_portlet" class="portlet light">
-    <div class="portlet-body">
+    <div class="portlet-body" style="padding-top: 0;">
         <div class="row">
             <div id="quick_sidebar_cell" class="col-md-4">
                 <div id="quick_sidebar_container"></div>
@@ -45,7 +45,7 @@ module.exports = riot.tag(CONSTANTS.TAGS.TRAINING, html, function(opts) {
         if (message) {
 
             if (this.step) {
-                
+
             }
 
             switch (this.cortex.massageConstant(message.action)) {

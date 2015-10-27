@@ -58,11 +58,6 @@
         "jquery:$"
       ]
     },
-    "jquery-slimscroll": {
-      "depends": [
-        "jquery:$"
-      ]
-    },
     "jquery.uniform.less": {
       "depends": [
         "jquery:$"
@@ -142,6 +137,7 @@
     "lodash": "^3.10.1",
     "moment": "^2.10.6",
     "papaparse": "^4.1.2",
+    "perfect-scrollbar": "^0.6.7",
     "typeahead.js": "^0.11.1"
   }
 }

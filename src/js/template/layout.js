@@ -1,4 +1,5 @@
 const $ = require('jquery')
+const Ps = require('perfect-scrollbar');
 const Metronic = require('./metronic')
 /**
 Core script to handle the entire theme and core functions
@@ -122,7 +123,7 @@ var Layout = function() {
                 sub.slideUp(slideSpeed, function() {
                     if (autoScroll === true && $(document.getElementById('page_body')).hasClass('page-sidebar-closed') === false) {
                         if ($(document.getElementById('page_body')).hasClass('page-sidebar-fixed')) {
-                            menu.slimScroll({
+                            Ps.update(menu, {
                                 'scrollTo': (the.position()).top
                             });
                         } else {
@@ -136,7 +137,7 @@ var Layout = function() {
                 sub.slideDown(slideSpeed, function() {
                     if (autoScroll === true && $(document.getElementById('page_body')).hasClass('page-sidebar-closed') === false) {
                         if ($(document.getElementById('page_body')).hasClass('page-sidebar-fixed')) {
-                            menu.slimScroll({
+                            Ps.update(menu, {
                                 'scrollTo': (the.position()).top
                             });
                         } else {

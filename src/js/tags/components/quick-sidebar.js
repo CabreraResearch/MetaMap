@@ -1,4 +1,6 @@
 const riot = require('riot')
+const $ = require('jquery')
+const Ps = require('perfect-scrollbar')
 
 const Metronic = require('../../template/metronic')
 const raw = require('./raw')
@@ -9,7 +11,7 @@ const ActionFactory = require('../actions/ActionFactory')
 
 const html =
 `
-<div class="portlet light bordered">
+<div class="portlet light bordered" style="padding-top: 0;">
 
         <div class="portlet-title tabbable-line">
             <div class="caption">
@@ -35,7 +37,7 @@ const html =
         <div class="portlet-body">
             <div class="tab-content">
                 <div class="tab-pane active" id="quick_sidebar_tab_1">
-                    <div id="cortex_messages" class="cortex-chat">
+                    <div id="cortex_messages" class="cortex-chat" style="position: relative;">
                         <div if="{cortex}" each="{ cortex.userTraining.messages }" class="clear">
                             <div if="{message}" class="from-{ them: author == 'cortex', me: author != 'cortex' }">
                                 <div if="{ section_no }" id="training_section_{ section_no }"></div>
@@ -67,6 +69,12 @@ const html =
                             <li each="{ cortex.getOutline() }" onclick="{ parent.onOutlineClick }" >
                                 <a if="{ true == archived }" class="list-heading">{ section }</a>
                                 <span if="{ true != archived }" class="list-heading">{ section }</span>
+                                <ol if="{ submenu }">
+                                    <li each="{ submenu }" onclick="{ parent.onOutlineClick }" >
+                                        <a if="{ true == archived }" class="list-heading">{ section }</a>
+                                        <span if="{ true != archived }" class="list-heading">{ section }</span>
+                                    </li>
+                                </ol>
                             </li>
                         </ol>
                     </div>
@@ -89,33 +97,60 @@ riot.tag(CONSTANTS.TAGS.SIDEBAR, html, function(opts) {
         this.userPicture = MetaMap.User.picture
     })
 
+    this.setHeight = _.once(() => {
+        Ps.initialize(this.cortex_messages, {
+            suppressScrollX: true
+        })
+        _.delay(() => {
+            let pos = $(this.cortex_messages).height()+window.innerHeight
+            this.cortex_messages.scrollTop = pos
+        },500)
+    })
+
+    window.scrollCortex = (int) => {
+        this.cortex_messages.scrollTop = int
+        this.updateHeight()
+    }
+
+    this.updateHeight = () => {
+        $(this.cortex_messages).css({
+             height: window.innerHeight-290+'px'
+        })
+        Ps.update(this.cortex_messages)
+    }
+
 	this.on('update', () => {
         if (this.cortex_messages) {
-            if (this.scrollToBottom == true) {
-                _.delay(() => {
-                    $(this.cortex_messages).slimScroll({ scrollTo: `1000px`, height: window.innerHeight - 290 + 'px' })
-                }, 250)
-            }
+            this.setHeight()
         }
 	})
 
     $(window).resize(() => {
-        this.update()
+        this.updateHeight()
     })
+
+    this.getPosition = (id) => {
+        let el = $(document.getElementById(id))
+
+        let pos = (el && el.size() > 0) ? el.offset().top : 0
+        if ($(document.getElementById('page_body')).hasClass('page-header-fixed')) {
+            pos = pos - $('.page-header').height();
+        } else if ($(document.getElementById('page_body')).hasClass('page-header-top-fixed')) {
+            pos = pos - $('.page-header-top').height();
+        } else if ($(document.getElementById('page_body')).hasClass('page-header-menu-fixed')) {
+            pos = pos - $('.page-header-menu').height();
+        }
+        pos = pos + el.height();
+        return pos
+    }
 
     this.onOutlineClick = (e) => {
         $(this.cortex_man_tab).tab('show')
-        this.scrollToBottom = false
-        let offset = ((+e.item.section_no.split('-').join('.'))-1)*100
 
-        $(this.cortex_messages).slimScroll({ scrollTo: offset + 'px' })
-        let that = this
-        let cb = (e, pos) => {
-            that.scrollToBottom = true
-            $(that.cortex_messages).slimScroll().off('slimscroll', cb)
-        }
-        $(this.cortex_messages).slimScroll().on('slimscroll', cb)
+        let pos = this.getPosition(`training_section_${e.item.section_no}`)
 
+        this.cortex_messages.scrollTop = pos
+        Ps.update(this.cortex_messages)
     }
 
     this.onActionClick = (e) => {
