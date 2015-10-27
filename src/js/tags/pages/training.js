@@ -16,28 +16,6 @@ const html = `
                 <div class="row">
                     <div id="training_next_step"></div>
                 </div>
-                <div class="row" if="{ videoTitle }" class="embed-responsive embed-responsive-16by9" style="border: 1px solid #e1e1e1 !important;">
-                    <div class="portlet light">
-                        <div class="portlet-title">
-                            <div class="caption">
-                                <i class="fa fa-youtube"></i>
-                                <span class="caption-subject font-green-sharp bold uppercase">{ videoTitle }</span>
-                            </div>
-                        </div>
-                        <div class="portlet-body form">
-                            <form role="form" lpformnum="3">
-                                <div class="form-group">
-                                    <div class="embed-responsive embed-responsive-16by9">
-                                        <div id="training_player" ></div>
-                                    </div>
-                                </div>
-                                <div class="right">
-                                    <button onclick="{ onFinishVideo }" class="btn red">Finished</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -65,58 +43,37 @@ module.exports = riot.tag(CONSTANTS.TAGS.TRAINING, html, function(opts) {
 
     this.MetaMap.Eventer.on(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, (message) => {
         if (message) {
-
-            if (this.step) {
-
-            }
-
             switch (this.cortex.massageConstant(message.action)) {
                 case CONSTANTS.CORTEX.RESPONSE_TYPE.LIKERT:
                     let opts = { message: message, cortex: this.cortex }
-                    this.step = riot.mount(this.training_next_step, 'likert', opts)[0]
+                    this.step = riot.mount(this.training_next_step, CONSTANTS.CORTEX.RESPONSE_TYPE.LIKERT, opts)[0]
                     this.step.update(opts)
                     break
                 case CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO:
 
                     break
                 default:
-                    if (this.player) {
-                        this.player.destroy()
+                    if (this.step) {
+                        this.step.unmount()
+                        this.step = null
                     }
                     break
             }
         }
     })
 
-    this.onFinishVideo = () => {
-        this.cortex.processUserResponse({
-            action: CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO,
-            data: { buttonName: 'OK' }
-        }, this.currentMessage)
-    }
-
     this.MetaMap.Eventer.on(CONSTANTS.EVENTS.PLAY_VIDEO, (message) => {
-        if(message && message.action_data && message.action_data.youtubeid) {
-            this.videoTitle = message.action_data.title || 'A YouTube Video'
-            this.currentMessage = message
-            this.player = new VideoPlayer('training_player', {
-                height: 390,
-                width: 640,
-                videoId: message.action_data.youtubeid,
-                onFinish: () => {
-                    this.onFinishVideo()
-                }
-            })
-            this.update()
+        if (message) {
+            let opts = { message: message, cortex: this.cortex }
+            this.step = riot.mount(this.training_next_step, CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO, opts)[0]
+            this.step.update(opts)
         }
     })
 
     this.MetaMap.Eventer.on(CONSTANTS.EVENTS.STOP_VIDEO, (message) => {
         if (message) {
-            this.videoTitle = null
-            if (this.player) {
-                this.player.destroy()
-            }
+            this.step.unmount()
+            this.step = null
         }
     })
 

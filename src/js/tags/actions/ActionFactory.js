@@ -5,6 +5,7 @@ const likert = require('./likert')
 const ok = require('./ok')
 const multipleChoice = require('./multiple-choice')
 const video = require('./video')
+const videoButton = require('./video-button')
 const more = require('./more')
 const canvas = require('./canvas')
 

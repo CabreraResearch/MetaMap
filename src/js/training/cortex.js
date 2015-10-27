@@ -173,10 +173,9 @@ class CortexMan {
                             button = obj.data.buttonName
                         }
                         switch (button) {
-                            case 'OK':
+                            case 'Finished':
                                 this.MetaMap.Eventer.do(CONSTANTS.EVENTS.STOP_VIDEO, originalMessage)
                                 if (!originalMessage.archived) {
-                                    obj.message = 'OK'
                                     moveToNextMessage()
                                 }
                                 break

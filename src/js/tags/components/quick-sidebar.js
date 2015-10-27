@@ -114,7 +114,7 @@ riot.tag(CONSTANTS.TAGS.SIDEBAR, html, function(opts) {
 
     this.updateHeight = () => {
         $(this.cortex_messages).css({
-             height: window.innerHeight-290+'px'
+             height: window.innerHeight-270+'px'
         })
         let pos = $(this.cortex_messages).height()+window.innerHeight
         this.cortex_messages.scrollTop = pos

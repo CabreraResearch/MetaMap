@@ -1,45 +1,89 @@
 const riot = require('riot')
 const AllTags = require('../mixins/all-tags')
 const CONSTANTS = require('../../constants/constants')
+const VideoPlayer = require('../../tools/VideoPlayer')
 
 const html = `
-<button id="{id}_video_play" data-button-name="Play" class="btn btn-sm red video-play" style="{ isPlaying ? 'display: none;' : '' }" onclick="{onClick}">{ archived ? 'Replay' : 'Play' } <i class="fa fa-youtube-play"></i></button>
+<div id="video_training_portal" if="{ videoTitle }" style="border: 1px solid #e1e1e1 !important; border-radius: 5px;">
+    <div class="portlet light">
+        <div class="portlet-title">
+            <div class="caption">
+                <i class="fa fa-youtube"></i>
+                <span class="caption-subject font-green-sharp bold uppercase">{ videoTitle }</span>
+            </div>
+        </div>
+        <div class="portlet-body">
+            <div class="form-group">
+                <div class="embed-responsive embed-responsive-16by9">
+                    <div id="training_player" ></div>
+                </div>
+            </div>
+            <div class="right">
+                <a onclick="{ onFinishVideo }" class="btn red">Finished</a>
+            </div>
+        </div>
+    </div>
+</div>
 `
 
-module.exports = riot.tag('video-button', html, function(opts) {
+module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO, html, function(opts) {
 
     this.mixin(AllTags)
     this.archived = true
     this.isPlaying = true
 
-    const update = (o) => {
-        if (o && o.if) {
-            if (o.opts.cortex) {
-                this.sidebar = o.opts
-            } else if (o.opts.parent.cortex) {
-                this.sidebar = o.opts.parent
-            } else if (o.opts.parent.parent.cortex) {
-                this.sidebar = o.opts.parent.parent
+    this.correctHeight = () => {
+        $(this.video_training_portal).css({
+            height: window.innerHeight - 140 + 'px'
+        })
+    }
+
+    $(window).resize(() => {
+        this.correctHeight()
+    })
+
+    const update = (opts) => {
+        if(opts && opts.message && opts.message.action_data && opts.message.action_data.youtubeid) {
+            let message = opts.message
+            if (opts.cortex) {
+                this.cortex = opts.cortex
             }
-            this.data = o.opts
+            this.data = message
+            this.videoTitle = message.action_data.title || 'A YouTube Video'
+            this.currentMessage = message
+            this.player = new VideoPlayer('training_player', {
+                height: 390,
+                width: 640,
+                videoId: message.action_data.youtubeid,
+                onFinish: () => {
+                    this.onFinishVideo()
+                }
+            })
+            this.correctHeight()
             this.archived = this.data.archived
-            this.isPlaying = this.sidebar.currentVideo == this.data.id || true != this.archived
+            this.isPlaying = this.cortex.currentVideo == this.id || true != this.archived
         }
     }
     update(opts)
 
-    this.value = null
-
-    this.onClick = (e) => {
-        this.sidebar.cortex.processUserResponse({
+    this.onFinishVideo = () => {
+        this.cortex.processUserResponse({
             action: CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO,
-            data: _.extend({}, e.target.dataset)
-        }, this.data._item)
-
+            data: { buttonName: 'Finished' }
+        }, this.currentMessage)
+        this.videoTitle = null
+        if (this.player) {
+            this.player.destroy()
+        }
     }
 
     this.on('mount update', (event, opts) => {
         update(opts)
     })
 
+    this.on('unmount', () => {
+        if (this.player) {
+            this.player.destroy()
+        }
+    })
 })
