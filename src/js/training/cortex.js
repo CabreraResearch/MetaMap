@@ -38,6 +38,9 @@ class CortexMan {
         if(action && action.length > 0) {
             ret = action.trim().split(' ')[0].toLowerCase().trim()
         }
+        while (ret.startsWith('/')) {
+            ret = ret.substr(1);
+        }
         return ret
     }
 
@@ -165,31 +168,38 @@ class CortexMan {
                         break
                 }
             } else if(obj.message) {
-                switch(this.massageConstant(obj.message)) {
-                    case 'help':
-                        this.userTraining.messages.push({
-                            author: 'cortex',
-                            time: `${new Date() }`,
-                            message: `<span>Help? You got it. Here are some of the things I can do for you:
-                                        <ul>
-                                            <li><code>help</code> - Return help</li>
-                                            <li><code>restart</code> - Restart this course from the beginning. Warning: this will delete your progress!</li>
-                                        </ul>
-                                    </span>`
-                        })
-                        break
-                    case 'restart':
-                        if(confirm('Are you sure? All of your progress will be lost!')) {
-                            this.restart()
-                        }
-                        break
-
-                    default:
-                        if (this.userTraining.isWaitingOnFeedback) {
-                            this.userTraining.isWaitingOnFeedback = false
-                            moveToNextMessage({ line: 'Thanks for the feedback! We\'ll use this to improve the next training!' })
-                        }
-                        break
+                if (obj.message.startsWith('/')) {
+                    switch (this.massageConstant(obj.message)) {
+                        case 'help':
+                            this.userTraining.messages.push({
+                                author: 'cortex',
+                                time: `${new Date() }`,
+                                message: `<span>Help? You got it. Here are some of the things I can do for you:
+                                            <ul>
+                                                <li><code>/help</code> - Return help</li>
+                                                <li><code>/restart</code> - Restart this course from the beginning. Warning: this will delete your progress!</li>
+                                            </ul>
+                                        </span>`
+                            })
+                            break
+                        case 'restart':
+                            if (confirm('Are you sure? All of your progress will be lost!')) {
+                                this.restart()
+                            }
+                            break
+                        default:
+                            this.userTraining.messages.push({
+                                author: 'cortex',
+                                time: `${new Date() }`,
+                                message: `<span>I didn't understand that command <code>${obj.message}</code>, try <code>/help</code></span>`
+                            })
+                            break
+                    }
+                } else {
+                    if (this.userTraining.isWaitingOnFeedback) {
+                        this.userTraining.isWaitingOnFeedback = false
+                        moveToNextMessage({ line: 'Thanks for the feedback! We\'ll use this to improve the next training!' })
+                    }
                 }
             }
             this.runCallbacks()
