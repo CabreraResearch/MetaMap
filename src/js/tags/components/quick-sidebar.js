@@ -14,9 +14,9 @@ const html =
         <div class="portlet-title tabbable-line">
             <div class="caption">
                 <img height="39" width="39" class="avatar" alt="" src="{cortex.picture}"/>
-                <span class="caption-subject font-dark bold uppercase">Cortex Man</span>
+                <span class="caption-subject font-dark bold uppercase">Cortex</span>
                 <span id="cortex_on_timer" style="display: { none: cortex.isTimerOff };">
-                    <img alt="" src="src/images/typing.gif"/>
+                    <img height="39" alt="" src="src/images/dots.gif"/>
                 </span>
             </div>
             <ul class="nav nav-tabs">
@@ -35,35 +35,31 @@ const html =
         <div class="portlet-body">
             <div class="tab-content">
                 <div class="tab-pane active" id="quick_sidebar_tab_1">
-                    <div class="">
-                        <div class="">
-                            <div id="cortex_messages" class="cortex-chat">
-                                <div if="{cortex}" each="{ cortex.userTraining.messages }" class="clear">
-                                    <div if="{message}" class="from-{ them: author == 'cortex', me: author != 'cortex' }">
-                                        <div if="{ section_no }" id="training_section_{ section_no }"></div>
-                                        <div if="{message}">
-                                            <span if="{author == 'cortex'}">
-                                                <raw content="{ message }"></raw>
-                                                <likert if="{action=='likert'}" opts="{this}"></likert>
-                                                <ok if="{action=='ok'}" opts="{this}"></ok>
-                                                <video-button if="{action=='video'}" opts="{this}"></video-button>
-                                            </span>
-                                            <span if="{author != 'cortex'}">{message}</span>
-                                        </div>
-                                    </div>
+                    <div id="cortex_messages" class="cortex-chat">
+                        <div if="{cortex}" each="{ cortex.userTraining.messages }" class="clear">
+                            <div if="{message}" class="from-{ them: author == 'cortex', me: author != 'cortex' }">
+                                <div if="{ section_no }" id="training_section_{ section_no }"></div>
+                                <div if="{message}">
+                                    <span if="{author == 'cortex'}">
+                                        <raw content="{ message }"></raw>
+                                        <likert if="{action=='likert'}" opts="{this}"></likert>
+                                        <ok if="{action=='ok'}" opts="{this}"></ok>
+                                        <video-button if="{action=='video'}" opts="{this}"></video-button>
+                                    </span>
+                                    <span if="{author != 'cortex'}">{message}</span>
                                 </div>
                             </div>
-                            <div class="">
-                                <form id="chat_input_form" onsubmit="{ onSubmit }">
-                                    <div class="input-group">
-                                        <input id="chat_input" type="text" class="form-control" placeholder="Type a message here...">
-                                        <div class="input-group-btn">
-                                            <button type="submit" class="btn blue"><i class="fa fa-paperclip"></i></button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
                         </div>
+                    </div>
+                    <div class="">
+                        <form id="chat_input_form" onsubmit="{ onSubmit }">
+                            <div class="input-group">
+                                <input id="chat_input" type="text" class="form-control" placeholder="Type a message here...">
+                                <div class="input-group-btn">
+                                    <button type="submit" class="btn blue"><i class="fa fa-paperclip"></i></button>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
                 <div class="tab-pane " id="quick_sidebar_tab_2">

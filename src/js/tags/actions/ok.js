@@ -3,7 +3,7 @@ const AllTags = require('../mixins/all-tags')
 const CONSTANTS = require('../../constants/constants')
 
 const html = `
-<a if="{!archived}" data-button-name="OK" class="btn btn-sm blue" onclick="{onClick}">OK <i class="fa fa-caret-right"></i></a>
+<a if="{!archived}" data-button-name="OK" class="btn btn-sm red" onclick="{onClick}">OK <i class="fa fa-caret-right"></i></a>
 `
 
 module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.OK, html, function(opts) {

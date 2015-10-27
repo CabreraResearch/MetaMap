@@ -3,8 +3,8 @@ const AllTags = require('../mixins/all-tags')
 const CONSTANTS = require('../../constants/constants')
 
 const html = `
-<button id="{id}_video_done" data-button-name="OK" class="btn btn-sm blue video-done" style="{ isPlaying ? '' : 'display: none;' }" onclick="{onClick}">Done <i class="fa fa-caret-right"></i></button>
-<button id="{id}_video_play" data-button-name="Play" class="btn btn-sm blue video-play" style="{ isPlaying ? 'display: none;' : '' }" onclick="{onClick}">{ archived ? 'Replay' : 'Play' } <i class="fa fa-youtube-play"></i></button>
+<button id="{id}_video_done" data-button-name="OK" class="btn btn-sm red video-done" style="{ isPlaying ? '' : 'display: none;' }" onclick="{onClick}">Done <i class="fa fa-caret-right"></i></button>
+<button id="{id}_video_play" data-button-name="Play" class="btn btn-sm red video-play" style="{ isPlaying ? 'display: none;' : '' }" onclick="{onClick}">{ archived ? 'Replay' : 'Play' } <i class="fa fa-youtube-play"></i></button>
 `
 
 module.exports = riot.tag('video-button', html, function(opts) {
