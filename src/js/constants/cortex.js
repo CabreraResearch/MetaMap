@@ -5,7 +5,8 @@ const CORTEX = {
         TIMER: 'timer',
         LIKERT: 'likert',
         MULTIPLE_CHOICE: 'multiple_choice',
-        MORE: 'more'
+        MORE: 'more',
+        CANVAS: 'canvas'
     }
 }
 

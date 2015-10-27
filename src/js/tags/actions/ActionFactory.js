@@ -6,6 +6,7 @@ const ok = require('./ok')
 const multipleChoice = require('./multiple-choice')
 const video = require('./video')
 const more = require('./more')
+const canvas = require('./canvas')
 
 class ActionFactory {
 

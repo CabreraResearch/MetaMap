@@ -89,13 +89,12 @@ const html =
 riot.tag(CONSTANTS.TAGS.SIDEBAR, html, function(opts) {
 
     this.mixin(AllTags)
-    const MetaMap = require('../../../MetaMap')
 
     this.userPicture = ''
     this.scrollToBottom = true
 
     this.on('mount', () => {
-        this.userPicture = MetaMap.User.picture
+        this.userPicture = this.MetaMap.User.picture
     })
 
     this.setHeight = _.once(() => {
@@ -191,8 +190,8 @@ riot.tag(CONSTANTS.TAGS.SIDEBAR, html, function(opts) {
         }
     })
 
-    MetaMap.Eventer.on(CONSTANTS.EVENTS.SIDEBAR_OPEN, (id) => {
-        this.cortex = this.cortex || MetaMap.getCortex(id)
+    this.MetaMap.Eventer.on(CONSTANTS.EVENTS.SIDEBAR_OPEN, (id) => {
+        this.cortex = this.cortex || this.MetaMap.getCortex(id)
         this.actionFactory = this.actionFactory || new ActionFactory(this.cortex)
 
         this.cortex.getData((data) => {
