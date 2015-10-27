@@ -6,6 +6,13 @@ var handleErrors = require('../util/handleErrors');
 var source = require('vinyl-source-stream');
 var pkg = require('../../package.json');
 var minify = require('minifyify')
+var concat = require('gulp-concat');
+
+var concatOthers = function () {
+    gulp.src(['src/vendor/jsPlumb/jsPlumb-2.1.0.js', 'src/vendor/jsPlumb/jsPlumbToolkit-1.1.0.js'])
+        .pipe(concat('vendor2.js'))
+        .pipe(gulp.dest('dist'))
+}
 
 var runbrowserify = function () {
     var module;
@@ -40,8 +47,14 @@ var runbrowserify = function () {
         });
 };
 
-gulp.task('vendor', function () {
+gulp.task('vendor1', function () {
     return runbrowserify();
 });
+
+gulp.task('vendor2', function () {
+    return concatOthers();
+});
+
+gulp.task('vendor', ['vendor1', 'vendor2']);
 
 

@@ -2,7 +2,9 @@
   float: left;
   list-style-type: none;
 }
-
+/*
+ Thanks to http://codepen.io/samuelkraft/pen/Farhl
+*/
 .cortex-chat {
     font-family: "Helvetica Neue";
     font-size: 20px;
