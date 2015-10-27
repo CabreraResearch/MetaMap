@@ -45,6 +45,7 @@ const html =
                                     <span if="{author == 'cortex'}">
                                         <raw content="{ message }"></raw>
                                         <ok if="{action=='ok'}" opts="{this}"></ok>
+                                        <more if="{action=='more'}" opts="{this}"></more>
                                         <video-button if="{action=='video'}" opts="{this}"></video-button>
                                     </span>
                                     <span if="{author != 'cortex'}">{message}</span>

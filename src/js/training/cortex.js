@@ -86,7 +86,7 @@ class CortexMan {
                 if (!this.userTraining.isWaitingOnFeedback) {
                     let nextStep = this.getNextMessage()
                     if (nextStep) {
-                        let timer = (nextStep.action == CONSTANTS.CORTEX.RESPONSE_TYPE.TIMER) ? 5000 : 750
+                        let timer = (nextStep.action == CONSTANTS.CORTEX.RESPONSE_TYPE.MORE) ? 5000 : 750
                         this.buffer(timer).then(() => {
                             this.userTraining.messages.push(nextStep)
                             switch (nextStep.action) {
@@ -119,6 +119,9 @@ class CortexMan {
                 switch(this.massageConstant(obj.action)) {
                     case CONSTANTS.CORTEX.RESPONSE_TYPE.OK:
                         obj.message = 'OK'
+                        moveToNextMessage()
+                        break
+                    case CONSTANTS.CORTEX.RESPONSE_TYPE.MORE:
                         moveToNextMessage()
                         break
                     case CONSTANTS.CORTEX.RESPONSE_TYPE.TIMER:
