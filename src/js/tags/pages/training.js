@@ -13,9 +13,30 @@ const html = `
                 <div id="quick_sidebar_container"></div>
             </div>
             <div class="col-md-8">
-                <div id="training_next_step"></div>
-                <div class="embed-responsive embed-responsive-16by9">
-                    <div id="training_player" ></div>
+                <div class="row">
+                    <div id="training_next_step"></div>
+                </div>
+                <div class="row" if="{ videoTitle }" class="embed-responsive embed-responsive-16by9" style="border: 1px solid #e1e1e1 !important;">
+                    <div class="portlet light">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <i class="fa fa-youtube"></i>
+                                <span class="caption-subject font-green-sharp bold uppercase">{ videoTitle }</span>
+                            </div>
+                        </div>
+                        <div class="portlet-body form">
+                            <form role="form" lpformnum="3">
+                                <div class="form-group">
+                                    <div class="embed-responsive embed-responsive-16by9">
+                                        <div id="training_player" ></div>
+                                    </div>
+                                </div>
+                                <div class="right">
+                                    <button onclick="{ onFinishVideo }" class="btn red">Finished</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -27,6 +48,7 @@ module.exports = riot.tag(CONSTANTS.TAGS.TRAINING, html, function(opts) {
 
     this.mixin(AllTags)
     this.training = {}
+    this.videoTitle = null
 
     this.on('mount update', (event, opts) => {
         this.sidebar = this.sidebar || riot.mount(this.quick_sidebar_container, 'quick-sidebar')[0]
@@ -66,24 +88,32 @@ module.exports = riot.tag(CONSTANTS.TAGS.TRAINING, html, function(opts) {
         }
     })
 
+    this.onFinishVideo = () => {
+        this.cortex.processUserResponse({
+            action: CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO,
+            data: { buttonName: 'OK' }
+        }, this.currentMessage)
+    }
+
     this.MetaMap.Eventer.on(CONSTANTS.EVENTS.PLAY_VIDEO, (message) => {
         if(message && message.action_data && message.action_data.youtubeid) {
+            this.videoTitle = message.action_data.title || 'A YouTube Video'
+            this.currentMessage = message
             this.player = new VideoPlayer('training_player', {
                 height: 390,
                 width: 640,
                 videoId: message.action_data.youtubeid,
                 onFinish: () => {
-                    this.cortex.processUserResponse({
-                        action: CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO,
-                        data: { buttonName: 'OK' }
-                    }, message)
+                    this.onFinishVideo()
                 }
             })
+            this.update()
         }
     })
 
     this.MetaMap.Eventer.on(CONSTANTS.EVENTS.STOP_VIDEO, (message) => {
-        if(message) {
+        if (message) {
+            this.videoTitle = null
             if (this.player) {
                 this.player.destroy()
             }
