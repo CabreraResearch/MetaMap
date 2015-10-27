@@ -30,7 +30,26 @@ class CortexMan {
     get picture() { return 'src/images/cortex-avatar-small.jpg' }
 
     getOutline() {
-        return _.sortBy(this.userTraining.outline, 'section_no')
+        let ret = [];
+        let out = _.sortBy(this.userTraining.outline, 'section_no')
+        _.each(out, (section) => {
+            let parts = section.section_no.split('-')
+            if (parts.length === 1) {
+                ret.push(section)
+            } else {
+                let p = _.find(ret, (s) => {
+                    return s.section_no == parts[0]
+                })
+                p.submenu = p.submenu || []
+                if (!_.any(p.submenu, (s) => {
+                    return s.section_no == section.section_no
+                })) {
+                    p.submenu.push(section)
+                }
+
+            }
+        })
+        return ret;
     }
 
     massageConstant(action) {
