@@ -18,7 +18,7 @@ const html =
                 <img height="39" width="39" class="avatar" alt="" src="{cortex.picture}"/>
                 <span class="caption-subject font-dark bold uppercase">Cortex</span>
                 <span id="cortex_on_timer" style="display: { none: cortex.isTimerOff };">
-                    <img height="39" alt="" src="src/images/dots.gif"/>
+                    <img alt="" src="src/images/dots_small.gif"/>
                 </span>
             </div>
             <ul class="nav nav-tabs">
