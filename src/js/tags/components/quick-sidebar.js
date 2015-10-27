@@ -23,14 +23,10 @@ const html =
             </div>
             <ul class="nav nav-tabs">
                 <li class="active">
-                    <a id="cortex_man_tab" href="#quick_sidebar_tab_1" data-toggle="tab" style="color: #7FB0DA;">
-                    Chat
-                    </a>
+                    <a id="cortex_man_tab" href="#quick_sidebar_tab_1" data-toggle="tab" class="cortex-tabs">Chat</a>
                 </li>
                 <li>
-                    <a id="outline_tab" href="#quick_sidebar_tab_2" data-toggle="tab" style="color: #7FB0DA;">
-                    Outline
-                    </a>
+                    <a id="outline_tab" href="#quick_sidebar_tab_2" data-toggle="tab" class="cortex-tabs">Outline</a>
                 </li>
             </ul>
         </div>
@@ -68,12 +64,16 @@ const html =
                     <div class="">
                         <ol>
                             <li each="{ cortex.getOutline() }" onclick="{ parent.onOutlineClick }" >
-                                <a if="{ true == archived }" class="list-heading">{ section }</a>
-                                <span if="{ true != archived }" class="list-heading">{ section }</span>
+                                <h3>
+                                    <a if="{ true == archived }" class="list-heading">{ section }</a>
+                                    <span if="{ true != archived }" class="list-heading">{ section }</span>
+                                </h3>
                                 <ol if="{ submenu }">
                                     <li each="{ submenu }" onclick="{ parent.onOutlineClick }" >
-                                        <a if="{ true == archived }" class="list-heading">{ section }</a>
-                                        <span if="{ true != archived }" class="list-heading">{ section }</span>
+                                        <h4>
+                                            <a if="{ true == archived }" class="list-heading">{ section }</a>
+                                            <span if="{ true != archived }" class="list-heading">{ section }</span>
+                                        </h4>
                                     </li>
                                 </ol>
                             </li>
