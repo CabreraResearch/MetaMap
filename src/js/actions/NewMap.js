@@ -9,7 +9,7 @@ class NewMap extends ActionBase {
     act() {
         super.act();
 
-        let mapId = NewMap.createMap()
+        let mapId = NewMap.createMap().mapId
         this.metaMap.MetaMap.Router.to(`map/${mapId}`);
 
         return true;
@@ -32,14 +32,21 @@ class NewMap extends ActionBase {
                 '*': {
                     read: false,
                     write: false }
-            },
-            map: opts.map
+            }
         }
         let pushState = MetaMap.MetaFire.pushData(newMap, `${CONSTANTS.ROUTES.MAPS_LIST}`);
         let mapId = pushState.key();
-        MetaMap.MetaFire.setData(newMap, `${CONSTANTS.ROUTES.MAPS_DATA}${mapId}`);
+        let mapData = {
+            changed_by: {
+                userId: MetaMap.User.userId,
+                name: MetaMap.User.displayName,
+                picture: MetaMap.User.picture
+            },
+            data: opts.map
+        }
+        MetaMap.MetaFire.setData(mapData, `${CONSTANTS.ROUTES.MAPS_DATA}${mapId}`);
 
-        return mapId
+        return { mapId: mapId, map: _.extend(newMap,mapData) }
     }
 }
 

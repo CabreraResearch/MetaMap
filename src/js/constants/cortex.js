@@ -10,7 +10,8 @@ const CORTEX = {
         CANVAS: 'canvas',
         CANVAS_SAVE: 'canvas_save',
         CANVAS_SHARE: 'canvas_share',
-        CANVAS_FINISH: 'canvas_finish'
+        CANVAS_FINISH: 'canvas_finish',
+        FEEDBACK: 'feedback'
     }
 }
 

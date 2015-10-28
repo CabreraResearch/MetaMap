@@ -21,22 +21,6 @@ module.exports = riot.tag('meta-canvas', html, function(opts) {
     this.mapId = null
     this.canvas = null
 
-    this.throttleSave = _.throttle((data) => {
-        if (this.permissions.canEdit()) {
-            //KLUDGE: looks like the exportData now includes invalid property values (Infinity) and types (methods)
-            //Parsing to/from string fixes for now
-            data = JSON.parse(JSON.stringify(data))
-            let postData = {
-                data: data,
-                changed_by: {
-                    userId: this.MetaMap.User.userId
-                }
-            }
-            this.MetaMap.MetaFire.setDataInTransaction(postData, `maps/data/${this.mapId}`)
-            this.MetaMap.Integrations.sendEvent(this.mapId, 'autosave', this.mapInfo.name)
-        }
-    }, 500)
-
 
     this.buildCanvas = (map) => {
         if (!this.canvas) {
@@ -53,17 +37,11 @@ module.exports = riot.tag('meta-canvas', html, function(opts) {
                     mapInfo: this.mapInfo,
                     permissions: this.permissions,
                     attachTo: this.diagram,
-                    onSave: (data) => { this.throttleSave(data) }
+                    doAutoSave: true
                 })
-                this.canvas.init()
-
                 this.update()
             })
-        } else {
-            if (map.changed_by != this.MetaMap.User.userKey) {
-                this.canvas.init()
-            }
-        }
+        } 
         NProgress.done()
     }
 

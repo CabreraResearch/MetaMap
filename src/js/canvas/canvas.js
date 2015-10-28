@@ -2,22 +2,33 @@ const jsPlumb = window.jsPlumb;
 const jsPlumbToolkit = window.jsPlumbToolkit;
 const _ = require('lodash')
 const CONSTANTS = require('../constants/constants')
+const Permissions = require('../app/Permissions')
 
 require('./layout')
 
 class Canvas {
 
     constructor(opts) {
-        this.map = opts.map;
-        this.mapId = opts.mapId;
-        this.toolkit = {};
         this.metaMap = require('../../MetaMap')
-        let permissions = opts.permissions;
-
         let that = this;
-
-
-
+        this.toolkit = {};
+        this._init(opts)
+        
+        this.onAutoSave = _.throttle((data) => {
+            if (this.doAutoSave && this.permissions.canEdit()) {
+                //KLUDGE: looks like the exportData now includes invalid property values (Infinity) and types (methods)
+                //Parsing to/from string fixes for now
+                data = JSON.parse(JSON.stringify(data))
+                let postData = {
+                    data: data,
+                    changed_by: {
+                        userId: this.MetaMap.User.userId
+                    }
+                }
+                this.metaMap.MetaFire.setDataInTransaction(postData, `maps/data/${this.mapId}`)
+                this.metaMap.Integrations.sendEvent(this.mapId, 'autosave', this.map.name)
+            }
+        }, 500)
 
         jsPlumbToolkit.ready(function () {
 
@@ -91,7 +102,7 @@ class Canvas {
             // configure the renderer
             var renderer = toolkit.render({
                 container: opts.attachTo,
-                elementsDraggable: permissions.canEdit(),
+                elementsDraggable: that.isReadOnly,
                 enablePanButtons: false,
                 layout:{
                     // custom layout for this app. simple extension of the spring layout.
@@ -431,7 +442,7 @@ class Canvas {
                             parseInt(label.style.left, 10),
                             parseInt(label.style.top, 10)
                         ]
-                        opts.onSave(toolkit.exportData())
+                        that.onAutoSave(toolkit.exportData())
                     }
                 });
 
@@ -474,7 +485,7 @@ class Canvas {
 
             toolkit.bind("dataUpdated", function() {
                 dumpEdgeCounts();
-                opts.onSave(toolkit.exportData())
+                that.onAutoSave(toolkit.exportData())
             })
 
             jsPlumb.on("relationshipEdgeDump", "click", dumpEdgeCounts());
@@ -544,14 +555,28 @@ class Canvas {
         })
     }
 
-    init() {
+    _init(opts) {
+        if(opts.map) this.map = opts.map;
+        if(opts.mapId) this.mapId = opts.mapId;
 
+        this.isReadOnly = true
+        if(opts.doAutoSave == true || opts.doAutoSave == false) this.doAutoSave = opts.doAutoSave
+        if (this.map && this.doAutoSave) {
+            this.permissions = new Permissions(this.map)
+            this.isReadOnly = !this.permissions.canEdit()
+        }
+    }
+
+    reInit(opts) {
+         this._init(opts)
     }
 
     exportData() {
         let ret = JSON.parse(JSON.stringify(this.toolkit.exportData()))
         return ret
     }
+
+
 }
 
 module.exports = Canvas;

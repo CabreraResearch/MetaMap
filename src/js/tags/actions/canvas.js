@@ -1,4 +1,7 @@
 const riot = require('riot')
+const $ = require('jquery')
+const _ = require('lodash')
+
 const AllTags = require('../mixins/all-tags')
 const CONSTANTS = require('../../constants/constants')
 const Canvas = require('../../canvas/canvas')
@@ -12,9 +15,10 @@ const html = `
 
             </div>
             <div class="right">
-                <a onclick="{ onSave }" class="btn green">Save <i class="fa fa-save"></i></a>
+                <a if="{ hasSave }" onclick="{ onSave }" class="btn green">Save <i class="fa fa-save"></i></a>
                 <a onclick="{ onShare }" class="btn blue">Share <i class="fa fa-share"></i></a>
-                <a onclick="{ onFinish }" class="btn red">Finished <i class="fa fa-check-circle"></i></a>
+                <a if="{ hasFinish }" onclick="{ onFinish }" class="btn red">Finished <i class="fa fa-check-circle"></i></a>
+                <a if="{ hasDone }" onclick="{ onDone }" class="btn red">Finished <i class="fa fa-check-circle"></i></a>
             </div>
         </div>
     </div>
@@ -25,6 +29,9 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS, html, function(
 
     this.mixin(AllTags)
     this.archived = true
+    this.hasSave = true
+    this.hasFinish = true
+    this.hasDone = false
 
     this.correctHeight = () => {
         $(this.canvas_training_portal).css({
@@ -47,13 +54,24 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS, html, function(
             }
             this.data = message
             this.archived = this.data.archived
+            this.title = this.data.action_data.title || this.cortex.training.name + ' Map ' + this.data.id
+
+            this.hasSave = !this.data.map
+            this.hasFinish = !this.archived
+
             if (!this.canvas) {
-                this.canvas = new Canvas({
+                let opts = {
                     attachTo: this.canvas_training_portal_diagram,
-                    permissions: new Permissions({ isTraining: true }),
-                    onSave: (data) => {  }
-                })
-                this.canvas.init()
+                    doAutoSave: false
+                }
+                if (this.data.map) {
+                    opts = _.extend(opts, {
+                        map: this.data.map,
+                        mapId: this.data.mapId,
+                        doAutoSave: true
+                    })
+                }
+                this.canvas = new Canvas(opts)
                 this.correctHeight()
             }
         }
@@ -65,20 +83,36 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS, html, function(
     })
 
     this.onSave = () => {
-        let newMap = require('../../actions/NewMap')
-        let map = this.canvas.exportData()
-        let mapId = newMap.createMap({ title: this.data.action_data.title, map: map })
-        this.cortex.processUserResponse({
-            action: CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS_SAVE,
-            data: {
-                mapId: mapId,
-                type: 'Save',
-                title: this.title
-            }
-        }, this.currentMessage)
+        if (!this.data.map) {
+            let newMap = require('../../actions/NewMap')
+            this.hasSave = false
+            let map = this.canvas.exportData()
+            let nuMap = newMap.createMap({ title: this.title, map: map })
+            this.data.map = nuMap.map
+            this.data.mapId = nuMap.mapId
+            this.cortex.processUserResponse({
+                action: CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS_SAVE,
+                is_ignored: true,
+                data: {
+                    mapId: this.data.mapId,
+                    map: this.data.map,
+                    title: this.title
+                }
+            }, this.currentMessage)
+            this.canvas.reInit({
+                map: this.data.map,
+                mapId: this.data.mapId,
+                doAutoSave: true
+            })
+            this.update()
+        }
     }
 
     this.onShare = () => {
+
+    }
+
+    this.onDone = () => {
 
     }
 
@@ -87,8 +121,7 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS, html, function(
         this.cortex.processUserResponse({
             action: CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS_FINISH,
             data: {
-                map: map,
-                type: 'Finish'
+                map: map
             }
         }, this.currentMessage)
     }

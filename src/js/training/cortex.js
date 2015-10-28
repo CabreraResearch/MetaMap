@@ -87,7 +87,8 @@ class CortexMan {
             this.userTraining.messages.push({
                     message: obj.line,
                     author: 'cortex',
-                    time: `${new Date() }`
+                    time: `${new Date() }`,
+                    action: CONSTANTS.CORTEX.RESPONSE_TYPE.FEEDBACK
             })
             this.saveUserTraining()
         })
@@ -99,6 +100,7 @@ class CortexMan {
                 time: `${new Date() }`
             }
             _.extend(obj, response)
+            originalMessage = originalMessage || this.currentMessage
 
             const moveToNextMessage = (feedback) => {
                 this.userTraining.messages.push(obj)
@@ -151,22 +153,24 @@ class CortexMan {
                         moveToNextMessage()
                         break
                     case CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS:
-                        msg = (obj.action_data) ? obj : originalMessage
                         this.userTraining.isWaitingOnFeedback = true
-                        this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, msg)
+                        this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, originalMessage)
                         break
                     case CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS_FINISH:
-                        msg = (obj.action_data) ? obj : originalMessage
                         this.userTraining.isWaitingOnFeedback = false
                         moveToNextMessage({ line: 'Great work in the canvas!' })
                         break
                     case CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS_SAVE:
-                        msg = obj
-                        moveToNextMessage({ line: `<span>Great news, you saved this map! It now appears in <a href="#mymaps">your list of maps</a> and you can access it again later here <a href="#!maps/${msg.data.mapId}">${msg.data.title}</a></span>` })
+                        if (obj.data.map) {
+                            originalMessage.map = obj.data.map
+                            moveToNextMessage({ line: `<span>Great news, you saved this map! It now appears in <a href="#!mymaps" style="color: #cb5a5e !important;">your list of maps</a> and you can access it again later here <a href="#!maps/${obj.data.mapId}" style="color: #cb5a5e !important;">${obj.data.title}</a>Your map will now automatically save as you make changes, so I've hidden the Save button!</span>` })
+                        }
                         break
                     case CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS_SHARE:
-                        msg = (obj.action_data) ? obj : originalMessage
-                        moveToNextMessage({ line: 'Great news, you shared this map with some of your friends!' })
+                        if (obj.data.map) {
+                            originalMessage.map = obj.data.map
+                            moveToNextMessage({ line: 'Great news, you shared this map with some of your friends!' })
+                        }
                         break
                     case CONSTANTS.CORTEX.RESPONSE_TYPE.LIKERT:
                         _.each(obj.data, (val, key) => {
@@ -278,12 +282,11 @@ class CortexMan {
                     if (!this.userTraining.messages) {
                         this.userTraining.messages = [this.getNextMessage()]
                     } else {
-                        this.currentMessageKey = this.userTraining.messages.length - 1
+                        this.currentMessageKey = _.findLastIndex(this.userTraining.messages, (m) => { return m.action && m.action != CONSTANTS.CORTEX.RESPONSE_TYPE.FEEDBACK && true != m.is_ignored })
                         this.currentMessage = this.userTraining.messages[this.currentMessageKey]
                         if (this.currentMessage.action && this.currentMessage.action != CONSTANTS.CORTEX.RESPONSE_TYPE.OK) {
-                            this.processUserResponse({ action: this.currentMessage.action, data: {}}, this.currentMessage)
+                            this.processUserResponse(this.currentMessage)
                         }
-                        //this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, this.currentMessage)
                     }
                     this.saveUserTraining()
                     NProgress.done()
