@@ -25,7 +25,7 @@ class VideoPlayer {
 
     init() {
         this.onReady().then(() => {
-            this.player = new this.YT.Player(this.id, {
+            this.player = this.player || new this.YT.Player(this.id, {
                 videoId: this.opts.videoId,
                 frameborder: 0,
                 events: {
@@ -67,6 +67,8 @@ class VideoPlayer {
                 this.player.destroy()
             } catch (e) {
                 console.log(e)
+            } finally {
+                this.player = null
             }
         }
     }
