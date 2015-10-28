@@ -6,6 +6,7 @@ const AllTags = require('../mixins/all-tags')
 const CONSTANTS = require('../../constants/constants')
 const Canvas = require('../../canvas/canvas')
 const Permissions = require('../../app/Permissions')
+const ShareMap = require('../../actions/ShareMap')
 
 const html = `
 <div id="canvas_training_portal" style="border: 1px solid #e1e1e1 !important; border-radius: 5px;">
@@ -16,9 +17,9 @@ const html = `
             </div>
             <div class="right">
                 <a if="{ hasSave }" onclick="{ onSave }" class="btn green">Save <i class="fa fa-save"></i></a>
-                <a onclick="{ onShare }" class="btn blue">Share <i class="fa fa-share"></i></a>
+                <a if="{ !hasSave }" onclick="{ onShare }" class="btn blue">Share <i class="fa fa-share"></i></a>
                 <a if="{ hasFinish }" onclick="{ onFinish }" class="btn red">Finished <i class="fa fa-check-circle"></i></a>
-                <a if="{ hasDone }" onclick="{ onDone }" class="btn red">Finished <i class="fa fa-check-circle"></i></a>
+                <a if="{ !hasFinish }" onclick="{ onDone }" class="btn red">Finished <i class="fa fa-check-circle"></i></a>
             </div>
         </div>
     </div>
@@ -31,7 +32,6 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS, html, function(
     this.archived = true
     this.hasSave = true
     this.hasFinish = true
-    this.hasDone = false
 
     this.correctHeight = () => {
         $(this.canvas_training_portal).css({
@@ -98,7 +98,7 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS, html, function(
                     map: this.data.map,
                     title: this.title
                 }
-            }, this.currentMessage)
+            })
             this.canvas.reInit({
                 map: this.data.map,
                 mapId: this.data.mapId,
@@ -109,7 +109,22 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS, html, function(
     }
 
     this.onShare = () => {
-
+        if (this.data.map) {
+            ShareMap.act({
+                map: this.data.map,
+                onClose: (shared_with) => {
+                    if (!_.isEmpty(shared_with)) {
+                        this.cortex.processUserResponse({
+                            action: CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS_SHARE,
+                            is_ignored: true,
+                            data: {
+                                shared_with: shared_with
+                            }
+                        })
+                    }
+                }
+            });
+        }
     }
 
     this.onDone = () => {
@@ -123,7 +138,7 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS, html, function(
             data: {
                 map: map
             }
-        }, this.currentMessage)
+        })
     }
 
 })

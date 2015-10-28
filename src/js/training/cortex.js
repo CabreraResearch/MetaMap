@@ -163,12 +163,11 @@ class CortexMan {
                     case CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS_SAVE:
                         if (obj.data.map) {
                             originalMessage.map = obj.data.map
-                            moveToNextMessage({ line: `<span>Great news, you saved this map! It now appears in <a href="#!mymaps" style="color: #cb5a5e !important;">your list of maps</a> and you can access it again later here <a href="#!maps/${obj.data.mapId}" style="color: #cb5a5e !important;">${obj.data.title}</a>Your map will now automatically save as you make changes, so I've hidden the Save button!</span>` })
+                            moveToNextMessage({ line: `<span>Great news, you saved this map! It now appears in <a href="#!mymaps" style="color: #cb5a5e !important;"><b>your list of maps</b></a> and you can access it again later here <a href="#!maps/${obj.data.mapId}" style="color: #cb5a5e !important;"<b>>${obj.data.title}</b></a> Your map will now automatically save as you make changes, so I've hidden the Save button! Now that your map is saved, you can Share it!</span>` })
                         }
                         break
                     case CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS_SHARE:
-                        if (obj.data.map) {
-                            originalMessage.map = obj.data.map
+                        if (obj.data.shared_with) {
                             moveToNextMessage({ line: 'Great news, you shared this map with some of your friends!' })
                         }
                         break

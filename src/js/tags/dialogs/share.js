@@ -84,23 +84,30 @@ module.exports = riot.tag('share', html, function (opts) {
         debugger;
     }
 
+    this.newShares = {}
+
     this.onShare = (e, opts) => {
-        this.opts.map.shared_with[this.suggestion.id] = {
+        let newShare = {
             read: this.picker.val() == 'read' || this.picker.val() == 'write',
             write: this.picker.val() == 'write',
             name: this.suggestion.name,
             picture: this.suggestion.picture
         }
+        this.opts.map.shared_with[this.suggestion.id] = newShare
+        this.newShares[this.suggestion.id] = newShare
+
         share.addShare(this.opts.map, this.suggestion, this.opts.map.shared_with[this.suggestion.id])
 
         this.suggestion = null
         this.ta.typeahead('val', '')
         $(this.share_button).hide()
+
     }
 
     this.onUnShare = (e, opts) => {
         e.item.val.id = e.item.i
         delete this.opts.map.shared_with[e.item.i]
+        delete this.newShares[e.item.i]
         share.removeShare(this.opts.map, e.item.val)
     }
 
@@ -108,10 +115,17 @@ module.exports = riot.tag('share', html, function (opts) {
         if (opts) {
             _.extend(this.opts, opts);
         }
+        if (!this._onClose && this.opts.onClose) {
+            this._onClose = this.opts.onClose
+            $(this.share_modal).on('hidden.bs.modal', () => {
+                this.opts.onClose(this.newShares)
+            })
+        }
     })
 
     this.on('mount', (e, opts) => {
         $(this.share_modal).modal('show')
+
         this.ta = $('#share_typeahead .typeahead').typeahead({
             highlight: true
         },{
