@@ -64,15 +64,40 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS, html, function(
                     attachTo: this.canvas_training_portal_diagram,
                     doAutoSave: false
                 }
-                if (this.data.map) {
-                    opts = _.extend(opts, {
-                        map: this.data.map,
-                        mapId: this.data.mapId,
-                        doAutoSave: true
-                    })
+                let makeCanvas = (o) => {
+                    if (!o.map) {
+                        this.data.map = null
+                        this.hasSave = true
+                    }
+                    this.canvas = this.canvas || new Canvas(o)
+                    this.correctHeight()
+                    this.update()
                 }
-                this.canvas = new Canvas(opts)
-                this.correctHeight()
+                if (this.data.mapId) {
+                    this.MetaMap.MetaFire.getData(`maps/list/${this.data.mapId}`).then((info) => {
+                        if (info) {
+                            this.MetaMap.MetaFire.getData(`maps/data/${this.data.mapId}`).then((map) => {
+                                if (map) {
+                                    this.data.map = _.extend(map, info)
+                                    opts = _.extend(opts, {
+                                        map: this.data.map,
+                                        mapId: this.data.mapId,
+                                        doAutoSave: true
+                                    })
+                                    makeCanvas(opts)
+                                } else {
+                                    makeCanvas(opts)
+                                }
+                            })
+                        } else {
+                            makeCanvas(opts)
+                        }
+                    })
+
+                } else {
+                    makeCanvas(opts)
+                }
+
             }
         }
     }

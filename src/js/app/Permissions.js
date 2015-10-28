@@ -1,7 +1,7 @@
 class Permissions {
 
     constructor(map) {
-        this.map = map
+        this.map = map || {}
         this.permitAll = this.map.isTraining || false
         this.metaMap = require('../../MetaMap')
     }

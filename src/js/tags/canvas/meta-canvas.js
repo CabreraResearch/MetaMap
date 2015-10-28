@@ -26,22 +26,19 @@ module.exports = riot.tag('meta-canvas', html, function(opts) {
         if (!this.canvas) {
             $(this.diagram).empty()
 
-            let ready = this.MetaMap.MetaFire.getData(`${CONSTANTS.ROUTES.MAPS_LIST}/${this.mapId}`).then((mapInfo) => {
-                this.mapInfo = mapInfo
-                this.permissions = new Permissions(mapInfo)
-            })
-            ready.then(() => {
+            this.MetaMap.MetaFire.getData(`${CONSTANTS.ROUTES.MAPS_LIST}/${this.mapId}`).then((mapInfo) => {
+                this.map = _.extend(map, mapInfo)
+                this.permissions = new Permissions(this.map)
                 this.canvas = new Canvas({
-                    map: map,
+                    map: this.map,
                     mapId: this.mapId,
-                    mapInfo: this.mapInfo,
                     permissions: this.permissions,
                     attachTo: this.diagram,
                     doAutoSave: true
                 })
                 this.update()
             })
-        } 
+        }
         NProgress.done()
     }
 

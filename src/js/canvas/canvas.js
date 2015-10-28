@@ -13,7 +13,7 @@ class Canvas {
         let that = this;
         this.toolkit = {};
         this._init(opts)
-        
+
         this.onAutoSave = _.throttle((data) => {
             if (this.doAutoSave && this.permissions.canEdit()) {
                 //KLUDGE: looks like the exportData now includes invalid property values (Infinity) and types (methods)
@@ -22,7 +22,7 @@ class Canvas {
                 let postData = {
                     data: data,
                     changed_by: {
-                        userId: this.MetaMap.User.userId
+                        userId: this.metaMap.User.userId
                     }
                 }
                 this.metaMap.MetaFire.setDataInTransaction(postData, `maps/data/${this.mapId}`)
@@ -102,7 +102,7 @@ class Canvas {
             // configure the renderer
             var renderer = toolkit.render({
                 container: opts.attachTo,
-                elementsDraggable: that.isReadOnly,
+                elementsDraggable: !that.isReadOnly,
                 enablePanButtons: false,
                 layout:{
                     // custom layout for this app. simple extension of the spring layout.
@@ -559,7 +559,7 @@ class Canvas {
         if(opts.map) this.map = opts.map;
         if(opts.mapId) this.mapId = opts.mapId;
 
-        this.isReadOnly = true
+        this.isReadOnly = false
         if(opts.doAutoSave == true || opts.doAutoSave == false) this.doAutoSave = opts.doAutoSave
         if (this.map && this.doAutoSave) {
             this.permissions = new Permissions(this.map)

@@ -71,7 +71,7 @@ const html = `
                         </tr>
                     </thead>
                     <tbody>
-                        <tr if="{ parent.data && parent.data[i] }" each="{ parent.data[i] }" class="odd gradeX">
+                        <tr if="{ parent.data && parent.data[i] }" each="{ parent.data[i] }" class="odd gradeX" data-id="{ id }">
                             <td>
                                 <input if="{ val.title == 'My Maps' || parent.user.isAdmin }" type="checkbox" class="checkboxes" value="1"/>
                             </td>
@@ -185,10 +185,10 @@ module.exports = riot.tag('my-maps', html, function (opts) {
             switch (event.item.title.toLowerCase()) {
                 case 'delete':
                     const deleteMaps = require('../../actions/DeleteMap.js');
-                    let selected = this[`table0`].find('.active').find('.mapid');
+                    let selected = this[`table0`].find('.active');
                     let ids = [];
-                    _.each(selected, (cell) => {
-                        ids.push(cell.innerHTML);
+                    _.each(selected, (row) => {
+                        ids.push(row.dataset.id);
                     });
                     deleteMaps.deleteAll(ids, CONSTANTS.PAGES.MY_MAPS);
                     let find = this[`table0`].find('tbody tr .checkboxes');
