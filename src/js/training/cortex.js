@@ -217,10 +217,16 @@ class CortexMan {
                                 message: `<span>Help? You got it. Here are some of the things I can do for you:
                                             <ul>
                                                 <li><code>/help</code> - Return help</li>
+                                                <li><code>/next</code> - Skip this step and move onto the next</li>
                                                 <li><code>/restart</code> - Restart this course from the beginning. Warning: this will delete your progress!</li>
                                             </ul>
                                         </span>`
                             })
+                            break
+                        case 'next':
+                            obj.message = ''
+                            this.userTraining.isWaitingOnFeedback = false
+                            moveToNextMessage({ line: 'OK... I\'ll let you skip this step.' })
                             break
                         case 'restart':
                             if (confirm('Are you sure? All of your progress will be lost!')) {
