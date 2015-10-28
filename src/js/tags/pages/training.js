@@ -9,10 +9,10 @@ const html = `
 <div id="training_portlet" class="portlet light">
     <div class="portlet-body" style="padding-top: 0;">
         <div class="row">
-            <div id="quick_sidebar_cell" class="col-md-4">
+            <div id="quick_sidebar_cell" class="col-md-4 col-lg-3">
                 <div id="quick_sidebar_container"></div>
             </div>
-            <div class="col-md-8">
+            <div class="col-md-8 col-lg-9">
                 <div class="row">
                     <div id="training_next_step"></div>
                 </div>

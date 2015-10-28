@@ -57,7 +57,7 @@ class Auth0 {
                     if (profile) {
                         fulfill(profile)
                     } else {
-                        this.onFail(new Error('No profile found for this user'), reject)
+                        showLogin()
                     }
                 }).catch((err) => {
                     this.onFail(err, reject)
@@ -114,7 +114,7 @@ class Auth0 {
                             }
                         })
                     } else {
-                        this.onFail(new Error('No session could be found'), reject)
+                        fulfill(null)
                     }
                 })
             })

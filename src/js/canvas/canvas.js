@@ -24,7 +24,7 @@ class Canvas {
             var currentCorner
 
             // get a new instance of the Toolkit. provide a set of methods that control who can connect to what, and when.
-            var toolkit = window.toolkit = jsPlumbToolkit.newInstance({
+            var toolkit = that.toolkit = jsPlumbToolkit.newInstance({
                 beforeStartConnect:function(fromNode, edgeType) {
                     currentCorner = edgeType
                     return {
@@ -546,6 +546,10 @@ class Canvas {
 
     init() {
 
+    }
+
+    exportData() {
+        return this.toolkit.exportData()
     }
 }
 
