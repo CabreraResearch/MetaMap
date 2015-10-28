@@ -549,7 +549,8 @@ class Canvas {
     }
 
     exportData() {
-        return this.toolkit.exportData()
+        let ret = JSON.parse(JSON.stringify(this.toolkit.exportData()))
+        return ret
     }
 }
 

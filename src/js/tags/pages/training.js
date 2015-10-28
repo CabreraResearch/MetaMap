@@ -13,7 +13,7 @@ const html = `
                 <div id="quick_sidebar_container"></div>
             </div>
             <div class="col-md-8 col-lg-9">
-                <div class="row">
+                <div id="training_next_step_parent" class="row">
                     <div id="training_next_step"></div>
                 </div>
             </div>
@@ -26,7 +26,17 @@ module.exports = riot.tag(CONSTANTS.TAGS.TRAINING, html, function(opts) {
 
     this.mixin(AllTags)
     this.training = {}
-    this.videoTitle = null
+
+    this.guaranteeStep = () => {
+        let _step = document.getElementById('training_next_step')
+        if (!_step) {
+            let _parent = document.getElementById('training_next_step_parent')
+            _parent.innerHTML = '<div id="training_next_step"></div>'
+            _step = document.getElementById('training_next_step')
+            this.training_next_step = _step
+        }
+        return _step
+    }
 
     this.on('mount update', (event, opts) => {
         this.sidebar = this.sidebar || riot.mount(this.quick_sidebar_container, 'quick-sidebar')[0]
@@ -41,8 +51,18 @@ module.exports = riot.tag(CONSTANTS.TAGS.TRAINING, html, function(opts) {
         }
     })
 
+    this.unmountStep = () => {
+        if (this.step) {
+            this.step.unmount()
+            this.step = null
+        }
+        this.guaranteeStep()
+    }
+
     this.MetaMap.Eventer.on(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, (message) => {
         if (message) {
+            this.guaranteeStep()
+            this.update()
             let opts = { message: message, cortex: this.cortex }
             switch (this.cortex.massageConstant(message.action)) {
                 case CONSTANTS.CORTEX.RESPONSE_TYPE.LIKERT:
@@ -55,10 +75,7 @@ module.exports = riot.tag(CONSTANTS.TAGS.TRAINING, html, function(opts) {
                     this.step = riot.mount(this.training_next_step, CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS, opts)[0]
                     break
                 default:
-                    if (this.step) {
-                        this.step.unmount()
-                        this.step = null
-                    }
+                    this.unmountStep()
                     break
             }
             if (this.step) {
@@ -69,6 +86,8 @@ module.exports = riot.tag(CONSTANTS.TAGS.TRAINING, html, function(opts) {
 
     this.MetaMap.Eventer.on(CONSTANTS.EVENTS.PLAY_VIDEO, (message) => {
         if (message) {
+            this.guaranteeStep()
+            this.update()
             let opts = { message: message, cortex: this.cortex }
             this.step = riot.mount(this.training_next_step, CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO, opts)[0]
             this.step.update(opts)
@@ -77,8 +96,7 @@ module.exports = riot.tag(CONSTANTS.TAGS.TRAINING, html, function(opts) {
 
     this.MetaMap.Eventer.on(CONSTANTS.EVENTS.STOP_VIDEO, (message) => {
         if (message) {
-            this.step.unmount()
-            this.step = null
+            this.unmountStep()
         }
     })
 

@@ -4,7 +4,7 @@ const CONSTANTS = require('../../constants/constants')
 const VideoPlayer = require('../../tools/VideoPlayer')
 
 const html = `
-<div id="video_training_portal" if="{ videoTitle }" style="border: 1px solid #e1e1e1 !important; border-radius: 5px;">
+<div id="video_training_portal" style="border: 1px solid #e1e1e1 !important; border-radius: 5px;">
     <div class="portlet light">
         <div class="portlet-title">
             <div class="caption">
@@ -31,6 +31,7 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO, html, function(o
     this.mixin(AllTags)
     this.archived = true
     this.isPlaying = true
+    this.player = null
 
     this.correctHeight = () => {
         $(this.video_training_portal).css({
@@ -54,7 +55,7 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO, html, function(o
             this.player = new VideoPlayer('training_player', {
                 height: 390,
                 width: 640,
-                videoId: message.action_data.youtubeid,
+                videoId: opts.message.action_data.youtubeid,
                 onFinish: () => {
                     this.onFinishVideo()
                 }
@@ -62,6 +63,7 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO, html, function(o
             this.correctHeight()
             this.archived = this.data.archived
             this.isPlaying = this.cortex.currentVideo == this.id || true != this.archived
+            this.update()
         }
     }
     update(opts)
@@ -72,18 +74,20 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO, html, function(o
             data: { buttonName: 'Finished' }
         }, this.currentMessage)
         this.videoTitle = null
+        this.destroy()
+    }
+
+    this.destroy = () => {
         if (this.player) {
             this.player.destroy()
         }
     }
 
-    this.on('update', (opts) => {
+    this.on('mount update', (opts) => {
         update(opts)
     })
 
     this.on('unmount', () => {
-        if (this.player) {
-            this.player.destroy()
-        }
+        this.destroy()
     })
 })

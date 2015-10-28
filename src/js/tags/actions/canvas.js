@@ -64,4 +64,33 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS, html, function(
         update(opts)
     })
 
+    this.onSave = () => {
+        let newMap = require('../../actions/NewMap')
+        let map = this.canvas.exportData()
+        let mapId = newMap.createMap({ title: this.data.action_data.title, map: map })
+        this.cortex.processUserResponse({
+            action: CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS_SAVE,
+            data: {
+                mapId: mapId,
+                type: 'Save',
+                title: this.title
+            }
+        }, this.currentMessage)
+    }
+
+    this.onShare = () => {
+
+    }
+
+    this.onFinish = () => {
+        let map = this.canvas.exportData()
+        this.cortex.processUserResponse({
+            action: CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS_FINISH,
+            data: {
+                map: map,
+                type: 'Finish'
+            }
+        }, this.currentMessage)
+    }
+
 })
