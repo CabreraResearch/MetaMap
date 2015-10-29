@@ -1,7 +1,6 @@
 const riot = require('riot')
 const $ = require('jquery')
 const _ = require('lodash')
-
 const AllTags = require('../mixins/all-tags')
 const CONSTANTS = require('../../constants/constants')
 
@@ -13,8 +12,7 @@ const html = `
                 <img src="src/images/arrow_gray_blue.gif"></img>
             </div>
             <div class="finish">
-                <a if="{ hasFinish }" onclick="{ onFinish }" class="btn red">Finished <i class="fa fa-check-circle"></i></a>
-                <a if="{ !hasFinish }" onclick="{ onDone }" class="btn red">Finished <i class="fa fa-check-circle"></i></a>
+                <a if="{ hasFinish }" onclick="{ onFinish }" class="btn red">{_.capitalize(data.action)} <i class="fa fa-check-circle"></i></a>
             </div>
         </div>
     </div>
@@ -44,14 +42,23 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.DEFAULT, html, function
     })
 
     const update = (o) => {
-        if(opts && opts.message) {
-            let message = opts.message
-            if (opts.cortex) {
-                this.cortex = opts.cortex
+        if(o && o.message) {
+            let message = o.message
+            if (o.cortex) {
+                this.cortex = o.cortex
             }
             this.data = message
             this.archived = this.data.archived
             this.hasFinish = !this.archived
+            switch (this.data.action) {
+                case CONSTANTS.CORTEX.RESPONSE_TYPE.OK:
+                case CONSTANTS.CORTEX.RESPONSE_TYPE.MORE:
+
+                    break
+                default:
+                    this.hasFinish = false
+                    break
+            }
         }
         this.correctHeight()
         this.stopEpilepsy()

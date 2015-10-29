@@ -128,6 +128,9 @@ class CortexMan {
                                     this.userTraining.isWaitingOnFeedback = true
                                     this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, nextStep)
                                     break;
+                                default:
+                                    this.MetaMap.log(`passed ${nextStep.action}`)
+                                    break
                             }
                             this.saveUserTraining()
                         })
@@ -141,16 +144,14 @@ class CortexMan {
 
             if (obj.action) {
                 let msg = null
-                switch(this.massageConstant(obj.action)) {
+                switch(obj.action) {
                     case CONSTANTS.CORTEX.RESPONSE_TYPE.OK:
                         obj.message = 'OK'
                         moveToNextMessage()
                         break
                     case CONSTANTS.CORTEX.RESPONSE_TYPE.MORE:
                         moveToNextMessage()
-                        break
-                    case CONSTANTS.CORTEX.RESPONSE_TYPE.TIMER:
-                        moveToNextMessage()
+                        this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, originalMessage)
                         break
                     case CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS:
                         this.userTraining.isWaitingOnFeedback = true
@@ -206,6 +207,9 @@ class CortexMan {
                                 break
                         }
                         break
+                    default:
+                        this.MetaMap.log(`passed ${obj.action}`)
+                        break
                 }
             } else if(obj.message) {
                 if (obj.message.startsWith('/')) {
@@ -256,6 +260,7 @@ class CortexMan {
     saveUserTraining() {
         this.MetaMap.MetaFire.updateData(this.userTraining, `${CONSTANTS.ROUTES.TRAININGS.format(this.MetaMap.User.userId) }${this.trainingId}`)
         this.runCallbacks()
+        this.MetaMap.Eventer.do(CONSTANTS.EVENTS.SIDEBAR_EVENT)
     }
 
     saveTraining(data) {
@@ -289,7 +294,9 @@ class CortexMan {
                     } else {
                         this.currentMessageKey = _.findLastIndex(this.userTraining.messages, (m) => { return m.action && m.action != CONSTANTS.CORTEX.RESPONSE_TYPE.FEEDBACK && true != m.is_ignored })
                         this.currentMessage = this.userTraining.messages[this.currentMessageKey]
-                        if (this.currentMessage.action && this.currentMessage.action != CONSTANTS.CORTEX.RESPONSE_TYPE.OK) {
+                        if (this.currentMessage.action &&
+                            this.currentMessage.action != CONSTANTS.CORTEX.RESPONSE_TYPE.OK &&
+                            this.currentMessage.action != CONSTANTS.CORTEX.RESPONSE_TYPE.MORE) {
                             this.processUserResponse(this.currentMessage)
                         } else {
                             this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, this.currentMessage)

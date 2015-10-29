@@ -49,10 +49,10 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS, html, function(
     })
 
     const update = (o) => {
-        if(opts && opts.message) {
-            let message = opts.message
-            if (opts.cortex) {
-                this.cortex = opts.cortex
+        if(o && o.message) {
+            let message = o.message
+            if (o.cortex) {
+                this.cortex = o.cortex
             }
             this.data = message
             this.archived = this.data.archived
@@ -62,7 +62,7 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS, html, function(
             this.hasFinish = !this.archived
 
             if (!this.canvas) {
-                let opts = {
+                let param = {
                     attachTo: this.canvas_training_portal_diagram,
                     doAutoSave: false
                 }
@@ -81,23 +81,23 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS, html, function(
                             this.MetaMap.MetaFire.getData(`maps/data/${this.data.mapId}`).then((map) => {
                                 if (map) {
                                     this.data.map = _.extend(map, info)
-                                    opts = _.extend(opts, {
+                                    param = _.extend(param, {
                                         map: this.data.map,
                                         mapId: this.data.mapId,
                                         doAutoSave: true
                                     })
-                                    makeCanvas(opts)
+                                    makeCanvas(param)
                                 } else {
-                                    makeCanvas(opts)
+                                    makeCanvas(param)
                                 }
                             })
                         } else {
-                            makeCanvas(opts)
+                            makeCanvas(param)
                         }
                     })
 
                 } else {
-                    makeCanvas(opts)
+                    makeCanvas(param)
                 }
 
             }

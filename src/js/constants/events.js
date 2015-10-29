@@ -1,7 +1,8 @@
 const EVENTS = {
 	SIDEBAR_OPEN: 'sidebar-open',
 	SIDEBAR_CLOSE: 'sidebar-close',
-	SIDEBAR_TOGGLE: 'sidebar-toggle',
+    SIDEBAR_TOGGLE: 'sidebar-toggle',
+    SIDEBAR_EVENT: 'sidebar-event',
 	PAGE_NAME: 'pageName',
 	NAV: 'nav',
     MAP: 'map',

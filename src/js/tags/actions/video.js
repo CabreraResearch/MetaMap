@@ -59,17 +59,17 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO, html, function(o
         this.correctHeight()
     })
 
-    const update = (opts) => {
-        if(opts && opts.message && opts.message.action_data && opts.message.action_data.youtubeid) {
-            let message = opts.message
-            if (opts.cortex) {
-                this.cortex = opts.cortex
+    const update = (o) => {
+        if(o && o.message && o.message.action_data && o.message.action_data.youtubeid) {
+            let message = o.message
+            if (o.cortex) {
+                this.cortex = o.cortex
             }
             this.data = message
             this.videoTitle = message.action_data.title || 'A YouTube Video'
             this.currentMessage = message
             this.player = new VideoPlayer('training_player', {
-                videoId: opts.message.action_data.youtubeid,
+                videoId: o.message.action_data.youtubeid,
                 onFinish: () => {
                     this.onFinishVideo()
                 }

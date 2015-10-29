@@ -170,11 +170,16 @@ riot.tag(CONSTANTS.TAGS.SIDEBAR, html, function(opts) {
 		this.update()
 	}
 
+    this.MetaMap.Eventer.on(CONSTANTS.EVENTS.SIDEBAR_EVENT, () => {
+        this.updateHeight()
+    })
+
     this.MetaMap.Eventer.on(CONSTANTS.EVENTS.PLAY_VIDEO, (data) => {
         if (data) {
             this.currentVideo = data.id
             $(`#${data.id}_video_done`).show()
             $(`#${data.id}_video_play`).hide()
+            this.updateHeight()
         }
     })
 
@@ -183,6 +188,7 @@ riot.tag(CONSTANTS.TAGS.SIDEBAR, html, function(opts) {
             this.currentVideo = null
             $(`#${data.id}_video_done`).hide()
             $(`#${data.id}_video_play`).show()
+            this.updateHeight()
         }
     })
 
