@@ -291,6 +291,8 @@ class CortexMan {
                         this.currentMessage = this.userTraining.messages[this.currentMessageKey]
                         if (this.currentMessage.action && this.currentMessage.action != CONSTANTS.CORTEX.RESPONSE_TYPE.OK) {
                             this.processUserResponse(this.currentMessage)
+                        } else {
+                            this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, this.currentMessage)
                         }
                     }
                     this.saveUserTraining()

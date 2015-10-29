@@ -87,7 +87,7 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO, html, function(o
         this.cortex.processUserResponse({
             action: CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO,
             data: { buttonName: 'Finished' }
-        }, this.currentMessage)
+        })
         this.videoTitle = null
         this.destroy()
     }

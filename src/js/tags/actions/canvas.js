@@ -15,9 +15,11 @@ const html = `
             <div id="canvas_training_portal_diagram">
 
             </div>
-            <div class="right">
+            <div class="save">
                 <a if="{ hasSave }" onclick="{ onSave }" class="btn green">Save <i class="fa fa-save"></i></a>
                 <a if="{ !hasSave }" onclick="{ onShare }" class="btn blue">Share <i class="fa fa-share"></i></a>
+            </div>
+            <div class="finish">
                 <a if="{ hasFinish }" onclick="{ onFinish }" class="btn red">Finished <i class="fa fa-check-circle"></i></a>
                 <a if="{ !hasFinish }" onclick="{ onDone }" class="btn red">Finished <i class="fa fa-check-circle"></i></a>
             </div>

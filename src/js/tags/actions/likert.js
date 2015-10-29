@@ -6,8 +6,17 @@ const jsPsych = require('../../../vendor/jspsych/jspsych')
 require('../../../vendor/jspsych/jspsych-survey-likert')
 
 const html = `
-<div if="{range}" class="input-group">
-    <div id="likert_scale"></div>
+<div id="canvas_training_likert" style="border: 1px solid #e1e1e1 !important; border-radius: 5px;">
+    <div class="portlet light">
+        <div class="portlet-body">
+            <div if="{range}" class="input-group">
+                <div id="likert_scale"></div>
+            </div>
+            <div class="finish">
+                <a if="{ hasFinish }" onclick="{ onFinish }" class="btn red">Finished <i class="fa fa-check-circle"></i></a>
+            </div>
+        </div>
+    </div>
 </div>
 
 <style scoped>
@@ -354,6 +363,17 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.LIKERT, html, function(
     this.mixin(AllTags)
 
     this.archived = true
+    this.hasFinish = false
+
+    this.correctHeight = () => {
+        $(this.canvas_training_likert).css({
+            height: window.innerHeight - 140 + 'px'
+        })
+    }
+
+    $(window).resize(() => {
+        this.correctHeight()
+     })
 
     const update = (o) => {
         if (o && o.message && o.message.action == CONSTANTS.CORTEX.RESPONSE_TYPE.LIKERT) {

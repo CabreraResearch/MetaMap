@@ -11,7 +11,8 @@ const CORTEX = {
         CANVAS_SAVE: 'canvas_save',
         CANVAS_SHARE: 'canvas_share',
         CANVAS_FINISH: 'canvas_finish',
-        FEEDBACK: 'feedback'
+        FEEDBACK: 'feedback',
+        DEFAULT: 'default'
     }
 }
 

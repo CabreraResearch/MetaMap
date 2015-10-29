@@ -75,7 +75,7 @@ module.exports = riot.tag(CONSTANTS.TAGS.TRAINING, html, function(opts) {
                     this.step = riot.mount(this.training_next_step, CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS, opts)[0]
                     break
                 default:
-                    this.unmountStep()
+                    this.step = riot.mount(this.training_next_step, CONSTANTS.CORTEX.RESPONSE_TYPE.DEFAULT, opts)[0]
                     break
             }
             if (this.step) {

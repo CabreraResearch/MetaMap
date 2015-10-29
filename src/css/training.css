@@ -3,3 +3,9 @@
     position: absolute;
     right: 10px;
 }
+
+.save {
+    bottom: 10px;
+    position: absolute;
+    left: 10px;
+}
