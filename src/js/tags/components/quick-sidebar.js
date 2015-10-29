@@ -15,13 +15,13 @@ const html =
 
         <div class="portlet-title tabbable-line">
             <div class="caption">
-                <img height="39" width="39" class="avatar" alt="" src="{cortex.picture}"/>
+                <img height="39" width="39" class="avatar" alt="" src="{ picture }"/>
                 <span class="caption-subject font-dark bold uppercase">Cortex</span>
-                <span id="cortex_on_timer" style="display: { none: false == cortex.isTimerOn };">
+                <span id="cortex_on_timer" style="display: { none: false == isTimerOn };">
                     <img alt="" src="src/images/dots_small.gif"/>
                 </span>
             </div>
-            <ul class="nav nav-tabs" style="display: { none: true == cortex.isTimerOn };">
+            <ul class="nav nav-tabs" style="display: { none: true == isTimerOn };">
                 <li class="active">
                     <a id="cortex_man_tab" href="#quick_sidebar_tab_1" data-toggle="tab" class="cortex-tabs">Chat</a>
                 </li>
@@ -34,7 +34,7 @@ const html =
             <div class="tab-content">
                 <div class="tab-pane active" id="quick_sidebar_tab_1">
                     <div id="cortex_messages" class="cortex-chat" style="position: relative;">
-                        <div if="{cortex}" each="{ cortex.userTraining.messages }" class="clear">
+                        <div if="{messages}" each="{ messages }" class="clear">
                             <div if="{message}" class="from-{ them: author == 'cortex', me: author != 'cortex' }">
                                 <div if="{ section_no }" id="training_section_{ section_no }"></div>
                                 <div if="{message}">
@@ -63,7 +63,7 @@ const html =
                 <div class="tab-pane " id="quick_sidebar_tab_2">
                     <div id="cortex_outline" class="">
                         <ol>
-                            <li each="{ cortex.getOutline() }" onclick="{ parent.onOutlineClick }" >
+                            <li each="{ outline }" onclick="{ parent.onOutlineClick }" >
                                 <h4>
                                     <a if="{ true == archived }" class="list-heading"><i class="fa fa-check-circle"></i> { section }</a>
                                     <span if="{ true != archived }" class="list-heading"><i class="fa fa-circle-thin"></i> { section }</span>
@@ -91,7 +91,10 @@ riot.tag(CONSTANTS.TAGS.SIDEBAR, html, function(opts) {
     this.mixin(AllTags)
 
     this.userPicture = ''
-    this.scrollToBottom = true
+    this.messages = []
+    this.outline = []
+    this.isTimerOn = true
+    this.picture = ''
 
     this.on('mount', () => {
         this.userPicture = this.MetaMap.User.picture
@@ -117,7 +120,14 @@ riot.tag(CONSTANTS.TAGS.SIDEBAR, html, function(opts) {
         return true
     }
 
-	this.on('update', () => {
+	this.on('update', (cortex) => {
+        if (cortex && cortex.MetaMap) {
+            this.cortex = cortex
+            this.messages = cortex.userTraining.messages
+            this.outline = cortex.getOutline()
+            this.picture = cortex.picture
+            this.isTimerOn = cortex.isTimerOn
+        }
         if (this.cortex_messages) {
             this.setHeight()
             this.updateHeight()
@@ -196,8 +206,8 @@ riot.tag(CONSTANTS.TAGS.SIDEBAR, html, function(opts) {
         this.cortex = this.cortex || this.MetaMap.getCortex(id)
         this.actionFactory = this.actionFactory || new ActionFactory(this.cortex)
 
-        this.cortex.getData((data) => {
-            this.update()
+        this.cortex.getData((cortex) => {
+            this.update(cortex)
         })
     })
 

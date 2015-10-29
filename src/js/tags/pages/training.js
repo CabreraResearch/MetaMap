@@ -71,20 +71,8 @@ module.exports = riot.tag(CONSTANTS.TAGS.TRAINING, html, function(opts) {
     this.MetaMap.Eventer.on(CONSTANTS.EVENTS.BEFORE_TRAINING_NEXT_STEP, (message) => {
         if (message) {
             this.update()
-            switch (message.action) {
-                case CONSTANTS.CORTEX.RESPONSE_TYPE.OK:
-                case CONSTANTS.CORTEX.RESPONSE_TYPE.MORE:
-                case CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO:
-                case CONSTANTS.CORTEX.RESPONSE_TYPE.LIKERT:
-                case CONSTANTS.CORTEX.RESPONSE_TYPE.DEFAULT:
-                case CONSTANTS.CORTEX.RESPONSE_TYPE.RESTART:
-                    if (this.step) {
-                        this.step.update()
-                    }
-                    break
-                default:
-
-                    break
+            if (this.step) {
+                this.step.update(message)
             }
         }
     })

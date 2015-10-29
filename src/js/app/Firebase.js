@@ -180,11 +180,16 @@ class MetaFire {
             child = this.getChild(path);
         }
         try {
-            return child.update(data, (e) => {
-                if (e) {
-                    this.error(e, path);
-                }
-            });
+            return new Promise((resolve, reject) => {
+                child.update(data, (e) => {
+                    if (e) {
+                        this.error(e, path);
+                        reject(e)
+                    } else {
+                        resolve()
+                    }
+                })
+            })
         } catch (e) {
             this.error(e, path);
         }

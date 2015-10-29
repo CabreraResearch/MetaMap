@@ -384,22 +384,38 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.LIKERT, html, function(
             this.id = this.data.id
             this.archived = this.data.archived
             if (!this.archived && this.data.action_data) {
-                this.range = []
-                for (let i = 0; i < this.data.action_data.length; i += 1) {
-                    this.range.push(i+1)
-                }
-                this.left = this.data.action_data.left
-                this.right = this.data.action_data.right
-                this.name = this.data.action_data.name
-
-                var likert_block = {
-                    type: 'survey-likert',
-                    questions: [[`On a scale of ${this.range[0]} to ${this.range.length}, where ${this.range[0]} is ${this.left} and ${this.range.length} is ${this.right}, how would you rate this?`]],
-                    labels: [[this.range]], // need one scale for every question on a page
-                    intervals: [[this.range.length]] // note the the intervals and labels don't necessarily need to match.
-                }
 
                 if (!this.likert) {
+                    if (this.data.action_data.range) {
+                        this.range = this.data.action_data.range
+                        this.direction = this.data.action_data.direction || 'right'
+                        switch (this.direction) {
+                            case 'left':
+
+                                break
+                            default:
+
+                                break
+                        }
+                        this.question = [`Between ${this.range[0]} and ${this.range[this.range.length-1]}, how would you rate this?`]
+                    } else {
+                        this.range = []
+                        for (let i = 0; i < this.data.action_data.length; i += 1) {
+                            this.range.push(i + 1)
+                        }
+                        this.left = this.data.action_data.left
+                        this.right = this.data.action_data.right
+                        this.name = this.data.action_data.name
+                        this.question = [`On a scale of ${this.range[0]} to ${this.range.length}, where ${this.range[0]} is ${this.left} and ${this.range.length} is ${this.right}, how would you rate this?`]
+                    }
+
+                    var likert_block = {
+                        type: 'survey-likert',
+                        questions: [this.question],
+                        labels: [[this.range]], // need one scale for every question on a page
+                        intervals: [[this.range.length]] // note the the intervals and labels don't necessarily need to match.
+                    }
+
                     this.likert = {}
                     $(this[`likert_scale`]).empty()
 
@@ -413,8 +429,12 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.LIKERT, html, function(
                             let response = JSON.parse(data.responses)
                             this.value = response.Q0
                             let per = (this.value / this.range.length) * 100
+                            let line = `${this.value} out of ${this.range.length}`
+                            if (this.direction) {
+                                line = this.range[this.value]
+                            }
                             let message = {
-                                message: `${this.value} out of ${this.range.length}`,
+                                message: line,
                                 answer: this.value,
                                 previous_action: CONSTANTS.CORTEX.RESPONSE_TYPE.LIKERT,
                                 request_feedback: (per < 80),
