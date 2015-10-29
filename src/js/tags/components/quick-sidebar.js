@@ -26,7 +26,7 @@ const html =
                     <a id="cortex_man_tab" href="#quick_sidebar_tab_1" data-toggle="tab" class="cortex-tabs">Chat</a>
                 </li>
                 <li>
-                    <a id="outline_tab" href="#quick_sidebar_tab_2" data-toggle="tab" class="cortex-tabs">Outline</a>
+                    <a id="outline_tab" href="#quick_sidebar_tab_2" data-toggle="tab" class="cortex-tabs" onclick="{updateHeight}">Outline</a>
                 </li>
             </ul>
         </div>
@@ -61,19 +61,19 @@ const html =
                     </div>
                 </div>
                 <div class="tab-pane " id="quick_sidebar_tab_2">
-                    <div class="">
+                    <div id="cortex_outline" class="">
                         <ol>
                             <li each="{ cortex.getOutline() }" onclick="{ parent.onOutlineClick }" >
-                                <h3>
+                                <h4>
                                     <a if="{ true == archived }" class="list-heading"><i class="fa fa-check-circle"></i> { section }</a>
                                     <span if="{ true != archived }" class="list-heading"><i class="fa fa-circle-thin"></i> { section }</span>
-                                </h3>
+                                </h4>
                                 <ol if="{ submenu }">
                                     <li each="{ submenu }" onclick="{ parent.onOutlineClick }" >
-                                        <h4>
+                                        <h5>
                                             <a if="{ true == archived }" class="list-heading"><i class="fa fa-check-circle"></i> { section }</a>
                                             <span if="{ true != archived }" class="list-heading"><i class="fa fa-circle-thin"></i> { section }</span>
-                                        </h4>
+                                        </h5>
                                     </li>
                                 </ol>
                             </li>
@@ -107,18 +107,14 @@ riot.tag(CONSTANTS.TAGS.SIDEBAR, html, function(opts) {
         },500)
     })
 
-    window.scrollCortex = (int) => {
-        this.cortex_messages.scrollTop = int
-        this.updateHeight()
-    }
-
     this.updateHeight = () => {
-        $(this.cortex_messages).css({
-             height: window.innerHeight-270+'px'
-        })
+        let height = window.innerHeight-270+'px'
+        $(this.cortex_messages).css({ height: height })
+        $(this.cortex_outline).css({ height: height })
         let pos = $(this.cortex_messages).height()+window.innerHeight
         this.cortex_messages.scrollTop = pos
         Ps.update(this.cortex_messages)
+        return true
     }
 
 	this.on('update', () => {
