@@ -129,7 +129,8 @@ class CortexMan {
                                     this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, nextStep)
                                     break;
                                 default:
-                                    this.MetaMap.log(`passed ${nextStep.action}`)
+                                    this.MetaMap.log(`on buffer passed ${nextStep.action}`)
+                                    this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, nextStep)
                                     break
                             }
                             this.saveUserTraining()
@@ -208,7 +209,8 @@ class CortexMan {
                         }
                         break
                     default:
-                        this.MetaMap.log(`passed ${obj.action}`)
+                        this.MetaMap.log(`on action passed ${obj.action}`)
+                        moveToNextMessage({ line: `<span>I don't supprt this <code>${obj.action}</code> action yet, so I'm moving you to the next line.` })
                         break
                 }
             } else if(obj.message) {
