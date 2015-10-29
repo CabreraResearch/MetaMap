@@ -38,10 +38,10 @@ module.exports = riot.tag(CONSTANTS.TAGS.TRAINING, html, function(opts) {
         return _step
     }
 
-    this.on('mount update', (event, opts) => {
+    this.on('mount update', (event, o) => {
         this.sidebar = this.sidebar || riot.mount(this.quick_sidebar_container, 'quick-sidebar')[0]
-        if (opts) {
-            this.config = opts
+        if (o) {
+            this.config = o
             if (!this.cortex) {
                 this.cortex = this.getCortex(this.config.id)
                 this.cortex.getData(() => {
@@ -59,39 +59,43 @@ module.exports = riot.tag(CONSTANTS.TAGS.TRAINING, html, function(opts) {
         this.guaranteeStep()
     }
 
+    const buildVideo = (o) => {
+        if (o) {
+            this.guaranteeStep()
+            this.update()
+            this.step = riot.mount(this.training_next_step, CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO, o)[0]
+            this.step.update(o)
+        }
+    }
+
     this.MetaMap.Eventer.on(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, (message) => {
         if (message) {
             this.guaranteeStep()
             this.update()
-            let opts = { message: message, cortex: this.cortex }
-            switch (this.cortex.massageConstant(message.action)) {
+            let o = { message: message, cortex: this.cortex }
+            switch (message.action) {
                 case CONSTANTS.CORTEX.RESPONSE_TYPE.LIKERT:
-                    this.step = riot.mount(this.training_next_step, CONSTANTS.CORTEX.RESPONSE_TYPE.LIKERT, opts)[0]
+                    this.step = riot.mount(this.training_next_step, CONSTANTS.CORTEX.RESPONSE_TYPE.LIKERT, o)[0]
                     break
                 case CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO:
-
+                    buildVideo(o)
                     break
                 case CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS:
-                    this.step = riot.mount(this.training_next_step, CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS, opts)[0]
+                    this.step = riot.mount(this.training_next_step, CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS, o)[0]
                     break
                 default:
-                    this.step = riot.mount(this.training_next_step, CONSTANTS.CORTEX.RESPONSE_TYPE.DEFAULT, opts)[0]
+                    this.step = riot.mount(this.training_next_step, CONSTANTS.CORTEX.RESPONSE_TYPE.DEFAULT, o)[0]
                     break
             }
             if (this.step) {
-                this.step.update(opts)
+                this.step.update(o)
             }
         }
     })
 
     this.MetaMap.Eventer.on(CONSTANTS.EVENTS.PLAY_VIDEO, (message) => {
-        if (message) {
-            this.guaranteeStep()
-            this.update()
-            let opts = { message: message, cortex: this.cortex }
-            this.step = riot.mount(this.training_next_step, CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO, opts)[0]
-            this.step.update(opts)
-        }
+        let o = { message: message, cortex: this.cortex }
+        buildVideo(o)
     })
 
     this.MetaMap.Eventer.on(CONSTANTS.EVENTS.STOP_VIDEO, (message) => {

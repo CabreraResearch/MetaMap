@@ -11,7 +11,7 @@ const ActionFactory = require('../actions/ActionFactory')
 
 const html =
 `
-<div class="portlet light bordered" style="padding-top: 0;">
+<div id="cortex_outer_shell" class="portlet light bordered" style="padding-top: 0;">
 
         <div class="portlet-title tabbable-line">
             <div class="caption">
@@ -21,7 +21,7 @@ const html =
                     <img alt="" src="src/images/dots_small.gif"/>
                 </span>
             </div>
-            <ul class="nav nav-tabs">
+            <ul class="nav nav-tabs" style="display: { none: false == cortex.isTimerOff };">
                 <li class="active">
                     <a id="cortex_man_tab" href="#quick_sidebar_tab_1" data-toggle="tab" class="cortex-tabs">Chat</a>
                 </li>

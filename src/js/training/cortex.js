@@ -22,6 +22,7 @@ class CortexMan {
         this._messageGen = null
         this._messages = null
         this.MetaMap.MetaFire.deleteData(`${CONSTANTS.ROUTES.TRAININGS.format(this.MetaMap.User.userId) }${this.trainingId}`)
+        this.runCallbacks()
         this._onceGetData = null
         this.isTimerOff = true
         this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, {})
@@ -65,14 +66,19 @@ class CortexMan {
     }
 
     runCallbacks() {
-        _.each(this._callbacks, (cb) => {
-            cb(this)
-        })
+        if (!this._runCallbacks) {
+            this._runCallbacks = _.throttle(() => {
+                _.each(this._callbacks, (cb) => {
+                    cb(this)
+                })
+            }, 2000)
+        }
+        this._runCallbacks()
     }
 
     buffer(time = 1000) {
         this.isTimerOff = false
-        this.runCallbacks()
+        //this.runCallbacks()
         return new Promise((resolve) => {
             _.delay(() => {
                 this.isTimerOff = true
@@ -286,6 +292,7 @@ class CortexMan {
         }
         this._onceGetData = this._onceGetData || _.once(function () {
 
+            this.timerIsOff = true
             var once = _.once(() => {
                 this.MetaMap.MetaFire.getData(`${CONSTANTS.ROUTES.TRAININGS.format(this.MetaMap.User.userId) }${this.trainingId}`).then((data) => {
                     this.userTraining = data
@@ -295,17 +302,17 @@ class CortexMan {
                     }
                     if (!this.userTraining.messages) {
                         this.userTraining.messages = [this.getNextMessage()]
-                    } else {
-                        this.currentMessageKey = _.findLastIndex(this.userTraining.messages, (m) => { return m.action && m.action != CONSTANTS.CORTEX.RESPONSE_TYPE.FEEDBACK && true != m.is_ignored })
-                        this.currentMessage = this.userTraining.messages[this.currentMessageKey]
-                        if (this.currentMessage.action &&
-                            this.currentMessage.action != CONSTANTS.CORTEX.RESPONSE_TYPE.OK &&
-                            this.currentMessage.action != CONSTANTS.CORTEX.RESPONSE_TYPE.MORE) {
-                            this.processUserResponse(this.currentMessage)
-                        } else {
-                            this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, this.currentMessage)
-                        }
                     }
+                    this.currentMessageKey = _.findLastIndex(this.userTraining.messages, (m) => { return m.action && m.action != CONSTANTS.CORTEX.RESPONSE_TYPE.FEEDBACK && true != m.is_ignored })
+                    this.currentMessage = this.userTraining.messages[this.currentMessageKey]
+                    if (this.currentMessage.action &&
+                        this.currentMessage.action != CONSTANTS.CORTEX.RESPONSE_TYPE.OK &&
+                        this.currentMessage.action != CONSTANTS.CORTEX.RESPONSE_TYPE.MORE) {
+                        this.processUserResponse(this.currentMessage)
+                    } else {
+                        this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, this.currentMessage)
+                    }
+
                     this.saveUserTraining()
                     NProgress.done()
                 })

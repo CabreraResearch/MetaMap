@@ -8,6 +8,13 @@
     color: #7FB0DA !important;
 }
 
+.cortext-input {
+    position: absolute;
+    bottom: 45px;
+    left: 20px;
+    width: 280px;
+}
+
 /*
  Thanks to http://codepen.io/samuelkraft/pen/Farhl
 */
