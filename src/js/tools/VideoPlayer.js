@@ -28,6 +28,8 @@ class VideoPlayer {
             this.player = this.player || new this.YT.Player(this.id, {
                 videoId: this.opts.videoId,
                 frameborder: 0,
+                height: this.opts.height || 360,
+                width: this.opts.width || 640,
                 events: {
                     onReady: (event) => {
                         this.onPlayerReady(event)

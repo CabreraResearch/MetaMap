@@ -14,11 +14,11 @@ const html = `
         </div>
         <div class="portlet-body">
             <div class="form-group">
-                <div class="embed-responsive embed-responsive-16by9">
-                    <div id="training_player" ></div>
+                <div class="">
+                   <div id="training_player" ></div>
                 </div>
             </div>
-            <div class="right">
+            <div class="finish">
                 <a onclick="{ onFinishVideo }" class="btn red">Finished <i class="fa fa-check-circle"></i></a>
             </div>
         </div>
@@ -37,6 +37,22 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO, html, function(o
         $(this.video_training_portal).css({
             height: window.innerHeight - 140 + 'px'
         })
+
+        let height = $(this.video_training_portal).height()-140
+        let width = $(this.video_training_portal).width() - 40
+        let newWidth = height * 1.778
+        let newHeight = height
+        if (newWidth > width) {
+            newHeight = width / 1.778
+            newWidth = width
+        }
+
+        let video = $('#training_player')
+        video.data('aspectRatio', '1.778')
+            .removeAttr('height')
+            .removeAttr('width')
+            .height(newHeight)
+            .width(newWidth)
     }
 
     $(window).resize(() => {
@@ -53,8 +69,6 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO, html, function(o
             this.videoTitle = message.action_data.title || 'A YouTube Video'
             this.currentMessage = message
             this.player = new VideoPlayer('training_player', {
-                height: 390,
-                width: 640,
                 videoId: opts.message.action_data.youtubeid,
                 onFinish: () => {
                     this.onFinishVideo()
@@ -65,6 +79,7 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO, html, function(o
             this.isPlaying = this.cortex.currentVideo == this.id || true != this.archived
             this.update()
         }
+        this.correctHeight()
     }
     update(opts)
 
