@@ -430,6 +430,7 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.LIKERT, html, function(
                 }
             }
         }
+        this.correctHeight()
     }
     update(opts)
 

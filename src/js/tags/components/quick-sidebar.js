@@ -102,7 +102,7 @@ riot.tag(CONSTANTS.TAGS.SIDEBAR, html, function(opts) {
             suppressScrollX: true
         })
         _.delay(() => {
-            let pos = $(this.cortex_messages).height()+window.innerHeight
+            let pos = $(this.cortex_messages).height()*window.innerHeight*1000
             this.cortex_messages.scrollTop = pos
         },500)
     })
@@ -111,7 +111,7 @@ riot.tag(CONSTANTS.TAGS.SIDEBAR, html, function(opts) {
         let height = window.innerHeight-270+'px'
         $(this.cortex_messages).css({ height: height })
         $(this.cortex_outline).css({ height: height })
-        let pos = $(this.cortex_messages).height()+window.innerHeight
+        let pos = $(this.cortex_messages).height()*window.innerHeight*1000
         this.cortex_messages.scrollTop = pos
         Ps.update(this.cortex_messages)
         return true

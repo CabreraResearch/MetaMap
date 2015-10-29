@@ -77,6 +77,7 @@ class CortexMan {
             _.delay(() => {
                 this.isTimerOff = true
                 this.runCallbacks()
+                this.MetaMap.Eventer.do(CONSTANTS.EVENTS.SIDEBAR_EVENT)
                 resolve()
             }, time)
         })
@@ -84,6 +85,7 @@ class CortexMan {
 
     processFeedback(obj) {
         this.buffer(750).then(()=>{
+            this.MetaMap.Eventer.do(CONSTANTS.EVENTS.SIDEBAR_EVENT)
             this.userTraining.messages.push({
                     message: obj.line,
                     author: 'cortex',
