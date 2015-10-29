@@ -8,10 +8,10 @@ const html = `
 <div id="canvas_training_default" style="border: 1px solid #e1e1e1 !important; border-radius: 5px;">
     <div class="portlet light">
         <div class="portlet-body">
-            <div id="epilepsy_gif" style="text-align: center;">
+            <div if="{ true != archived }" id="epilepsy_gif" style="text-align: center;">
                 <img src="src/images/arrow_gray_blue.gif"></img>
             </div>
-            <div class="finish">
+            <div if="{ true != archived }" class="finish">
                 <a if="{ hasFinish }" onclick="{ onFinish }" class="btn red">{_.capitalize(data.action)} <i class="fa fa-check-circle"></i></a>
             </div>
         </div>

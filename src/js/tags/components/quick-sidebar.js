@@ -17,11 +17,11 @@ const html =
             <div class="caption">
                 <img height="39" width="39" class="avatar" alt="" src="{cortex.picture}"/>
                 <span class="caption-subject font-dark bold uppercase">Cortex</span>
-                <span id="cortex_on_timer" style="display: { none: cortex.isTimerOff };">
+                <span id="cortex_on_timer" style="display: { none: false == cortex.isTimerOn };">
                     <img alt="" src="src/images/dots_small.gif"/>
                 </span>
             </div>
-            <ul class="nav nav-tabs" style="display: { none: false == cortex.isTimerOff };">
+            <ul class="nav nav-tabs" style="display: { none: true == cortex.isTimerOn };">
                 <li class="active">
                     <a id="cortex_man_tab" href="#quick_sidebar_tab_1" data-toggle="tab" class="cortex-tabs">Chat</a>
                 </li>

@@ -12,7 +12,8 @@ const CORTEX = {
         CANVAS_SHARE: 'canvas_share',
         CANVAS_FINISH: 'canvas_finish',
         FEEDBACK: 'feedback',
-        DEFAULT: 'default'
+        DEFAULT: 'default',
+        RESTART: 'restart'
     }
 }
 

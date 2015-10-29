@@ -7,6 +7,7 @@ const EVENTS = {
 	NAV: 'nav',
     MAP: 'map',
     TRAINING_NEXT_STEP: 'training-next-step',
+    BEFORE_TRAINING_NEXT_STEP: 'before-training-next-step',
     PLAY_VIDEO: 'play-video',
     STOP_VIDEO: 'stop-video'
 }

@@ -8,7 +8,7 @@ require('../../../vendor/jspsych/jspsych-survey-likert')
 const html = `
 <div id="canvas_training_likert" style="border: 1px solid #e1e1e1 !important; border-radius: 5px;">
     <div class="portlet light">
-        <div class="portlet-body">
+        <div if="{ true != archived }" class="portlet-body">
             <div if="{range}" class="input-group">
                 <div id="likert_scale"></div>
             </div>

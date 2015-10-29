@@ -133,7 +133,7 @@ module.exports = riot.tag(CONSTANTS.TAGS.ALL_COURSES, html, function (opts) {
                                         let ret = {
                                             section: line.Section || '',
                                             section_no: line['Section No'] || '',
-                                            //person: line.Person,
+                                            person: 'Cortex',
                                             line: line.Line || '',
                                             action: (line.Action || '').toLowerCase().trim().split(' ').join('-').trim(),
                                             //display: line.Display
