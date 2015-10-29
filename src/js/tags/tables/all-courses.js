@@ -131,12 +131,12 @@ module.exports = riot.tag(CONSTANTS.TAGS.ALL_COURSES, html, function (opts) {
 
                                     let course = _.map(_.filter(results.data, (line) => { return line.Line }), (line) => {
                                         let ret = {
-                                            section: line.Section,
-                                            section_no: line['Section No'],
-                                            person: line.Person,
-                                            line: line.Line,
-                                            action: (line.Action || '').toLowerCase().trim().split(' ')[0].trim(),
-                                            display: line.Display
+                                            section: line.Section || '',
+                                            section_no: line['Section No'] || '',
+                                            //person: line.Person,
+                                            line: line.Line || '',
+                                            action: (line.Action || '').toLowerCase().trim().split(' ').join('-').trim(),
+                                            //display: line.Display
                                         }
                                         try {
                                             if (line['Action Data']) {
