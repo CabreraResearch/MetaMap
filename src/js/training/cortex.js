@@ -224,6 +224,7 @@ class CortexMan {
                         })
                         if (obj.request_feedback == true || obj.request_feedback == false) {
                             originalMessage.archived = true
+                            this.processFeedback({ line: obj.message }, 0)
                             if (obj.request_feedback) {
                                 this.userTraining.isWaitingOnFeedback = true
                                 this.moveToNextMessage(obj, { line: 'I\'m sorry to hear that! How can we improve it for the next version of this training?' })
