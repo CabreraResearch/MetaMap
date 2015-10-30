@@ -13,7 +13,9 @@ const CORTEX = {
         CANVAS_FINISH: 'canvas_finish',
         FEEDBACK: 'feedback',
         DEFAULT: 'default',
-        RESTART: 'restart'
+        RESTART: 'restart',
+        MULTIPLE_CHOICE_ANSWER: 'multiple-choice-answer',
+        MULTIPLE_CHOICE_FINISH: 'multiple-choice-finish'
     }
 }
 

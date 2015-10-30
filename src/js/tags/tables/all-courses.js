@@ -145,6 +145,7 @@ module.exports = riot.tag(CONSTANTS.TAGS.ALL_COURSES, html, function (opts) {
                                         } catch (e) {
                                             ret.action_data = line['Action Data']
                                             MetaMap.error(e)
+                                            MetaMap.error({message: ret.action_data })
                                         }
                                         return ret;
                                     })

@@ -160,6 +160,10 @@ class CortexMan {
                                 case CONSTANTS.CORTEX.RESPONSE_TYPE.MORE:
                                     this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, nextStep)
                                     break
+                                case CONSTANTS.CORTEX.RESPONSE_TYPE.MULTIPLE_CHOICE:
+                                    this.userTraining.isWaitingOnFeedback = true
+                                    this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, nextStep)
+                                    break
                                 default:
                                     this.MetaMap.log(`on buffer passed ${nextStep.action}`)
                                     nextStep.originalAction = nextStep.action
@@ -217,6 +221,21 @@ class CortexMan {
                             this.moveToNextMessage(obj, { line: 'Great news, you shared this map with some of your friends!' })
                         }
                         break
+                    case CONSTANTS.CORTEX.RESPONSE_TYPE.MULTIPLE_CHOICE:
+                        this.userTraining.isWaitingOnFeedback = true
+                        this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, obj)
+                        break
+                    case CONSTANTS.CORTEX.RESPONSE_TYPE.MULTIPLE_CHOICE_ANSWER:
+                        if (obj.data) {
+                            obj.message = obj.data.message
+                            this.moveToNextMessage(obj, { line: obj.data.feedback })
+                        }
+                        break
+                    case CONSTANTS.CORTEX.RESPONSE_TYPE.MULTIPLE_CHOICE_FINISH:
+                        this.userTraining.isWaitingOnFeedback = false
+                        obj.message = `Great job. You got ${obj.data.score} out of ${obj.data.questionCount} correct!`
+                        this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, obj)
+                        break
                     case CONSTANTS.CORTEX.RESPONSE_TYPE.LIKERT:
                         _.each(obj.data, (val, key) => {
                             obj[key] = val
@@ -224,7 +243,6 @@ class CortexMan {
                         })
                         if (obj.request_feedback == true || obj.request_feedback == false) {
                             originalMessage.archived = true
-                            this.processFeedback({ line: obj.message }, 0)
                             if (obj.request_feedback) {
                                 this.userTraining.isWaitingOnFeedback = true
                                 this.moveToNextMessage(obj, { line: 'I\'m sorry to hear that! How can we improve it for the next version of this training?' })
@@ -233,8 +251,7 @@ class CortexMan {
                                 this.moveToNextMessage(obj, { line: 'Thanks for the feedback!' })
                             }
                         } else {
-                            let msg = (obj.action_data) ? obj : originalMessage
-                            this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, msg)
+                            this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, obj)
                         }
                         break
                     case CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO:

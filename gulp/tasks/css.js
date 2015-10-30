@@ -7,7 +7,7 @@ var minifyCSS = require('gulp-minify-css');
 
 // create task
 gulp.task('css', function(){
-    gulp.src('src/css/**/*.css')
+    gulp.src(['src/css/**/*.css', 'src/vendor/**/*.css'])
         .pipe(concat('MetaMap.css'))
         .pipe(gulp.dest('dist'))
         .pipe(minifyCSS())

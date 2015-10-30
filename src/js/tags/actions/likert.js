@@ -431,7 +431,7 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.LIKERT, html, function(
                             let per = (this.value / this.range.length) * 100
                             let line = `${this.value} out of ${this.range.length}`
                             if (this.direction) {
-                                line = this.range[this.value]
+                                line = this.range[this.value-1]
                             }
                             let message = {
                                 message: line,
