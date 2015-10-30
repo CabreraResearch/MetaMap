@@ -202,7 +202,7 @@ class CortexMan {
                         break
                     case CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS:
                         this.userTraining.isWaitingOnFeedback = true
-                        this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP)
+                        this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, obj)
                         break
                     case CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS_FINISH:
                         this.userTraining.isWaitingOnFeedback = false
@@ -233,8 +233,8 @@ class CortexMan {
                         break
                     case CONSTANTS.CORTEX.RESPONSE_TYPE.MULTIPLE_CHOICE_FINISH:
                         this.userTraining.isWaitingOnFeedback = false
-                        obj.message = `Great job. You got ${obj.data.score} out of ${obj.data.questionCount} correct!`
-                        this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, obj)
+                        let feedback = `Great job. You got ${obj.data.score} out of ${obj.data.questionCount} correct!`
+                        this.moveToNextMessage(obj, { line: feedback })
                         break
                     case CONSTANTS.CORTEX.RESPONSE_TYPE.LIKERT:
                         _.each(obj.data, (val, key) => {

@@ -92,6 +92,7 @@ module.exports = riot.tag(CONSTANTS.TAGS.TRAINING, html, function(opts) {
                         break
                     case CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS:
                         this.step = riot.mount(this.training_next_step, CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS, o)[0]
+                        break
                     case CONSTANTS.CORTEX.RESPONSE_TYPE.MULTIPLE_CHOICE:
                         this.step = riot.mount(this.training_next_step, CONSTANTS.CORTEX.RESPONSE_TYPE.MULTIPLE_CHOICE, o)[0]
                         break
