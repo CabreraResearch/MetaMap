@@ -52,8 +52,8 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.SHORT_ANSWER, html, fun
             this.cortex.processUserResponse({
                 action: CONSTANTS.CORTEX.RESPONSE_TYPE.SHORT_ANSWER_FINISH,
                 data: {
-                    answer: this.short_answer_response.innerHTML,
-                    message: this.short_answer_response.innerHTML
+                    answer: answer,
+                    message: answer
                 }
             })
         }

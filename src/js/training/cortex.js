@@ -341,7 +341,7 @@ class CortexMan {
             this._callbacks.push(callback)
         }
         this.MetaMap.Eventer.do(CONSTANTS.EVENTS.BEFORE_TRAINING_NEXT_STEP, this.currentMessage)
-        this._onceGetData = this._onceGetData || _.once(function () {
+        this._onceGetData = this._onceGetData || _.once(() => {
 
             this.isTimerOn = true
             var once = _.once(() => {

@@ -64,12 +64,11 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.MULTIPLE_CHOICE, html, 
                             main: '',
                             results: ''
                         },
-                        questions: []
+                        questions: this.questions
                     },
                     checkAnswerText: 'Next >>',
                     preventUnanswered: true,
                     skipStartButton: true,
-                    randomSortAnswers: true,
                     perQuestionResponseMessaging: false,
                     disableRanking: true,
                     animationCallbacks: {
@@ -103,24 +102,6 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.MULTIPLE_CHOICE, html, 
                         }
                     }
                 }
-
-                let slickQuestions = config.json.questions
-                _.each(this.questions, (q) => {
-                    let newQ = {
-                        q: q.question,
-                        a: [],
-                        correct: '',
-                        incorrect: ''
-                    }
-                    _.each(q.correctAnswers, (a) => {
-                        newQ.a.push({ option: a, correct: true})
-                    })
-                    _.each(q.incorrectAnswers, (a) => {
-                        newQ.a.push({ option: a, correct: false})
-                    })
-
-                    slickQuestions.push(newQ)
-                })
 
                 this.quiz = this.quiz || $(this.training_multiple_choice).slickQuiz(config)
             }
