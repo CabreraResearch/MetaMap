@@ -6,16 +6,12 @@ const jsPsych = require('../../../vendor/jspsych/jspsych')
 require('../../../vendor/jspsych/jspsych-survey-likert')
 
 const html = `
-<div id="canvas_training_likert" style="border: 1px solid #e1e1e1 !important; border-radius: 5px;">
-    <div class="portlet light">
-        <div if="{ true != archived }" class="portlet-body">
-            <div if="{range}" class="input-group">
-                <div id="likert_scale"></div>
-            </div>
-            <div class="finish">
-                <a if="{ hasFinish }" onclick="{ onFinish }" class="btn red">Finished <i class="fa fa-check-circle"></i></a>
-            </div>
-        </div>
+<div if="{ true != archived }" class="portlet-body">
+    <div if="{range}">
+        <div id="likert_scale"></div>
+    </div>
+    <div class="finish">
+        <a if="{ hasFinish }" onclick="{ onFinish }" class="btn red">Finished <i class="fa fa-check-circle"></i></a>
     </div>
 </div>
 
@@ -365,18 +361,8 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.LIKERT, html, function(
     this.archived = true
     this.hasFinish = false
 
-    this.correctHeight = () => {
-        $(this.canvas_training_likert).css({
-            height: window.innerHeight - 140 + 'px'
-        })
-    }
-
-    $(window).resize(() => {
-        this.correctHeight()
-     })
-
     const update = (o) => {
-        if (o && o.message && o.message.action == CONSTANTS.CORTEX.RESPONSE_TYPE.LIKERT) {
+        if (o && o.message && o.message.action_data) {
             if (o.cortex) {
                 this.cortex = o.cortex
             }
@@ -450,7 +436,6 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.LIKERT, html, function(
                 }
             }
         }
-        this.correctHeight()
     }
     update(opts)
 

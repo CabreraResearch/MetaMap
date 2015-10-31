@@ -9,21 +9,17 @@ const Permissions = require('../../app/Permissions')
 const ShareMap = require('../../actions/ShareMap')
 
 const html = `
-<div id="canvas_training_portal" style="border: 1px solid #e1e1e1 !important; border-radius: 5px;">
-    <div class="portlet light">
-        <div class="portlet-body">
-            <div id="canvas_training_portal_diagram">
+<div class="portlet-body">
+    <div id="canvas_training_portal_diagram">
 
-            </div>
-            <div class="save">
-                <a if="{ hasSave }" onclick="{ onSave }" class="btn green">Save <i class="fa fa-save"></i></a>
-                <a if="{ !hasSave }" onclick="{ onShare }" class="btn blue">Share <i class="fa fa-share"></i></a>
-            </div>
-            <div class="finish">
-                <a if="{ hasFinish }" onclick="{ onFinish }" class="btn red">Finished <i class="fa fa-check-circle"></i></a>
-                <a if="{ !hasFinish }" onclick="{ onDone }" class="btn red">Finished <i class="fa fa-check-circle"></i></a>
-            </div>
-        </div>
+    </div>
+    <div class="save">
+        <a if="{ hasSave }" onclick="{ onSave }" class="btn green">Save <i class="fa fa-save"></i></a>
+        <a if="{ !hasSave }" onclick="{ onShare }" class="btn blue">Share <i class="fa fa-share"></i></a>
+    </div>
+    <div class="finish">
+        <a if="{ hasFinish }" onclick="{ onFinish }" class="btn red">Finished <i class="fa fa-check-circle"></i></a>
+        <a if="{ !hasFinish }" onclick="{ onDone }" class="btn red">Finished <i class="fa fa-check-circle"></i></a>
     </div>
 </div>
 `
@@ -36,9 +32,6 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS, html, function(
     this.hasFinish = true
 
     this.correctHeight = () => {
-        $(this.canvas_training_portal).css({
-            height: window.innerHeight - 140 + 'px'
-        })
         $(this.canvas_training_portal_diagram).css({
             height: window.innerHeight - 205 + 'px'
         })
@@ -49,14 +42,14 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS, html, function(
     })
 
     const update = (o) => {
-        if(o && o.message) {
+        if(o && o.message && o.message.action_data) {
             let message = o.message
             if (o.cortex) {
                 this.cortex = o.cortex
             }
             this.data = message
             this.archived = this.data.archived
-            this.title = this.data.action_data.title || this.cortex.training.name + ' Map ' + this.data.id
+            this.title = this.data.action_data.mapName || this.cortex.training.name + ' Map ' + this.data.id
 
             this.hasSave = !this.data.map
             this.hasFinish = !this.archived

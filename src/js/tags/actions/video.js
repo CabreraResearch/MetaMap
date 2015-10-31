@@ -4,24 +4,20 @@ const CONSTANTS = require('../../constants/constants')
 const VideoPlayer = require('../../tools/VideoPlayer')
 
 const html = `
-<div id="video_training_portal" style="border: 1px solid #e1e1e1 !important; border-radius: 5px;">
-    <div class="portlet light">
-        <div class="portlet-title">
-            <div class="caption">
-                <i class="fa fa-youtube"></i>
-                <span class="caption-subject font-green-sharp bold uppercase">{ videoTitle }</span>
-            </div>
+<div class="portlet-title">
+    <div class="caption">
+        <i class="fa fa-youtube"></i>
+        <span class="caption-subject font-green-sharp bold uppercase">{ videoTitle }</span>
+    </div>
+</div>
+<div class="portlet-body">
+    <div class="form-group">
+        <div class="">
+            <div id="training_player" ></div>
         </div>
-        <div class="portlet-body">
-            <div class="form-group">
-                <div class="">
-                   <div id="training_player" ></div>
-                </div>
-            </div>
-            <div class="finish">
-                <a onclick="{ onFinishVideo }" class="btn red">Finished <i class="fa fa-check-circle"></i></a>
-            </div>
-        </div>
+    </div>
+    <div class="finish">
+        <a onclick="{ onFinishVideo }" class="btn red">Finished <i class="fa fa-check-circle"></i></a>
     </div>
 </div>
 `
@@ -34,12 +30,9 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO, html, function(o
     this.player = null
 
     this.correctHeight = () => {
-        $(this.video_training_portal).css({
-            height: window.innerHeight - 140 + 'px'
-        })
-
-        let height = $(this.video_training_portal).height()-140
-        let width = $(this.video_training_portal).width() - 40
+        let root = $(document.getElementById('canvas_training_default'))
+        let height = root.height()-140
+        let width = root.width() - 40
         let newWidth = height * 1.778
         let newHeight = height
         if (newWidth > width) {

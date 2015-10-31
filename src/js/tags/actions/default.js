@@ -5,16 +5,12 @@ const AllTags = require('../mixins/all-tags')
 const CONSTANTS = require('../../constants/constants')
 
 const html = `
-<div id="canvas_training_default" style="border: 1px solid #e1e1e1 !important; border-radius: 5px;">
-    <div class="portlet light">
-        <div class="portlet-body">
-            <div if="{ hasFinish }" id="epilepsy_gif" style="text-align: center;">
-                <img src="src/images/arrow_gray_blue.gif"></img>
-            </div>
-            <div if="{ true != archived }" class="finish">
-                <a if="{ hasFinish }" onclick="{ onFinish }" class="btn red">{_.capitalize(data.action)} <i class="fa fa-check-circle"></i></a>
-            </div>
-        </div>
+<div class="portlet-body">
+    <div if="{ hasFinish }" id="epilepsy_gif" style="text-align: center;">
+        <img src="src/images/arrow_gray_blue.gif"></img>
+    </div>
+    <div if="{ true != archived }" class="finish">
+        <a if="{ hasFinish }" onclick="{ onFinish }" class="btn red">{_.capitalize(data.action)} <i class="fa fa-check-circle"></i></a>
     </div>
 </div>
 `
@@ -24,16 +20,6 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.DEFAULT, html, function
     this.mixin(AllTags)
     this.archived = true
     this.hasFinish = true
-
-    this.correctHeight = () => {
-        $(this.canvas_training_default).css({
-            height: window.innerHeight - 140 + 'px'
-        })
-    }
-
-    $(window).resize(() => {
-        this.correctHeight()
-    })
 
     this.stopEpilepsy = _.once(() => {
         _.delay(() => {
@@ -60,7 +46,6 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.DEFAULT, html, function
                     break
             }
         }
-        this.correctHeight()
         this.stopEpilepsy()
     }
     update(opts)

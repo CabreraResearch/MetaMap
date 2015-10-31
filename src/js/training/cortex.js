@@ -164,6 +164,10 @@ class CortexMan {
                                     this.userTraining.isWaitingOnFeedback = true
                                     this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, nextStep)
                                     break
+                                case CONSTANTS.CORTEX.RESPONSE_TYPE.SHORT_ANSWER:
+                                    this.userTraining.isWaitingOnFeedback = true
+                                    this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, nextStep)
+                                    break
                                 default:
                                     this.MetaMap.log(`on buffer passed ${nextStep.action}`)
                                     nextStep.originalAction = nextStep.action
@@ -224,6 +228,14 @@ class CortexMan {
                     case CONSTANTS.CORTEX.RESPONSE_TYPE.MULTIPLE_CHOICE:
                         this.userTraining.isWaitingOnFeedback = true
                         this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, obj)
+                        break
+                    case CONSTANTS.CORTEX.RESPONSE_TYPE.SHORT_ANSWER:
+                        this.userTraining.isWaitingOnFeedback = true
+                        this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, obj)
+                        break
+                    case CONSTANTS.CORTEX.RESPONSE_TYPE.SHORT_ANSWER_FINISH:
+                        this.userTraining.isWaitingOnFeedback = false
+                        this.moveToNextMessage(obj)
                         break
                     case CONSTANTS.CORTEX.RESPONSE_TYPE.MULTIPLE_CHOICE_ANSWER:
                         if (obj.data) {

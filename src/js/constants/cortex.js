@@ -15,7 +15,9 @@ const CORTEX = {
         DEFAULT: 'default',
         RESTART: 'restart',
         MULTIPLE_CHOICE_ANSWER: 'multiple-choice-answer',
-        MULTIPLE_CHOICE_FINISH: 'multiple-choice-finish'
+        MULTIPLE_CHOICE_FINISH: 'multiple-choice-finish',
+        SHORT_ANSWER: 'short-answer',
+        SHORT_ANSWER_FINISH: 'short-answer-finish'
     }
 }
 

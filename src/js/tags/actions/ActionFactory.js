@@ -9,6 +9,7 @@ const videoButton = require('./video-button')
 const more = require('./more')
 const canvas = require('./canvas')
 const defaults = require('./default')
+const shortanswer = require('./short-answer')
 
 class ActionFactory {
 

@@ -5,29 +5,25 @@ const $ = require('jquery')
 const slickQuiz = require('../../../vendor/slickquiz/slickQuiz')
 
 const html = `
-<div id="canvas_training_mc" style="border: 1px solid #e1e1e1 !important; border-radius: 5px;">
-    <div class="portlet light">
-        <div class="portlet-body">
-            <div if="{ true != archived }" style="text-align: center;">
-                <img id="multiple_choice_image" style="display: none;" src="{image}"></img>
-                <div class="" id="training_multiple_choice">
-                    <h1 class="quizName"><!-- where the quiz name goes --></h1>
+<div class="portlet-body">
+    <div if="{ true != archived }" style="text-align: center;">
+        <img id="multiple_choice_image" style="display: none;" src="{image}"></img>
+        <div class="" id="training_multiple_choice">
+            <h1 class="quizName"><!-- where the quiz name goes --></h1>
 
-                    <div class="quizArea">
-                        <div class="quizHeader">
-                            <a class="button startQuiz">Get Started!</a>
-                        </div>
-                    </div>
+            <div class="quizArea">
+                <div class="quizHeader">
+                    <a class="button startQuiz">Get Started!</a>
+                </div>
+            </div>
 
-                    <div class="quizResults" style="display: none;">
-                        <h3 class="quizScore">You Scored: <span><!-- where the quiz score goes --></span></h3>
+            <div class="quizResults" style="display: none;">
+                <h3 class="quizScore">You Scored: <span><!-- where the quiz score goes --></span></h3>
 
-                        <h3 class="quizLevel"><strong>Ranking:</strong> <span><!-- where the quiz ranking level goes --></span></h3>
+                <h3 class="quizLevel"><strong>Ranking:</strong> <span><!-- where the quiz ranking level goes --></span></h3>
 
-                        <div class="quizResultsCopy">
-                            <!-- where the quiz result copy goes -->
-                        </div>
-                    </div>
+                <div class="quizResultsCopy">
+                    <!-- where the quiz result copy goes -->
                 </div>
             </div>
         </div>
@@ -51,18 +47,8 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.MULTIPLE_CHOICE, html, 
 
     this.questions = {}
 
-    this.correctHeight = () => {
-        $(this.canvas_training_mc).css({
-            height: window.innerHeight - 140 + 'px'
-        })
-    }
-
-    $(window).resize(() => {
-        this.correctHeight()
-    })
-
     const update = (o) => {
-        if (o) {
+        if (o && o.message && o.message.action_data) {
             if (o.cortex) {
                 this.cortex = o.cortex
             }
@@ -109,6 +95,7 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.MULTIPLE_CHOICE, html, 
                     },
                     events: {
                         onCompleteQuiz: (o, results) => {
+                            o.results = results
                             this.cortex.processUserResponse({
                                 action: CONSTANTS.CORTEX.RESPONSE_TYPE.MULTIPLE_CHOICE_FINISH,
                                 data: o
@@ -138,7 +125,6 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.MULTIPLE_CHOICE, html, 
                 this.quiz = this.quiz || $(this.training_multiple_choice).slickQuiz(config)
             }
         }
-        this.correctHeight()
     }
     update(opts)
 
