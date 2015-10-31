@@ -1,4 +1,7 @@
 [![Stories in Ready](https://badge.waffle.io/CabreraResearch/MetaMap.png?label=ready&title=Ready)](https://waffle.io/CabreraResearch/MetaMap)
+[![bitHound Score](https://www.bithound.io/projects/badges/36fa6ec0-7ddb-11e5-aabb-393b598b5c14/score.svg)](https://www.bithound.io/github/CabreraResearch/MetaMap)
+[![bitHound Dependencies](https://www.bithound.io/projects/badges/36fa6ec0-7ddb-11e5-aabb-393b598b5c14/dependencies.svg)](https://www.bithound.io/github/CabreraResearch/MetaMap/master/dependencies/npm)
+
 # MetaMap
 
 ## Objectives
