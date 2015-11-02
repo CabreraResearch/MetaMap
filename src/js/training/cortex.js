@@ -136,7 +136,7 @@ class CortexMan {
             if (true != this.userTraining.isWaitingOnFeedback) {
                 let nextStep = this.getNextMessage()
                 if (nextStep) {
-                    let timer = (nextStep.action == CONSTANTS.CORTEX.RESPONSE_TYPE.MORE) ? 3500 : 150
+                    let timer = 150
                     this.buffer(timer).then(() => {
                         this.sendMessage(nextStep).then(()=>{
                             originalMessage.archived = true
