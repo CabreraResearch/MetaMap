@@ -57,6 +57,12 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.MULTIPLE_CHOICE, html, 
             this.archived = this.data.archived
             if (!this.quiz && !this.archived && document.getElementById('training_multiple_choice')) {
                 this.questions = this.data.action_data.questions
+                _.each(this.questions, (q) => {
+                    if (q.question) {
+                        q.q = q.question
+                    }
+                })
+
                 let config = {
                     json: {
                         info: {
@@ -73,14 +79,31 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.MULTIPLE_CHOICE, html, 
                     disableRanking: true,
                     animationCallbacks: {
                         nextQuestion: (o, answer, slick) => {
-                            console.log(answer)
+                            if (o.questionNo >= 0) {
+                                let q = this.questions[o.questionNo]
+                                if (q.picture) {
+                                    this.picture = q.picture
+                                    this.update()
+                                }
+                            }
                         },
                         checkAnswer: (o, answer, slick) => {
                             let line = null
                             if(o.isCorrect) {
                                 line = `Great! That's the correct answer!`
                             }
-
+                            if (o.questionNo >= 0) {
+                                let q = this.questions[o.questionNo]
+                                if (q.incorrectText) {
+                                    line = q.incorrectText
+                                } else {
+                                    if (o.correctAnswers.length > 1) {
+                                        line = `I'm sorry, but the correct answers were <b>${o.correctAnswers.join(' and ') }</b>.`
+                                    } else {
+                                        line = `I'm sorry, but the correct answer was <b>${o.correctAnswers[0] }</b>.`
+                                    }
+                                }
+                            }
                             let message = {
                                 message: o.selectedAnswer,
                                 feedback: line
