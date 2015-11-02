@@ -21,9 +21,14 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO_BUTTON, html, fun
             } else if (o.opts.parent.parent.cortex) {
                 this.sidebar = o.opts.parent.parent
             }
-            this.data = o.opts
-            this.archived = this.data.archived
-            this.isPlaying = this.sidebar.currentVideo == this.data.id || true != this.archived
+            this.data = {
+                action: o.opts.action,
+                action_data: o.opts.action_data,
+                archived: o.opts.archived,
+                id: o.opts.id
+            }
+            this.archived = o.opts.archived
+            this.isPlaying = this.sidebar.currentVideo == o.opts.id || true != this.archived
         }
     }
     update(opts)
@@ -31,11 +36,7 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO_BUTTON, html, fun
     this.value = null
 
     this.onClick = (e) => {
-        this.sidebar.cortex.processUserResponse({
-            action: CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO,
-            data: _.extend({}, e.target.dataset)
-        }, this.data._item)
-
+        this.sidebar.cortex.processUserResponse(this.data)
     }
 
     this.on('mount update', (event, opts) => {

@@ -273,13 +273,15 @@ class CortexMan {
                         switch (button) {
                             case 'Finished':
                                 this.MetaMap.Eventer.do(CONSTANTS.EVENTS.STOP_VIDEO, originalMessage)
-                                if (!originalMessage.archived) {
+                                if (originalMessage.action == CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO && !originalMessage.archived) {
                                     originalMessage.archived = true
                                     this.moveToNextMessage(obj)
+                                } else {
+                                    this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, originalMessage)
                                 }
                                 break
                             case 'Play':
-                                this.MetaMap.Eventer.do(CONSTANTS.EVENTS.PLAY_VIDEO, originalMessage)
+                                this.MetaMap.Eventer.do(CONSTANTS.EVENTS.PLAY_VIDEO, obj)
                                 break
                         }
                         break
