@@ -21,9 +21,9 @@ class CortexMan {
         this._messageGen = null
         this._messages = null
         this.MetaMap.MetaFire.deleteData(`${CONSTANTS.ROUTES.TRAININGS.format(this.MetaMap.User.userId) }${this.trainingId}`)
+        this.isTimerOn = true
         this.runCallbacks()
-        this._onceGetData = null
-        this.isTimerOn = false
+        this._getData = null
         this.MetaMap.Eventer.do(CONSTANTS.EVENTS.BEFORE_TRAINING_NEXT_STEP, {action: CONSTANTS.CORTEX.RESPONSE_TYPE.RESTART})
         this.getData()
     }
@@ -218,7 +218,7 @@ class CortexMan {
                         case CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS_SAVE:
                             if (obj.data.map) {
                                 originalMessage.map = obj.data.map
-                                let line = `<span>Great news, you saved this map! It now appears in <a href="#!mymaps" style="color: #cb5a5e !important"><b>your list of maps</b></a> and you can access it again later here <a href="#!maps/${obj.data.mapId}" style="color: #cb5a5e !important"><b>${obj.data.title}</b></a> Your map will now automatically save as you make changes, so I've hidden the Save button! Now that your map is saved, you can Share it!</span>`
+                                let line = `<span>Great news, you saved this map! It now appears in <a href="#!mymaps" style="color: #cb5a5e !important"><b>your list of maps</b></a> and you can access it again later here <a href="#!map/${obj.data.mapId}" style="color: #cb5a5e !important"><b>${obj.data.title}</b></a> Your map will now automatically save as you make changes, so I've hidden the Save button! Now that your map is saved, you can Share it!</span>`
                                 this.moveToNextMessage(obj, { line: line })
                             }
                             break
@@ -346,11 +346,17 @@ class CortexMan {
             this._callbacks.push(callback)
         }
         this.MetaMap.Eventer.do(CONSTANTS.EVENTS.BEFORE_TRAINING_NEXT_STEP, this.currentMessage)
-        this._onceGetData = this._onceGetData || _.once(() => {
+
+        if (this._getData) {
+            this.runCallbacks()
+            this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, this.currentMessage)
+        }
+
+        this._getData = this._getData || new Promise((resolve, reject) => {
 
             this.isTimerOn = true
             var once = _.once(() => {
-                this.MetaMap.MetaFire.getData(`${CONSTANTS.ROUTES.TRAININGS.format(this.MetaMap.User.userId) }${this.trainingId}`).then((data) => {
+                this._getData = this.MetaMap.MetaFire.getData(`${CONSTANTS.ROUTES.TRAININGS.format(this.MetaMap.User.userId) }${this.trainingId}`).then((data) => {
                     this.userTraining = data
                     if (!data) {
                         this.userTraining = this.training
@@ -369,17 +375,22 @@ class CortexMan {
 
                         //2: Cache the current message
                         this.currentMessageKey = _.findLastIndex(this.userTraining.messages, (m) => { return m.person == 'Cortex' })
-                        this.currentMessage = this.userTraining.messages[this.currentMessageKey]
 
-                        //3: Action
-                        if (this.currentMessage.action &&
-                            this.currentMessage.action != CONSTANTS.CORTEX.RESPONSE_TYPE.OK &&
-                            this.currentMessage.action != CONSTANTS.CORTEX.RESPONSE_TYPE.MORE) {
-                            this.processUserResponse(this.currentMessage)
+                        if (this.currentMessageKey >= 0) {
+                            this.currentMessage = this.userTraining.messages[this.currentMessageKey]
+
+                            //3: Action
+                            if (this.currentMessage.action &&
+                                this.currentMessage.action != CONSTANTS.CORTEX.RESPONSE_TYPE.OK &&
+                                this.currentMessage.action != CONSTANTS.CORTEX.RESPONSE_TYPE.MORE) {
+                                this.processUserResponse(this.currentMessage)
+                            } else {
+                                this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, this.currentMessage)
+                            }
                         } else {
-                            this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, this.currentMessage)
+                            this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, { action: CONSTANTS.CORTEX.RESPONSE_TYPE.MORE })
                         }
-
+                        resolve()
                         window.NProgress.done()
                     })
                 })
@@ -391,9 +402,9 @@ class CortexMan {
                 this.MetaMap.Eventer.do(CONSTANTS.EVENTS.PAGE_NAME, data)
                 once()
             })
-        })
-        this._onceGetData()
 
+        })
+        return this._getData
     }
 
     _massageTrainingMessage(idx=0) {

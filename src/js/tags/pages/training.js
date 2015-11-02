@@ -61,7 +61,7 @@ module.exports = riot.tag(CONSTANTS.TAGS.TRAINING, html, function(opts) {
             this.config = o
             if (!this.cortex) {
                 this.cortex = this.getCortex(this.config.id)
-                this.cortex.getData(() => {
+                this.cortex.getData().then(() => {
                     this.update()
                 })
             }

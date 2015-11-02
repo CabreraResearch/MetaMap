@@ -6,7 +6,7 @@ const Permissions = require('../../app/Permissions')
 const AllTags = require('../mixins/all-tags')
 
 const html = `
-<div class="portlet light jtk-demo-main" style="padding: 0 ">
+<div class="portlet light jtk-demo-main" style="padding: 0; border-radius: 5px; border: 1px solid rgb(225, 225, 225);">
     <div class="jtk-demo-canvas canvas-wide" id="diagram">
 
     </div>

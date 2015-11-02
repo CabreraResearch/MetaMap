@@ -107,7 +107,7 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS, html, function(
             let newMap = require('../../actions/NewMap')
             this.hasSave = false
             let map = this.canvas.exportData()
-            let nuMap = newMap.createMap({ title: this.title, map: map })
+            let nuMap = newMap.createMap({ title: this.title, map: map, training: { name: this.cortex.training.name, id: this.cortex.trainingId } })
             this.data.map = nuMap.map
             this.data.mapId = nuMap.mapId
             this.cortex.processUserResponse({
