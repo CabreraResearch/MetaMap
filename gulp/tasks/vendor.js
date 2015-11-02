@@ -9,6 +9,8 @@ var minify = require('minifyify')
 var concat = require('gulp-concat');
 var download = require("gulp-download")
 var runSequence = require('run-sequence');
+var rework = require('gulp-rework');
+var reworkUrl = require('rework-plugin-url')
 
 gulp.task('concatOthers', function () {
     return gulp.src(['src/vendor/jsPlumb/jsPlumb-2.1.0.js', 'src/vendor/jsPlumb/jsPlumbToolkit-1.1.0.js', 'src/vendor/cdn/**/*.js'])
@@ -49,26 +51,51 @@ var runbrowserify = function () {
         });
 };
 
+var downloadAndParse = function (url, doParse) {
+    try {
+        if (doParse) {
+            var arr = url.split('/')
+            arr.splice(arr.length - 1, 1)
+            var prefix = arr.join('/')
+            if (!prefix.endsWith('/')) {
+                prefix += '/'
+            }
+            return download([url])
+                .pipe(rework(reworkUrl(function (url) {
+                    if (url && !url.startsWith('data:')) {
+                        return prefix + url
+                    } else {
+                        return url
+                    }
+                })))
+                .pipe(gulp.dest("src/vendor/cdn"))
+        } else {
+            return download([url])
+                .pipe(gulp.dest("src/vendor/cdn"))
+        }
+    } catch (e) {
+        console.log(e)
+    }
+}
+
 gulp.task('cdn', function () {
-    return download([
-        'https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.css',
+        downloadAndParse('https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.css')
         //'https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css',
-        'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css',
-        'https://cdnjs.cloudflare.com/ajax/libs/Uniform.js/2.1.2/themes/default/css/uniform.default.min.css',
-        'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.2/css/bootstrap3/bootstrap-switch.min.css',
-        'https://cdn.datatables.net/plug-ins/1.10.9/integration/bootstrap/3/dataTables.bootstrap.css',
-        'https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/css/bootstrap-editable.css',
-        'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.7.4/css/bootstrap-select.min.css',
-        'https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.2.0/min/dropzone.min.css',
-        'https://code.jquery.com/ui/1.11.4/themes/ui-lightness/jquery-ui.css',
-        'https://cdnjs.cloudflare.com/ajax/libs/jquery.perfect-scrollbar/0.6.7/css/perfect-scrollbar.min.css',
-        'https://cdn.auth0.com/js/lock-7.min.js',
-        'https://cdn.firebase.com/js/client/2.2.9/firebase.js',
-        'https://cdnjs.cloudflare.com/ajax/libs/Uniform.js/2.1.2/jquery.uniform.min.js',
-        'https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/js/bootstrap-editable.min.js',
-        'https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.js'
-    ])
-        .pipe(gulp.dest("src/vendor/cdn"));
+        downloadAndParse('https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.css', true)
+        downloadAndParse('https://cdnjs.cloudflare.com/ajax/libs/Uniform.js/2.1.2/themes/default/css/uniform.default.css', true)
+        downloadAndParse('https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.2/css/bootstrap3/bootstrap-switch.min.css')
+        downloadAndParse('https://cdn.datatables.net/plug-ins/1.10.9/integration/bootstrap/3/dataTables.bootstrap.css')
+        downloadAndParse('https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/css/bootstrap-editable.css', true)
+        downloadAndParse('https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.7.4/css/bootstrap-select.min.css')
+        downloadAndParse('https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.2.0/min/dropzone.min.css')
+        downloadAndParse('https://code.jquery.com/ui/1.11.4/themes/ui-lightness/jquery-ui.css', true)
+        downloadAndParse('https://cdnjs.cloudflare.com/ajax/libs/jquery.perfect-scrollbar/0.6.7/css/perfect-scrollbar.min.css')
+        downloadAndParse('https://cdn.auth0.com/js/lock-7.min.js')
+        downloadAndParse('https://cdn.firebase.com/js/client/2.2.9/firebase.js')
+        downloadAndParse('https://cdnjs.cloudflare.com/ajax/libs/Uniform.js/2.1.2/jquery.uniform.min.js')
+        downloadAndParse('https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/js/bootstrap-editable.min.js')
+        downloadAndParse('https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.js')
+
 })
 
 gulp.task('vendor1', function () {
