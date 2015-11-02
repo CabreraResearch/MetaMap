@@ -1,0 +1,13 @@
+<!--
+    this is the template for the proxy node - the node that appears in the
+    center of an edge and allows the edge to be "dragged"
+-->
+<script type="jtk" id="tmplDragProxy">
+    <div style="width:${w}px;height:${h}px;" class="dragProxy">
+        <div style="position:relative">
+            <svg:svg width="${w}" height="${h}">
+                <svg:circle cx="${w/2}" cy="${h/2}" r="${w/2}"></svg:circle>
+            </svg:svg>
+        </div>
+    </div>
+</script>

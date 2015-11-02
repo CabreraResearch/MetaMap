@@ -12,7 +12,6 @@ const User = require('./js/app/user.js')
 const Router = require('./js/app/Router.js')
 const Eventer = require('./js/app/Eventer.js')
 const PageFactory = require('./js/pages/PageFactory.js')
-const NProgress = window.NProgress
 const Config = require('./js/app//Config.js')
 const ga = require('./js/integrations/google.js')
 const shims = require('./js/tools/shims.js')
@@ -22,12 +21,6 @@ const Cortex = require('./js/training/cortex')
 class MetaMap {
 
     constructor() {
-        this.Config = new Config()
-        this.config = this.Config.config
-        this.MetaFire = this.Config.MetaFire
-        this.Eventer = new Eventer(this)
-        this._trainings = {}
-        this.onReady()
         const that = this
         Promise.onPossiblyUnhandledRejection(function (error) {
             that.error(error)
@@ -54,8 +47,16 @@ class MetaMap {
     }
 
     init() {
+        this.Config = new Config()
+        this.config = this.Config.config
+        this.MetaFire = this.Config.MetaFire
+        this.Eventer = new Eventer(this)
+        this._trainings = {}
+        this.onReady()
+
         this.onReady().then(() => {
-            if(this._doCustomLogin) {
+
+            if (this._doCustomLogin) {
                 this.doCustomLogin()
             } else {
                 this.Auth0.login().then((profile) => {

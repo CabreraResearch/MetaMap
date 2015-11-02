@@ -1,5 +1,4 @@
 const riot = require('riot');
-const NProgress = window.NProgress;
 const CONSTANTS = require('../../constants/constants');
 
 const html = `
@@ -63,6 +62,6 @@ module.exports = riot.tag('home', html, function(opts) {
 
         this.update();
 
-        NProgress.done();
+        window.NProgress.done();
     });
 });

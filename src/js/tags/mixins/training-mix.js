@@ -1,5 +1,4 @@
 const CONSTANTS = require('../../constants/constants')
-const NProgress = window.NProgress
 const moment = require('moment')
 
 let TrainingMix = {

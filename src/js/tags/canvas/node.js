@@ -1,5 +1,4 @@
 const riot = require('riot');
-const NProgress = window.NProgress;
 const Editor = require('../../canvas/canvas');
 
 

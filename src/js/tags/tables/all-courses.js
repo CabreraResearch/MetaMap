@@ -1,5 +1,4 @@
 const riot = require('riot')
-const NProgress = window.NProgress
 const _ = require('lodash')
 const $ = require('jquery')
 const Dropzone = require('dropzone')
@@ -200,7 +199,7 @@ module.exports = riot.tag(CONSTANTS.TAGS.ALL_COURSES, html, function (opts) {
         } catch (e) {
 
         } finally {
-            NProgress.done()
+            window.NProgress.done()
         }
     }
 

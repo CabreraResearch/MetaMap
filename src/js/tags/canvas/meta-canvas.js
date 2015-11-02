@@ -1,5 +1,4 @@
 const riot = require('riot')
-const NProgress = window.NProgress
 const Canvas = require('../../canvas/canvas')
 const CONSTANTS = require('../../constants/constants')
 require('./node')
@@ -39,7 +38,7 @@ module.exports = riot.tag('meta-canvas', html, function(opts) {
                 this.update()
             })
         }
-        NProgress.done()
+        window.NProgress.done()
     }
 
     this.build = (opts) => {

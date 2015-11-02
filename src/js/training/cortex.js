@@ -1,6 +1,5 @@
 const _ = require('lodash')
 const CONSTANTS = require('../constants/constants')
-const NProgress = window.NProgress
 const moment = require('moment')
 
 class CortexMan {
@@ -375,7 +374,7 @@ class CortexMan {
                             this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, this.currentMessage)
                         }
 
-                        NProgress.done()
+                        window.NProgress.done()
                     })
                 })
                 this.MetaMap.Eventer.do(CONSTANTS.EVENTS.SIDEBAR_OPEN, this.trainingId)

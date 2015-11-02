@@ -1,5 +1,4 @@
 const riot = require('riot');
-const NProgress = window.NProgress;
 const CONSTANTS = require('../../constants/constants');
 
 const html = `
@@ -31,7 +30,7 @@ const html = `
 module.exports = riot.tag('terms', html, function(opts) {
 
     const MetaMap = require('../../../MetaMap.js');
-    
+
     this.areas = []
     this.header = {}
 
@@ -46,12 +45,12 @@ module.exports = riot.tag('terms', html, function(opts) {
             }
             return include;
         });
-        
+
         this.header = data.header;
         this.userName = MetaMap.User.fullName;
-        
+
         this.update();
-        
-        NProgress.done();
+
+        window.NProgress.done();
     });
 });

@@ -46,20 +46,20 @@
     "start": "node server.js"
   },
   "eslintConfig": {
-      "ecmaFeatures": {
-        "blockBindings": true,
-        "binaryLiterals": true,
-        "arrowFunctions": true,
-        "classes": true,
-        "defaultParams": true,
-        "destructuring": true,
-        "forOf": true,
-        "generators": true,
-        "modules": true,
-        "spread": true,
-        "superInFunctions": true,
-        "templateStrings": true
-      }
+    "ecmaFeatures": {
+      "blockBindings": true,
+      "binaryLiterals": true,
+      "arrowFunctions": true,
+      "classes": true,
+      "defaultParams": true,
+      "destructuring": true,
+      "forOf": true,
+      "generators": true,
+      "modules": true,
+      "spread": true,
+      "superInFunctions": true,
+      "templateStrings": true
+    }
   },
   "browserify-shim": {
     "bootstrap-hover-dropdown": {
@@ -108,6 +108,7 @@
     "gulp-changed": "^1.3.0",
     "gulp-concat": "^2.6.0",
     "gulp-debug": "^2.1.2",
+    "gulp-download": "0.0.1",
     "gulp-header": "^1.7.1",
     "gulp-if": "^2.0.0",
     "gulp-imagemin": "^2.3.0",
@@ -137,7 +138,6 @@
     "yargs": "^3.27.0"
   },
   "optionalDependencies": {
-    "auth0-lock": "^7.10.0",
     "bluebird": "^2.10.2",
     "bootstrap": "^3.3.5",
     "bootstrap-hover-dropdown": "^2.1.3",

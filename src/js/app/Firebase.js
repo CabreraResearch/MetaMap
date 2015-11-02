@@ -1,4 +1,3 @@
-let Firebase = window.Firebase;
 let Promise = require('bluebird')
 let localforage = require('localforage')
 
@@ -6,7 +5,7 @@ class MetaFire {
 
     constructor(config) {
         this.config = config;
-        this.fb = new Firebase(`https://${this.config.site.db}.firebaseio.com`);
+        this.fb = new window.Firebase(`https://${this.config.site.db}.firebaseio.com`);
     }
 
     get metaMap() {
