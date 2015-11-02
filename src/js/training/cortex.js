@@ -193,103 +193,107 @@ class CortexMan {
             originalMessage = originalMessage || this.currentMessage
 
             if (obj.action) {
-                switch(obj.action) {
-                    case CONSTANTS.CORTEX.RESPONSE_TYPE.OK:
-                        obj.message = 'OK'
-                        originalMessage.archived = true
-                        this.moveToNextMessage(obj)
-                        break
-                    case CONSTANTS.CORTEX.RESPONSE_TYPE.MORE:
-                        originalMessage.archived = true
-                        this.moveToNextMessage(obj)
-                        break
-                    case CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS:
-                        this.userTraining.isWaitingOnFeedback = true
-                        this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, obj)
-                        break
-                    case CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS_FINISH:
-                        this.userTraining.isWaitingOnFeedback = false
-                        originalMessage.archived = true
-                        this.moveToNextMessage(obj, { line: 'Great work in the canvas!' })
-                        break
-                    case CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS_SAVE:
-                        if (obj.data.map) {
-                            originalMessage.map = obj.data.map
-                            let line = `<span>Great news, you saved this map! It now appears in <a href="#!mymaps" style="color: #cb5a5e !important"><b>your list of maps</b></a> and you can access it again later here <a href="#!maps/${obj.data.mapId}" style="color: #cb5a5e !important"><b>${obj.data.title}</b></a> Your map will now automatically save as you make changes, so I've hidden the Save button! Now that your map is saved, you can Share it!</span>`
-                            this.moveToNextMessage(obj, { line: line })
-                        }
-                        break
-                    case CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS_SHARE:
-                        if (obj.data.shared_with) {
-                            this.moveToNextMessage(obj, { line: 'Great news, you shared this map with some of your friends!' })
-                        }
-                        break
-                    case CONSTANTS.CORTEX.RESPONSE_TYPE.MULTIPLE_CHOICE:
-                        this.userTraining.isWaitingOnFeedback = true
-                        this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, obj)
-                        break
-                    case CONSTANTS.CORTEX.RESPONSE_TYPE.SHORT_ANSWER:
-                        this.userTraining.isWaitingOnFeedback = true
-                        this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, obj)
-                        break
-                    case CONSTANTS.CORTEX.RESPONSE_TYPE.SHORT_ANSWER_FINISH:
-                        this.userTraining.isWaitingOnFeedback = false
-                        this.moveToNextMessage(obj)
-                        break
-                    case CONSTANTS.CORTEX.RESPONSE_TYPE.MULTIPLE_CHOICE_ANSWER:
-                        if (obj.data) {
-                            obj.message = obj.data.message
-                            this.moveToNextMessage(obj, { line: obj.data.feedback })
-                        }
-                        break
-                    case CONSTANTS.CORTEX.RESPONSE_TYPE.MULTIPLE_CHOICE_FINISH:
-                        this.userTraining.isWaitingOnFeedback = false
-                        let feedback = `Great job. You got ${obj.data.score} out of ${obj.data.questionCount} correct!`
-                        this.moveToNextMessage(obj, { line: feedback })
-                        break
-                    case CONSTANTS.CORTEX.RESPONSE_TYPE.LIKERT:
-                        _.each(obj.data, (val, key) => {
-                            obj[key] = val
-                            delete obj.data[key]
-                        })
-                        if (obj.request_feedback == true || obj.request_feedback == false) {
+                if (obj.archived == true) {
+                    this.moveToNextMessage(obj)
+                } else {
+                    switch (obj.action) {
+                        case CONSTANTS.CORTEX.RESPONSE_TYPE.OK:
+                            obj.message = 'OK'
                             originalMessage.archived = true
-                            if (obj.request_feedback) {
-                                this.userTraining.isWaitingOnFeedback = true
-                                this.moveToNextMessage(obj, { line: 'I\'m sorry to hear that! How can we improve it for the next version of this training?' })
-                            } else {
-                                this.userTraining.isWaitingOnFeedback = false
-                                this.moveToNextMessage(obj, { line: 'Thanks for the feedback!' })
-                            }
-                        } else {
+                            this.moveToNextMessage(obj)
+                            break
+                        case CONSTANTS.CORTEX.RESPONSE_TYPE.MORE:
+                            originalMessage.archived = true
+                            this.moveToNextMessage(obj)
+                            break
+                        case CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS:
+                            this.userTraining.isWaitingOnFeedback = true
                             this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, obj)
-                        }
-                        break
-                    case CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO:
-                        let button = 'Play'
-                        if (obj.data && obj.data.buttonName) {
-                            button = obj.data.buttonName
-                        }
-                        switch (button) {
-                            case 'Finished':
-                                this.MetaMap.Eventer.do(CONSTANTS.EVENTS.STOP_VIDEO, originalMessage)
-                                if (originalMessage.action == CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO && !originalMessage.archived) {
-                                    originalMessage.archived = true
-                                    this.moveToNextMessage(obj)
+                            break
+                        case CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS_FINISH:
+                            this.userTraining.isWaitingOnFeedback = false
+                            originalMessage.archived = true
+                            this.moveToNextMessage(obj, { line: 'Great work in the canvas!' })
+                            break
+                        case CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS_SAVE:
+                            if (obj.data.map) {
+                                originalMessage.map = obj.data.map
+                                let line = `<span>Great news, you saved this map! It now appears in <a href="#!mymaps" style="color: #cb5a5e !important"><b>your list of maps</b></a> and you can access it again later here <a href="#!maps/${obj.data.mapId}" style="color: #cb5a5e !important"><b>${obj.data.title}</b></a> Your map will now automatically save as you make changes, so I've hidden the Save button! Now that your map is saved, you can Share it!</span>`
+                                this.moveToNextMessage(obj, { line: line })
+                            }
+                            break
+                        case CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS_SHARE:
+                            if (obj.data.shared_with) {
+                                this.moveToNextMessage(obj, { line: 'Great news, you shared this map with some of your friends!' })
+                            }
+                            break
+                        case CONSTANTS.CORTEX.RESPONSE_TYPE.MULTIPLE_CHOICE:
+                            this.userTraining.isWaitingOnFeedback = true
+                            this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, obj)
+                            break
+                        case CONSTANTS.CORTEX.RESPONSE_TYPE.SHORT_ANSWER:
+                            this.userTraining.isWaitingOnFeedback = true
+                            this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, obj)
+                            break
+                        case CONSTANTS.CORTEX.RESPONSE_TYPE.SHORT_ANSWER_FINISH:
+                            this.userTraining.isWaitingOnFeedback = false
+                            this.moveToNextMessage(obj)
+                            break
+                        case CONSTANTS.CORTEX.RESPONSE_TYPE.MULTIPLE_CHOICE_ANSWER:
+                            if (obj.data) {
+                                obj.message = obj.data.message
+                                this.moveToNextMessage(obj, { line: obj.data.feedback })
+                            }
+                            break
+                        case CONSTANTS.CORTEX.RESPONSE_TYPE.MULTIPLE_CHOICE_FINISH:
+                            this.userTraining.isWaitingOnFeedback = false
+                            let feedback = `Great job. You got ${obj.data.score} out of ${obj.data.questionCount} correct!`
+                            this.moveToNextMessage(obj, { line: feedback })
+                            break
+                        case CONSTANTS.CORTEX.RESPONSE_TYPE.LIKERT:
+                            _.each(obj.data, (val, key) => {
+                                obj[key] = val
+                                delete obj.data[key]
+                            })
+                            if (obj.request_feedback == true || obj.request_feedback == false) {
+                                originalMessage.archived = true
+                                if (obj.request_feedback) {
+                                    this.userTraining.isWaitingOnFeedback = true
+                                    this.moveToNextMessage(obj, { line: 'I\'m sorry to hear that! How can we improve it for the next version of this training?' })
                                 } else {
-                                    this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, originalMessage)
+                                    this.userTraining.isWaitingOnFeedback = false
+                                    this.moveToNextMessage(obj, { line: 'Thanks for the feedback!' })
                                 }
-                                break
-                            case 'Play':
-                                this.MetaMap.Eventer.do(CONSTANTS.EVENTS.PLAY_VIDEO, obj)
-                                break
-                        }
-                        break
-                    default:
-                        this.MetaMap.log(`on action passed ${obj.action}`)
-                        originalMessage.archived = true
-                        this.moveToNextMessage(obj, { line: `<span>I don't supprt this <code>${obj.action}</code> action yet, so I'm moving you to the next line.` })
-                        break
+                            } else {
+                                this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, obj)
+                            }
+                            break
+                        case CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO:
+                            let button = 'Play'
+                            if (obj.data && obj.data.buttonName) {
+                                button = obj.data.buttonName
+                            }
+                            switch (button) {
+                                case 'Finished':
+                                    this.MetaMap.Eventer.do(CONSTANTS.EVENTS.STOP_VIDEO, originalMessage)
+                                    if (originalMessage.action == CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO && !originalMessage.archived) {
+                                        originalMessage.archived = true
+                                        this.moveToNextMessage(obj)
+                                    } else {
+                                        this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, originalMessage)
+                                    }
+                                    break
+                                case 'Play':
+                                    this.MetaMap.Eventer.do(CONSTANTS.EVENTS.PLAY_VIDEO, obj)
+                                    break
+                            }
+                            break
+                        default:
+                            this.MetaMap.log(`on action passed ${obj.action}`)
+                            originalMessage.archived = true
+                            this.moveToNextMessage(obj, { line: `<span>I don't supprt this <code>${obj.action}</code> action yet, so I'm moving you to the next line.` })
+                            break
+                    }
                 }
             } else if(obj.message) {
                 if (obj.message.startsWith('/')) {
