@@ -411,10 +411,10 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.LIKERT, html, function(
                     jsPsych.init({
                         display_element: $(this[`likert_scale`]),
                         experiment_structure: [likert_block],
-
                         on_finish: () => {
                             jsPsych.endExperiment()
-                            let data = jsPsych.data.getData()[0]
+                            let allAnswers = jsPsych.data.getData()
+                            let data = _.last(allAnswers)
                             let response = JSON.parse(data.responses)
                             this.value = response.Q0
                             let per = (this.value / this.range.length) * 100
