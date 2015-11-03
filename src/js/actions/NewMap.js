@@ -10,7 +10,7 @@ class NewMap extends ActionBase {
         super.act();
 
         let mapId = NewMap.createMap().mapId
-        this.metaMap.MetaMap.Router.to(`map/${mapId}`);
+        this.metaMap.Router.to(`map/${mapId}`);
 
         return true;
     }
