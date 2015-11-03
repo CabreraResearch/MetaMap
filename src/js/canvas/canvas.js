@@ -94,8 +94,19 @@ class Canvas {
             //Whenever changing the selection, clear what was previously selected
             var clearSelection = function(obj) {
                 toolkit.clearSelection();
-                if(obj) {
-                    toolkit.setSelection(obj);
+                $('.node-selected').each(function () {
+                    this.setAttribute('class', 'node-border')
+                })
+                if (obj) {
+                    $(obj.el).find('.node-border').each(function () {
+                        this.setAttribute('class', 'node-selected')
+                    })
+                    if (obj.node) {
+                        toolkit.setSelection(obj.node);
+                    }
+                    if (obj.edge) {
+                        toolkit.setSelection(obj.edge);
+                    }
                 }
             }
 
@@ -104,6 +115,7 @@ class Canvas {
                 container: opts.attachTo,
                 elementsDraggable: !that.isReadOnly,
                 enablePanButtons: false,
+                consumeRightClick: false,
                 layout:{
                     // custom layout for this app. simple extension of the spring layout.
                     type:"metamap"
@@ -124,10 +136,25 @@ class Canvas {
                         all: {
                             events: {
                                 tap: function(obj) {
-                                    clearSelection(obj.node)
+                                    clearSelection(obj)
                                 },
                                 mouseenter: function(obj) {
 
+                                },
+                                contextmenu: function (node, port, el, e) {
+                                    if (node && node.el) {
+                                        $.contextMenu({
+                                            selector: `#${node.el.id}`,
+                                            items: {
+                                                copy: {
+                                                    name: "Copy",
+                                                    callback: function(key, opt){
+                                                        alert("Clicked on " + key);
+                                                    }
+                                                }
+                                            }
+                                        });
+                                    }
                                 }
                             }
                         },
@@ -190,9 +217,13 @@ class Canvas {
                                     if(obj.e.target.getAttribute('class') == 'relationship-overlay' ) {
                                         debugger;
                                     }
-                                    clearSelection(obj.edge)
+                                    clearSelection(obj)
+                                },
+                                contextmenu: function (node, port, el, e) {
+                                    debugger
                                 }
                             }
+
                         },
                         default:{
                             parent: "all",
@@ -249,6 +280,9 @@ class Canvas {
                         pos.left = pos.left-50
                         pos.top = pos.top-50
                         toolkit.addNode(jsPlumb.extend(_newNode(), pos));
+                    },
+                    contextmenu: function (node, port, el, e) {
+                        debugger
                     },
                     nodeAdded:_registerHandlers, // see below
                     edgeAdded: function(obj) {
@@ -532,6 +566,10 @@ class Canvas {
                         deleteAll(selected);
                         break;
                 }
+            })
+
+            jsPlumb.on(document, 'contextmenu', function(event) {
+                event.preventDefault()
             })
 
             jsPlumb.on(document, 'keydown', function(event) {

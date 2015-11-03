@@ -1,4 +1,3 @@
-/// <reference path="../../../../typings/riotjs/riotjs.d.ts" />
 const riot = require('riot')
 const CONSTANTS = require('../constants/constants');
 
@@ -25,6 +24,11 @@ class Router {
                 this.eventer.do('history', window.location.hash);
             }
         });
+        if (window.location.href.indexOf('?') > 0) {
+            console.warn('location had a ?')
+            let loc = window.location.href.split('?').join('')
+            window.location.href = loc
+        }
         this.to(this.currentPage);
     }
 

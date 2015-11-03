@@ -24,6 +24,13 @@
     cursor:pointer;
 }
 
+.node-border {
+    fill: #B3C2C7;
+}
+
+.node-selected {
+    fill: #000;
+}
 /* styles for the idea node. */
 
 .perspective_closed {

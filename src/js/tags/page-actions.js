@@ -124,12 +124,4 @@ module.exports = riot.tag('page-actions', html, function (opts) {
         this.update();
     });
 
-    MetaMap.Eventer.on(CONSTANTS.EVENTS.SIDEBAR_CLOSE, () => {
-        $(this.page_actions).css({ 'padding-left': '0' })
-    });
-
-    MetaMap.Eventer.on(CONSTANTS.EVENTS.SIDEBAR_OPEN, () => {
-        $(this.page_actions).css({ 'padding-left': '70px' })
-    });
-
 });

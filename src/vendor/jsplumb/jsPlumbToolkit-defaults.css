@@ -146,7 +146,7 @@ Assigned to tile images in a tiled background
     Assigned to some element that has been selected (either via lasso or programmatically).
 */
 .jtk-surface-selected-element {
-    border: 2px solid #B3C2C7 !important;
+    
 }
 
 

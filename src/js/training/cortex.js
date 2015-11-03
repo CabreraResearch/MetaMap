@@ -106,13 +106,18 @@ class CortexMan {
     }
 
     processFeedback(obj, int=50) {
-        this.buffer(int).then(()=>{
-            this.sendMessage({
+        if (!obj.line) {
+            int=0
+        }
+        this.buffer(int).then(() => {
+            if (obj.line) {
+                this.sendMessage({
                     message: obj.line,
                     author: 'cortex',
                     time: `${new Date() }`,
                     action: CONSTANTS.CORTEX.RESPONSE_TYPE.FEEDBACK
-            })
+                })
+            }
         })
     }
 
