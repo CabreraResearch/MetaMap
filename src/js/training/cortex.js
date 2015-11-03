@@ -149,6 +149,10 @@ class CortexMan {
                                     this.userTraining.isWaitingOnFeedback = true
                                     this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, nextStep)
                                     break
+                                case CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS_CONTINUOUS:
+                                    this.userTraining.isWaitingOnFeedback = false
+                                    this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, nextStep)
+                                    break
                                 case CONSTANTS.CORTEX.RESPONSE_TYPE.LIKERT:
                                     this.userTraining.isWaitingOnFeedback = true
                                     this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, nextStep)
@@ -210,10 +214,18 @@ class CortexMan {
                             this.userTraining.isWaitingOnFeedback = true
                             this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, obj)
                             break
-                        case CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS_FINISH:
+                        case CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS_CONTINUOUS:
                             this.userTraining.isWaitingOnFeedback = false
+                            this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, obj)
+                            break
+                        case CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS_FINISH:
+                            let line = ''
+                            if (originalMessage.action != CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS_CONTINUOUS) {
+                                this.userTraining.isWaitingOnFeedback = false
+                                line = 'Great work in the canvas!'
+                            }
                             originalMessage.archived = true
-                            this.moveToNextMessage(obj, { line: 'Great work in the canvas!' })
+                            this.moveToNextMessage(obj, { line: line })
                             break
                         case CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS_SAVE:
                             if (obj.data.map) {

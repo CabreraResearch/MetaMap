@@ -1,5 +1,7 @@
 const ActionBase = require('./ActionBase.js');
 const CONSTANTS = require('../constants/constants');
+const Promise = require('bluebird')
+const _ = require('lodash')
 
 class CopyMap extends ActionBase {
     constructor(...params) {
@@ -8,38 +10,11 @@ class CopyMap extends ActionBase {
 
     act(id, ...params) {
         super.act(id, ...params);
-        if (!id) {
-            return new Error('Must have a map in order to copy.');
-        }
-        this.metaFire.getData(`${CONSTANTS.ROUTES.MAPS_LIST}${id}`).then((oldMap) => {
-            let newMap = {
-                created_at: `${new Date()}`,
-                owner: {
-                    userId: this.metaMap.User.userId,
-                    name: this.metaMap.User.displayName,
-                    picture: this.metaMap.User.picture
-                },
-                name: this.appendCopy(oldMap.name),
-                shared_with: {
-                    admin: {
-                        read: true,
-                        write: true },
-                    '*': {
-                        read: false,
-                        write: false }
-                }
-            }
-            this.metaFire.getData(`${CONSTANTS.ROUTES.MAPS_DATA}${id}`).then((oldMapData) => {
-                let pushState = this.metaFire.pushData(newMap, `${CONSTANTS.ROUTES.MAPS_LIST}`);
-                let mapId = pushState.key();
-                this.metaFire.setData(oldMapData, `${CONSTANTS.ROUTES.MAPS_DATA}${mapId}`);
-                this.metaMap.Router.to(`map/${mapId}`);
-            });
-        });
+        CopyMap.copyMap(id, ...params)
         return true;
     }
 
-    appendCopy(str) {
+    static appendCopy(str) {
         let ret = str;
         if (!_.contains(str, '(Copy')) {
             ret = ret + ' (Copy 1)';
@@ -57,6 +32,47 @@ class CopyMap extends ActionBase {
             ret += ` (Copy ${cnt})`;
         }
         return ret;
+    }
+
+    static copyMap(id, openMap = false) {
+        if (!id) {
+            return new Error('Must have a map in order to copy.');
+        }
+        return new Promise((resolve, reject) => {
+            let MetaMap = require('../../MetaMap')
+            MetaMap.MetaFire.getData(`${CONSTANTS.ROUTES.MAPS_LIST}${id}`).then((oldMap) => {
+                if(oldMap) {
+                    let newMap = {
+                        created_at: `${new Date()}`,
+                        owner: {
+                            userId: MetaMap.User.userId,
+                            name: MetaMap.User.displayName,
+                            picture: MetaMap.User.picture
+                        },
+                        name: CopyMap.appendCopy(oldMap.name),
+                        shared_with: {
+                            admin: {
+                                read: true,
+                                write: true },
+                            '*': {
+                                read: false,
+                                write: false }
+                        }
+                    }
+                    MetaMap.MetaFire.getData(`${CONSTANTS.ROUTES.MAPS_DATA}${id}`).then((oldMapData) => {
+                        let pushState = MetaMap.MetaFire.pushData(newMap, `${CONSTANTS.ROUTES.MAPS_LIST}`);
+                        let mapId = pushState.key();
+                        MetaMap.MetaFire.setData(oldMapData, `${CONSTANTS.ROUTES.MAPS_DATA}${mapId}`);
+                        resolve(_.extend(oldMap, oldMapData))
+                        if (openMap) {
+                            MetaMap.Router.to(`map/${mapId}`);
+                        }
+                    });
+                } else {
+                    resolve(null)
+                }
+            })
+        })
     }
 }
 

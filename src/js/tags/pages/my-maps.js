@@ -160,7 +160,8 @@ module.exports = riot.tag('my-maps', html, function (opts) {
     }
 
     this.onCopy = (event, ...o) => {
-        console.log('copy')
+        const CopyMap = require('../../actions/CopyMap')
+        CopyMap.copyMap(event.item.id)
     }
 
     this.onTabSwitch = (event, ...o) => {
