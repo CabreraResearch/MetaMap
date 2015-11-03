@@ -81,16 +81,6 @@ class Canvas {
                 };
             };
 
-            // dummy for a new proxy (drag handle)
-            var _newProxy = function(type) {
-                type = type || 'proxyPerspective'
-                return {
-                    w:10,
-                    h:10,
-                    type:type
-                };
-            };
-
             //Whenever changing the selection, clear what was previously selected
             var clearSelection = function(obj) {
                 toolkit.clearSelection();
@@ -167,47 +157,6 @@ class Canvas {
                         },
                         "r-thing": {
                             parent: "idea"
-                        },
-                        proxy: {
-                            parent: "all",
-                            template:"tmplDragProxy",
-                            anchors: ['Continuous', 'Center']
-                        },
-                        proxyPerspective: {
-                            parent: "proxy"
-                        },
-                        proxyRelationship: {
-                            parent: "proxy",
-                            events: {
-                                dblclick: function(obj) {
-                                    //obj.node.data.type = 'r-thing'
-                                    //obj.node.setType('r-thing')
-                                    //Updating the node type does not seem to stick; instead, create a new node
-                                    var d = renderer.mapEventLocation(obj.e)
-                                    var edges = obj.node.getEdges()
-
-                                    d.w = edges[0].source.data.w * 0.667;
-                                    d.h = edges[0].source.data.h * 0.667;
-
-                                    var newNode = toolkit.addNode(jsPlumb.extend(_newNode("r-thing"), d));
-
-                                    //re-create the edge connections on the new node
-                                    for(var i=0; i<edges.length; i+=1) {
-                                        if(edges[i].source == obj.node) {
-                                            toolkit.connect({source:newNode, target:edges[i].target, data:{
-                                                type:"relationship"
-                                            }});
-                                        } else if(edges[i].target == obj.node) {
-                                            toolkit.connect({source:edges[i].source, target:newNode, data:{
-                                                type:"relationshipProxy"
-                                            }});
-                                        }
-                                    }
-
-                                    //delete the proxy node
-                                    toolkit.removeNode(obj.node);
-                                }
-                            }
                         }
                     },
                     edges:{
@@ -248,22 +197,41 @@ class Canvas {
                                     length:10,
                                     cssClass:"relationship-overlay"
                                 } ]
-                            ]
+                            ],
+                            events: {
+                                rThingCreate: function(obj) {
+                                    //obj.node.data.type = 'r-thing'
+                                    //obj.node.setType('r-thing')
+                                    //Updating the node type does not seem to stick; instead, create a new node
+                                    var d = renderer.mapEventLocation(obj.e)
+                                    var edges = obj.node.getEdges()
 
-                        },
-                        relationshipProxy:{
-                            cssClass:"edge-relationship",
-                            parent: "connector",
-                            endpoint:"Blank"
+                                    d.w = edges[0].source.data.w * 0.667;
+                                    d.h = edges[0].source.data.h * 0.667;
+
+                                    var newNode = toolkit.addNode(jsPlumb.extend(_newNode("r-thing"), d));
+
+                                    //re-create the edge connections on the new node
+                                    for(var i=0; i<edges.length; i+=1) {
+                                        if(edges[i].source == obj.node) {
+                                            toolkit.connect({source:newNode, target:edges[i].target, data:{
+                                                type:"relationship"
+                                            }});
+                                        } else if(edges[i].target == obj.node) {
+                                            toolkit.connect({source:edges[i].source, target:newNode, data:{
+                                                type:"relationshipProxy"
+                                            }});
+                                        }
+                                    }
+
+                                    //delete the proxy node
+                                    toolkit.removeNode(obj.node);
+                                }
+                            }
                         },
                         perspective:{
                             cssClass:"edge-perspective",
                             endpoints:[ "Blank", [ "Dot", { radius:5, cssClass:"orange" }]],
-                            parent: "connector"
-                        },
-                        perspectiveProxy:{
-                            cssClass:"edge-perspective",
-                            endpoints:[ "Blank", [ "Dot", { radius:1, cssClass:"orange_proxy" }]],
                             parent: "connector"
                         }
                     }
@@ -403,24 +371,16 @@ class Canvas {
                     orange:function(el, node) {
                         clickLogger('O', 'dblclick', el, node)
                         var newNode = toolkit.addNode(_newNode());
-                        var proxyNode = toolkit.addNode(_newProxy('proxyPerspective'));
 
-                        toolkit.connect({source:node, target:proxyNode, data:{
-                            type:"perspectiveProxy"
-                        }});
-                        toolkit.connect({source:proxyNode, target:newNode, data:{
+                        toolkit.connect({source:node, target:newNode, data:{
                             type:"perspective"
                         }});
                     },
                     blue:function(el, node) {
                         clickLogger('B', 'dblclick', el, node)
                         var newNode = toolkit.addNode(_newNode());
-                        var proxyNode = toolkit.addNode(_newProxy('proxyRelationship'));
 
-                        toolkit.connect({source:node, target:proxyNode, data:{
-                            type:"relationshipProxy"
-                        }});
-                        toolkit.connect({source:proxyNode, target:newNode, data:{
+                        toolkit.connect({source:node, target:newNode, data:{
                             type:"relationship"
                         }});
                     },
@@ -562,6 +522,30 @@ class Canvas {
                         if(selected) {
                             event.preventDefault()
                         }
+                        deleteAll(selected);
+                        break
+                    case 17:
+                        selected.eachNode((i, node) => {
+                            let info = toolkit.getObjectInfo(node)
+                            if (info.el) {
+                                $(info.el).find('.node-border').each(function () {
+                                    this.setAttribute('class', 'node-selected')
+                                })
+                            }
+                            if (info.els) {
+                                _.each(info.els, (array) => {
+                                    _.each(array, (el) => {
+                                        if (el.innerHTML) {
+                                            $(el).find('.node-border').each(function () {
+                                                this.setAttribute('class', 'node-selected')
+                                            })
+                                        }
+                                    })
+                                })
+                            }
+                        })
+
+                        break
                     case 46:
                         deleteAll(selected);
                         break;
