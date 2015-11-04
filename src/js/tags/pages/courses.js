@@ -1,6 +1,5 @@
 const riot = require('riot');
 const moment = require('moment');
-const NProgress = window.NProgress;
 const _ = require('lodash');
 const $ = require('jquery')
 require('datatables')
@@ -102,7 +101,7 @@ module.exports = riot.tag(CONSTANTS.TAGS.COURSE_LIST, html, function (opts) {
 
     //Riot bindings
     this.on('mount', () => {
-        NProgress.start();
+        window.NProgress.start();
     });
 
     this.on('update', () => {

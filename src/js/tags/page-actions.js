@@ -46,7 +46,7 @@ module.exports = riot.tag('page-actions', html, function (opts) {
 
     this.data = [];
     this.pageName = 'Home';
-    this.url = MetaMap.config.site.db + '.firebaseio.com';
+    this.url = MetaMap.config.site;
     this.loaded = false;
 
     let permissions = null;
@@ -122,14 +122,6 @@ module.exports = riot.tag('page-actions', html, function (opts) {
             return include;
         });
         this.update();
-    });
-
-    MetaMap.Eventer.on(CONSTANTS.EVENTS.SIDEBAR_CLOSE, () => {
-        $(this.page_actions).css({ 'padding-left': '0' })
-    });
-
-    MetaMap.Eventer.on(CONSTANTS.EVENTS.SIDEBAR_OPEN, () => {
-        $(this.page_actions).css({ 'padding-left': '70px' })
     });
 
 });

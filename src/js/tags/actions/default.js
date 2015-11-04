@@ -6,9 +6,6 @@ const CONSTANTS = require('../../constants/constants')
 
 const html = `
 <div class="portlet-body">
-    <div if="{ hasFinish }" id="epilepsy_gif" style="text-align: center;">
-        <img src="src/images/arrow_gray_blue.gif"></img>
-    </div>
     <div if="{ true != archived }" class="finish">
         <a if="{ hasFinish }" onclick="{ onFinish }" class="btn red">{_.capitalize(data.action)} <i class="fa fa-check-circle"></i></a>
     </div>
@@ -20,12 +17,6 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.DEFAULT, html, function
     this.mixin(AllTags)
     this.archived = true
     this.hasFinish = true
-
-    this.stopEpilepsy = _.once(() => {
-        _.delay(() => {
-            $(this.epilepsy_gif).hide()
-        }, 10000)
-    })
 
     const update = (o) => {
         if(o && o.message) {
@@ -46,7 +37,6 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.DEFAULT, html, function
                     break
             }
         }
-        this.stopEpilepsy()
     }
     update(opts)
 

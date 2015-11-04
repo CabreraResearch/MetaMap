@@ -18,7 +18,7 @@ const html = `
         <a if="{ !hasSave }" onclick="{ onShare }" class="btn blue">Share <i class="fa fa-share"></i></a>
     </div>
     <div class="finish">
-        <a if="{ hasFinish }" onclick="{ onFinish }" class="btn red">Finished <i class="fa fa-check-circle"></i></a>
+        <a if="{ hasFinish }" onclick="{ onFinish }" class="btn red">{this.finishText} <i class="fa fa-check-circle"></i></a>
         <a if="{ !hasFinish }" onclick="{ onDone }" class="btn red">Finished <i class="fa fa-check-circle"></i></a>
     </div>
 </div>
@@ -30,6 +30,7 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS, html, function(
     this.archived = true
     this.hasSave = true
     this.hasFinish = true
+    this.finishText = 'Finish'
 
     this.correctHeight = () => {
         $(this.canvas_training_portal_diagram).css({
@@ -47,6 +48,9 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS, html, function(
             if (o.cortex) {
                 this.cortex = o.cortex
             }
+            if (o.message.action == CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS_CONTINUOUS) {
+                this.finishText = 'Next'
+            }
             this.data = message
             this.archived = this.data.archived
             this.title = this.data.action_data.mapName || this.cortex.training.name + ' Map ' + this.data.id
@@ -57,7 +61,9 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS, html, function(
             if (!this.canvas) {
                 let param = {
                     attachTo: this.canvas_training_portal_diagram,
-                    doAutoSave: false
+                    doAutoSave: false,
+                    map: null,
+                    mapId: null
                 }
                 let makeCanvas = (o) => {
                     if (!o.map) {
@@ -68,7 +74,22 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS, html, function(
                     this.correctHeight()
                     this.update()
                 }
-                if (this.data.mapId) {
+                if (this.data.action_data.mapId) {
+                    const CopyMap = require('../../actions/CopyMap')
+                    CopyMap.copyMap(this.data.action_data.mapId, false).then((map) => {
+                        if (map) {
+                            this.data.map = map
+                            param = _.extend(param, {
+                                map: this.data.map,
+                                doAutoSave: false
+                            })
+                            makeCanvas(param)
+                        } else {
+                            makeCanvas(param)
+                        }
+                    })
+                }
+                else if (this.data.mapId) {
                     this.MetaMap.MetaFire.getData(`maps/list/${this.data.mapId}`).then((info) => {
                         if (info) {
                             this.MetaMap.MetaFire.getData(`maps/data/${this.data.mapId}`).then((map) => {
@@ -107,7 +128,7 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS, html, function(
             let newMap = require('../../actions/NewMap')
             this.hasSave = false
             let map = this.canvas.exportData()
-            let nuMap = newMap.createMap({ title: this.title, map: map })
+            let nuMap = newMap.createMap({ title: this.title, map: map, training: { name: this.cortex.training.name, id: this.cortex.trainingId } })
             this.data.map = nuMap.map
             this.data.mapId = nuMap.mapId
             this.cortex.processUserResponse({

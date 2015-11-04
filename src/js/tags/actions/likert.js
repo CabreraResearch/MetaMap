@@ -372,6 +372,9 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.LIKERT, html, function(
             if (!this.archived && this.data.action_data) {
 
                 if (!this.likert) {
+                    if (this.data.action_data.question) {
+                        this.question = this.data.action_data.question
+                    }
                     if (this.data.action_data.range) {
                         this.range = this.data.action_data.range
                         this.direction = this.data.action_data.direction || 'right'
@@ -383,7 +386,7 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.LIKERT, html, function(
 
                                 break
                         }
-                        this.question = [`Between ${this.range[0]} and ${this.range[this.range.length-1]}, how would you rate this?`]
+                        this.question = this.question || [`Between ${this.range[0]} and ${this.range[this.range.length-1]}, how would you rate this?`]
                     } else {
                         this.range = []
                         for (let i = 0; i < this.data.action_data.length; i += 1) {
@@ -392,7 +395,7 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.LIKERT, html, function(
                         this.left = this.data.action_data.left
                         this.right = this.data.action_data.right
                         this.name = this.data.action_data.name
-                        this.question = [`On a scale of ${this.range[0]} to ${this.range.length}, where ${this.range[0]} is ${this.left} and ${this.range.length} is ${this.right}, how would you rate this?`]
+                        this.question = this.question || [`On a scale of ${this.range[0]} to ${this.range.length}, where ${this.range[0]} is ${this.left} and ${this.range.length} is ${this.right}, how would you rate this?`]
                     }
 
                     var likert_block = {
@@ -408,10 +411,10 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.LIKERT, html, function(
                     jsPsych.init({
                         display_element: $(this[`likert_scale`]),
                         experiment_structure: [likert_block],
-
                         on_finish: () => {
                             jsPsych.endExperiment()
-                            let data = jsPsych.data.getData()[0]
+                            let allAnswers = jsPsych.data.getData()
+                            let data = _.last(allAnswers)
                             let response = JSON.parse(data.responses)
                             this.value = response.Q0
                             let per = (this.value / this.range.length) * 100

@@ -1,6 +1,5 @@
 const riot = require('riot')
 const moment = require('moment')
-const NProgress = window.NProgress
 const _ = require('lodash');
 const $ = require('jquery')
 require('datatables')

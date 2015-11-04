@@ -1,6 +1,5 @@
 const riot = require('riot');
 const moment = require('moment');
-const NProgress = window.NProgress;
 const _ = require('lodash');
 const $ = require('jquery')
 require('datatables')
@@ -161,7 +160,8 @@ module.exports = riot.tag('my-maps', html, function (opts) {
     }
 
     this.onCopy = (event, ...o) => {
-        console.log('copy')
+        const CopyMap = require('../../actions/CopyMap')
+        CopyMap.copyMap(event.item.id)
     }
 
     this.onTabSwitch = (event, ...o) => {
@@ -208,7 +208,7 @@ module.exports = riot.tag('my-maps', html, function (opts) {
 
     //Riot bindings
     this.on('mount', () => {
-        NProgress.start();
+        window.NProgress.start();
         MetaMap.MetaFire.on('metamap/mymaps', (data) => {
             if (data) {
                 this.menu = {
@@ -290,12 +290,10 @@ module.exports = riot.tag('my-maps', html, function (opts) {
                     }
                     return true;
                 });
-
-                NProgress.done();
-
             } catch (e) {
-                NProgress.done();
                 MetaMap.error(e);
+            } finally {
+                window.NProgress.done()
             }
         };
 

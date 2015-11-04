@@ -1,7 +1,3 @@
-/// <reference path="../../../../typings/jquery/jquery.d.ts" />
-/// <reference path="../../../../typings/lodash/lodash.d.ts" />
-/// <reference path="../../../../typings/riotjs/riotjs.d.ts" />
-
 const $ = require('jquery');
 const riot = require('riot');
 const metaTable = require('./meta-table.js');
@@ -28,7 +24,7 @@ const html = `
 module.exports = riot.tag('meta-dialog', html, function(opts) {
 
     const MetaMap = require('../../../MetaMap.js');
-    
+
     this.title = ''
     this.visible = false;
     this.load = _.once(() => {

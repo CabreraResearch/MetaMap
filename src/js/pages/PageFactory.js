@@ -1,5 +1,4 @@
-const riot = window.riot
-const NProgress = window.NProgress
+const riot = require('riot')
 const pageBody = require('../tags/page-body.js')
 const CONSTANTS = require('../constants/constants')
 const Actions = require('../actions/Action.js')
@@ -20,7 +19,7 @@ class PageFactory {
             this._onReady = new Promise((fulfill, reject) => {
                 $(`#${CONSTANTS.ELEMENTS.META_PROGRESS}`).remove();
                 riot.mount('*');
-                NProgress.configure({ parent: `#${CONSTANTS.ELEMENTS.META_PROGRESS_NEXT}` });
+                window.NProgress.configure({ parent: `#${CONSTANTS.ELEMENTS.META_PROGRESS_NEXT}` });
 
                 _.delay(() => {
                     Metronic.init(); // init metronic core componets

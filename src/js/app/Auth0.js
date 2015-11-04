@@ -1,4 +1,3 @@
-const Auth0Lock = require('auth0-lock')
 const localforage = require('localforage')
 const _ = require('lodash')
 const Promise = require('bluebird')
@@ -8,7 +7,7 @@ class Auth0 {
     constructor(config, metaMap) {
         this.config = config
         this.metaMap = require('../../MetaMap')
-        this.lock = new Auth0Lock(config.api, config.app)
+        this.lock = new window.Auth0Lock(config.api, config.app)
         this.lock.on('loading ready', (...e) => {
 
         })

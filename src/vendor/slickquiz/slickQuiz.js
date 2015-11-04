@@ -515,7 +515,8 @@
                     isCorrect: correctResponse,
                     trueAnswers: trueAnswerVals,
                     selectedAnswer: plugin.config._metamap.currentAnswer,
-                    questionNo: questionIndex
+                    questionNo: questionIndex,
+                    correctAnswers: trueAnswerVals
                 }
                 results[questionIndex] = ret
 

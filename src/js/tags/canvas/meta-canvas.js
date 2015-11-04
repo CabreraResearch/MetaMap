@@ -1,5 +1,4 @@
 const riot = require('riot')
-const NProgress = window.NProgress
 const Canvas = require('../../canvas/canvas')
 const CONSTANTS = require('../../constants/constants')
 require('./node')
@@ -7,7 +6,7 @@ const Permissions = require('../../app/Permissions')
 const AllTags = require('../mixins/all-tags')
 
 const html = `
-<div class="portlet light jtk-demo-main" style="padding: 0 ">
+<div class="portlet light jtk-demo-main" style="padding: 0; border-radius: 5px; border: 1px solid rgb(225, 225, 225);">
     <div class="jtk-demo-canvas canvas-wide" id="diagram">
 
     </div>
@@ -39,7 +38,7 @@ module.exports = riot.tag('meta-canvas', html, function(opts) {
                 this.update()
             })
         }
-        NProgress.done()
+        window.NProgress.done()
     }
 
     this.build = (opts) => {

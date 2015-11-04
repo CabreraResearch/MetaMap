@@ -8,6 +8,7 @@ const CORTEX = {
         MULTIPLE_CHOICE: 'multiple-choice',
         MORE: 'more',
         CANVAS: 'canvas',
+        CANVAS_CONTINUOUS: 'canvas-continuous',
         CANVAS_SAVE: 'canvas_save',
         CANVAS_SHARE: 'canvas_share',
         CANVAS_FINISH: 'canvas_finish',

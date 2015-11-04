@@ -61,7 +61,7 @@ module.exports = riot.tag(CONSTANTS.TAGS.TRAINING, html, function(opts) {
             this.config = o
             if (!this.cortex) {
                 this.cortex = this.getCortex(this.config.id)
-                this.cortex.getData(() => {
+                this.cortex.getData().then(() => {
                     this.update()
                 })
             }
@@ -112,6 +112,11 @@ module.exports = riot.tag(CONSTANTS.TAGS.TRAINING, html, function(opts) {
                         break
                     case CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS:
                         this.step = riot.mount(this.training_next_step, CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS, o)[0]
+                        break
+                    case CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS_CONTINUOUS:
+                        if (!this.step) {
+                            this.step = riot.mount(this.training_next_step, CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS, o)[0]
+                        }
                         break
                     case CONSTANTS.CORTEX.RESPONSE_TYPE.MULTIPLE_CHOICE:
                         this.step = riot.mount(this.training_next_step, CONSTANTS.CORTEX.RESPONSE_TYPE.MULTIPLE_CHOICE, o)[0]

@@ -1,6 +1,5 @@
 const _ = require('lodash')
 const CONSTANTS = require('../constants/constants')
-const NProgress = window.NProgress
 const moment = require('moment')
 
 class CortexMan {
@@ -22,9 +21,9 @@ class CortexMan {
         this._messageGen = null
         this._messages = null
         this.MetaMap.MetaFire.deleteData(`${CONSTANTS.ROUTES.TRAININGS.format(this.MetaMap.User.userId) }${this.trainingId}`)
+        this.isTimerOn = true
         this.runCallbacks()
-        this._onceGetData = null
-        this.isTimerOn = false
+        this._getData = null
         this.MetaMap.Eventer.do(CONSTANTS.EVENTS.BEFORE_TRAINING_NEXT_STEP, {action: CONSTANTS.CORTEX.RESPONSE_TYPE.RESTART})
         this.getData()
     }
@@ -107,13 +106,18 @@ class CortexMan {
     }
 
     processFeedback(obj, int=50) {
-        this.buffer(int).then(()=>{
-            this.sendMessage({
+        if (!obj.line) {
+            int=0
+        }
+        this.buffer(int).then(() => {
+            if (obj.line) {
+                this.sendMessage({
                     message: obj.line,
                     author: 'cortex',
                     time: `${new Date() }`,
                     action: CONSTANTS.CORTEX.RESPONSE_TYPE.FEEDBACK
-            })
+                })
+            }
         })
     }
 
@@ -137,7 +141,7 @@ class CortexMan {
             if (true != this.userTraining.isWaitingOnFeedback) {
                 let nextStep = this.getNextMessage()
                 if (nextStep) {
-                    let timer = (nextStep.action == CONSTANTS.CORTEX.RESPONSE_TYPE.MORE) ? 3500 : 150
+                    let timer = 150
                     this.buffer(timer).then(() => {
                         this.sendMessage(nextStep).then(()=>{
                             originalMessage.archived = true
@@ -148,6 +152,10 @@ class CortexMan {
                                     break
                                 case CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS:
                                     this.userTraining.isWaitingOnFeedback = true
+                                    this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, nextStep)
+                                    break
+                                case CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS_CONTINUOUS:
+                                    this.userTraining.isWaitingOnFeedback = false
                                     this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, nextStep)
                                     break
                                 case CONSTANTS.CORTEX.RESPONSE_TYPE.LIKERT:
@@ -194,101 +202,115 @@ class CortexMan {
             originalMessage = originalMessage || this.currentMessage
 
             if (obj.action) {
-                switch(obj.action) {
-                    case CONSTANTS.CORTEX.RESPONSE_TYPE.OK:
-                        obj.message = 'OK'
-                        originalMessage.archived = true
-                        this.moveToNextMessage(obj)
-                        break
-                    case CONSTANTS.CORTEX.RESPONSE_TYPE.MORE:
-                        originalMessage.archived = true
-                        this.moveToNextMessage(obj)
-                        break
-                    case CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS:
-                        this.userTraining.isWaitingOnFeedback = true
-                        this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, obj)
-                        break
-                    case CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS_FINISH:
-                        this.userTraining.isWaitingOnFeedback = false
-                        originalMessage.archived = true
-                        this.moveToNextMessage(obj, { line: 'Great work in the canvas!' })
-                        break
-                    case CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS_SAVE:
-                        if (obj.data.map) {
-                            originalMessage.map = obj.data.map
-                            let line = `<span>Great news, you saved this map! It now appears in <a href="#!mymaps" style="color: #cb5a5e !important"><b>your list of maps</b></a> and you can access it again later here <a href="#!maps/${obj.data.mapId}" style="color: #cb5a5e !important"><b>${obj.data.title}</b></a> Your map will now automatically save as you make changes, so I've hidden the Save button! Now that your map is saved, you can Share it!</span>`
-                            this.moveToNextMessage(obj, { line: line })
-                        }
-                        break
-                    case CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS_SHARE:
-                        if (obj.data.shared_with) {
-                            this.moveToNextMessage(obj, { line: 'Great news, you shared this map with some of your friends!' })
-                        }
-                        break
-                    case CONSTANTS.CORTEX.RESPONSE_TYPE.MULTIPLE_CHOICE:
-                        this.userTraining.isWaitingOnFeedback = true
-                        this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, obj)
-                        break
-                    case CONSTANTS.CORTEX.RESPONSE_TYPE.SHORT_ANSWER:
-                        this.userTraining.isWaitingOnFeedback = true
-                        this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, obj)
-                        break
-                    case CONSTANTS.CORTEX.RESPONSE_TYPE.SHORT_ANSWER_FINISH:
-                        this.userTraining.isWaitingOnFeedback = false
-                        this.moveToNextMessage(obj)
-                        break
-                    case CONSTANTS.CORTEX.RESPONSE_TYPE.MULTIPLE_CHOICE_ANSWER:
-                        if (obj.data) {
-                            obj.message = obj.data.message
-                            this.moveToNextMessage(obj, { line: obj.data.feedback })
-                        }
-                        break
-                    case CONSTANTS.CORTEX.RESPONSE_TYPE.MULTIPLE_CHOICE_FINISH:
-                        this.userTraining.isWaitingOnFeedback = false
-                        let feedback = `Great job. You got ${obj.data.score} out of ${obj.data.questionCount} correct!`
-                        this.moveToNextMessage(obj, { line: feedback })
-                        break
-                    case CONSTANTS.CORTEX.RESPONSE_TYPE.LIKERT:
-                        _.each(obj.data, (val, key) => {
-                            obj[key] = val
-                            delete obj.data[key]
-                        })
-                        if (obj.request_feedback == true || obj.request_feedback == false) {
+                if (obj.archived == true) {
+                    this.moveToNextMessage(obj)
+                } else {
+                    switch (obj.action) {
+                        case CONSTANTS.CORTEX.RESPONSE_TYPE.OK:
+                            obj.message = 'OK'
                             originalMessage.archived = true
-                            if (obj.request_feedback) {
-                                this.userTraining.isWaitingOnFeedback = true
-                                this.moveToNextMessage(obj, { line: 'I\'m sorry to hear that! How can we improve it for the next version of this training?' })
-                            } else {
-                                this.userTraining.isWaitingOnFeedback = false
-                                this.moveToNextMessage(obj, { line: 'Thanks for the feedback!' })
-                            }
-                        } else {
+                            this.moveToNextMessage(obj)
+                            break
+                        case CONSTANTS.CORTEX.RESPONSE_TYPE.MORE:
+                            originalMessage.archived = true
+                            this.moveToNextMessage(obj)
+                            break
+                        case CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS:
+                            this.userTraining.isWaitingOnFeedback = true
                             this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, obj)
-                        }
-                        break
-                    case CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO:
-                        let button = 'Play'
-                        if (obj.data && obj.data.buttonName) {
-                            button = obj.data.buttonName
-                        }
-                        switch (button) {
-                            case 'Finished':
-                                this.MetaMap.Eventer.do(CONSTANTS.EVENTS.STOP_VIDEO, originalMessage)
-                                if (!originalMessage.archived) {
-                                    originalMessage.archived = true
-                                    this.moveToNextMessage(obj)
+                            break
+                        case CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS_CONTINUOUS:
+                            this.userTraining.isWaitingOnFeedback = false
+                            this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, obj)
+                            break
+                        case CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS_FINISH:
+                            let line = ''
+                            if (originalMessage.action != CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS_CONTINUOUS) {
+                                this.userTraining.isWaitingOnFeedback = false
+                                line = 'Great work in the canvas!'
+                            }
+                            originalMessage.archived = true
+                            this.moveToNextMessage(obj, { line: line })
+                            break
+                        case CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS_SAVE:
+                            if (obj.data.map) {
+                                originalMessage.map = obj.data.map
+                                let line = `<span>Great news, you saved this map! It now appears in <a href="#!mymaps" style="color: #cb5a5e !important"><b>your list of maps</b></a> and you can access it again later here <a href="#!map/${obj.data.mapId}" style="color: #cb5a5e !important"><b>${obj.data.title}</b></a> Your map will now automatically save as you make changes, so I've hidden the Save button! Now that your map is saved, you can Share it!</span>`
+                                this.moveToNextMessage(obj, { line: line })
+                            }
+                            break
+                        case CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS_SHARE:
+                            if (obj.data.shared_with) {
+                                this.moveToNextMessage(obj, { line: 'Great news, you shared this map with some of your friends!' })
+                            }
+                            break
+                        case CONSTANTS.CORTEX.RESPONSE_TYPE.MULTIPLE_CHOICE:
+                            this.userTraining.isWaitingOnFeedback = true
+                            this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, obj)
+                            break
+                        case CONSTANTS.CORTEX.RESPONSE_TYPE.SHORT_ANSWER:
+                            this.userTraining.isWaitingOnFeedback = true
+                            this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, obj)
+                            break
+                        case CONSTANTS.CORTEX.RESPONSE_TYPE.SHORT_ANSWER_FINISH:
+                            this.userTraining.isWaitingOnFeedback = false
+                            this.moveToNextMessage(obj)
+                            break
+                        case CONSTANTS.CORTEX.RESPONSE_TYPE.MULTIPLE_CHOICE_ANSWER:
+                            if (obj.data) {
+                                obj.message = obj.data.message
+                                this.moveToNextMessage(obj, { line: obj.data.feedback })
+                            }
+                            break
+                        case CONSTANTS.CORTEX.RESPONSE_TYPE.MULTIPLE_CHOICE_FINISH:
+                            this.userTraining.isWaitingOnFeedback = false
+                            let feedback = `Great job. You got ${obj.data.score} out of ${obj.data.questionCount} correct!`
+                            this.moveToNextMessage(obj, { line: feedback })
+                            break
+                        case CONSTANTS.CORTEX.RESPONSE_TYPE.LIKERT:
+                            _.each(obj.data, (val, key) => {
+                                obj[key] = val
+                                delete obj.data[key]
+                            })
+                            if (obj.request_feedback == true || obj.request_feedback == false) {
+                                originalMessage.archived = true
+                                if (obj.request_feedback) {
+                                    this.userTraining.isWaitingOnFeedback = true
+                                    this.moveToNextMessage(obj, { line: 'I\'m sorry to hear that! How can we improve it for the next version of this training?' })
+                                } else {
+                                    this.userTraining.isWaitingOnFeedback = false
+                                    this.moveToNextMessage(obj, { line: 'Thanks for the feedback!' })
                                 }
-                                break
-                            case 'Play':
-                                this.MetaMap.Eventer.do(CONSTANTS.EVENTS.PLAY_VIDEO, originalMessage)
-                                break
-                        }
-                        break
-                    default:
-                        this.MetaMap.log(`on action passed ${obj.action}`)
-                        originalMessage.archived = true
-                        this.moveToNextMessage(obj, { line: `<span>I don't supprt this <code>${obj.action}</code> action yet, so I'm moving you to the next line.` })
-                        break
+                            } else {
+                                this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, obj)
+                            }
+                            break
+                        case CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO:
+                            let button = 'Play'
+                            if (obj.data && obj.data.buttonName) {
+                                button = obj.data.buttonName
+                            }
+                            switch (button) {
+                                case 'Finished':
+                                    this.MetaMap.Eventer.do(CONSTANTS.EVENTS.STOP_VIDEO, originalMessage)
+                                    if (originalMessage.action == CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO && !originalMessage.archived) {
+                                        originalMessage.archived = true
+                                        this.moveToNextMessage(obj)
+                                    } else {
+                                        this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, originalMessage)
+                                    }
+                                    break
+                                case 'Play':
+                                    this.MetaMap.Eventer.do(CONSTANTS.EVENTS.PLAY_VIDEO, obj)
+                                    break
+                            }
+                            break
+                        default:
+                            this.MetaMap.log(`on action passed ${obj.action}`)
+                            originalMessage.archived = true
+                            this.moveToNextMessage(obj, { line: `<span>I don't supprt this <code>${obj.action}</code> action yet, so I'm moving you to the next line.` })
+                            break
+                    }
                 }
             } else if(obj.message) {
                 if (obj.message.startsWith('/')) {
@@ -341,11 +363,17 @@ class CortexMan {
             this._callbacks.push(callback)
         }
         this.MetaMap.Eventer.do(CONSTANTS.EVENTS.BEFORE_TRAINING_NEXT_STEP, this.currentMessage)
-        this._onceGetData = this._onceGetData || _.once(() => {
+
+        if (this._getData) {
+            this.runCallbacks()
+            this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, this.currentMessage)
+        }
+
+        this._getData = this._getData || new Promise((resolve, reject) => {
 
             this.isTimerOn = true
             var once = _.once(() => {
-                this.MetaMap.MetaFire.getData(`${CONSTANTS.ROUTES.TRAININGS.format(this.MetaMap.User.userId) }${this.trainingId}`).then((data) => {
+                this._getData = this.MetaMap.MetaFire.getData(`${CONSTANTS.ROUTES.TRAININGS.format(this.MetaMap.User.userId) }${this.trainingId}`).then((data) => {
                     this.userTraining = data
                     if (!data) {
                         this.userTraining = this.training
@@ -364,18 +392,23 @@ class CortexMan {
 
                         //2: Cache the current message
                         this.currentMessageKey = _.findLastIndex(this.userTraining.messages, (m) => { return m.person == 'Cortex' })
-                        this.currentMessage = this.userTraining.messages[this.currentMessageKey]
 
-                        //3: Action
-                        if (this.currentMessage.action &&
-                            this.currentMessage.action != CONSTANTS.CORTEX.RESPONSE_TYPE.OK &&
-                            this.currentMessage.action != CONSTANTS.CORTEX.RESPONSE_TYPE.MORE) {
-                            this.processUserResponse(this.currentMessage)
+                        if (this.currentMessageKey >= 0) {
+                            this.currentMessage = this.userTraining.messages[this.currentMessageKey]
+
+                            //3: Action
+                            if (this.currentMessage.action &&
+                                this.currentMessage.action != CONSTANTS.CORTEX.RESPONSE_TYPE.OK &&
+                                this.currentMessage.action != CONSTANTS.CORTEX.RESPONSE_TYPE.MORE) {
+                                this.processUserResponse(this.currentMessage)
+                            } else {
+                                this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, this.currentMessage)
+                            }
                         } else {
-                            this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, this.currentMessage)
+                            this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, { action: CONSTANTS.CORTEX.RESPONSE_TYPE.MORE })
                         }
-
-                        NProgress.done()
+                        resolve()
+                        window.NProgress.done()
                     })
                 })
                 this.MetaMap.Eventer.do(CONSTANTS.EVENTS.SIDEBAR_OPEN, this.trainingId)
@@ -386,9 +419,9 @@ class CortexMan {
                 this.MetaMap.Eventer.do(CONSTANTS.EVENTS.PAGE_NAME, data)
                 once()
             })
-        })
-        this._onceGetData()
 
+        })
+        return this._getData
     }
 
     _massageTrainingMessage(idx=0) {

@@ -1,3 +1,6 @@
+const jsPlumb = window.jsPlumb;
+const jsPlumbToolkit = window.jsPlumbToolkit;
+
 /**
 * Custom layout for metamap. Extends the Spring layout. After Spring runs, this
 * layout finds 'part' nodes and aligns them underneath their parents. The alignment
