@@ -63,6 +63,16 @@
     transition:opacity 0.2s;
 }
 
+.letter {
+    opacity: 0;
+}
+
+.ideaNode:hover .letter {
+    fill: #fff;
+    opacity:1;
+    transition:opacity 0.2s;
+}
+
 .segment {
     opacity:0;
     transition:opacity 0.2s;
