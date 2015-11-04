@@ -46,7 +46,7 @@ class Renderer {
             events: this.canvas.events.getRenderEvents(),
             elementsDroppable:true,
             dragOptions:{
-                filter:'.segment .letter',       // can't drag nodes by the color segments.
+                filter:'.donotdrag',       // can't drag nodes by the color segments.
                 stop:() =>{
                     // when _any_ node stops dragging, run the layout again.
                     // this will cause child nodes to snap to their new parent, and also

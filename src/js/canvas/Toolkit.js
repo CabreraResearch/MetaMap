@@ -36,6 +36,12 @@ class Toolkit {
                     }
                 }
                 return ret
+            },
+            saveStateOnExit:true,              // serialize state on page unload automatically. defaults to false.
+            saveStateOnDrag:true,              // serialize state after each drag. defaults to false.
+            stateHandle: 'metaMapCanvas_' + (canvas.mapId || canvas.mapName),
+            saveState: function (...o) {
+                debugger
             }
         })
     }
