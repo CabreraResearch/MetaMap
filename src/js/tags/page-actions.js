@@ -46,7 +46,7 @@ module.exports = riot.tag('page-actions', html, function (opts) {
 
     this.data = [];
     this.pageName = 'Home';
-    this.url = MetaMap.config.site.db + '.firebaseio.com';
+    this.url = MetaMap.config.site;
     this.loaded = false;
 
     let permissions = null;

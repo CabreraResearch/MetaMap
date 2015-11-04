@@ -46,8 +46,8 @@ class Events {
                 },
                 green:(el, node) => {
                     this.clickLogger('G', 'dblclick', el, node)
-                    var newWidth = node.data.w * 0.667
-                    var newHeight = node.data.h * 0.667
+                    var newWidth = node.data.w * this.canvas.partSize
+                    var newHeight = node.data.h * this.canvas.partSize
 
                     node.data.children = node.data.children || []
                     var newLabel = 'Part'
@@ -218,8 +218,8 @@ class Events {
 
                 //Update the source
                 source.data.parent = targetId
-                source.data.h = target.data.h * 0.667
-                source.data.w = target.data.w * 0.667
+                source.data.h = target.data.h * this.canvas.partSize
+                source.data.w = target.data.w * this.canvas.partSize
                 source.data.order = target.children.length
                 this.canvas.jsToolkit.updateNode(source)
 

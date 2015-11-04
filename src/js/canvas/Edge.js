@@ -106,8 +106,8 @@ class Edge {
                         var d = this.canvas.jsRenderer.mapEventLocation(obj.e)
                         var edges = obj.node.getEdges()
 
-                        d.w = edges[0].source.data.w * 0.667
-                        d.h = edges[0].source.data.h * 0.667
+                        d.w = edges[0].source.data.w * this.canvas.partSize
+                        d.h = edges[0].source.data.h * this.canvas.partSize
 
                         var newNode = this.canvas.jsToolkit.addNode(jsPlumb.extend(this.canvas.node.getNewNode('r-thing'), d))
 

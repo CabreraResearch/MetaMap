@@ -10,8 +10,8 @@ class Node {
     getNewNode(type) {
         type=type||"idea"
         return {
-            w:50,
-            h:50,
+            w:this.canvas.nodeSize,
+            h:this.canvas.nodeSize,
             label:"idea",
             type: type,
             children: [],

@@ -17,8 +17,8 @@ class Canvas {
         this.metaMap = require('../../MetaMap')
         this.opts = opts
         this._init(opts)
-        this.config = this.metaMap.config.canvas
-        
+        this.config = this.metaMap.config.metamap.canvas
+
         jsPlumbToolkit.ready(() => {
 
             //Load the classes
@@ -145,6 +145,14 @@ class Canvas {
             recurse(n);
         });
         toolkit.remove(selected);
+    }
+
+    get partSize() {
+        return this.config.part.size || 0.667
+    }
+
+    get nodeSize() {
+        return this.config.node.size || 50
     }
 
     // --------------------------------------------------------------------------------------------------------

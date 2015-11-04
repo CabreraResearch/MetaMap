@@ -17,7 +17,7 @@ class Integrations {
         _.each(this._features, (Feature, name) => {
             if (Feature) {
 				try {
-					let config = this.config.site[name];
+					let config = this.config[name];
 					this[name] = new Feature(config, this.user);
 					this[name].init();
 					this[name].setUser();
