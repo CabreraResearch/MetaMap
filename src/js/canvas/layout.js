@@ -26,7 +26,8 @@
   jsPlumbToolkit.Layouts["metamap"] = function() {
     jsPlumbToolkit.Layouts.Spring.apply(this, arguments);
 
-    var originalLocationMap = {}, self = this, magnetizeNodes = [];
+    var originalLocationMap = {}, self = this, magnetizeNodes = [],
+        _childPositions = {}, _childBounds = {};
 
     var _oneSet = function(parent, position, size, params, toolkit) {
       params = params || {};
@@ -64,7 +65,7 @@
               cn.data.order = i;
           });
 
-          parent.data.childPositions = [];
+          _childPositions[parent.id] = [];
           var childBounds = {xmin:Infinity, xmax:-Infinity, ymin:Infinity, ymax:-Infinity};
 
           for (var i = 0; i < childNodes.length; i++) {
@@ -79,7 +80,7 @@
                   }
 
                   _updateBounds(childBounds, x, x + childSize[0], y, y + childSize[1]);
-                  parent.data.childPositions.push([x,y,cn]);
+                  _childPositions[parent.id].push([x,y,cn]);
 
                   this.setPosition(cn.id, x, y, true);
                   magnetizeNodes.push(cn.id);
@@ -94,7 +95,7 @@
           // gives us the bounds of the child nodes. when we subsequently drag a child node we can check if
           // it at least intersects this rectangle. If so, we find its new natural ordering (on drag stop),
           // and set it, and redraw.
-          parent.data.childBounds = childBounds;
+          _childBounds[parent.id] = childBounds;
 
       }
         return totalHeightForThisNode;
@@ -142,6 +143,16 @@
       _superEnd.apply(this, arguments);
       this.draw();
     };
+
+    // accessors for the child layout data (used by the child drag stuff)
+    this.getChildBounds = function(nodeId) {
+        return _childBounds[nodeId];
+    };
+
+    this.getChildPositions = function(nodeId) {
+        return _childPositions[nodeId];
+    };
+
   };
 
 })();
