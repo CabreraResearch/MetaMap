@@ -1,11 +1,13 @@
 const jsPlumb = window.jsPlumb;
 const Node = require('./Node')
 const Edge = require('./Edge')
+const _CanvasBase = require('./_CanvasBase')
 
-class Renderer {
+class Renderer extends _CanvasBase {
 
     constructor(canvas) {
-        this.canvas = canvas
+        super(canvas)
+
         this.opts = canvas.opts
         this.node = new Node(canvas, this)
         this.edge = new Edge(canvas, this)
@@ -56,6 +58,13 @@ class Renderer {
             }
         });
 
+    }
+
+    update() {
+        super.update()
+
+        this.node.update()
+        this.edge.update()
     }
 }
 

@@ -1,10 +1,11 @@
 const jsPlumb = window.jsPlumb
 const jsPlumbToolkit = window.jsPlumbToolkit;
+const _CanvasBase = require('./_CanvasBase')
 
-class Events {
+class Events extends _CanvasBase {
 
     constructor(canvas) {
-        this.canvas = canvas
+        super(canvas)
 
         this.labelDragHandler = jsPlumb.getInstance()
     }

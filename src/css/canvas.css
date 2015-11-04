@@ -120,9 +120,36 @@
     stroke-width:4;
 }
 
+.edge-perspective:hover path {
+    stroke:#F74A00;
+    stroke-width:6;
+}
+
 .edge-relationship path {
     stroke:#B3C2C7;
     stroke-width:4;
+}
+
+.edge-relationship:hover path {
+    stroke:#4CBFC2;
+    stroke-width:6;
+}
+
+.relationship-rthing {
+    background: #F2624C !important;
+    width: 10px !important;
+    height: 10px !important;
+    border-radius: 50% !important;
+    display: block;
+    visibility: initial;
+    cursor:pointer;
+}
+
+.edge-relationship:hover .relationship-rthing {
+    background: #F2624C;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
 }
 
 .relationship-overlay {

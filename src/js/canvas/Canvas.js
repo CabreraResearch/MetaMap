@@ -112,6 +112,11 @@ class Canvas {
         $('.node-selected').each(function () {
             this.setAttribute('class', 'node-border')
         })
+        $('.relationship-rthing')
+            .css('display', 'none')
+            .css('visibility', 'hidden')
+            .removeClass('relationship-rthing')
+
         if (obj) {
             $(obj.el).find('.node-border').each(function () {
                 this.setAttribute('class', 'node-selected')
@@ -123,6 +128,13 @@ class Canvas {
                 toolkit.setSelection(obj.edge);
             }
         }
+    }
+
+    update() {
+        this.tk.update()
+        this.events.update()
+        this.rndrr.update()
+        this.dialog.update()
     }
 
     deleteAll(selected) {

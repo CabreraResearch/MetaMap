@@ -1,20 +1,88 @@
 const jsPlumb = window.jsPlumb;
+const $ = require('jquery')
+const _CanvasBase = require('./_CanvasBase')
 
-class Edge {
+class Edge extends _CanvasBase {
 
     constructor(canvas) {
-        this.canvas = canvas
+        super(canvas)
+        this.relationshipOverlays = []
+    }
+
+    bindHover() {
+
     }
 
     getView() {
         return {
             all: {
                 events: {
+                    mouseenter: (e) => {
+                        debugger
+                    },
+                    mouseleave: (e) => {
+                        debugger
+                    },
                     connect: (sourceId, targetId, scope, connection) => {
                             debugger
                     },
+                    contextmenu: (node, port, el, e) => {
+                        console.log('context click on edge')
+                    }
+                }
+
+            },
+            default:{
+                parent: 'all',
+                anchors:['Continuous','Continuous'],
+
+            },
+            connector: {
+                parent: 'all',
+                connector:['StateMachine', {
+                    margin: 1.01,
+                    curviness:15
+                }]
+            },
+            relationship:{
+                cssClass:'edge-relationship',
+                parent: 'connector',
+                endpoint:'Blank',
+                overlays:[
+                    [ 'PlainArrow', {
+                        location:1,
+                        width:0+'${leftSize}',
+                        length:0+'${leftSize}',
+                        cssClass:'relationship-overlay'
+                    }],
+                    ['Custom', {
+                        create: (component) => {
+                            const id = `${component.id}_rthing`
+                            this.relationshipOverlays.push(id)
+                            return $(`<div id="${id}" data-class="relationship-rthing" style="display: none; background: #B3C2C7; border-radius: 50%; visibility: hidden;"></div>`);
+                        },
+                        location:0.5,
+                        id:"customOverlay"
+                    }],
+                    [ 'PlainArrow', {
+                        location:0,
+                        width:0+'${rightSize}',
+                        length:0+'${rightSize}',
+                        cssClass: 'relationship-overlay',
+                        direction: -1
+                    } ]
+                ],
+                events: {
                     tap: (obj) => {
-                        if(obj.e.target.getAttribute('class') == 'relationship-overlay' || obj.edge.data.direction == 'none' ) {
+                        this.canvas.clearSelection(obj)
+
+                        $('#' + obj.connection.id + '_rthing')
+                            .css('display', 'block')
+                            .css('background', '')
+                            .css('visibility', 'initial')
+                            .addClass('relationship-rthing')
+
+                        if (obj.e.target.getAttribute('class') == 'relationship-overlay' || obj.edge.data.direction == 'none') {
                             let newDirection = 'none'
                             let overlays = obj.connection.getOverlays()
                             switch (obj.edge.data.direction) {
@@ -53,10 +121,8 @@ class Edge {
                             _.each(overlays, (o, key) => {
                                 if (o.loc == 0) {
                                     o.setVisible(left)
-                                    console.log('left is visible '+left)
                                 } else {
                                     o.setVisible(right)
-                                    console.log('right is visible '+right)
                                 }
                             })
 
@@ -65,46 +131,8 @@ class Edge {
                             this.canvas.jsRenderer.refresh()
                             this.canvas.jsToolkit.fire('dataUpdated')
                         }
-                        this.canvas.clearSelection(obj)
+
                     },
-                    contextmenu: (node, port, el, e) => {
-                        debugger
-                    }
-                }
-
-            },
-            default:{
-                parent: 'all',
-                anchors:['Continuous','Continuous'],
-
-            },
-            connector: {
-                parent: 'all',
-                connector:['StateMachine', {
-                    margin: 1.01,
-                    curviness:15
-                }]
-            },
-            relationship:{
-                cssClass:'edge-relationship',
-                parent: 'connector',
-                endpoint:'Blank',
-                overlays:[
-                    [ 'PlainArrow', {
-                        location:1,
-                        width:0+'${leftSize}',
-                        length:0+'${leftSize}',
-                        cssClass:'relationship-overlay'
-                    }],
-                    [ 'PlainArrow', {
-                        location:0,
-                        width:0+'${rightSize}',
-                        length:0+'${rightSize}',
-                        cssClass: 'relationship-overlay',
-                        direction: -1
-                    } ]
-                ],
-                events: {
                     rThingCreate: (obj) => {
                         //obj.node.data.type = 'r-thing'
                         //obj.node.setType('r-thing')
@@ -138,7 +166,12 @@ class Edge {
             perspective:{
                 cssClass:'edge-perspective',
                 endpoints:[ 'Blank', [ 'Dot', { radius:5, cssClass:'orange' }]],
-                parent: 'connector'
+                parent: 'connector',
+                events: {
+                    tap: (obj) => {
+                        this.canvas.clearSelection(obj)
+                    }
+                }
             }
         }
     }

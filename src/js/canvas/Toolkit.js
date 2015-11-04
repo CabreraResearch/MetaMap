@@ -1,9 +1,10 @@
 const jsPlumbToolkit = window.jsPlumbToolkit
+const _CanvasBase = require('./_CanvasBase')
 
-class Toolkit {
+class Toolkit extends _CanvasBase {
 
     constructor(canvas) {
-        this.canvas = canvas
+        super(canvas)
 
         // get a new instance of the Toolkit. provide a set of methods that control who can connect to what, and when.
         this.toolkit = jsPlumbToolkit.newInstance({
@@ -48,6 +49,7 @@ class Toolkit {
 
     bindEvents() {
         this.toolkit.bind("dataUpdated", () => {
+            this.canvas.update()
             this.canvas.dumpEdgeCounts();
             this.canvas.jsRenderer.State.save()
             this.canvas.onAutoSave(this.canvas.exportData())

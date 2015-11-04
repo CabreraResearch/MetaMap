@@ -1,10 +1,11 @@
 const jsPlumbToolkit = window.jsPlumbToolkit;
+const _CanvasBase = require('./_CanvasBase')
 
-class Dialog {
+class Dialog extends _CanvasBase {
 
     constructor(canvas) {
-        this.canvas = canvas
-
+        super(canvas)
+        
         // ------------------------- dialogs -------------------------------------
 
         jsPlumbToolkit.Dialogs.initialize({

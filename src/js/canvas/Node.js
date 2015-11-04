@@ -1,7 +1,9 @@
-class Node {
+const _CanvasBase = require('./_CanvasBase')
+
+class Node extends _CanvasBase {
 
     constructor(canvas) {
-        this.canvas = canvas
+        super(canvas)
     }
 
     //
