@@ -148,11 +148,11 @@ class Canvas {
     }
 
     get partSize() {
-        return this.config.part.size || 0.667
+        return this.config.shapes.part.size || 0.667
     }
 
     get nodeSize() {
-        return this.config.node.size || 50
+        return this.config.shapes.node.size || 50
     }
 
     // --------------------------------------------------------------------------------------------------------
