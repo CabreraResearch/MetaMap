@@ -155,6 +155,10 @@ class Canvas {
         return this.config.shapes.node.size || 50
     }
 
+    get arrowSize() {
+        return this.config.shapes.arrow.size || 5
+    }
+
     // --------------------------------------------------------------------------------------------------------
     // a couple of random examples of the filter function, allowing you to query your data
     // --------------------------------------------------------------------------------------------------------

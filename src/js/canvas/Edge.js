@@ -32,8 +32,8 @@ class Edge {
                                     break
                             }
                             obj.edge.data.direction = newDirection
-                            obj.edge.data.leftSize = (newDirection == 'left' || newDirection == 'left-right' ) ? 5 : 0
-                            obj.edge.data.rightSize = (newDirection == 'right' || newDirection == 'left-right' ) ? 5 : 0
+                            obj.edge.data.leftSize = (newDirection == 'left' || newDirection == 'left-right' ) ? this.canvas.arrowSize : 0
+                            obj.edge.data.rightSize = (newDirection == 'right' || newDirection == 'left-right' ) ? this.canvas.arrowSize : 0
 
                             let left = false
                             let right = false
@@ -53,10 +53,16 @@ class Edge {
                             _.each(overlays, (o, key) => {
                                 if (o.loc == 0) {
                                     o.setVisible(left)
+                                    console.log('left is visible '+left)
                                 } else {
                                     o.setVisible(right)
+                                    console.log('right is visible '+right)
                                 }
                             })
+
+                            this.canvas.jsToolkit.updateEdge(obj.edge)
+                            this.canvas.jsRenderer.relayout()
+                            this.canvas.jsRenderer.refresh()
                             this.canvas.jsToolkit.fire('dataUpdated')
                         }
                         this.canvas.clearSelection(obj)
@@ -86,14 +92,14 @@ class Edge {
                 overlays:[
                     [ 'PlainArrow', {
                         location:1,
-                        width:'${leftSize}',
-                        length:'${leftSize}',
+                        width:0+'${leftSize}',
+                        length:0+'${leftSize}',
                         cssClass:'relationship-overlay'
                     }],
                     [ 'PlainArrow', {
                         location:0,
-                        width:'${rightSize}',
-                        length:'${rightSize}',
+                        width:0+'${rightSize}',
+                        length:0+'${rightSize}',
                         cssClass: 'relationship-overlay',
                         direction: -1
                     } ]
