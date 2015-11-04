@@ -106,6 +106,12 @@ class Canvas {
                 elementsDraggable: !that.isReadOnly,
                 enablePanButtons: false,
                 consumeRightClick: false,
+                saveStateOnExit:true,              // serialize state on page unload automatically. defaults to false.
+                saveStateOnDrag:true,              // serialize state after each drag. defaults to false.
+                stateHandle: "metaMapCanvas_" + (that.mapId || that.mapName),
+                saveState: function (...o) {
+                  debugger
+                },
                 layout:{
                     // custom layout for this app. simple extension of the spring layout.
                     type:"metamap"
@@ -162,9 +168,52 @@ class Canvas {
                     edges:{
                         all: {
                             events: {
+                                connect: function (sourceId, targetId, scope, connection) {
+                                        debugger
+                                },
                                 tap: function (obj) {
-                                    if(obj.e.target.getAttribute('class') == 'relationship-overlay' ) {
-                                        debugger;
+                                    if(obj.e.target.getAttribute('class') == 'relationship-overlay' || obj.edge.data.direction == 'none' ) {
+                                        let newDirection = 'none'
+                                        let overlays = obj.connection.getOverlays()
+                                        switch (obj.edge.data.direction) {
+                                            case 'left':
+                                                newDirection = 'right'
+                                                break
+                                            case 'right':
+                                                newDirection = 'left-right'
+                                                break
+                                            case 'left-right':
+                                                newDirection = 'none'
+                                                break
+                                            case 'none':
+                                                newDirection = 'left'
+                                                break
+                                        }
+                                        obj.edge.data.direction = newDirection
+
+                                        let left = false
+                                        let right = false
+                                        switch (newDirection) {
+                                            case 'left':
+                                                left = true
+                                                break
+                                            case 'right':
+                                                right = true
+                                                break
+                                            case 'left-right':
+                                                left = true
+                                                right = true
+                                                break
+                                        }
+
+                                        _.each(overlays, (o, key) => {
+                                            if (o.loc == 0) {
+                                                o.setVisible(left)
+                                            } else {
+                                                o.setVisible(right)
+                                            }
+                                        })
+                                        toolkit.fire('dataUpdated')
                                     }
                                     clearSelection(obj)
                                 },
@@ -193,9 +242,16 @@ class Canvas {
                             overlays:[
                                 [ "PlainArrow", {
                                     location:1,
-                                    width:10,
-                                    length:10,
+                                    width:5,
+                                    length:5,
                                     cssClass:"relationship-overlay"
+                                }],
+                                [ "PlainArrow", {
+                                    location:0,
+                                    width:5,
+                                    length:5,
+                                    cssClass: "relationship-overlay",
+                                    direction: -1
                                 } ]
                             ],
                             events: {
@@ -316,7 +372,7 @@ class Canvas {
         //
         // -----------------------------------------------------------------------------------------
 
-            var _types = [ "red", "orange", "green", "blue", "text" ];
+            var _types = [ ["red", "D"], ["orange", "P"], ["green", "S"], ["blue","R"], ["text"] ];
 
             var clickLogger = function(type, event, el, node) {
                 console.log(event + ' ' + type);
@@ -401,14 +457,26 @@ class Canvas {
                 }
             };
 
-            var _curryHandler = function(el, segment, node) {
-                var _el = el.querySelector("." + segment);
+            var _curryHandler = function(el, array, node) {
+
+                let segment = array[0]
+                let letter = array[1]
+                let _el = el.querySelector("." + segment);
                 jsPlumb.on(_el, "click", function () {
                     _clickHandlers["click"][segment](el, node);
                 });
                 jsPlumb.on(_el, "dblclick", function () {
                     _clickHandlers["dblclick"][segment](el, node);
                 });
+                if (letter) {
+                    let _el = el.querySelector("." + letter);
+                    jsPlumb.on(_el, "click", function () {
+                        _clickHandlers["click"][segment](el, node);
+                    });
+                    jsPlumb.on(_el, "dblclick", function () {
+                        _clickHandlers["dblclick"][segment](el, node);
+                    });
+                }
             };
 
             //
@@ -463,6 +531,11 @@ class Canvas {
                     type: 'json',
                     data: that.map.data
                 })
+                let state = localStorage.getItem(`jtk-state-metaMapCanvas_${that.mapId || that.mapName}`)
+                renderer.State.restore(state)
+                toolkit.eachEdge(function(i,e) {
+                    console.log(e)
+                })
             }
 
         // --------------------------------------------------------------------------------------------------------
@@ -479,6 +552,7 @@ class Canvas {
 
             toolkit.bind("dataUpdated", function() {
                 dumpEdgeCounts();
+                renderer.State.save()
                 that.onAutoSave(toolkit.exportData())
             })
 
