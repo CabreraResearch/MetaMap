@@ -18,19 +18,15 @@ class Edge extends _CanvasBase {
             all: {
                 events: {
                     mouseenter: (e) => {
-                        debugger
+                        window.alert(`It's a LIE! This event is not implemented!`)
                     },
                     mouseleave: (e) => {
-                        debugger
-                    },
-                    connect: (sourceId, targetId, scope, connection) => {
-                            debugger
+                        window.alert(`It's a LIE! This event is not implemented!`)
                     },
                     contextmenu: (node, port, el, e) => {
                         console.log('context click on edge')
                     }
                 }
-
             },
             default:{
                 parent: 'all',
@@ -51,7 +47,7 @@ class Edge extends _CanvasBase {
                 overlays:[
                     [ 'PlainArrow', {
                         location:1,
-                        width:0+'${leftSize}',
+                        width:0+'${leftSize}', //it took an age to figure out how to make this work. The `0+` part is what did it in the end (otherwise the overlays would always appear)
                         length:0+'${leftSize}',
                         cssClass:'relationship-overlay'
                     }],
@@ -76,6 +72,10 @@ class Edge extends _CanvasBase {
                     tap: (obj) => {
                         this.canvas.clearSelection(obj)
 
+                        //Something of a kludge here.
+                        //The custom overlays are not nested within the structure of the edge;
+                        //rather, they're popped to the end of the canvas and positioned absolute
+                        //so, standard CSS hover tricks won't work to show/hide this thing
                         $('#' + obj.connection.id + '_rthing')
                             .css('display', 'block')
                             .css('background', '')
@@ -84,7 +84,6 @@ class Edge extends _CanvasBase {
 
                         if (obj.e.target.getAttribute('class') == 'relationship-overlay' || obj.edge.data.direction == 'none') {
                             let newDirection = 'none'
-                            let overlays = obj.connection.getOverlays()
                             switch (obj.edge.data.direction) {
                                 case 'left':
                                     newDirection = 'right'
@@ -103,6 +102,10 @@ class Edge extends _CanvasBase {
                             obj.edge.data.leftSize = (newDirection == 'left' || newDirection == 'left-right' ) ? this.canvas.arrowSize : 0
                             obj.edge.data.rightSize = (newDirection == 'right' || newDirection == 'left-right' ) ? this.canvas.arrowSize : 0
 
+                            //At this moment, you'd think jsPlumb has everything needed to render the overlay correctly;
+                            //however, simply updating the data seems to have no effect (until you refresh the page)
+                            //so, use the setVisible() methods to tell jsPlumb, "no, really, show/hide these things"
+
                             let left = false
                             let right = false
                             switch (newDirection) {
@@ -118,6 +121,7 @@ class Edge extends _CanvasBase {
                                     break
                             }
 
+                            let overlays = obj.connection.getOverlays()
                             _.each(overlays, (o, key) => {
                                 if (o.loc == 0) {
                                     o.setVisible(left)
@@ -126,9 +130,14 @@ class Edge extends _CanvasBase {
                                 }
                             })
 
+                            //Update the edge
                             this.canvas.jsToolkit.updateEdge(obj.edge)
+
+                            //I don't think these should be required, but they seem to be
                             this.canvas.jsRenderer.relayout()
                             this.canvas.jsRenderer.refresh()
+
+                            //This line is most likely redundant as updateEdge should implicitly do it
                             this.canvas.jsToolkit.fire('dataUpdated')
                         }
 
