@@ -77,7 +77,6 @@ class Edge extends _CanvasBase {
                 ],
                 events: {
                     tap: (obj) => {
-                        console.log('tapped')
                         this.canvas.clearSelection(obj)
 
                         if (obj.e.target.getAttribute('class') == 'relationship-overlay' || obj.edge.data.direction == 'none') {
@@ -211,7 +210,7 @@ class Edge extends _CanvasBase {
             top: dot.position().top - (size/2)
         }
 
-        let nodeData = jsPlumb.extend(this.canvas.node.getNewNode('r-thing'), d)
+        let nodeData = jsPlumb.extend(this.canvas.node.getNewNode({ type: 'r-thing', cssClass: 'donotdrag'}), d)
         nodeData.rthing = {
             edgeId: obj.edge.data.id,
             rDot: obj.connection.id + '_rthing'

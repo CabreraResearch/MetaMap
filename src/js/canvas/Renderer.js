@@ -29,8 +29,8 @@ class Renderer extends _CanvasBase {
             elementsDraggable: !canvas.isReadOnly,
             enablePanButtons: false,
             consumeRightClick: false,
-            saveStateOnExit:true,              // serialize state on page unload automatically. defaults to false.
-            saveStateOnDrag:true,              // serialize state after each drag. defaults to false.
+            saveStateOnExit:true,              // setting these has no effect; investigate later
+            saveStateOnDrag:true,              // 
             stateHandle: 'metaMapCanvas_' + (canvas.mapId || canvas.mapName),
             saveState: function (...o) {
                 debugger

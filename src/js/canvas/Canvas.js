@@ -92,11 +92,11 @@ class Canvas {
                 type: 'json',
                 data: this.map.data
             })
-            let state = localStorage.getItem(`jtk-state-metaMapCanvas_${this.mapId || this.mapName}`)
-            renderer.State.restore(state)
-            toolkit.eachEdge((i,e) => {
-                //console.log(e)
-            })
+            // let state = localStorage.getItem(`jtk-state-metaMapCanvas_${this.mapId || this.mapName}`)
+            // renderer.State.restore(state)
+            // toolkit.eachEdge((i,e) => {
+            //     //console.log(e)
+            // })
         }
     }
 

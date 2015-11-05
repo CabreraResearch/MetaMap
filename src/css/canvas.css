@@ -62,6 +62,9 @@
     opacity:1;
 }
 
+.donotdrag {
+    cursor: pointer !important;
+}
 
 .ideaNode:hover .node-rect {
     opacity: 0;

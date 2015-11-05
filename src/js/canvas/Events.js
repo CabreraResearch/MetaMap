@@ -192,8 +192,9 @@ class Events extends _CanvasBase {
                     obj.edge.data.direction = 'none'
                     obj.edge.data.leftSize = 0
                     obj.edge.data.rightSize = 0
+                    this.jsToolkit.updateEdge(obj.edge)
+                    this.jsRenderer.repaint()
                 }
-                this.jsRenderer.refresh()
                 return obj
             },
             relayout: ()=> {
