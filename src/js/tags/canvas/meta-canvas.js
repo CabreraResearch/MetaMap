@@ -20,7 +20,6 @@ module.exports = riot.tag('meta-canvas', html, function(opts) {
     this.mapId = null
     this.canvas = null
 
-
     this.buildCanvas = (map) => {
         if (!this.canvas) {
             $(this.diagram).empty()

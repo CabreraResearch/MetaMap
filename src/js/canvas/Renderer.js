@@ -49,7 +49,10 @@ class Renderer extends _CanvasBase {
             elementsDroppable:true,
             dragOptions:{
                 filter:'.donotdrag',       // can't drag nodes by the color segments.
-                stop:() =>{
+                start: (e) => {
+                    this.canvas.clearSelection(e.el)
+                },
+                stop: () => {
                     // when _any_ node stops dragging, run the layout again.
                     // this will cause child nodes to snap to their new parent, and also
                     // cleanup nicely if a node is dropped on another node.
