@@ -10,11 +10,11 @@ class Node extends _CanvasBase {
     // dummy for a new node.
     //
     getNewNode(type) {
-        type=type||"idea"
+        type=type||'idea'
         return {
             w:this.canvas.nodeSize,
             h:this.canvas.nodeSize,
-            label:"idea",
+            label:'idea',
             type: type,
             children: [],
             labelPosition: []
@@ -37,26 +37,26 @@ class Node extends _CanvasBase {
                                 selector: `#${node.el.id}`,
                                 items: {
                                     copy: {
-                                        name: "Copy",
+                                        name: 'Copy',
                                         callback: function(key, opt){
-                                            alert("Clicked on " + key);
+                                            alert('Clicked on ' + key)
                                         }
                                     }
                                 }
-                            });
+                            })
                         }
                     }
                 }
             },
             default: {
-                parent: "all",
-                template:"tmplNode"
+                parent: 'all',
+                template:'tmplNode'
             },
             idea: {
-                parent: "default"
+                parent: 'default'
             },
-            "r-thing": {
-                parent: "idea"
+            'r-thing': {
+                parent: 'idea'
             }
         }
     }

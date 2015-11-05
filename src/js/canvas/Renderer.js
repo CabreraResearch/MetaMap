@@ -25,6 +25,7 @@ class Renderer extends _CanvasBase {
             stateHandle: 'metaMapCanvas_' + (canvas.mapId || canvas.mapName),
             saveState: function (...o) {
                 debugger
+                window.alert(`I'm a LIE. I will never be called.`)
             },
             layout:{
                 // custom layout for this app. simple extension of the spring layout.

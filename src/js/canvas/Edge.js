@@ -82,6 +82,9 @@ class Edge extends _CanvasBase {
                             .css('background', '')
                             .css('visibility', 'initial')
                             .addClass('relationship-rthing')
+                            .on('dblclick', () => {
+                                debugger
+                            })
 
                         if (obj.e.target.getAttribute('class') == 'relationship-overlay' || obj.edge.data.direction == 'none') {
                             let newDirection = 'none'
