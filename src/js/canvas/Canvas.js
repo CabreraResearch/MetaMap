@@ -116,6 +116,7 @@ class Canvas {
             .css('display', 'none')
             .css('visibility', 'hidden')
             .removeClass('relationship-rthing')
+            .off('dblclick')
 
         if (obj) {
             $(obj.el).find('.node-border').each(function () {

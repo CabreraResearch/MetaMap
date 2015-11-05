@@ -55,6 +55,7 @@ class Edge extends _CanvasBase {
                         create: (component) => {
                             const id = `${component.id}_rthing`
                             this.relationshipOverlays.push(id)
+                            //Unfortunately, any classes supplied here will be stripped out; so hard code the styles needed and massage them later
                             return $(`<div id="${id}" data-class="relationship-rthing" style="display: none; background: #B3C2C7; border-radius: 50%; visibility: hidden;"></div>`);
                         },
                         location:0.5,
@@ -81,6 +82,9 @@ class Edge extends _CanvasBase {
                             .css('background', '')
                             .css('visibility', 'initial')
                             .addClass('relationship-rthing')
+                            .on('dblclick', () => {
+                                debugger
+                            })
 
                         if (obj.e.target.getAttribute('class') == 'relationship-overlay' || obj.edge.data.direction == 'none') {
                             let newDirection = 'none'
