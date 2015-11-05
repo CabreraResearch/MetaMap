@@ -19,7 +19,7 @@ class Renderer extends _CanvasBase {
 		// drag/drop handler is instantiated (and it currently does not pass itself in to any of the 
 		// drag/drop callbacks, something that is on the jsplumb roadmap)
 		var renderer;
-		let dragDropHandler = new DragDropHandler(toolkit, function() {
+		let dragDropHandler = new DragDropHandler(canvas, toolkit, function() {
 			return renderer;
 		});
 

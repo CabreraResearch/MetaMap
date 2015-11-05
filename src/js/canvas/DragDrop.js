@@ -8,7 +8,7 @@ const jsPlumbUtil = window.jsPlumbUtil;
 
 class DragDropHandler {
 	
-	constructor(toolkit, getRenderer) {
+	constructor(canvas, toolkit, getRenderer) {
 	
 		this.getDragOptions = function() {
 			return {
@@ -45,6 +45,9 @@ class DragDropHandler {
 							_.each(childPositions, function(cp, i) {
 								cp[2].data.order = i;
 							});
+							
+							// save the data
+							canvas.onAutoSave(canvas.exportData())
 
 						}
 							
