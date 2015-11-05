@@ -54,7 +54,7 @@ class Events extends _CanvasBase {
                     var newLabel = 'Part'
 
                     var newNode = this.canvas.jsToolkit.addNode({
-                        parent:node.id,
+                        parentId:node.id,
                         w:newWidth,
                         h:newHeight,
                         label: newLabel,
@@ -196,7 +196,7 @@ class Events extends _CanvasBase {
             },
             relayout: ()=> {
                 //various drag/drop handler event experiments lived here
-            },
+            }/*,
             nodeDropped:(params)=> {
                 let target = params.target
                 let source = params.source
@@ -225,7 +225,7 @@ class Events extends _CanvasBase {
                 this.canvas.jsToolkit.updateNode(source)
 
                 this.canvas.jsRenderer.refresh()
-            }
+            }*/
         }
     }
 
