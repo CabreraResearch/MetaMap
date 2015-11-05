@@ -137,11 +137,12 @@ class Canvas {
         }
 
         //I don't think these should be required, but they seem to be
-        this.canvas.jsRenderer.relayout()
-        this.canvas.jsRenderer.refresh()
+        this.jsRenderer.relayout()
+        this.jsRenderer.refresh()
 
         //This line is most likely redundant as updateEdge should implicitly do it
-        this.canvas.jsToolkit.fire('dataUpdated')
+        this.jsToolkit.fire('dataUpdated')
+        this.update()
     }
 
     update() {
@@ -153,24 +154,40 @@ class Canvas {
 
     deleteAll(selected) {
         const toolkit = this.jsToolkit
-        //TODO: implement logic to delete whole edge+proxy+edge structure
-        selected.eachEdge(function(i,e) { console.log(e) });
+
+        const deleteRThing = (child) => {
+            if (child.data.rthing && child.data.rthing.edgeId) {
+                let edge = toolkit.getEdge(child.data.rthing.edgeId)
+                edge.data.rthing = null
+                toolkit.updateEdge(edge)
+            }
+        }
+
+        const recurse = (node) => {
+            if(node && node.data.children) {
+                _.each(node.data.children, (id, i) => {
+                    let child = toolkit.getNode(id)
+                    recurse(child)
+                })
+            }
+            deleteRThing(node)
+            //Delete children before parents
+            toolkit.removeNode(node)
+        }
+
+        selected.eachEdge(function(i,edge) {
+            //Delete any r-things that are associated with the edges to be deleted
+            if (edge.rthing && edge.rthing.nodeId) {
+                let child = toolkit.getNode(edge.rthing.nodeId)
+                recurse(child)
+            }
+        });
 
         //Recurse over all children
         selected.eachNode((i,n) => {
-            var recurse = (node) => {
-                if(node && node.data.children) {
-                    for(var i=0; i<node.data.children.length; i+=1) {
-                        var child = toolkit.getNode(node.data.children[i]);
-                        recurse(child);
-                    }
-                }
-                //Delete children before parents
-                toolkit.removeNode(node)
-            }
-            recurse(n);
+            recurse(n)
         });
-        toolkit.remove(selected);
+        toolkit.remove(selected)
     }
 
     get partSize() {

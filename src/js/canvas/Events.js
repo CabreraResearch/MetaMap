@@ -193,6 +193,8 @@ class Events extends _CanvasBase {
                     obj.edge.data.leftSize = 0
                     obj.edge.data.rightSize = 0
                 }
+                this.jsRenderer.refresh()
+                return obj
             },
             relayout: ()=> {
                 //various drag/drop handler event experiments lived here

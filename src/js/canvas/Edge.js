@@ -49,7 +49,7 @@ class Edge extends _CanvasBase {
                         location:1,
                         width:0+'${leftSize}', //it took an age to figure out how to make this work. The `0+` part is what did it in the end (otherwise the overlays would always appear)
                         length:0+'${leftSize}',
-                        cssClass:'relationship-overlay'
+                        cssClass: 'relationship-overlay'
                     }],
                     ['Custom', {
                         create: (component) => {
@@ -77,16 +77,19 @@ class Edge extends _CanvasBase {
                 ],
                 events: {
                     tap: (obj) => {
+                        console.log('tapped')
                         this.canvas.clearSelection(obj)
-
-                        if (!obj.edge.data.nodeId) {
-                            this.showRDot(obj.connection.id, obj)
-                        }
 
                         if (obj.e.target.getAttribute('class') == 'relationship-overlay' || obj.edge.data.direction == 'none') {
                             this.toggleRDirection(obj.e, obj.edge, obj.connection)
                             this.canvas.updateData(obj)
                         }
+
+                        if (!obj.edge.data.rthing || !obj.edge.data.rthing.nodeId) {
+                            this.showRDot(obj.connection.id, obj)
+                        }
+
+                        return true
                     }
                 }
             },
@@ -145,11 +148,33 @@ class Edge extends _CanvasBase {
         let overlays = connection.getOverlays()
         _.each(overlays, (o, key) => {
             if (o.loc == 0) {
-                o.setVisible(left)
+                if (left) {
+                    o.show()
+                } else {
+                    o.hide()
+                }
+                //o.setVisible(left)
             } else {
-                o.setVisible(right)
+                if (right) {
+                    o.show()
+                } else {
+                    o.hide()
+                }
             }
         })
+
+
+        this.jsToolkit.updateEdge(edge)
+
+
+        //I don't think these should be required, but they seem to be
+        this.jsRenderer.relayout()
+        this.jsRenderer.refresh()
+
+        //This line is most likely redundant as updateEdge should implicitly do it
+        this.jsToolkit.fire('dataUpdated')
+
+        console.log('changed direction to ' + newDirection + ' the arrow should have updated in the UI')
     }
 
     showRDot(id, obj) {
@@ -163,9 +188,7 @@ class Edge extends _CanvasBase {
             .css('visibility', 'initial')
             .addClass('relationship-rthing')
             .on('dblclick', () => {
-                if (obj) {
-                    this.createRThing(obj)
-                }
+                this.createRThing(obj)
             })
     }
 
@@ -178,22 +201,30 @@ class Edge extends _CanvasBase {
     }
 
     createRThing(obj) {
-        //obj.node.data.type = 'r-thing'
-        //obj.node.setType('r-thing')
-        //Updating the node type does not seem to stick instead, create a new node
-        let d = this.canvas.jsRenderer.mapEventLocation(obj.e)
+        let dot = $('#' + obj.connection.id + '_rthing')
+        let size = obj.edge.source.data.w * this.canvas.partSize
 
-        d.w = obj.edge.source.data.w * this.canvas.partSize
-        d.h = d.w
-
+        let d = {
+            w: size,
+            h: size,
+            left: dot.position().left - (size/2),
+            top: dot.position().top - (size/2)
+        }
 
         let nodeData = jsPlumb.extend(this.canvas.node.getNewNode('r-thing'), d)
-
+        nodeData.rthing = {
+            edgeId: obj.edge.data.id,
+            rDot: obj.connection.id + '_rthing'
+        }
         let newNode = this.canvas.jsToolkit.addNode(nodeData)
+        obj.edge.data.rthing = {
+            nodeId: newNode.id,
+            rDot: obj.connection.id + '_rthing'
+        }
 
         this.hideRDots()
 
-        this.canvas.updateData({ node: newNode })
+        this.canvas.updateData({ node: newNode, edge: obj.edge })
     }
 
 }

@@ -1,7 +1,10 @@
+const StackTrace = require('stacktrace-js')
+
 class _CanvasBase {
 
     constructor(canvas) {
         this.canvas = canvas
+        this.stackTrace = StackTrace
     }
 
     get jsToolkit() {

@@ -135,6 +135,11 @@
     stroke-width:4;
 }
 
+.edge-relationship-selected path {
+    stroke:#4CBFC2;
+    stroke-width:6;
+}
+
 .edge-relationship:hover path {
     stroke:#4CBFC2;
     stroke-width:6;
