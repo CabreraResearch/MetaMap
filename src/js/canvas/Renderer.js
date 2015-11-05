@@ -1,6 +1,7 @@
 const jsPlumb = window.jsPlumb;
 const Node = require('./Node')
 const Edge = require('./Edge')
+const DragDropHandler = require('./DragDrop')
 const _CanvasBase = require('./_CanvasBase')
 
 class Renderer extends _CanvasBase {
@@ -12,10 +13,18 @@ class Renderer extends _CanvasBase {
         this.node = new Node(canvas, this)
         this.edge = new Edge(canvas, this)
 
-        const toolkit = canvas.jsToolkit
+        const toolkit = canvas.jsToolkit	
+			
+		// have to expose renderer this way to drag and drop since renderer does not exist when the
+		// drag/drop handler is instantiated (and it currently does not pass itself in to any of the 
+		// drag/drop callbacks, something that is on the jsplumb roadmap)
+		var renderer;
+		let dragDropHandler = new DragDropHandler(toolkit, function() {
+			return renderer;
+		});
 
         // configure the renderer
-        this.renderer = toolkit.render({
+        renderer = this.renderer = toolkit.render({
             container: this.opts.attachTo,
             elementsDraggable: !canvas.isReadOnly,
             enablePanButtons: false,
@@ -29,33 +38,17 @@ class Renderer extends _CanvasBase {
             layout:{
                 // custom layout for this app. simple extension of the spring layout.
                 type:'metamap'
-            },
-            //
-            // this is how you can associate groups of nodes. Here, because of the
-            // way I have represented the relationship in the data, we either return
-            // a part's 'parent' as the posse, or if it is not a part then we
-            // return the node's id. There are addToPosse and removeFromPosse
-            // methods too (on the renderer, not the toolkit); these can be used
-            // when transferring a part from one parent to another.
-            assignPosse:(node)=> {
-                return node.data.parent ? { posse:node.data.parent, active:false } : node.id;
-            },
+            },            
             zoomToFit:false,
             view: {
                 nodes: this.node.getView(),
                 edges: this.edge.getView()
             },
             events: this.canvas.events.getRenderEvents(),
-            elementsDroppable:true,
-            dragOptions:{
-                filter:'.donotdrag',       // can't drag nodes by the color segments.
-                stop:() =>{
-                    // when _any_ node stops dragging, run the layout again.
-                    // this will cause child nodes to snap to their new parent, and also
-                    // cleanup nicely if a node is dropped on another node.
-                    this.renderer.refresh();
-                }
-            }
+            elementsDroppable:!canvas.isReadOnly,
+			assignPosse:dragDropHandler.getPosseAssigner(),
+            dragOptions:dragDropHandler.getDragOptions(),
+			dropOptions:dragDropHandler.getDropOptions()
         });
 
     }
