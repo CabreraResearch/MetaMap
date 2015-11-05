@@ -56,7 +56,7 @@ class Edge extends _CanvasBase {
                             let ret = null
                             let data = component.getData()
                             if (!data.nodeId) {
-                                const id = `${component.id}_rthing`
+                                const id = `${component.edge.data.id}_rthing`
                                 this.relationshipOverlays.push(id)
 
                                 //Unfortunately, any classes supplied here will be stripped out; so hard code the styles needed and massage them later
@@ -85,7 +85,7 @@ class Edge extends _CanvasBase {
                         }
 
                         if (!obj.edge.data.rthing || !obj.edge.data.rthing.nodeId) {
-                            this.showRDot(obj.connection.id, obj)
+                            this.showRDot(obj.edge.data.id, obj)
                         }
 
                         return true
@@ -200,7 +200,7 @@ class Edge extends _CanvasBase {
     }
 
     createRThing(obj) {
-        let dot = $('#' + obj.connection.id + '_rthing')
+        let dot = $('#' + obj.edge.data.id + '_rthing')
         let size = obj.edge.source.data.w * this.canvas.partSize
 
         let d = {
@@ -213,12 +213,12 @@ class Edge extends _CanvasBase {
         let nodeData = jsPlumb.extend(this.canvas.node.getNewNode({ type: 'r-thing', cssClass: 'donotdrag'}), d)
         nodeData.rthing = {
             edgeId: obj.edge.data.id,
-            rDot: obj.connection.id + '_rthing'
+            rDot: obj.edge.data.id + '_rthing'
         }
         let newNode = this.canvas.jsToolkit.addNode(nodeData)
         obj.edge.data.rthing = {
             nodeId: newNode.id,
-            rDot: obj.connection.id + '_rthing'
+            rDot: obj.edge.data.id + '_rthing'
         }
 
         this.hideRDots()

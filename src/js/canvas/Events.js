@@ -1,6 +1,7 @@
 const jsPlumb = window.jsPlumb
 const jsPlumbToolkit = window.jsPlumbToolkit;
 const _CanvasBase = require('./_CanvasBase')
+const $ = require('jquery')
 
 class Events extends _CanvasBase {
 
@@ -198,7 +199,9 @@ class Events extends _CanvasBase {
                 return obj
             },
             relayout: ()=> {
-                //various drag/drop handler event experiments lived here
+                $('.edge-relationship').on('hover', function (event) {
+                    debugger
+                })
             }/*,
             nodeDropped:(params)=> {
                 let target = params.target
