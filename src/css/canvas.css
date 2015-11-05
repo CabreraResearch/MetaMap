@@ -20,6 +20,10 @@
     top:20%;
 }
 
+.white_circle {
+    cursor: move;
+}
+
 .ideaNode .name span {
     cursor:pointer;
 }
@@ -56,6 +60,13 @@
 
 .ideaNode:hover .node_internal {
     opacity:1;
+}
+
+
+.ideaNode:hover .node-rect {
+    opacity: 0;
+    visibility: hidden;
+    display: none;
 }
 
 .ideaNode:hover .segment {
@@ -105,12 +116,6 @@
 
 .green {
     fill: #93C63D;
-}
-
-/* styles for the drag proxy node */
-.dragProxy {
-  color: #282828;
-  opacity: 0.5;
 }
 
 /* styles for edges */
