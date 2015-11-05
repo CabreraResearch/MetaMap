@@ -112,11 +112,7 @@ class Canvas {
         $('.node-selected').each(function () {
             this.setAttribute('class', 'node-border')
         })
-        $('.relationship-rthing')
-            .css('display', 'none')
-            .css('visibility', 'hidden')
-            .removeClass('relationship-rthing')
-            .off('dblclick')
+        this.rndrr.hideRDots()
 
         if (obj) {
             $(obj.el).find('.node-border').each(function () {
@@ -129,6 +125,23 @@ class Canvas {
                 toolkit.setSelection(obj.edge);
             }
         }
+    }
+
+    updateData(obj) {
+
+        if (obj.edge) {
+            this.jsToolkit.updateEdge(obj.edge)
+        }
+        if (obj.node) {
+            this.jsToolkit.updateNode(obj.node)
+        }
+
+        //I don't think these should be required, but they seem to be
+        this.canvas.jsRenderer.relayout()
+        this.canvas.jsRenderer.refresh()
+
+        //This line is most likely redundant as updateEdge should implicitly do it
+        this.canvas.jsToolkit.fire('dataUpdated')
     }
 
     update() {

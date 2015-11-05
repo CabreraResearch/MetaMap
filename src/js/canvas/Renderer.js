@@ -13,10 +13,10 @@ class Renderer extends _CanvasBase {
         this.node = new Node(canvas, this)
         this.edge = new Edge(canvas, this)
 
-        const toolkit = canvas.jsToolkit	
-			
+        const toolkit = canvas.jsToolkit
+
 		// have to expose renderer this way to drag and drop since renderer does not exist when the
-		// drag/drop handler is instantiated (and it currently does not pass itself in to any of the 
+		// drag/drop handler is instantiated (and it currently does not pass itself in to any of the
 		// drag/drop callbacks, something that is on the jsplumb roadmap)
 		var renderer;
 		let dragDropHandler = new DragDropHandler(canvas, toolkit, function() {
@@ -39,7 +39,7 @@ class Renderer extends _CanvasBase {
             layout:{
                 // custom layout for this app. simple extension of the spring layout.
                 type:'metamap'
-            },            
+            },
             zoomToFit:false,
             view: {
                 nodes: this.node.getView(),
@@ -59,6 +59,10 @@ class Renderer extends _CanvasBase {
 
         this.node.update()
         this.edge.update()
+    }
+
+    hideRDots() {
+        this.edge.hideRDots()
     }
 }
 
