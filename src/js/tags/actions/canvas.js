@@ -4,7 +4,7 @@ const _ = require('lodash')
 
 const AllTags = require('../mixins/all-tags')
 const CONSTANTS = require('../../constants/constants')
-const Canvas = require('../../canvas/canvas')
+const Canvas = require('../../canvas/Canvas')
 const Permissions = require('../../app/Permissions')
 const ShareMap = require('../../actions/ShareMap')
 

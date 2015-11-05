@@ -1,5 +1,5 @@
 const riot = require('riot');
-const Editor = require('../../canvas/canvas');
+const Editor = require('../../canvas/Canvas');
 
 
 const html = `
