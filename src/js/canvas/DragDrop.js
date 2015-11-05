@@ -76,11 +76,44 @@ class DragDropHandler {
 				}
 			}
 		}
+		
+		//
+		// fires update events to the toolkit for the given node and all of its children and their children
+		// etc
+		//
+		function updateNodeAndParts(node, toolkit) {
+			toolkit.updateNode(node);
+			if (node.data.children) {
+				_.each(node.data.children, function(c) {
+					updateNodeAndParts(toolkit.getNode(c), toolkit);
+				});
+		    }
+		}
 	
 		this.getDropOptions = function() {
 			return {
 				drop:(params) => {
-					
+					var sourceInfo = toolkit.getObjectInfo(params.drag.el);
+					var targetInfo = toolkit.getObjectInfo(params.drop.el);
+
+					if (sourceInfo.obj.data.parentId) {
+						jsPlumbUtil.consume(params.e);
+						var sourceParent = toolkit.getNode(sourceInfo.obj.data.parentId);
+						_.remove(sourceParent.data.children, function(c) { return c === sourceInfo.id; });
+
+						targetInfo.obj.data.children = targetInfo.obj.data.children || [];
+						targetInfo.obj.data.children.push(sourceInfo.id);
+
+						sourceInfo.obj.data.parentId = targetInfo.id;
+
+						// update the source, original source parent, and target. This will ensure the child
+						// belongs to the right posses now.
+						toolkit.updateNode(sourceParent);
+					    toolkit.updateNode(targetInfo.obj);
+						updateNodeAndParts(sourceInfo.obj, toolkit);
+
+						return true;
+					}
 				}
 			};
 		}
