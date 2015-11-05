@@ -92,11 +92,11 @@ class Canvas {
                 type: 'json',
                 data: this.map.data
             })
-            let state = localStorage.getItem(`jtk-state-metaMapCanvas_${this.mapId || this.mapName}`)
-            renderer.State.restore(state)
-            toolkit.eachEdge((i,e) => {
-                //console.log(e)
-            })
+            // let state = localStorage.getItem(`jtk-state-metaMapCanvas_${this.mapId || this.mapName}`)
+            // renderer.State.restore(state)
+            // toolkit.eachEdge((i,e) => {
+            //     //console.log(e)
+            // })
         }
     }
 
@@ -112,11 +112,7 @@ class Canvas {
         $('.node-selected').each(function () {
             this.setAttribute('class', 'node-border')
         })
-        $('.relationship-rthing')
-            .css('display', 'none')
-            .css('visibility', 'hidden')
-            .removeClass('relationship-rthing')
-            .off('dblclick')
+        this.rndrr.hideRDots()
 
         if (obj) {
             $(obj.el).find('.node-border').each(function () {
@@ -131,6 +127,24 @@ class Canvas {
         }
     }
 
+    updateData(obj) {
+
+        if (obj.edge) {
+            this.jsToolkit.updateEdge(obj.edge)
+        }
+        if (obj.node) {
+            this.jsToolkit.updateNode(obj.node)
+        }
+
+        //I don't think these should be required, but they seem to be
+        this.jsRenderer.relayout()
+        this.jsRenderer.refresh()
+
+        //This line is most likely redundant as updateEdge should implicitly do it
+        this.jsToolkit.fire('dataUpdated')
+        this.update()
+    }
+
     update() {
         this.tk.update()
         this.events.update()
@@ -140,24 +154,40 @@ class Canvas {
 
     deleteAll(selected) {
         const toolkit = this.jsToolkit
-        //TODO: implement logic to delete whole edge+proxy+edge structure
-        selected.eachEdge(function(i,e) { console.log(e) });
+
+        const deleteRThing = (child) => {
+            if (child.data.rthing && child.data.rthing.edgeId) {
+                let edge = toolkit.getEdge(child.data.rthing.edgeId)
+                edge.data.rthing = null
+                toolkit.updateEdge(edge)
+            }
+        }
+
+        const recurse = (node) => {
+            if(node && node.data.children) {
+                _.each(node.data.children, (id, i) => {
+                    let child = toolkit.getNode(id)
+                    recurse(child)
+                })
+            }
+            deleteRThing(node)
+            //Delete children before parents
+            toolkit.removeNode(node)
+        }
+
+        selected.eachEdge(function(i,edge) {
+            //Delete any r-things that are associated with the edges to be deleted
+            if (edge.rthing && edge.rthing.nodeId) {
+                let child = toolkit.getNode(edge.rthing.nodeId)
+                recurse(child)
+            }
+        });
 
         //Recurse over all children
         selected.eachNode((i,n) => {
-            var recurse = (node) => {
-                if(node && node.data.children) {
-                    for(var i=0; i<node.data.children.length; i+=1) {
-                        var child = toolkit.getNode(node.data.children[i]);
-                        recurse(child);
-                    }
-                }
-                //Delete children before parents
-                toolkit.removeNode(node)
-            }
-            recurse(n);
+            recurse(n)
         });
-        toolkit.remove(selected);
+        toolkit.remove(selected)
     }
 
     get partSize() {

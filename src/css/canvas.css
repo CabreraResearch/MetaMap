@@ -20,6 +20,10 @@
     top:20%;
 }
 
+.white_circle {
+    cursor: move;
+}
+
 .ideaNode .name span {
     cursor:pointer;
 }
@@ -56,6 +60,16 @@
 
 .ideaNode:hover .node_internal {
     opacity:1;
+}
+
+.donotdrag {
+    cursor: pointer !important;
+}
+
+.ideaNode:hover .node-rect {
+    opacity: 0;
+    visibility: hidden;
+    display: none;
 }
 
 .ideaNode:hover .segment {
@@ -107,12 +121,6 @@
     fill: #93C63D;
 }
 
-/* styles for the drag proxy node */
-.dragProxy {
-  color: #282828;
-  opacity: 0.5;
-}
-
 /* styles for edges */
 
 .edge-perspective path {
@@ -128,6 +136,11 @@
 .edge-relationship path {
     stroke:#B3C2C7;
     stroke-width:4;
+}
+
+.edge-relationship-selected path {
+    stroke:#4CBFC2;
+    stroke-width:6;
 }
 
 .edge-relationship:hover path {

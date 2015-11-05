@@ -9,16 +9,18 @@ class Node extends _CanvasBase {
     //
     // dummy for a new node.
     //
-    getNewNode(type) {
-        type=type||'idea'
-        return {
+    getNewNode(opts) {
+        let ret = {
             w:this.canvas.nodeSize,
             h:this.canvas.nodeSize,
             label:'idea',
-            type: type,
+            type: 'idea',
             children: [],
-            labelPosition: []
+            labelPosition: [],
+            cssClass: ''
         }
+        _.extend(ret, opts)
+        return ret
     }
 
     getView() {

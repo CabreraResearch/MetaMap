@@ -49,14 +49,20 @@ class Edge extends _CanvasBase {
                         location:1,
                         width:0+'${leftSize}', //it took an age to figure out how to make this work. The `0+` part is what did it in the end (otherwise the overlays would always appear)
                         length:0+'${leftSize}',
-                        cssClass:'relationship-overlay'
+                        cssClass: 'relationship-overlay'
                     }],
                     ['Custom', {
                         create: (component) => {
-                            const id = `${component.id}_rthing`
-                            this.relationshipOverlays.push(id)
-                            //Unfortunately, any classes supplied here will be stripped out; so hard code the styles needed and massage them later
-                            return $(`<div id="${id}" data-class="relationship-rthing" style="display: none; background: #B3C2C7; border-radius: 50%; visibility: hidden;"></div>`);
+                            let ret = null
+                            let data = component.getData()
+                            if (!data.nodeId) {
+                                const id = `${component.edge.data.id}_rthing`
+                                this.relationshipOverlays.push(id)
+
+                                //Unfortunately, any classes supplied here will be stripped out; so hard code the styles needed and massage them later
+                                ret = $(`<div id="${id}" data-class="relationship-rthing" style="display: none; background: #B3C2C7; border-radius: 50%; visibility: hidden;"></div>`)
+                            }
+                            return ret
                         },
                         location:0.5,
                         id:"customOverlay"
@@ -73,106 +79,16 @@ class Edge extends _CanvasBase {
                     tap: (obj) => {
                         this.canvas.clearSelection(obj)
 
-                        //Something of a kludge here.
-                        //The custom overlays are not nested within the structure of the edge;
-                        //rather, they're popped to the end of the canvas and positioned absolute
-                        //so, standard CSS hover tricks won't work to show/hide this thing
-                        $('#' + obj.connection.id + '_rthing')
-                            .css('display', 'block')
-                            .css('background', '')
-                            .css('visibility', 'initial')
-                            .addClass('relationship-rthing')
-                            .on('dblclick', () => {
-                                debugger
-                            })
-
                         if (obj.e.target.getAttribute('class') == 'relationship-overlay' || obj.edge.data.direction == 'none') {
-                            let newDirection = 'none'
-                            switch (obj.edge.data.direction) {
-                                case 'left':
-                                    newDirection = 'right'
-                                    break
-                                case 'right':
-                                    newDirection = 'left-right'
-                                    break
-                                case 'left-right':
-                                    newDirection = 'none'
-                                    break
-                                case 'none':
-                                    newDirection = 'left'
-                                    break
-                            }
-                            obj.edge.data.direction = newDirection
-                            obj.edge.data.leftSize = (newDirection == 'left' || newDirection == 'left-right' ) ? this.canvas.arrowSize : 0
-                            obj.edge.data.rightSize = (newDirection == 'right' || newDirection == 'left-right' ) ? this.canvas.arrowSize : 0
-
-                            //At this moment, you'd think jsPlumb has everything needed to render the overlay correctly;
-                            //however, simply updating the data seems to have no effect (until you refresh the page)
-                            //so, use the setVisible() methods to tell jsPlumb, "no, really, show/hide these things"
-
-                            let left = false
-                            let right = false
-                            switch (newDirection) {
-                                case 'left':
-                                    left = true
-                                    break
-                                case 'right':
-                                    right = true
-                                    break
-                                case 'left-right':
-                                    left = true
-                                    right = true
-                                    break
-                            }
-
-                            let overlays = obj.connection.getOverlays()
-                            _.each(overlays, (o, key) => {
-                                if (o.loc == 0) {
-                                    o.setVisible(left)
-                                } else {
-                                    o.setVisible(right)
-                                }
-                            })
-
-                            //Update the edge
-                            this.canvas.jsToolkit.updateEdge(obj.edge)
-
-                            //I don't think these should be required, but they seem to be
-                            this.canvas.jsRenderer.relayout()
-                            this.canvas.jsRenderer.refresh()
-
-                            //This line is most likely redundant as updateEdge should implicitly do it
-                            this.canvas.jsToolkit.fire('dataUpdated')
+                            this.toggleRDirection(obj.e, obj.edge, obj.connection)
+                            this.canvas.updateData(obj)
                         }
 
-                    },
-                    rThingCreate: (obj) => {
-                        //obj.node.data.type = 'r-thing'
-                        //obj.node.setType('r-thing')
-                        //Updating the node type does not seem to stick instead, create a new node
-                        var d = this.canvas.jsRenderer.mapEventLocation(obj.e)
-                        var edges = obj.node.getEdges()
-
-                        d.w = edges[0].source.data.w * this.canvas.partSize
-                        d.h = edges[0].source.data.h * this.canvas.partSize
-
-                        var newNode = this.canvas.jsToolkit.addNode(jsPlumb.extend(this.canvas.node.getNewNode('r-thing'), d))
-
-                        //re-create the edge connections on the new node
-                        for (var i = 0; i < edges.length; i+=1) {
-                            if(edges[i].source == obj.node) {
-                                this.canvas.jsToolkit.connect({source:newNode, target:edges[i].target, data:{
-                                    type:'relationship'
-                                }})
-                            } else if(edges[i].target == obj.node) {
-                                this.canvas.jsToolkit.connect({source:edges[i].source, target:newNode, data:{
-                                    type:'relationshipProxy'
-                                }})
-                            }
+                        if (!obj.edge.data.rthing || !obj.edge.data.rthing.nodeId) {
+                            this.showRDot(obj.edge.data.id, obj)
                         }
 
-                        //delete the proxy node
-                        this.canvas.jsToolkit.removeNode(obj.node)
+                        return true
                     }
                 }
             },
@@ -188,6 +104,128 @@ class Edge extends _CanvasBase {
             }
         }
     }
+
+    toggleRDirection(event, edge, connection) {
+        let newDirection = 'none'
+        switch (edge.data.direction) {
+            case 'left':
+                newDirection = 'right'
+                break
+            case 'right':
+                newDirection = 'left-right'
+                break
+            case 'left-right':
+                newDirection = 'none'
+                break
+            case 'none':
+                newDirection = 'left'
+                break
+        }
+        edge.data.direction = newDirection
+        edge.data.leftSize = (newDirection == 'left' || newDirection == 'left-right' ) ? this.canvas.arrowSize : 0
+        edge.data.rightSize = (newDirection == 'right' || newDirection == 'left-right' ) ? this.canvas.arrowSize : 0
+
+        //At this moment, you'd think jsPlumb has everything needed to render the overlay correctly;
+        //however, simply updating the data seems to have no effect (until you refresh the page)
+        //so, use the setVisible() methods to tell jsPlumb, "no, really, show/hide these things"
+
+        let left = false
+        let right = false
+        switch (newDirection) {
+            case 'left':
+                left = true
+                break
+            case 'right':
+                right = true
+                break
+            case 'left-right':
+                left = true
+                right = true
+                break
+        }
+
+        let overlays = connection.getOverlays()
+        _.each(overlays, (o, key) => {
+            if (o.loc == 0) {
+                if (left) {
+                    o.show()
+                } else {
+                    o.hide()
+                }
+                //o.setVisible(left)
+            } else {
+                if (right) {
+                    o.show()
+                } else {
+                    o.hide()
+                }
+            }
+        })
+
+
+        this.jsToolkit.updateEdge(edge)
+
+
+        //I don't think these should be required, but they seem to be
+        this.jsRenderer.relayout()
+        this.jsRenderer.refresh()
+
+        //This line is most likely redundant as updateEdge should implicitly do it
+        this.jsToolkit.fire('dataUpdated')
+
+        console.log('changed direction to ' + newDirection + ' the arrow should have updated in the UI')
+    }
+
+    showRDot(id, obj) {
+        //Something of a kludge here.
+        //The custom overlays are not nested within the structure of the edge;
+        //rather, they're popped to the end of the canvas and positioned absolute
+        //so, standard CSS hover tricks won't work to show/hide this thing
+        $('#' + id + '_rthing')
+            .css('display', 'block')
+            .css('background', '')
+            .css('visibility', 'initial')
+            .addClass('relationship-rthing')
+            .on('dblclick', () => {
+                this.createRThing(obj)
+            })
+    }
+
+    hideRDots() {
+        $('.relationship-rthing')
+            .css('display', 'none')
+            .css('visibility', 'hidden')
+            .removeClass('relationship-rthing')
+            .off('dblclick')
+    }
+
+    createRThing(obj) {
+        let dot = $('#' + obj.edge.data.id + '_rthing')
+        let size = obj.edge.source.data.w * this.canvas.partSize
+
+        let d = {
+            w: size,
+            h: size,
+            left: dot.position().left - (size/2),
+            top: dot.position().top - (size/2)
+        }
+
+        let nodeData = jsPlumb.extend(this.canvas.node.getNewNode({ type: 'r-thing', cssClass: 'donotdrag'}), d)
+        nodeData.rthing = {
+            edgeId: obj.edge.data.id,
+            rDot: obj.edge.data.id + '_rthing'
+        }
+        let newNode = this.canvas.jsToolkit.addNode(nodeData)
+        obj.edge.data.rthing = {
+            nodeId: newNode.id,
+            rDot: obj.edge.data.id + '_rthing'
+        }
+
+        this.hideRDots()
+
+        this.canvas.updateData({ node: newNode, edge: obj.edge })
+    }
+
 }
 
 module.exports = Edge
