@@ -138,7 +138,7 @@ const jsPlumbToolkit = window.jsPlumbToolkit;
         // only process nodes that are not Part nodes (there could of course be
         // a million ways of determining what is a Part node...here I just use
         // a rudimentary construct in the data)
-        if (n.data.parent == null && n.data.layoutChildren !== false) {
+        if (n.data.parentId == null && n.data.layoutChildren !== false) {
           _oneSet(n, null, null, params, toolkit);
         }
       }
