@@ -6,6 +6,12 @@
     z-index: 11;
 }
 
+/* on drag, put the current node above the others. make it a little transparent too. */
+.ideaNode.jsplumb-drag {
+	z-index:12;
+	opacity:0.9;
+}
+
 .ideaNode .name {
     color: black;
     cursor: move;
