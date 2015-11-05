@@ -1,5 +1,5 @@
 const riot = require('riot')
-const Canvas = require('../../canvas/canvas')
+const Canvas = require('../../canvas/Canvas')
 const CONSTANTS = require('../../constants/constants')
 require('./node')
 const Permissions = require('../../app/Permissions')
