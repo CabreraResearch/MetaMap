@@ -409,25 +409,6 @@
 
     var exports = this;
 
-    /*
-     <area />
-     <base />
-     <br />
-     <col />
-     <command />
-     <embed />
-     <hr />
-     <img />
-     <input />
-     <keygen />
-     <link />
-     <meta />
-     <param />
-     <source />
-     <track />
-     <wbr />
-     */
-
     Array.prototype.peek = function() { return this.length > 0 ? this[this.length - 1] : null; };
     var ieVersion = typeof navigator !== "undefined" ? /MSIE\s([\d.]+)/.test(navigator.userAgent) ? (new Number(RegExp.$1)) : -1 : -1;
     var oldIE = ieVersion > -1 && ieVersion < 9;
@@ -445,8 +426,7 @@
 
         this.template = handlers.template;
         this.getFunctionBody = function(parseTree) {
-            var fb = _rotors.compile(combineAttributes(_rotors.parse(handlers.template), parseTree), false, true, true);
-            return fb;
+            return _rotors.compile(combineAttributes(_rotors.parse(handlers.template), parseTree), false, true, true);
         }.bind(this);
         this.getFunctionEnd = function() {
             return ";_els.pop();";
@@ -489,6 +469,18 @@
         _data = function(inObj, path, value) {
             if (inObj == null) return null;
             if (path === "$data" || path == null) return inObj;
+            // if path is actually an object spec,
+            var objectSpec = path.match(/^\{(.*)\}$/);
+            if (objectSpec) {
+                var out = {}, parts = objectSpec[1].split(",");
+                for (var i = 0; i < parts.length; i++) {
+                    var pp = parts[i].split(":"), v = _data(inObj, pp[1]);
+                    out[_trim(pp[0])] = v || pp[1].replace(/'/g, "");
+                }
+                return out;
+            }
+            // replace any quoted accessors with dotted syntax
+            path = path.replace(/\['([^']*)'\]/g, ".$1");
             var q = inObj, t = q, o = null;
             path.replace(/([^\.])+/g, function(term, lc, pos, str) {
                 if (o != null) return;
@@ -873,7 +865,7 @@
         openCloseRe : new RegExp("<(.*)(\/>$)"),
         tokenizerRe:/(<[^\^>]+\/>)|(<!--[\s\S]*?-->)|(<[\/a-zA-Z0-9\-:]+(?:\s*[a-zA-Z\-]+=\"[^\"]+\"|\s*[a-zA-Z\-]+='[^']+'|\s*[a-zA-Z\-]|\s*\{\{.*\}\})*>)/,
         commentRe: /<!--[\s\S]*?-->/,
-        attributesRe:/([a-zA-Z0-9\-_]+="[^"]*")|(\{\{if [^(?:\}\})]+\}\}.*\{\{\/if\}\})/,
+        attributesRe:/([a-zA-Z0-9\-_:]+="[^"]*")|(\{\{if [^(?:\}\})]+\}\}.*\{\{\/if\}\})/,
         inlineIfRe:/\{\{if ([^\}]+)\}\}(.*)\{\{\/if\}\}/,
         singleExpressionRe : /^[\s]*\$\{([^\}]*)\}[\s]*$/,          // match an expression such as ${foo} or ${x/2}
         parseAttributes : function(d) {
@@ -883,23 +875,6 @@
         flatten:_flatten,
         filter:_filter,
         data:_data,
-        camelize:function(p) {
-            return p;
-        },
-        dataExperiment:function(inObj, path, value) {
-            if (inObj == null) return null;
-            if (path === "$data" || path == null) return inObj;
-            var h;
-            with(inObj) {
-                if (value != null) {
-                    var v = typeof value === "string" ? "\"" + value + "\"" : value;
-                    eval(path + "=" + v );
-                }
-                else
-                    eval("h=" + path);
-            }
-            return h;
-        },
         uuid:_uuid,
         filterEmpty:function(l) {
             return _filter(l, function(i) { return i != null && _trim(i).length > 0; });
@@ -1008,12 +983,16 @@
                 postcompile:function(_rotors) {
                     return this.context ? ";data.splice(0, 1);" : "";
                 }
+            },
+            "r-html":{
+                parse:function(entry, match, templateResolver, _rotors) { },
+                compile:function(_rotors) {
+                    return ";var __hp=_rotors.parse(data[0].value),__hc=_rotors.compile(__hp,true);var __f=__hc(data[0], _rotors);_els.peek().appendChild(__f.childNodes[0]);";
+                }
             }
         },
         customTags:{ },
         registerTag:function(tagName, handlers) {
-
-            //console.log(fb);
             this.customTags[tagName] = new CustomTag(this, tagName, handlers);
         },
         debugEnabled:false,
@@ -1152,7 +1131,6 @@
                 items = [];
 
             for (var i = 0; i < ast.length; i++) {
-                // here we pass in the currently-static Rotors member. But in the future this will be the current instance.
                 var content = "";
                 if (ast[i].precompile) content += ast[i].precompile(this);
                 content += ast[i].compile(this, isCustomScope);
@@ -1162,9 +1140,8 @@
 
             var fb = items.join("");
             this.debug("function body :", fb);
-            if (functionBodyOnly) return fb;
-
-            //fb = fp + fb;
+            if (functionBodyOnly)
+                return fb;
 
             var f = new Function("data,_rotors", fp + items.join("") + fs), _r = this;
             if (!precompileOnly) {
@@ -1396,7 +1373,7 @@
      * <script type="rotors" id="someId">...</script>
      * and output an array containing a map of template Ids -> template functions as the first argument, plus the
      * input text stripped of templates as the second argument. **NOTE** the `type` attribute must be specified
-     * before the `id` attribute.
+     * before the `id` attribute in the HTML.
      * @method precompile
      * @param {String} html HTML to preprocess.
      * @param {String} [type='rotors'] Optional `type` of scripts used as templates. Defaults to "rotors".
@@ -1426,6 +1403,7 @@
     /**
      * Gets a new instance of Rotors.
      * @method newInstance
+     * @static
      * @param {Object} [params] Optional set of constructor parameters for the new instance.
      * @returns {RotorsInstance}
      */
@@ -7117,7 +7095,7 @@
             return [ n.data.left, n.data.top ];
         };
         var _findLocation = function(v, parameters) {
-            return (parameters.locationFunction || _defaultLocationFunction)(v);
+            return (params.locationFunction || _defaultLocationFunction)(v);
         };
 
         this.begin = function (toolkit, parameters) {
@@ -8698,11 +8676,7 @@
                     if (posse != null) {
                         var args = jsPlumbUtil.isArray(posse) ? posse : [ posse ];
                         args.unshift(nodeEl);
-                        _jsPlumb.addToPosse.apply(_jsPlumb, args);
-                    }
-                    else {
-                        // remove from all Posses.
-                        _jsPlumb.removeFromAllPosses(nodeEl);
+                        _jsPlumb.setPosse.apply(_jsPlumb, args);
                     }
 
                     self.repaint(nodeEl);
@@ -9052,9 +9026,8 @@
             if (!root.jsPlumbToolkit.Layouts[lp.type]) throw "no such layout [" + lp.type + "]";
 
             // potentially insert locationFunction, if there isn't one.
-            lp.parameters = lp.parameters || {};
-            if (!lp.parameters.locationFunction) {
-                lp.parameters.locationFunction = function(node) {
+            if (!lp.locationFunction) {
+                lp.locationFunction = function(node) {
                     return [ Rotors.data(node.data, _modelLeftAttribute), Rotors.data(node.data, _modelTopAttribute) ];
                 }
             }
@@ -9430,7 +9403,12 @@
                                 }
                             }
 
+                            var sourceDropHandler, curDropCount = el._katavorioDrop ? el._katavorioDrop.length : 0;
                             _jsPlumb.makeSource(el, portParameters);
+                            var newDropCount = el._katavorioDrop ? el._katavorioDrop.length : 0;
+                            if (newDropCount > curDropCount) {
+                                sourceDropHandler = el._katavorioDrop[el._katavorioDrop.length - 1];
+                            }
                             el.childNodes[i].setAttribute("jtk-processed", true);
 
                             if (typeof Rotors != "undefined") {
@@ -9441,6 +9419,10 @@
                                         var newPortParams = _getPortParameters(portEl[0], node, nodeId);
                                         if (newPortParams.scope) {
                                             _jsPlumb.setSourceScope(el, newPortParams.scope, newPortParams.edgeType);
+
+                                            if (sourceDropHandler) {
+                                                sourceDropHandler.k.setDropScope(sourceDropHandler, newPortParams.scope);
+                                            }
                                         }
                                     }
                                 });
@@ -9459,6 +9441,10 @@
                             }
 
                             _jsPlumb.makeTarget(el, portParameters);
+                            // get the Katavorio Drop registration. if/when we change target scope below,
+                            // we only want to change this particular Drop instance.
+                            var dropHandler = el._katavorioDrop[el._katavorioDrop.length - 1];
+
                             // mark processed
                             el.childNodes[i].setAttribute("jtk-processed", true);
 
@@ -9469,7 +9455,8 @@
                                         // get port type and scope
                                         var newPortParams = _getPortParameters(portEl[0], node, nodeId);
                                         if (newPortParams.scope) {
-                                            _jsPlumb.setTargetScope(el, newPortParams.scope);
+                                            dropHandler.targetDef.def.scope = newPortParams.scope;
+                                            dropHandler.k.setDropScope(dropHandler, newPortParams.scope);
                                         }
                                     }
                                 });
@@ -9656,21 +9643,23 @@
 
         /**
          * Add the given Node to the posse with the given name
+         * @method addToPosse
          * @param {Element|String|Node} obj A DOM element representing a Node, or a Node id, or a Node.
          * @param {String} posse ID of the posse to add the Node to.
          * @param {Boolean} [active=true] If true (which is the default), the Node causes all other Nodes in the Posse
          * to be dragged. If false, this Node drags independently but is dragged whenever an _active_ member of the Posse
          * is dragged,
          */
-        this.addToPosse = function(obj, posse, active) {
+        this.addToPosse = function(obj, posse, active, unlessAlreadyMember, clearExisting) {
             jsPlumbToolkitUtil.each(obj, function(_obj) {
                 var info = _getObjectInfo(_obj);
-                if (info.el) _jsPlumb.addToPosse(info.el, posse, active);
+                if (info.el) _jsPlumb.addToPosse(info.el, posse, active, unlessAlreadyMember, clearExisting);
             });
         };
 
         /**
          * Remove the given Node from the given Posse.
+         * @method removeFromPosse
          * @param {Element|String|Node} obj A DOM element representing a Node, or a Node id, or a Node.
          * @param {String} posse ID of the posse from which to remove the Node from.
          */
@@ -9683,12 +9672,26 @@
 
         /**
          * Remove the given Node from all Posses to which it belongs.
+         * @method removeFromAllPosses
          * @param {Element|String|Node} obj A DOM element representing a Node, or a Node id, or a Node.
          */
         this.removeFromAllPosses = function(obj) {
             jsPlumbToolkitUtil.each(obj, function(_obj) {
                 var info = _getObjectInfo(_obj);
                 if (info.el) _jsPlumb.removeFromAllPosses(info.el);
+            });
+        };
+
+        /**
+         * Changes the participation state for the given Node in the Posse with the given ID.
+         * @param {Element|String|Node} obj A DOM element, node ID or Node to change state for.
+         * @param {String} posseId ID of the Posse to change element state for.
+         * @param {Boolean} active True to make active, false to make passive.
+         */
+        this.setPosseState = function(obj, posseId, active) {
+            jsPlumbToolkitUtil.each(obj, function(_obj) {
+                var info = _getObjectInfo(_obj);
+                if (info.el) _jsPlumb.setPosseState(info.el, posseId, active);
             });
         };
 
