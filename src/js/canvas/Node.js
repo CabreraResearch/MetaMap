@@ -30,8 +30,8 @@ class Node extends _CanvasBase {
                     tap: (obj) => {
                         this.canvas.clearSelection(obj)
                     },
-                    mouseenter: (obj) => {
-
+                    mouseover: (obj) => {
+                        this.canvas.rndrr.hideRDots();
                     },
                     contextmenu: (node, port, el, e) => {
                         if (node && node.el) {
