@@ -36,14 +36,14 @@ class Edge extends _CanvasBase {
             connector: {
                 parent: 'all',
                 connector:['StateMachine', {
-                    margin: 2,
+                    margin: 0.00001,
                     curviness:15
                 }]
             },
             relationship:{
                 cssClass:'edge-relationship ${id}',
                 parent: 'connector',
-                endpoint:'Blank',
+                endpoint: 'Blank', //[ [ 'Dot', { radius:2, cssClass:'grey' }], [ 'Dot', { radius:2, cssClass:'grey' }]],
                 overlays:[
                     [ 'PlainArrow', {
                         location:1,
