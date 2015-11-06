@@ -402,7 +402,7 @@
         if (executeNow) this.execute();
 
     };
-}).call(this);
+}).call(this);        
 
 
 ;(function() {
@@ -8183,7 +8183,7 @@
 
             var sourcePortTypeId = info.sourceEndpoint.getParameter("portType"),
                 sourcePortType = view.getPortDefinition(sourcePortTypeId),
-                edgeType = sourcePortType != null && sourcePortType.edgeType ? sourcePortType.edgeType : "default",
+                edgeType = sourcePortType != null && sourcePortType.edgeType ? sourcePortType.edgeType : info.sourceEndpoint.getParameter("edgeType") || "default",
                 sourceNodeId = info.sourceEndpoint.getParameter("nodeId"),
                 sourcePortId = info.sourceEndpoint.getParameter("portId"),
                 targetNodeId = info.targetEndpoint.getParameter("nodeId"),
@@ -9297,6 +9297,7 @@
             params.parameters = params.parameters || {};
             params.parameters.portId = portId;
             params.parameters.portType = portType;
+            params.parameters.edgeType = edgeType;
             params.parameters.scope = portScope;
             params.parameters.nodeId = nodeId;
 
