@@ -87,17 +87,9 @@ class Events extends _CanvasBase {
                 },
                 text:(el, node) => {
                     this.clickLogger('T', 'dblclick', el, node)
-                    var label = el.querySelector('.name')
-                    jsPlumbToolkit.Dialogs.show({
-                        id: 'dlgText',
-                        title: 'Enter label:',
-                        onOK: function (d) {
-                            this.canvas.jsToolkit.updateNode(node, { label:d.text })
-                        },
-                        data:{
-                            text:node.data.label
-                        }
-                    })
+
+                    //this.canvas.dialog.show(node)
+                    this.canvas.dialog.open(node)
                 }
             }
         }
@@ -155,20 +147,10 @@ class Events extends _CanvasBase {
             }
         })
 
-        // make the label editable via a dialog
         jsPlumb.on(label, 'dblclick', () => {
-            jsPlumbToolkit.Dialogs.show({
-                id: 'dlgText',
-                title: 'Enter label:',
-                onOK: (d) => {
-                    this.canvas.jsToolkit.updateNode(node, { label: d.text })
-                },
-                data: {
-                    text: node.data.label
-                }
-            })
+            //this.canvas.dialog.show(label, node)
+            this.canvas.dialog.open(label, node)
         })
-
     }
 
     getRenderEvents() {
