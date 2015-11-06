@@ -3,10 +3,10 @@ require('core-js')
 window.$ = window.jQuery = require('jquery')
 require('jquery-ui')
 require('bootstrap')
-window.riot = require('riot')
-window._ = require('lodash')
-window.Promise = require('bluebird')
 
+const riot = require('riot')
+const _ = require('lodash')
+const Promise = require('bluebird')
 const Auth0 = require('./js/app/auth0')
 const User = require('./js/app/user.js')
 const Router = require('./js/app/Router.js')
@@ -22,6 +22,14 @@ class MetaMap {
 
     constructor() {
         const that = this
+        Promise.config({
+            // Enable warnings.
+            warnings: false,
+            // Enable long stack traces.
+            longStackTraces: false,
+            // Enable cancellation.
+            cancellation: false
+        })
         Promise.onPossiblyUnhandledRejection(function (error) {
             that.error(error)
             return this
