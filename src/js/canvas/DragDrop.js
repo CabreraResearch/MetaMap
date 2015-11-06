@@ -6,6 +6,7 @@ const jsPlumb = window.jsPlumb;
 const Biltong = window.Biltong;  // Biltong are the underlying geometry functions that jsPlumb uses.
 const jsPlumbUtil = window.jsPlumbUtil;
 const _ = require('lodash')
+const $ = require('jquery')
 
 class DragDropHandler {
 
