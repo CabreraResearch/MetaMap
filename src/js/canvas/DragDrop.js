@@ -15,7 +15,7 @@ class DragDropHandler {
 			return {
 				filter:'.donotdrag',       // can't drag nodes by the color segments.
 				stop:(params) => {
-                    let layout = getRenderer().getLayout()
+/*                    let layout = getRenderer().getLayout()
                     if (params.el._metamapParent) {
 						let parentBounds = layout.getChildBounds(params.el._metamapParent.id),
 							r1 = {x:params.pos[0],y:params.pos[1], w:params.el.offsetWidth, h:params.el.offsetHeight},
@@ -70,7 +70,7 @@ class DragDropHandler {
                                 }
                             })
                         }
-                    }
+                    }*/
 
 					// when _any_ node stops dragging, run the layout again.
 					// this will cause child nodes to snap to their new parent, and also
@@ -106,14 +106,72 @@ class DragDropHandler {
 				});
 		    }
 		}
+		
+		function addAsChild(sourceNode, targetNode, event) {			
+			jsPlumbUtil.consume(event);			
+			
+			// remove from current parent, if exists
+			if (sourceNode.data.parentId) {
+				var sourceParent = toolkit.getNode(sourceNode.data.parentId);
+				_.remove(sourceParent.data.children, function(c) { return c === sourceNode.id; });
+				toolkit.updateNode(sourceParent)
+			}
+			
+			// add to new parent, change parent ref in child
+			targetNode.data.children = targetNode.data.children || [];
+			targetNode.data.children.push(sourceNode.id);
+			sourceNode.data.parentId = targetNode.id;
+			
+			// find new part size
+			var depth = canvas.getDepth(sourceNode)
+			var newSize = canvas.getPartSizeAtDepth(depth)
+			sourceNode.data.w = newSize;
+			sourceNode.data.h = newSize;
+			
+			// update target
+		    toolkit.updateNode(targetNode);
+			// and source and its children
+			updateNodeAndParts(sourceNode, toolkit);
+			
+			return true;
+		}
+		
+		function reorderChild(sourceNode, targetNode, event, dragEl, dropEl) {
+			jsPlumbUtil.consume(event);	
+			alert("reorder child!")
+			let targetIndex = targetNode.data.order || 0;
+					
+		}
 	
 		this.getDropOptions = function() {
 			return {
 				drop:(params) => {
-					var sourceInfo = toolkit.getObjectInfo(params.drag.el);
-					var targetInfo = toolkit.getObjectInfo(params.drop.el);
+					let sourceInfo = toolkit.getObjectInfo(params.drag.el),
+						targetInfo = toolkit.getObjectInfo(params.drop.el),
+						sourceParentId = sourceInfo.obj.data.parentId,
+						targetParentId = targetInfo.obj.data.parentId,
+						outcome = false;
+						
+					// if parent IDs are the same...(note '==' compare here; we dont want to get caught by a null vs undefined comparison on this one)
+					if (sourceParentId == targetParentId) {
+						if (sourceParentId == null) {
+							outcome = addAsChild(sourceInfo.obj, targetInfo.obj, params.e)
+						}
+						else {
+							outcome =reorderChild(sourceInfo.obj, targetInfo.obj, params.e, params.dragEl, params.dropEl)
+						}
+					}
+					else {
+						outcome = addAsChild(sourceInfo.obj, targetInfo.obj, params.e)
+					}
+					
+					if (outcome) {
+						getRenderer().refresh();
+					}
+					
+					return outcome;
 
-					if (sourceInfo.obj.data.parentId) {
+/*					if (sourceInfo.obj.data.parentId) {
 						jsPlumbUtil.consume(params.e);
 						var sourceParent = toolkit.getNode(sourceInfo.obj.data.parentId);
 						_.remove(sourceParent.data.children, function(c) { return c === sourceInfo.id; });
@@ -130,7 +188,13 @@ class DragDropHandler {
 						updateNodeAndParts(sourceInfo.obj, toolkit);
 
 						return true;
-					}
+					}*/
+				},
+				over:(params) => {
+					console.log("drag over", params)
+				},
+				out:(params) => {
+					console.log("drag out", params)
 				}
 			};
 		}
