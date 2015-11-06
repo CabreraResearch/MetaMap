@@ -1,6 +1,8 @@
 const jsPlumb = window.jsPlumb;
 const jsPlumbToolkit = window.jsPlumbToolkit;
+const $ = require('jquery')
 const _ = require('lodash')
+
 const CONSTANTS = require('../constants/constants')
 const Permissions = require('../app/Permissions')
 const Toolkit = require('./Toolkit')

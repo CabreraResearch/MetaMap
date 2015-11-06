@@ -1,4 +1,7 @@
 const jsPlumb = window.jsPlumb;
+const $ = require('jquery')
+const _ = require('lodash')
+
 const Node = require('./Node')
 const Edge = require('./Edge')
 const DragDropHandler = require('./DragDrop')

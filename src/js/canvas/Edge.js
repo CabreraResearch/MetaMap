@@ -1,5 +1,7 @@
 const jsPlumb = window.jsPlumb;
 const $ = require('jquery')
+const _ = require('lodash')
+
 const _CanvasBase = require('./_CanvasBase')
 
 class Edge extends _CanvasBase {

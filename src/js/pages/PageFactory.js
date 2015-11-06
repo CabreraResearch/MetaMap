@@ -5,6 +5,7 @@ const Actions = require('../actions/Action.js')
 const Metronic = require('../template/metronic')
 const Layout = require('../template/layout')
 const Demo = require('../template/demo')
+const _ = require('lodash')
 
 class PageFactory {
     constructor(eventer, metaFire) {

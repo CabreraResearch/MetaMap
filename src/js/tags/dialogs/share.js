@@ -1,5 +1,6 @@
 const riot = require('riot');
 const $ = require('jquery')
+const _ = require('lodash')
 require('typeahead.js')
 require('bootstrap-select')
 

@@ -2,6 +2,7 @@ const jsPlumb = window.jsPlumb
 const jsPlumbToolkit = window.jsPlumbToolkit;
 const _CanvasBase = require('./_CanvasBase')
 const $ = require('jquery')
+const _ = require('lodash')
 
 class Events extends _CanvasBase {
 

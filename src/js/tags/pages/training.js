@@ -1,4 +1,6 @@
 const riot = require('riot')
+const _ = require('lodash')
+
 const VideoPlayer = require('../../tools/VideoPlayer')
 const AllTags = require('../mixins/all-tags')
 const CONSTANTS = require('../../constants/constants')

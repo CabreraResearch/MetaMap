@@ -117,6 +117,10 @@
     fill: #93C63D;
 }
 
+.grey {
+    fill:#B3C2C7;
+}
+
 /* styles for edges */
 
 .edge-perspective path {

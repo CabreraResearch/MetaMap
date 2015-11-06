@@ -1,9 +1,12 @@
 const riot = require('riot')
+const $ = require('jquery')
+const _ = require('lodash')
+
 const AllTags = require('../mixins/all-tags')
 const CONSTANTS = require('../../constants/constants')
-const $ = require('jquery')
 const jsPsych = require('../../../vendor/jspsych/jspsych')
 require('../../../vendor/jspsych/jspsych-survey-likert')
+
 
 const html = `
 <div if="{ true != archived }" class="portlet-body">

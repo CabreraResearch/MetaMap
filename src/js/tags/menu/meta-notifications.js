@@ -2,6 +2,7 @@ const riot = require('riot');
 const $ = require('jquery')
 require('bootstrap-hover-dropdown')
 const moment = require('moment')
+const _ = require('lodash')
 
 const CONSTANTS = require('../../constants/constants')
 require('../../tools/shims')

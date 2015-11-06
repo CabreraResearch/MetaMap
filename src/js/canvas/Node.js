@@ -1,4 +1,6 @@
 const _CanvasBase = require('./_CanvasBase')
+const $ = require('jquery')
+const _ = require('lodash')
 
 class Node extends _CanvasBase {
 
