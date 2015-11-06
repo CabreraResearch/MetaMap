@@ -18,6 +18,24 @@ class Canvas {
         this.opts = opts
         this._init(opts)
         this.config = this.metaMap.config.metamap.canvas
+		
+		/**
+		* 
+		*/
+		this.getPartSizeAtDepth = function(depth) {   
+			var s = this.nodeSize, ps = this.partSize;
+			for (var i = 1; i <= depth; i++) {  
+				s *= ps;
+			}
+			return s;
+		};
+	
+		this.getDepth = function(node, d = 0) {
+			if (node.data.parentId == null) return d;
+			else {
+				return this.getDepth(this.jsToolkit.getNode(node.data.parentId), ++d);
+			}    
+		};
 
         jsPlumbToolkit.ready(() => {
 
