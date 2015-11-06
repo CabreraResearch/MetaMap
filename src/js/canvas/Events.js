@@ -272,10 +272,10 @@ class Events extends _CanvasBase {
             var selected = toolkit.getSelection();
             switch (event.keyCode) {
                 case 8:
-                    if(selected) {
+                    if(event.target.nodeName.toLowerCase() != 'textarea' && event.target.nodeName.toLowerCase() != 'input' && selected) {
                         event.preventDefault()
+                        this.canvas.deleteAll(selected)
                     }
-                    this.canvas.deleteAll(selected);
                     break
                 case 17:
                     selected.eachNode((i, node) => {
@@ -318,7 +318,9 @@ class Events extends _CanvasBase {
             } else {
                 switch (event.keyCode) {
                     case 8:
-                        event.preventDefault()
+                        if (event.target.nodeName.toLowerCase() != 'textarea' && event.target.nodeName.toLowerCase() != 'input') {
+                            event.preventDefault()
+                        }
                         break;
                     case 46:
                         var selected = toolkit.getSelection();
