@@ -202,14 +202,21 @@ class Events extends _CanvasBase {
 
             },
             relayout: ()=> {
-                let that = this
-                $('.edge-relationship').off('mouseleave')
-                $('.edge-relationship').off('mouseenter')
 
-                $('.ideaNode').on('mouseenter', (event) => {
-                    this.canvas.rndrr.hideRDots();
-                });
+                // this has all been moved now. the node stuff is in Node.js, in the
+                // mouseover event. The edge is also mouseover, in Edge.js, for the relationship
+                // edge type.
 
+                //let that = this
+                //$('.edge-relationship').off('mouseleave')
+                //$('.edge-relationship').off('mouseenter')
+
+
+                //$('.ideaNode').on('mouseenter', (event) => {
+                //    this.canvas.rndrr.hideRDots();
+                //});
+
+				/* The Mouseover event is what you want to register on an edge. That is done now, in Edge.js
                 $('.edge-relationship').on('mouseenter', function (event) {
                     that.canvas.rndrr.hideRDots();
                     let className = $(this).attr('class')
@@ -219,36 +226,8 @@ class Events extends _CanvasBase {
                         that.canvas.rndrr.showRDot(id, { edge: edge })
                     }
                 })
-            }/*,
-            nodeDropped:(params)=> {
-                let target = params.target
-                let source = params.source
-                let sourceId = params.source.data.id
-                let targetId = params.target.data.id
-
-                //If the source was previously a child of any parent, disassociate
-                if (source.data.parent) {
-                    let oldParent = this.canvas.jsToolkit.getNode(source.data.parent)
-                    if (oldParent) {
-                        oldParent.data.children = _.remove(oldParent.data.children, (id) => { return id == sourceId })
-                        this.canvas.jsToolkit.updateNode(oldParent)
-                    }
-                }
-
-                //Assign the source to the new parent
-                target.data.children = target.data.children || []
-                target.data.children.push(source.data.id)
-                this.canvas.jsToolkit.updateNode(target)
-
-                //Update the source
-                source.data.parent = targetId
-                source.data.h = target.data.h * this.canvas.partSize
-                source.data.w = target.data.w * this.canvas.partSize
-                source.data.order = target.children.length
-                this.canvas.jsToolkit.updateNode(source)
-
-                this.canvas.jsRenderer.refresh()
-            }*/
+				*/
+            }
         }
     }
 
