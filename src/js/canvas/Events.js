@@ -198,9 +198,26 @@ class Events extends _CanvasBase {
                 }
                 return obj
             },
+            onComplete: () => {
+
+            },
             relayout: ()=> {
-                $('.edge-relationship').on('hover', function (event) {
-                    debugger
+                let that = this
+                $('.edge-relationship').off('mouseleave')
+                $('.edge-relationship').off('mouseenter')
+
+                $('.ideaNode').on('mouseenter', (event) => {
+                    this.canvas.rndrr.hideRDots();
+                });
+
+                $('.edge-relationship').on('mouseenter', function (event) {
+                    that.canvas.rndrr.hideRDots();
+                    let className = $(this).attr('class')
+                    let id = _.last(className.split(' '))
+                    let edge = that.jsToolkit.getEdge(id)
+                    if (edge) {
+                        that.canvas.rndrr.showRDot(id, { edge: edge })
+                    }
                 })
             }/*,
             nodeDropped:(params)=> {

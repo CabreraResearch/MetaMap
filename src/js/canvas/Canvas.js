@@ -110,11 +110,11 @@ class Canvas {
                 type: 'json',
                 data: this.map.data
             })
-            // let state = localStorage.getItem(`jtk-state-metaMapCanvas_${this.mapId || this.mapName}`)
-            // renderer.State.restore(state)
-            // toolkit.eachEdge((i,e) => {
-            //     //console.log(e)
-            // })
+            let state = localStorage.getItem(`jtk-state-metaMapCanvas_${this.mapId || this.mapName}`)
+            renderer.State.restore(state)
+            toolkit.eachEdge((i,e) => {
+                //console.log(e)
+            })
         }
     }
 
@@ -174,7 +174,7 @@ class Canvas {
         const toolkit = this.jsToolkit
 
         const deleteRThing = (child) => {
-            if (child.data.rthing && child.data.rthing.edgeId) {
+            if (child && child.data && child.data.rthing && child.data.rthing.edgeId) {
                 let edge = toolkit.getEdge(child.data.rthing.edgeId)
                 edge.data.rthing = null
                 toolkit.updateEdge(edge)
@@ -182,7 +182,7 @@ class Canvas {
         }
 
         const recurse = (node) => {
-            if(node && node.data.children) {
+            if(node && node.data && node.data.children) {
                 _.each(node.data.children, (id, i) => {
                     let child = toolkit.getNode(id)
                     recurse(child)
@@ -193,19 +193,23 @@ class Canvas {
             toolkit.removeNode(node)
         }
 
-        selected.eachEdge(function(i,edge) {
-            //Delete any r-things that are associated with the edges to be deleted
-            if (edge.rthing && edge.rthing.nodeId) {
-                let child = toolkit.getNode(edge.rthing.nodeId)
-                recurse(child)
-            }
-        });
+        try {
+            selected.eachEdge(function (i, edge) {
+                //Delete any r-things that are associated with the edges to be deleted
+                if (edge && edge.data && edge.data.rthing && edge.data.rthing.nodeId) {
+                    let child = toolkit.getNode(edge.data.rthing.nodeId)
+                    recurse(child)
+                }
+            });
 
-        //Recurse over all children
-        selected.eachNode((i,n) => {
-            recurse(n)
-        });
-        toolkit.remove(selected)
+            //Recurse over all children
+            selected.eachNode((i, n) => {
+                recurse(n)
+            });
+            toolkit.remove(selected)
+        } catch (e) {
+            this.metaMap.error(e)
+        }
     }
 
     get partSize() {

@@ -30,7 +30,7 @@ class Renderer extends _CanvasBase {
             enablePanButtons: false,
             consumeRightClick: false,
             saveStateOnExit:true,              // setting these has no effect; investigate later
-            saveStateOnDrag:true,              // 
+            saveStateOnDrag:true,              //
             stateHandle: 'metaMapCanvas_' + (canvas.mapId || canvas.mapName),
             saveState: function (...o) {
                 debugger
@@ -59,6 +59,10 @@ class Renderer extends _CanvasBase {
 
         this.node.update()
         this.edge.update()
+    }
+
+    showRDot(id, obj) {
+        this.edge.showRDot(id, obj)
     }
 
     hideRDots() {

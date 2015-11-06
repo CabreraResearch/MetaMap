@@ -36,14 +36,14 @@ class Edge extends _CanvasBase {
             connector: {
                 parent: 'all',
                 connector:['StateMachine', {
-                    margin: 1.01,
+                    margin: 0.00001,
                     curviness:15
                 }]
             },
             relationship:{
-                cssClass:'edge-relationship',
+                cssClass:'edge-relationship ${id}',
                 parent: 'connector',
-                endpoint:'Blank',
+                endpoint: 'Blank', //[ [ 'Dot', { radius:2, cssClass:'grey' }], [ 'Dot', { radius:2, cssClass:'grey' }]],
                 overlays:[
                     [ 'PlainArrow', {
                         location:1,
@@ -53,9 +53,9 @@ class Edge extends _CanvasBase {
                     }],
                     ['Custom', {
                         create: (component) => {
-                            let ret = null
+                            let ret = $(`<div data-class="relationship-rthing" style="display: none; background: #B3C2C7; border-radius: 50%; visibility: hidden;"></div>`)
                             let data = component.getData()
-                            if (!data.nodeId) {
+                            if (!data.nodeId && component.edge) {
                                 const id = `${component.edge.data.id}_rthing`
                                 this.relationshipOverlays.push(id)
 
@@ -83,11 +83,7 @@ class Edge extends _CanvasBase {
                             this.toggleRDirection(obj.e, obj.edge, obj.connection)
                             this.canvas.updateData(obj)
                         }
-
-                        if (!obj.edge.data.rthing || !obj.edge.data.rthing.nodeId) {
-                            this.showRDot(obj.edge.data.id, obj)
-                        }
-
+                        this.showRDot(obj.edge.data.id, obj)
                         return true
                     }
                 }
@@ -181,14 +177,16 @@ class Edge extends _CanvasBase {
         //The custom overlays are not nested within the structure of the edge;
         //rather, they're popped to the end of the canvas and positioned absolute
         //so, standard CSS hover tricks won't work to show/hide this thing
-        $('#' + id + '_rthing')
-            .css('display', 'block')
-            .css('background', '')
-            .css('visibility', 'initial')
-            .addClass('relationship-rthing')
-            .on('dblclick', () => {
-                this.createRThing(obj)
-            })
+        if (id && (!obj.edge.data.rthing || !obj.edge.data.rthing.nodeId)) {
+            $('#' + id + '_rthing')
+                .css('display', 'block')
+                .css('background', '')
+                .css('visibility', 'initial')
+                .addClass('relationship-rthing')
+                .on('dblclick', () => {
+                    this.createRThing(obj)
+                })
+        }
     }
 
     hideRDots() {
