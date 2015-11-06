@@ -402,7 +402,7 @@
         if (executeNow) this.execute();
 
     };
-}).call(this);        
+}).call(this);
 
 
 ;(function() {
@@ -6926,7 +6926,7 @@
 
                     self.end && self.end(_jsPlumbToolkit, parameters);
 
-                    onComplete();
+                    onComplete && onComplete();
                 });
             };
 
