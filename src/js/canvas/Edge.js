@@ -17,39 +17,47 @@ class Edge extends _CanvasBase {
         return {
             all: {
                 events: {
-                    mouseenter: (e) => {
-                        window.alert(`It's a LIE! This event is not implemented!`)
+                    mouseover: (e) => {
+                        console.log("You were right; it's mouseover, not mouseenter.")
                     },
-                    mouseleave: (e) => {
-                        window.alert(`It's a LIE! This event is not implemented!`)
+                    mouseout: (e) => {
+                        console.log("You were right; it's mouseout, not mouseleave.")
                     },
                     contextmenu: (node, port, el, e) => {
                         console.log('context click on edge')
                     }
                 }
             },
-            default:{
+            "default": {
                 parent: 'all',
-                anchors:['Continuous','Continuous'],
-
+                anchors: ['Continuous', 'Continuous']
             },
             connector: {
                 parent: 'all',
-                connector:['StateMachine', {
+                connector: ['StateMachine', {
                     margin: 0.00001,
-                    curviness:15
+                    curviness: 15
                 }]
             },
-            relationship:{
-                cssClass:'edge-relationship ${id}',
+            relationship: {
+                cssClass: 'edge-relationship ${id}',
                 parent: 'connector',
                 endpoint: 'Blank', //[ [ 'Dot', { radius:2, cssClass:'grey' }], [ 'Dot', { radius:2, cssClass:'grey' }]],
-                overlays:[
+                overlays: [
                     [ 'PlainArrow', {
-                        location:1,
-                        width:0+'${leftSize}', //it took an age to figure out how to make this work. The `0+` part is what did it in the end (otherwise the overlays would always appear)
-                        length:0+'${leftSize}',
-                        cssClass: 'relationship-overlay'
+                        location: 1,
+                        id: "leftArrow",
+                        width: '${leftSize}', //it took an age to figure out how to make this work. The `0+` part is what did it in the end (otherwise the overlays would always appear)
+                        length: '${leftSize}',
+                        qwidth: 10,
+                        qheight: 10,
+                        cssClass: 'relationship-overlay',
+                        visible: "${direction == 1}",
+                        events: {
+                            click: function () {
+                                alert("you clicked an arrow")
+                            }
+                        }
                     }],
                     ['Custom', {
                         create: (component) => {
@@ -60,18 +68,30 @@ class Edge extends _CanvasBase {
                                 this.relationshipOverlays.push(id)
 
                                 //Unfortunately, any classes supplied here will be stripped out; so hard code the styles needed and massage them later
-                                ret = $(`<div id="${id}" data-class="relationship-rthing" style="display: none; background: #B3C2C7; border-radius: 50%; visibility: hidden;"></div>`)
+                                //ret = $(`<div id="${id}" data-class="relationship-rthing" style="display: none; background: #B3C2C7; border-radius: 50%; visibility: hidden;"></div>`)
+
+                                ret = $(`<div id="${id}" data-class="relationship-rthing" style="background: #B3C2C7; border-radius: 50%; "></div>`)
                             }
                             return ret
                         },
-                        location:0.5,
-                        id:"customOverlay"
+                        location: 0.5,
+                        id: "customOverlay",
+                        events: {
+                            tap: function () {
+                                alert("hey");
+                            },
+                            dblclick: function (params) {
+                                console.log("dblclick on RDOT overlay")
+                            }
+                        }
                     }],
                     [ 'PlainArrow', {
-                        location:0,
-                        width:0+'${rightSize}',
-                        length:0+'${rightSize}',
+                        location: 0,
+                        id: "rightArrow",
+                        width: '${rightSize}',
+                        length: '${rightSize}',
                         cssClass: 'relationship-overlay',
+                        visible: "${direction == -1}",
                         direction: -1
                     } ]
                 ],
@@ -83,14 +103,18 @@ class Edge extends _CanvasBase {
                             this.toggleRDirection(obj.e, obj.edge, obj.connection)
                             this.canvas.updateData(obj)
                         }
-                        this.showRDot(obj.edge.data.id, obj)
+                        this.showRDot(obj.connection)
                         return true
+                    },
+                    mouseover: (params) => {
+                        this.hideRDots();
+                        this.showRDot(params.connection)
                     }
                 }
             },
-            perspective:{
-                cssClass:'edge-perspective',
-                endpoints:[ 'Blank', [ 'Dot', { radius:5, cssClass:'orange' }]],
+            perspective: {
+                cssClass: 'edge-perspective',
+                endpoints: [ 'Blank', [ 'Dot', { radius: 5, cssClass: 'orange' }]],
                 parent: 'connector',
                 events: {
                     tap: (obj) => {
@@ -172,29 +196,21 @@ class Edge extends _CanvasBase {
         console.log('changed direction to ' + newDirection + ' the arrow should have updated in the UI')
     }
 
-    showRDot(id, obj) {
-        //Something of a kludge here.
-        //The custom overlays are not nested within the structure of the edge;
-        //rather, they're popped to the end of the canvas and positioned absolute
-        //so, standard CSS hover tricks won't work to show/hide this thing
-        if (id && (!obj.edge.data.rthing || !obj.edge.data.rthing.nodeId)) {
-            $('#' + id + '_rthing')
-                .css('display', 'block')
-                .css('background', '')
-                .css('visibility', 'initial')
-                .addClass('relationship-rthing')
-                .on('dblclick', () => {
-                    this.createRThing(obj)
-                })
-        }
+    showRDot(connection) {
+        connection.getOverlay("customOverlay").show()
     }
 
     hideRDots() {
-        $('.relationship-rthing')
-            .css('display', 'none')
-            .css('visibility', 'hidden')
-            .removeClass('relationship-rthing')
-            .off('dblclick')
+        /*$('.relationship-rthing')
+         .css('display', 'none')
+         .css('visibility', 'hidden')
+         .removeClass('relationship-rthing')
+         .off('dblclick')*/
+        console.log("hide RDOTS; disabled temporarily by Simon")
+    }
+
+    hideRDot(connection) {
+        connection.getOverlay("customOverlay").hide()
     }
 
     createRThing(obj) {
@@ -204,8 +220,8 @@ class Edge extends _CanvasBase {
         let d = {
             w: size,
             h: size,
-            left: dot.position().left - (size/2),
-            top: dot.position().top - (size/2)
+            left: dot.position().left - (size / 2),
+            top: dot.position().top - (size / 2)
         }
 
         let nodeData = jsPlumb.extend(this.canvas.node.getNewNode({ type: 'r-thing', cssClass: 'donotdrag'}), d)
