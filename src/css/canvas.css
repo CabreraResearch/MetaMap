@@ -36,10 +36,6 @@
     fill: #000;
 }
 
-.jtk-surface-selected-connection {
-    fill: #000;
-}
-
 /* styles for the idea node. */
 
 .perspective_closed {
@@ -128,6 +124,11 @@
     stroke-width:4;
 }
 
+.jtk-surface-selected-connection.edge-perspective {
+    stroke:#F74A00;
+    stroke-width:6;
+}
+
 .edge-perspective:hover path {
     stroke:#F74A00;
     stroke-width:6;
@@ -138,7 +139,7 @@
     stroke-width:4;
 }
 
-.edge-relationship-selected path {
+.jtk-surface-selected-connection.edge-relationship path {
     stroke:#4CBFC2;
     stroke-width:6;
 }
