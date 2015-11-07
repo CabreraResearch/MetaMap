@@ -19,7 +19,12 @@ class Node extends _CanvasBase {
             type: 'idea',
             children: [],
             labelPosition: [],
-            cssClass: ''
+            cssClass: '',
+            perspective: {
+                has: false,
+                count: 0,
+                class: 'closed'
+            }
         }
         _.extend(ret, opts)
         return ret
