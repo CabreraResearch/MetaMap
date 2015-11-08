@@ -34,8 +34,9 @@ class Router {
             let loc = window.location.href.split('?').join('')
             window.location.href = loc
         }
-        let page = this.currentPage.split('/')
-        this.route(`!${page[0]}`, page[1], page[2])
+        let args = this.currentPage.split('/')
+        args[0] = `!${args[0]}`
+        this.route.apply(this, args)
     }
 
     get currentPage() {
@@ -91,7 +92,10 @@ class Router {
     to(path) {
         path = this.getPath(path);
         if (path) {
-            riot.route(`!${path}`)
+            let args = path.split('/')
+            args[0] = `!${args[0]}`
+            riot.route(path)
+            this.route.apply(this, args)
         }
     }
 

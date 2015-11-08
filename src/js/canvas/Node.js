@@ -22,8 +22,8 @@ class Node extends _CanvasBase {
             cssClass: '',
             perspective: {
                 has: false,
-                count: 0,
-                class: 'closed'
+                edges: [],
+                class: 'none'
             }
         }
         _.extend(ret, opts)
