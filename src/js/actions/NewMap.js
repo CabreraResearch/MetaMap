@@ -1,5 +1,6 @@
 const ActionBase = require('./ActionBase.js');
 const CONSTANTS = require('../constants/constants');
+const _ = require('lodash')
 
 class NewMap extends ActionBase {
     constructor(...params) {
