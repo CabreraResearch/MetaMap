@@ -99,6 +99,7 @@
     "gulp-notify": "2.2.0",
     "gulp-rename": "^1.2.2",
     "gulp-replace": "^0.5.4",
+    "gulp-rev-append": "^0.1.6",
     "gulp-rework": "^1.0.3",
     "gulp-sourcemaps": "^1.6.0",
     "gulp-util": "^3.0.7",
