@@ -4,7 +4,7 @@ var rev = require('gulp-rev-append')
 var rename = require("gulp-rename")
 
 gulp.task('cacheBust', function () {
-    gulp.src('**/_*.html')
+    return gulp.src('**/_*.html')
         .pipe(rev())
         .pipe(rename(function (path) {
             path.basename = path.basename.slice(1)
