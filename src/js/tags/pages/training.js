@@ -84,7 +84,7 @@ module.exports = riot.tag(CONSTANTS.TAGS.TRAINING, html, function(opts) {
             this.guaranteeStep()
             this.update()
             this.correctHeight()
-            this.step = riot.mount(this.training_next_step, CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO, o)[0]
+            this.step = riot.mount(this.training_next_step, CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO)[0]
             this.step.update(o)
         }
     }
@@ -107,27 +107,27 @@ module.exports = riot.tag(CONSTANTS.TAGS.TRAINING, html, function(opts) {
                 let o = { message: message, cortex: this.cortex }
                 switch (message.action) {
                     case CONSTANTS.CORTEX.RESPONSE_TYPE.LIKERT:
-                        this.step = riot.mount(this.training_next_step, CONSTANTS.CORTEX.RESPONSE_TYPE.LIKERT, o)[0]
+                        this.step = riot.mount(this.training_next_step, CONSTANTS.CORTEX.RESPONSE_TYPE.LIKERT)[0]
                         break
                     case CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO:
                         buildVideo(o)
                         break
                     case CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS:
-                        this.step = riot.mount(this.training_next_step, CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS, o)[0]
+                        this.step = riot.mount(this.training_next_step, CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS)[0]
                         break
                     case CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS_CONTINUOUS:
                         if (!this.step) {
-                            this.step = riot.mount(this.training_next_step, CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS, o)[0]
+                            this.step = riot.mount(this.training_next_step, CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS)[0]
                         }
                         break
                     case CONSTANTS.CORTEX.RESPONSE_TYPE.MULTIPLE_CHOICE:
-                        this.step = riot.mount(this.training_next_step, CONSTANTS.CORTEX.RESPONSE_TYPE.MULTIPLE_CHOICE, o)[0]
+                        this.step = riot.mount(this.training_next_step, CONSTANTS.CORTEX.RESPONSE_TYPE.MULTIPLE_CHOICE)[0]
                         break
                     case CONSTANTS.CORTEX.RESPONSE_TYPE.SHORT_ANSWER:
-                        this.step = riot.mount(this.training_next_step, CONSTANTS.CORTEX.RESPONSE_TYPE.SHORT_ANSWER, o)[0]
+                        this.step = riot.mount(this.training_next_step, CONSTANTS.CORTEX.RESPONSE_TYPE.SHORT_ANSWER)[0]
                         break
                     default:
-                        this.step = riot.mount(this.training_next_step, CONSTANTS.CORTEX.RESPONSE_TYPE.DEFAULT, o)[0]
+                        this.step = riot.mount(this.training_next_step, CONSTANTS.CORTEX.RESPONSE_TYPE.DEFAULT)[0]
                         break
                 }
                 if (this.step) {
