@@ -19,3 +19,5 @@ typings/
 dist/
 report/
 src/vendor/cdn/
+dev.html
+index.html
