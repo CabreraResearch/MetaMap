@@ -109,7 +109,7 @@ class Edge extends _CanvasBase {
                                     isSelected = true
                                 }
                             })
-                            //if the selected edge is this edge, this is the 2nd click
+                            //if the selected edge is this edge, this is the 2nd (or greater) click
                             if (isSelected) {
                                 this.toggleRDirection(obj.e, obj.edge, obj.connection)
                                 this.canvas.updateData(obj)
