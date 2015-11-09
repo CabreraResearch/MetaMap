@@ -2,6 +2,7 @@ const jsPlumb = window.jsPlumb
 const jsPlumbToolkit = window.jsPlumbToolkit;
 const _CanvasBase = require('./_CanvasBase')
 const $ = require('jquery')
+const _ = require('lodash')
 
 class Events extends _CanvasBase {
 
@@ -12,7 +13,7 @@ class Events extends _CanvasBase {
     }
 
     get _types() {
-        this.__types = this.__types || [ ['red', 'D'], ['orange', 'P'], ['green', 'S'], ['blue','R'], ['text'] ]
+        this.__types = this.__types || [ ['red', 'D'], ['orange', 'P'], ['green', 'S'], ['blue','R'], ['eye_closed'], ['eye_open'] ]
         return this.__types
     }
 
@@ -25,20 +26,23 @@ class Events extends _CanvasBase {
         //
         this.__clickHandlers = this.__clickHandlers || {
             click:{
-                red:(el, node) => {
-                    this.clickLogger('R', 'click', el, node)
+                eye_closed: (el, node) => {
+                    this.clickLogger('eye closed', 'click', el, node)
+                    if (node.data.perspective.has) {
+                        node.data.perspective.class = 'open'
+                        this.canvas.updateData({ node: node })
+                        let sel = this.jsToolkit.select(node.data.perspective.edges)
+                        this.jsRenderer.setVisible(sel, true)
+                    }
                 },
-                green:(el, node) => {
-                    this.clickLogger('G', 'click', el, node)
-                },
-                orange:(el, node) => {
-                    this.clickLogger('O', 'click', el, node)
-                },
-                blue:(el, node) => {
-                    this.clickLogger('B', 'click', el, node)
-                },
-                text:(el, node) => {
-                    this.clickLogger('T', 'click', el, node)
+                eye_open: (el, node) => {
+                    this.clickLogger('eye open', 'click', el, node)
+                    if (node.data.perspective.has) {
+                        node.data.perspective.class = 'closed'
+                        this.canvas.updateData({ node: node })
+                        let sel = this.jsToolkit.select(node.data.perspective.edges)
+                        this.jsRenderer.setVisible(sel, true)
+                    }
                 }
             },
             dblclick:{
@@ -83,20 +87,6 @@ class Events extends _CanvasBase {
                         leftSize: 0,
                         rightSize: 0
                     }})
-                },
-                text:(el, node) => {
-                    this.clickLogger('T', 'dblclick', el, node)
-                    var label = el.querySelector('.name')
-                    jsPlumbToolkit.Dialogs.show({
-                        id: 'dlgText',
-                        title: 'Enter label:',
-                        onOK: function (d) {
-                            this.canvas.jsToolkit.updateNode(node, { label:d.text })
-                        },
-                        data:{
-                            text:node.data.label
-                        }
-                    })
                 }
             }
         }
@@ -113,23 +103,21 @@ class Events extends _CanvasBase {
 
     _curryHandler(el, array, node) {
         let segment = array[0]
-        let letter = array[1]
-        let _el = el.querySelector('.' + segment)
-        jsPlumb.on(_el, 'click', () => {
-            this._clickHandlers['click'][segment](el, node)
-        })
-        jsPlumb.on(_el, 'dblclick', () => {
-            this._clickHandlers['dblclick'][segment](el, node)
-        })
-        if (letter) {
-            let _el = el.querySelector('.' + letter)
+
+        //Using an array allows multiple, separate objects to be bound to the same segment logic
+        _.each(array, (selector) => {
+            let _el = el.querySelector('.' + selector)
             jsPlumb.on(_el, 'click', () => {
-                this._clickHandlers['click'][segment](el, node)
+                if(this._clickHandlers['click'][segment]) {
+                    this._clickHandlers['click'][segment](el, node)
+                }
             })
             jsPlumb.on(_el, 'dblclick', () => {
-                this._clickHandlers['dblclick'][segment](el, node)
+                if (this._clickHandlers['dblclick'][segment]) {
+                    this._clickHandlers['dblclick'][segment](el, node)
+                }
             })
-        }
+        })
     }
 
     registerHandlers(params) {
@@ -154,20 +142,10 @@ class Events extends _CanvasBase {
             }
         })
 
-        // make the label editable via a dialog
         jsPlumb.on(label, 'dblclick', () => {
-            jsPlumbToolkit.Dialogs.show({
-                id: 'dlgText',
-                title: 'Enter label:',
-                onOK: (d) => {
-                    this.canvas.jsToolkit.updateNode(node, { label: d.text })
-                },
-                data: {
-                    text: node.data.label
-                }
-            })
+            //this.canvas.dialog.show(label, node)
+            this.canvas.dialog.open(label, node)
         })
-
     }
 
     getRenderEvents() {
@@ -189,12 +167,11 @@ class Events extends _CanvasBase {
             },
             nodeAdded: (params) => { this.registerHandlers(params) }, // see below
             edgeAdded: (obj)=> {
-                if(!obj.edge.data.direction) {
-                    obj.edge.data.direction = 'none'
-                    obj.edge.data.leftSize = 0
-                    obj.edge.data.rightSize = 0
-                    this.jsToolkit.updateEdge(obj.edge)
-                    this.jsRenderer.repaint()
+                if (obj.edge.data.type == 'perspective') {
+                    if (!_.contains(obj.edge.source.data.perspective.edges, obj.edge.data.id)) {
+                        obj.edge.source.data.perspective.edges.push(obj.edge.data.id)
+                        this.canvas.updateData({ node: obj.edge.source })
+                    }
                 }
                 return obj
             },
@@ -251,10 +228,10 @@ class Events extends _CanvasBase {
             var selected = toolkit.getSelection();
             switch (event.keyCode) {
                 case 8:
-                    if(selected) {
+                    if(event.target.nodeName.toLowerCase() != 'textarea' && event.target.nodeName.toLowerCase() != 'input' && selected) {
                         event.preventDefault()
+                        this.canvas.deleteAll(selected)
                     }
-                    this.canvas.deleteAll(selected);
                     break
                 case 17:
                     selected.eachNode((i, node) => {
@@ -297,7 +274,9 @@ class Events extends _CanvasBase {
             } else {
                 switch (event.keyCode) {
                     case 8:
-                        event.preventDefault()
+                        if (event.target.nodeName.toLowerCase() != 'textarea' && event.target.nodeName.toLowerCase() != 'input') {
+                            event.preventDefault()
+                        }
                         break;
                     case 46:
                         var selected = toolkit.getSelection();

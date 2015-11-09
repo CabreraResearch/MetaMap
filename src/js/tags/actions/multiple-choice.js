@@ -1,29 +1,39 @@
 const riot = require('riot')
+const $ = require('jquery')
+const _ = require('lodash')
+
 const AllTags = require('../mixins/all-tags')
 const CONSTANTS = require('../../constants/constants')
-const $ = require('jquery')
 const slickQuiz = require('../../../vendor/slickquiz/slickQuiz')
 
 const html = `
 <div class="portlet-body">
     <div if="{ true != archived }" style="text-align: center;">
-        <img id="multiple_choice_image" style="display: none;" src="{image}"></img>
-        <div class="" id="training_multiple_choice">
-            <h1 class="quizName"><!-- where the quiz name goes --></h1>
-
-            <div class="quizArea">
-                <div class="quizHeader">
-                    <a class="button startQuiz">Get Started!</a>
-                </div>
+        <div class="row">
+            <div class="col-md-12">
+                <img if="{image}" id="multiple_choice_image" class="img-responsive" alt="Responsive image" src="{image}"></img>
             </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="" id="training_multiple_choice">
+                    <h1 class="quizName"><!-- where the quiz name goes --></h1>
 
-            <div class="quizResults" style="display: none;">
-                <h3 class="quizScore">You Scored: <span><!-- where the quiz score goes --></span></h3>
+                    <div class="quizArea">
+                        <div class="quizHeader">
+                            <a class="button startQuiz">Get Started!</a>
+                        </div>
+                    </div>
 
-                <h3 class="quizLevel"><strong>Ranking:</strong> <span><!-- where the quiz ranking level goes --></span></h3>
+                    <div class="quizResults" style="display: none;">
+                        <h3 class="quizScore">You Scored: <span><!-- where the quiz score goes --></span></h3>
 
-                <div class="quizResultsCopy">
-                    <!-- where the quiz result copy goes -->
+                        <h3 class="quizLevel"><strong>Ranking:</strong> <span><!-- where the quiz ranking level goes --></span></h3>
+
+                        <div class="quizResultsCopy">
+                            <!-- where the quiz result copy goes -->
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -81,38 +91,42 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.MULTIPLE_CHOICE, html, 
                         nextQuestion: (o, answer, slick) => {
                             if (o.questionNo >= 0) {
                                 let q = this.questions[o.questionNo]
-                                if (q.picture) {
-                                    this.picture = q.picture
+                                if (q.image) {
+                                    this.image = q.image
                                     this.update()
                                 }
                             }
                         },
                         checkAnswer: (o, answer, slick) => {
                             let line = null
-                            if(o.isCorrect) {
-                                line = `Great! That's the correct answer!`
-                            }
                             if (o.questionNo >= 0) {
                                 let q = this.questions[o.questionNo]
-                                if (q.incorrectText) {
-                                    line = q.incorrectText
+
+                                if (o.isCorrect) {
+                                    line = q.correctText || `Great! That's the correct answer!`
                                 } else {
-                                    if (o.correctAnswers.length > 1) {
-                                        line = `I'm sorry, but the correct answers were <b>${o.correctAnswers.join(' and ') }</b>.`
+                                    if (q.incorrectText) {
+                                        line = q.incorrectText
                                     } else {
-                                        line = `I'm sorry, but the correct answer was <b>${o.correctAnswers[0] }</b>.`
+                                        if (o.correctAnswers.length > 1) {
+                                            line = `I'm sorry, but the correct answers were <b>${o.correctAnswers.join(' and ') }</b>.`
+                                        } else {
+                                            line = `I'm sorry, but the correct answer was <b>${o.correctAnswers[0]}</b>.`
+                                        }
                                     }
                                 }
-                            }
-                            let message = {
-                                message: o.selectedAnswer,
-                                feedback: line
-                            }
 
-                            this.cortex.processUserResponse({
-                                action: CONSTANTS.CORTEX.RESPONSE_TYPE.MULTIPLE_CHOICE_ANSWER,
-                                data: message
-                            })
+                                let message = {
+                                    message: o.selectedAnswer,
+                                    feedback: line,
+                                    answer: o
+                                }
+
+                                this.cortex.processUserResponse({
+                                    action: CONSTANTS.CORTEX.RESPONSE_TYPE.MULTIPLE_CHOICE_ANSWER,
+                                    data: message
+                                })
+                            }
                         }
                     },
                     events: {

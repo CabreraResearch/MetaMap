@@ -43,13 +43,38 @@
 }
 
 /* styles for the idea node. */
-
-.perspective_closed {
+.perspective_closed.eye_closed.none {
     opacity:0;
+    fill-opacity: 0;
+    display: none;
+    visibility: hidden;
 }
 
-.perspective_open {
+.perspective_closed.eye_closed.open {
     opacity:0;
+    fill-opacity: 0;
+    display: none;
+    visibility: hidden;
+}
+.perspective_closed.eye_closed.closed {
+    opacity:1;
+    fill-opacity: 1;
+}
+.perspective_open.eye_open.open {
+    opacity:1;
+    fill-opacity: 1;
+}
+.perspective_open.eye_open.closed {
+    opacity:0;
+    fill-opacity: 0;
+    display: none;
+    visibility: hidden;
+}
+.perspective_open.eye_open.none {
+    opacity:0;
+    fill-opacity: 0;
+    display: none;
+    visibility: hidden;
 }
 
 .paperclip {
@@ -121,6 +146,10 @@
 
 .green {
     fill: #93C63D;
+}
+
+.grey {
+    fill:#B3C2C7;
 }
 
 /* styles for edges */

@@ -1,4 +1,6 @@
 const _CanvasBase = require('./_CanvasBase')
+const $ = require('jquery')
+const _ = require('lodash')
 
 class Node extends _CanvasBase {
 
@@ -17,7 +19,12 @@ class Node extends _CanvasBase {
             type: 'idea',
             children: [],
             labelPosition: [],
-            cssClass: ''
+            cssClass: '',
+            perspective: {
+                has: false,
+                edges: [],
+                class: 'none'
+            }
         }
         _.extend(ret, opts)
         return ret

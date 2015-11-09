@@ -117,6 +117,8 @@ gulp.task('vendor2', function (cb) {
         });
 });
 
-gulp.task('vendor', ['vendor1', 'vendor2']);
+gulp.task('vendor-all', ['vendor1', 'vendor2']);
+
+gulp.task('vendor', ['vendor1', 'concatOthers']);
 
 

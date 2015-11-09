@@ -1,9 +1,12 @@
 const riot = require('riot')
+const $ = require('jquery')
+const _ = require('lodash')
+
 const AllTags = require('../mixins/all-tags')
 const CONSTANTS = require('../../constants/constants')
-const $ = require('jquery')
 const jsPsych = require('../../../vendor/jspsych/jspsych')
 require('../../../vendor/jspsych/jspsych-survey-likert')
+
 
 const html = `
 <div if="{ true != archived }" class="portlet-body">
@@ -386,7 +389,7 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.LIKERT, html, function(
 
                                 break
                         }
-                        this.question = this.question || [`Between ${this.range[0]} and ${this.range[this.range.length-1]}, how would you rate this?`]
+                        this.question = (this.question) ? [this.question] : [`Between ${this.range[0]} and ${this.range[this.range.length-1]}, how would you rate this?`]
                     } else {
                         this.range = []
                         for (let i = 0; i < this.data.action_data.length; i += 1) {
@@ -395,7 +398,7 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.LIKERT, html, function(
                         this.left = this.data.action_data.left
                         this.right = this.data.action_data.right
                         this.name = this.data.action_data.name
-                        this.question = this.question || [`On a scale of ${this.range[0]} to ${this.range.length}, where ${this.range[0]} is ${this.left} and ${this.range.length} is ${this.right}, how would you rate this?`]
+                        this.question = (this.question) ? [this.question] : [`On a scale of ${this.range[0]} to ${this.range.length}, where ${this.range[0]} is ${this.left} and ${this.range.length} is ${this.right}, how would you rate this?`]
                     }
 
                     var likert_block = {

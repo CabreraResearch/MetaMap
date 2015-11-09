@@ -11,6 +11,7 @@ gulp.task('default', ['compile']);
 gulp.task('compile', function (cb) {
     runSequence(
         'browserify-dev',
+        'cacheBust',
         function (error) {
             if (error) {
                 console.log(error.message);
@@ -32,6 +33,7 @@ gulp.task('compile-all', function (cb) {
         'vendor',
         'browserify',
         'css',
+        'cacheBust',
         function (error) {
             if (error) {
                 console.log(error.message);

@@ -6,32 +6,22 @@ var gulp = require('gulp');
 var handleErrors = require('../util/handleErrors');
 var source = require('vinyl-source-stream');
 var pkg = require('../../package.json');
-var riotify = require('riotify');
 var argv = require('yargs').argv;
-var transforms = [riotify];
+var babelify = require('babelify')
+var browserify_shim = require('browserify-shim')
 
 var config = function (app) {
     return {
         dev: {
             entries: './src/MetaMap.js',
-            export: {
-                glob: './src/tags/**/*.tag',
-                cwd: './src/tag'
-            },
             filename: 'MetaMap.js',
             dest: './dist',
-            transforms: transforms,
             debug: true,
             fullPaths: true
         },
         release: {
             entries: './src/MetaMap.js',
-            export: {
-                glob: './src/tags/**/*.tag',
-                cwd: './src/tags'
-            },
             filename: 'MetaMap.min.js',
-            transforms: transforms,
             debug: true,
             dest: './dist',
             fullPaths: false
@@ -55,7 +45,12 @@ var runbrowserify = function (name) {
         bundleExternal: false,
         standalone: standalone
     };
+
     var bundler = bundleMethod(bundleCfg);
+    bundler.transform(babelify.configure({
+        presets: ["es2015"]
+    }))
+    bundler.transform(browserify_shim)
 
     if(name != 'dev') {
         bundler.plugin('minifyify', {map: 'MetaMap.map.json', output: 'dist/MetaMap.map.json'});

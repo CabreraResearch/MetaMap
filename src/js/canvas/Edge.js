@@ -1,5 +1,7 @@
 const jsPlumb = window.jsPlumb;
 const $ = require('jquery')
+const _ = require('lodash')
+
 const _CanvasBase = require('./_CanvasBase')
 
 class Edge extends _CanvasBase {
@@ -35,7 +37,7 @@ class Edge extends _CanvasBase {
             connector: {
                 parent: 'all',
                 connector: ['StateMachine', {
-                    margin: 0.00001,
+                    margin: 0.00001, //This seems to be the most precision that has any effect. The Edge is as close as it's going to get.
                     curviness: 15
                 }]
             },

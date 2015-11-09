@@ -1,5 +1,6 @@
 const riot = require('riot')
 const CONSTANTS = require('../constants/constants');
+const _ = require('lodash')
 
 class Router {
     constructor(metaMap) {
@@ -10,26 +11,32 @@ class Router {
         this.isHidden = false;
     }
 
+    route(target, id, action, ...params) {
+        if (!target.startsWith('!')) {
+            this.route('!' + target, id, action, ...params)
+        } else {
+            this.path = this.getPath(target);
+
+            this.toggleMain(true, this.path);
+            this.PageFactory.navigate(this.path, id, action, ...params);
+
+            this.eventer.do('history', window.location.hash);
+        }
+    }
+
     init() {
         riot.route.start();
         riot.route((target, id = '', action = '', ...params) => {
-            if (!target.startsWith('!')) {
-                this.to('!' + target)
-            } else {
-                this.path = this.getPath(target);
-
-                this.toggleMain(true, this.path);
-                this.PageFactory.navigate(this.path, id, action, ...params);
-
-                this.eventer.do('history', window.location.hash);
-            }
+            this.route(target, id, action, ...params)
         });
         if (window.location.href.indexOf('?') > 0) {
             console.warn('location had a ?')
             let loc = window.location.href.split('?').join('')
             window.location.href = loc
         }
-        this.to(this.currentPage);
+        let args = this.currentPage.split('/')
+        args[0] = `!${args[0]}`
+        this.route.apply(this, args)
     }
 
     get currentPage() {
@@ -85,7 +92,10 @@ class Router {
     to(path) {
         path = this.getPath(path);
         if (path) {
-            riot.route(`!${path}`);
+            let args = path.split('/')
+            args[0] = `!${args[0]}`
+            riot.route(path)
+            this.route.apply(this, args)
         }
     }
 

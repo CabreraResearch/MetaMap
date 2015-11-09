@@ -1,5 +1,7 @@
 const jsPlumb = window.jsPlumb;
 const jsPlumbToolkit = window.jsPlumbToolkit;
+const $ = require('jquery')
+const _ = require('lodash')
 
 /**
 * Custom layout for metamap. Extends the Spring layout. After Spring runs, this

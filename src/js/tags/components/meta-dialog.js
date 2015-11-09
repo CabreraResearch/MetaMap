@@ -1,6 +1,8 @@
-const $ = require('jquery');
-const riot = require('riot');
-const metaTable = require('./meta-table.js');
+const $ = require('jquery')
+const _ = require('lodash')
+const riot = require('riot')
+
+const metaTable = require('./meta-table.js')
 
 const html = `
 <div class="modal fade" id="full" tabindex="-1" role="dialog" aria-hidden="true">

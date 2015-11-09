@@ -19,5 +19,6 @@ typings/
 dist/
 report/
 src/vendor/cdn/
-
 MetaMap.iml
+dev.html
+index.html

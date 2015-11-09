@@ -128,7 +128,7 @@ module.exports = riot.tag(CONSTANTS.TAGS.ALL_COURSES, html, function (opts) {
                                 complete: function (results, file) {
                                     let outline = _.map(_.filter(results.data, (line) => { return line.Section }), (line) => { return { section: line.Section, section_no: line['Section No'] }  })
 
-                                    let course = _.map(_.filter(results.data, (line) => { return line.Line }), (line) => {
+                                    let course = _.map(_.filter(results.data, (line) => { return line.Line }), (line, lineNo) => {
                                         let ret = {
                                             section: line.Section || '',
                                             section_no: line['Section No'] || '',
@@ -143,6 +143,7 @@ module.exports = riot.tag(CONSTANTS.TAGS.ALL_COURSES, html, function (opts) {
                                             }
                                         } catch (e) {
                                             ret.action_data = line['Action Data']
+                                            window.alert(`Couldn't import Action Data for line number ${lineNo+1}: "${ret.action_data}"`)
                                             MetaMap.error(e)
                                             MetaMap.error({message: ret.action_data })
                                         }

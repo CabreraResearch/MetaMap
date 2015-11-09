@@ -1,19 +1,19 @@
-require('babel/polyfill')
+require('babel-polyfill')
 require('core-js')
+//Expose jQuery so that CDN scripts will work
 window.$ = window.jQuery = require('jquery')
 require('jquery-ui')
 require('bootstrap')
-window.riot = require('riot')
-window._ = require('lodash')
-window.Promise = require('bluebird')
 
+const riot = require('riot')
+const _ = require('lodash')
+const Promise = require('bluebird')
 const Auth0 = require('./js/app/auth0')
 const User = require('./js/app/user.js')
 const Router = require('./js/app/Router.js')
 const Eventer = require('./js/app/Eventer.js')
 const PageFactory = require('./js/pages/PageFactory.js')
 const Config = require('./js/app//Config.js')
-const ga = require('./js/integrations/google.js')
 const shims = require('./js/tools/shims.js')
 const Integrations = require('./js/app/Integrations')
 const Cortex = require('./js/training/cortex')
@@ -22,6 +22,14 @@ class MetaMap {
 
     constructor() {
         const that = this
+        Promise.config({
+            // Enable warnings.
+            warnings: false,
+            // Enable long stack traces.
+            longStackTraces: false,
+            // Enable cancellation.
+            cancellation: false
+        })
         Promise.onPossiblyUnhandledRejection(function (error) {
             that.error(error)
             return this

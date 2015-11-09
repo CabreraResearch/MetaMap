@@ -1,4 +1,6 @@
 const riot = require('riot')
+const _ = require('lodash')
+
 const Canvas = require('../../canvas/Canvas')
 const CONSTANTS = require('../../constants/constants')
 require('./node')

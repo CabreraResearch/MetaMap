@@ -1,5 +1,6 @@
 const jsPlumbToolkit = window.jsPlumbToolkit
 const _CanvasBase = require('./_CanvasBase')
+const _ = require('lodash')
 
 class Toolkit extends _CanvasBase {
 
@@ -9,12 +10,24 @@ class Toolkit extends _CanvasBase {
         // get a new instance of the Toolkit. provide a set of methods that control who can connect to what, and when.
         this.toolkit = jsPlumbToolkit.newInstance({
             beforeStartConnect: (fromNode, edgeType) => {
-                return {
-                    type: edgeType,
-                    direction: 'none',
-                    leftSize: 0,
-                    rightSize: 0
+                let ret = {
+                    type: edgeType
                 }
+                if (edgeType == 'perspective') {
+                    _.extend(ret, {
+                        visible: true,
+                        perspective: {
+                            nodeId: fromNode.id
+                        }
+                    })
+                } else {
+                    _.extend(ret, {
+                        direction: 'none',
+                        leftSize: 0,
+                        rightSize: 0
+                    })
+                }
+                return ret
             },
             beforeConnect: (fromNode, toNode, edgeData) => {
                 var ret = true
@@ -32,6 +45,17 @@ class Toolkit extends _CanvasBase {
                                     ret = false
                                     break
                                 }
+                            }
+                            if (ret) {
+                                fromNode.data.perspective = fromNode.data.perspective || {
+                                    has: true,
+                                    edges: [],
+                                    class: 'open'
+                                }
+                                fromNode.data.perspective.has = true
+                                fromNode.data.perspective.edges = fromNode.data.perspective.edges || []
+                                fromNode.data.perspective.class = 'open'
+                                this.canvas.updateData({ node: fromNode })
                             }
                             break
                     }
@@ -52,7 +76,7 @@ class Toolkit extends _CanvasBase {
             this.canvas.update()
             this.canvas.dumpEdgeCounts();
             this.canvas.jsRenderer.State.save()
-            this.canvas.onAutoSave(this.canvas.exportData())
+            this.canvas.onAutoSave()
         })
     }
 }

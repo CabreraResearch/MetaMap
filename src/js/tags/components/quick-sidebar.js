@@ -1,6 +1,7 @@
 const riot = require('riot')
 const $ = require('jquery')
 const Ps = require('perfect-scrollbar')
+const _ = require('lodash')
 
 const Metronic = require('../../template/metronic')
 const raw = require('./raw')

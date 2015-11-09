@@ -8,7 +8,8 @@ const TAGS = {
     TRAINING: 'training',
     ALL_COURSES: 'all-courses',
     MY_COURSES: 'my-courses',
-    SIDEBAR: 'quick-sidebar'
+    SIDEBAR: 'quick-sidebar',
+    EDIT_LABEL: 'edit-label'
 };
 
 Object.freeze(TAGS);
