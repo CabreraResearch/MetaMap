@@ -205,27 +205,40 @@ class Canvas {
                 })
             }
             deleteRThing(node)
+            if (node.data.parentId) {
+                let parent = toolkit.getNode(node.data.parentId)
+                if (parent) {
+                    parent.data.children = _.remove(parent.data.children, (id) => { return id != node.data.id })
+                    toolkit.updateNode(parent)
+                }
+            }
+            _.each(node.getAllEdges(), (edge) => {
+                deleteEdge(edge)
+            })
             //Delete children before parents
             toolkit.removeNode(node)
         }
 
+        const deleteEdge = (edge) => {
+            if (edge && edge.data) {
+                //Delete any r-things that are associated with the edges to be deleted
+                if(edge.data.rthing && edge.data.rthing.nodeId) {
+                    let child = toolkit.getNode(edge.data.rthing.nodeId)
+                    recurse(child)
+                }
+                if (edge.data.perspective.has && edge.data.perspective.nodeId) {
+                    let child = toolkit.getNode(edge.data.perspective.nodeId)
+                    child.data.perspective.edges = _.remove(child.data.perspective.edges, (id) => { return id == edge.data.id })
+                    child.data.perspective.has = child.data.perspective.edges.length > 0
+                    child.data.perspective.class = (child.data.perspective.has) ? child.data.perspective.class : 'none'
+                    toolkit.updateNode(child)
+                }
+            }
+        }
+
         try {
             selected.eachEdge(function (i, edge) {
-                //Delete any r-things that are associated with the edges to be deleted
-                if (edge && edge.data) {
-                    if(edge.data.rthing && edge.data.rthing.nodeId) {
-                        let child = toolkit.getNode(edge.data.rthing.nodeId)
-                        recurse(child)
-                    }
-                    if (edge.data.perspective.has && edge.data.perspective.nodeId) {
-                        let child = toolkit.getNode(edge.data.perspective.nodeId)
-                        child.data.perspective.edges = _.remove(child.data.perspective.edges, (id) => { return id == edge.data.id })
-                        child.data.perspective.has = child.data.perspective.edges.length > 0
-                        child.data.perspective.class = (child.data.perspective.has) ? child.data.perspective.class : 'none'
-                        toolkit.updateNode(child)
-                    }
-                }
-
+                deleteEdge(edge)
             });
 
             //Recurse over all children

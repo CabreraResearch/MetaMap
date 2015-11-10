@@ -58,13 +58,15 @@ class Events extends _CanvasBase {
                     node.data.children = node.data.children || []
                     var newLabel = 'Part'
 
-                    var newNode = this.canvas.jsToolkit.addNode({
+                    let nodeData = this.canvas.rndrr.node.getNewNode({
                         parentId:node.id,
                         w:newWidth,
                         h:newHeight,
                         label: newLabel,
                         order: node.data.children.length
-                        })
+                    })
+
+                    var newNode = this.canvas.jsToolkit.addNode(nodeData)
 
                     node.data.children.push(newNode.id)
                     this.canvas.jsRenderer.relayout()

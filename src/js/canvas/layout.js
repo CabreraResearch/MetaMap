@@ -67,7 +67,9 @@ const _ = require('lodash')
           // and run through them and assign order; any that didn't previously have order will get order
           // set, and any that had order will retain the same value.
           _.each(childNodes, function (cn, i) {
-              cn.data.order = i;
+              if (cn) {
+                  cn.data.order = i;
+              }
           });
 
           _childPositions[parent.id] = [];
