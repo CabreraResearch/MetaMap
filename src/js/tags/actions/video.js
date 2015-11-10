@@ -94,7 +94,7 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO, html, function(o
         }
     }
 
-    this.on('mount update', (opts) => {
+    this.on('mount update', (event, opts) => {
         update(opts)
     })
 
