@@ -17,8 +17,10 @@ class DragDropHandler {
 				filter:'.donotdrag',       // can't drag nodes by the color segments.
 				stop:(params) => {
                     let layout = getRenderer().getLayout()
+                    let isDrop = false
                     if (params.el._metamapParent) {
-						let parentBounds = layout.getChildBounds(params.el._metamapParent.id),
+                        isDrop = true
+                        let parentBounds = layout.getChildBounds(params.el._metamapParent.id),
 							r1 = {x:params.pos[0],y:params.pos[1], w:params.el.offsetWidth, h:params.el.offsetHeight},
 					        r2 = {x:parentBounds.xmin, y:parentBounds.ymin, w:parentBounds.xmax-parentBounds.xmin, h:parentBounds.ymax - parentBounds.ymin};
 
@@ -55,6 +57,7 @@ class DragDropHandler {
 
 						params.el._metamapParent = null;
 					}
+
                     let info = toolkit.getObjectInfo(params.el)
                     if (info && info.obj) {
                         let node = info.obj
@@ -73,10 +76,20 @@ class DragDropHandler {
                         }
                     }
 
+                    //#99: create a partial fix to prevent the layout from updating in freehand
+                    let isSuspended = false
+                    if (info && info.obj) {
+                        isSuspended = info.obj.data.children.length > 0
+                        isSuspended = isSuspended && info.obj.data.suspendLayout == true
+                    }
 					// when _any_ node stops dragging, run the layout again.
 					// this will cause child nodes to snap to their new parent, and also
 					// cleanup nicely if a node is dropped on another node.
-					getRenderer().refresh();
+                    if (isDrop || !isSuspended) {
+                        getRenderer().refresh();
+                    } else {
+                        console.log('Prevented re-snapping children on a parent in freehand layout')
+                    }
             	},
 				start:(params) => {
 					// on start, if there is a parent, find it and stash it on the element, for us to
