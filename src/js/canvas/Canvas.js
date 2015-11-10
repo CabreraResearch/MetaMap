@@ -228,11 +228,12 @@ class Canvas {
                 }
                 if (edge.data.perspective.has && edge.data.perspective.nodeId) {
                     let child = toolkit.getNode(edge.data.perspective.nodeId)
-                    child.data.perspective.edges = _.remove(child.data.perspective.edges, (id) => { return id == edge.data.id })
+                    child.data.perspective.edges = _.remove(child.data.perspective.edges, (id) => { return id != edge.data.id })
                     child.data.perspective.has = child.data.perspective.edges.length > 0
                     child.data.perspective.class = (child.data.perspective.has) ? child.data.perspective.class : 'none'
                     toolkit.updateNode(child)
                 }
+                toolkit.removeEdge(edge)
             }
         }
 

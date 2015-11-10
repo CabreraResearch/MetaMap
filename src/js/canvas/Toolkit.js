@@ -74,7 +74,7 @@ class Toolkit extends _CanvasBase {
     bindEvents() {
         this.toolkit.bind("dataUpdated", () => {
             this.canvas.update()
-            this.canvas.dumpEdgeCounts();
+            //this.canvas.dumpEdgeCounts();
             this.canvas.jsRenderer.State.save()
             this.canvas.onAutoSave()
         })

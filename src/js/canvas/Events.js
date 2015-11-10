@@ -27,21 +27,31 @@ class Events extends _CanvasBase {
         this.__clickHandlers = this.__clickHandlers || {
             click:{
                 eye_closed: (el, node) => {
-                    this.clickLogger('eye closed', 'click', el, node)
                     if (node.data.perspective.has) {
                         node.data.perspective.class = 'open'
                         this.canvas.updateData({ node: node })
                         let sel = this.jsToolkit.select(node.data.perspective.edges)
-                        this.jsRenderer.setVisible(sel, true)
+                        sel.eachEdge((i, edge) => {
+                            edge.data.visible = true
+                            this.canvas.updateData({ edge: edge })
+                            this.jsRenderer.setVisible(edge, true)
+                        })
+                        this.canvas.jsToolkit.clearSelection()
+                        //this.jsRenderer.setVisible(sel, true)
                     }
                 },
                 eye_open: (el, node) => {
-                    this.clickLogger('eye open', 'click', el, node)
                     if (node.data.perspective.has) {
                         node.data.perspective.class = 'closed'
                         this.canvas.updateData({ node: node })
                         let sel = this.jsToolkit.select(node.data.perspective.edges)
-                        this.jsRenderer.setVisible(sel, true)
+                        sel.eachEdge((i, edge) => {
+                            edge.data.visible = false
+                            this.canvas.updateData({ edge: edge })
+                            this.jsRenderer.setVisible(edge, false)
+                        })
+                        this.canvas.jsToolkit.clearSelection()
+                        //this.jsRenderer.setVisible(sel, true)
                     }
                 }
             },
@@ -157,7 +167,7 @@ class Events extends _CanvasBase {
             },
             canvasDblClick:(e)=> {
                 // add an Idea node at the location at which the event occurred.
-                var pos = this.canvas.jsRenderer.mapEventLocation(e)
+                var pos = this.jsRenderer.mapEventLocation(e)
                 //Move 1/2 the height and width up and to the left to center the node on the mouse click
                 //TODO: when height/width is configurable, remove hard-coded values
                 pos.left = pos.left-50
@@ -174,6 +184,22 @@ class Events extends _CanvasBase {
                         obj.edge.source.data.perspective.edges.push(obj.edge.data.id)
                         this.canvas.updateData({ node: obj.edge.source })
                     }
+                    //Kludge: for some reason, dragging from the P button toggle the eye class back to open
+                    //This is probably desirable, but I have no idea why it's happening
+                    //Creating a new perspective should then just show all perspectives
+                    if (obj.edge.source.data.perspective.class == 'open') {
+                        _.each(obj.edge.source.data.perspective.edges, (edgeId) => {
+                            let edge = this.jsToolkit.getEdge(edgeId)
+                            if (edge) {
+                                edge.data.visible = true
+                                this.jsRenderer.setVisible(edge, true)
+                            }
+                        })
+                    }
+                }
+                //Kludge: this seems like a bit of a hack, but there isn't another way AFAIK to persist visibility on an edge
+                if (obj.edge.data.visible === false) {
+                    this.jsRenderer.setVisible(obj.edge, false)
                 }
                 return obj
             },
