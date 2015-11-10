@@ -1,3 +1,4 @@
+const jsPlumb = window.jsPlumb
 const _CanvasBase = require('./_CanvasBase')
 const $ = require('jquery')
 const _ = require('lodash')
@@ -13,8 +14,8 @@ class Node extends _CanvasBase {
     //
     getNewNode(opts) {
         let ret = {
-            w:this.canvas.nodeSize,
-            h:this.canvas.nodeSize,
+            w:this.nodeSize,
+            h:this.nodeSize,
             label:'idea',
             type: 'idea',
             children: [],
@@ -28,6 +29,53 @@ class Node extends _CanvasBase {
         }
         _.extend(ret, opts)
         return ret
+    }
+
+    getClickEvents() {
+        return {
+            dblclick: {
+                red: (el, node) => {
+                    this.jsToolkit.addNode(this.getNewNode())
+                },
+                green:(el, node) => {
+                    var newWidth = node.data.w * this.canvas.partSize
+                    var newHeight = node.data.h * this.canvas.partSize
+
+                    node.data.children = node.data.children || []
+                    var newLabel = 'Part'
+
+                    let nodeData = this.getNewNode({
+                        parentId:node.id,
+                        w:newWidth,
+                        h:newHeight,
+                        label: newLabel,
+                        order: node.data.children.length
+                    })
+
+                    var newNode = this.jsToolkit.addNode(nodeData)
+
+                    node.data.children.push(newNode.id)
+                    this.jsRenderer.relayout()
+                },
+                orange:(el, node) => {
+                    var newNode = this.jsToolkit.addNode(this.getNewNode())
+
+                    this.jsToolkit.connect({source:node, target:newNode, data:{
+                        type:'perspective'
+                    }})
+                },
+                blue:(el, node) => {
+                    var newNode = this.jsToolkit.addNode(this.getNewNode())
+
+                    this.jsToolkit.connect({source:node, target:newNode, data:{
+                        type: 'relationship',
+                        direction: 'none',
+                        leftSize: 0,
+                        rightSize: 0
+                    }})
+                }
+            }
+        }
     }
 
     getView() {
@@ -68,6 +116,20 @@ class Node extends _CanvasBase {
                 parent: 'idea'
             }
         }
+    }
+
+    onAdded(obj) {
+
+    }
+
+    createNode(e) {
+         // add an Idea node at the location at which the event occurred.
+        var pos = this.jsRenderer.mapEventLocation(e)
+        //Move 1/2 the height and width up and to the left to center the node on the mouse click
+        //TODO: when height/width is configurable, remove hard-coded values
+        pos.left = pos.left-50
+        pos.top = pos.top-50
+        this.jsToolkit.addNode(jsPlumb.extend(this.getNewNode(), pos))
     }
 }
 

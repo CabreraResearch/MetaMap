@@ -24,83 +24,21 @@ class Events extends _CanvasBase {
         // labels. When a drag starts we set the zoom on that jsPlumb instance to
         // match our current zoom.
         //
-        this.__clickHandlers = this.__clickHandlers || {
-            click:{
-                eye_closed: (el, node) => {
-                    if (node.data.perspective.has) {
-                        node.data.perspective.class = 'open'
-                        this.canvas.updateData({ node: node })
-                        let sel = this.jsToolkit.select(node.data.perspective.edges)
-                        sel.eachEdge((i, edge) => {
-                            edge.data.visible = true
-                            this.canvas.updateData({ edge: edge })
-                            this.jsRenderer.setVisible(edge, true)
-                        })
-                        this.canvas.jsToolkit.clearSelection()
-                        //this.jsRenderer.setVisible(sel, true)
-                    }
+        if (!this.__clickHandlers) {
+            let events = {
+                click: {
+
                 },
-                eye_open: (el, node) => {
-                    if (node.data.perspective.has) {
-                        node.data.perspective.class = 'closed'
-                        this.canvas.updateData({ node: node })
-                        let sel = this.jsToolkit.select(node.data.perspective.edges)
-                        sel.eachEdge((i, edge) => {
-                            edge.data.visible = false
-                            this.canvas.updateData({ edge: edge })
-                            this.jsRenderer.setVisible(edge, false)
-                        })
-                        this.canvas.jsToolkit.clearSelection()
-                        //this.jsRenderer.setVisible(sel, true)
-                    }
-                }
-            },
-            dblclick:{
-                red:(el, node) => {
-                    this.clickLogger('R', 'dblclick', el, node)
-                    this.canvas.jsToolkit.addNode(this.canvas.node.getNewNode())
-                },
-                green:(el, node) => {
-                    this.clickLogger('G', 'dblclick', el, node)
-                    var newWidth = node.data.w * this.canvas.partSize
-                    var newHeight = node.data.h * this.canvas.partSize
+                dblclick: {
 
-                    node.data.children = node.data.children || []
-                    var newLabel = 'Part'
-
-                    let nodeData = this.canvas.rndrr.node.getNewNode({
-                        parentId:node.id,
-                        w:newWidth,
-                        h:newHeight,
-                        label: newLabel,
-                        order: node.data.children.length
-                    })
-
-                    var newNode = this.canvas.jsToolkit.addNode(nodeData)
-
-                    node.data.children.push(newNode.id)
-                    this.canvas.jsRenderer.relayout()
-                },
-                orange:(el, node) => {
-                    this.clickLogger('O', 'dblclick', el, node)
-                    var newNode = this.canvas.jsToolkit.addNode(this.canvas.node.getNewNode())
-
-                    this.canvas.jsToolkit.connect({source:node, target:newNode, data:{
-                        type:'perspective'
-                    }})
-                },
-                blue:(el, node) => {
-                    this.clickLogger('B', 'dblclick', el, node)
-                    var newNode = this.canvas.jsToolkit.addNode(this.canvas.node.getNewNode())
-
-                    this.canvas.jsToolkit.connect({source:node, target:newNode, data:{
-                        type: 'relationship',
-                        direction: 'none',
-                        leftSize: 0,
-                        rightSize: 0
-                    }})
                 }
             }
+            let edgeEvents = this.edge.getClickEvents()
+            let nodeEvents = this.node.getClickEvents()
+            _.extend(events, edgeEvents)
+            _.extend(events, nodeEvents)
+
+            this.__clickHandlers = events
         }
         return this.__clickHandlers
     }
@@ -109,7 +47,7 @@ class Events extends _CanvasBase {
         console.log(event + ' ' + type)
         console.dir(node.data)
         if(event == 'dblclick') {
-            this.canvas.jsToolkit.clearSelection()
+            this.canvas.clearSelection()
         }
     }
 
@@ -125,6 +63,7 @@ class Events extends _CanvasBase {
                 }
             })
             jsPlumb.on(_el, 'dblclick', () => {
+                this.canvas.clearSelection()
                 if (this._clickHandlers['dblclick'][segment]) {
                     this._clickHandlers['dblclick'][segment](el, node)
                 }
@@ -166,42 +105,17 @@ class Events extends _CanvasBase {
                 this.canvas.clearSelection()
             },
             canvasDblClick:(e)=> {
-                // add an Idea node at the location at which the event occurred.
-                var pos = this.jsRenderer.mapEventLocation(e)
-                //Move 1/2 the height and width up and to the left to center the node on the mouse click
-                //TODO: when height/width is configurable, remove hard-coded values
-                pos.left = pos.left-50
-                pos.top = pos.top-50
-                this.canvas.jsToolkit.addNode(jsPlumb.extend(this.canvas.node.getNewNode(), pos))
+               this.node.createNode(e)
             },
             contextmenu:  (node, port, el, e) => {
                 debugger
             },
-            nodeAdded: (params) => { this.registerHandlers(params) }, // see below
+            nodeAdded: (params) => {
+                this.registerHandlers(params)
+                this.node.onAdded(params)
+            },
             edgeAdded: (obj)=> {
-                if (obj.edge.data.type == 'perspective') {
-                    if (!_.contains(obj.edge.source.data.perspective.edges, obj.edge.data.id)) {
-                        obj.edge.source.data.perspective.edges.push(obj.edge.data.id)
-                        this.canvas.updateData({ node: obj.edge.source })
-                    }
-                    //Kludge: for some reason, dragging from the P button toggle the eye class back to open
-                    //This is probably desirable, but I have no idea why it's happening
-                    //Creating a new perspective should then just show all perspectives
-                    if (obj.edge.source.data.perspective.class == 'open') {
-                        _.each(obj.edge.source.data.perspective.edges, (edgeId) => {
-                            let edge = this.jsToolkit.getEdge(edgeId)
-                            if (edge) {
-                                edge.data.visible = true
-                                this.jsRenderer.setVisible(edge, true)
-                            }
-                        })
-                    }
-                }
-                //Kludge: this seems like a bit of a hack, but there isn't another way AFAIK to persist visibility on an edge
-                if (obj.edge.data.visible === false) {
-                    this.jsRenderer.setVisible(obj.edge, false)
-                }
-                return obj
+                this.edge.onAdded(obj)
             },
             onComplete: () => {
 
@@ -279,7 +193,7 @@ class Events extends _CanvasBase {
                 case 8:
                     if(event.target.nodeName.toLowerCase() != 'textarea' && event.target.nodeName.toLowerCase() != 'input' && selected) {
                         event.preventDefault()
-                        this.canvas.deleteAll(selected)
+                        this.schema.deleteAll(selected)
                     }
                     break
                 case 17:
@@ -305,7 +219,7 @@ class Events extends _CanvasBase {
 
                     break
                 case 46:
-                    this.canvas.deleteAll(selected);
+                    this.schema.deleteAll(selected);
                     break;
             }
         })
@@ -329,7 +243,7 @@ class Events extends _CanvasBase {
                         break;
                     case 46:
                         var selected = toolkit.getSelection();
-                        this.canvas.deleteAll(selected);
+                        this.schema.deleteAll(selected);
                         break;
                 }
             }

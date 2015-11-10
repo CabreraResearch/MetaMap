@@ -7,9 +7,11 @@ const CONSTANTS = require('../constants/constants')
 const Permissions = require('../app/Permissions')
 const Toolkit = require('./Toolkit')
 const Node = require('./Node')
+const Edge = require('./Edge')
 const Renderer = require('./Renderer')
 const Events = require('./Events')
 const Dialog = require('./Dialog')
+const Schema = require('./Schema')
 
 require('./layout')
 
@@ -25,6 +27,10 @@ class Canvas {
 
             //Load the classes
             //Order of ops matters
+            //0. Load nodes and edges
+            this.node = new Node(this)
+            this.edge = new Edge(this)
+
             //1. Load the toolkit
             this.tk = new Toolkit(this)
             this.jsToolkit = this.tk.toolkit
@@ -36,14 +42,14 @@ class Canvas {
             this.rndrr = new Renderer(this)
             this.jsRenderer = this.rndrr.renderer
 
-            //4: Load the node
-            this.node = new Node(this)
 
             //5: Dialog (order doesn't really matter here)
             this.dialog = new Dialog(this)
 
+            this.schema = new Schema(this)
+
             //6: Load the data
-            this.loadData()
+            this.loadData() 
 
             //7: Bind the events
             this.tk.bindEvents()
@@ -68,6 +74,12 @@ class Canvas {
          this._init(opts)
     }
 
+    //Convenience getters
+
+    get dragDropHandler() {
+        return this.rndrr.dragDropHandler
+    }
+
     onAutoSave(data) {
         if (this.doAutoSave && this.permissions.canEdit()) {
             //KLUDGE: looks like the exportData now includes invalid property values (Infinity) and types (methods)
@@ -84,44 +96,13 @@ class Canvas {
         }
     }
 
-    //Ensure that all changes to the data structure get populated on all objects
-    updateSchema(map) {
-        if (map) {
-            _.each(map.edges, (edge) => {
-                if (edge.data.type == 'relationship') {
-                    edge.data.direction = edge.data.direction || 'none'
-                    edge.data.leftSize = edge.data.leftSize || 0
-                    edge.data.rightSize = edge.data.rightSize || 0
-                } else {
-                    delete edge.data.direction
-                    delete edge.data.leftSize
-                    delete edge.data.rightSize
-                }
-            })
-            _.each(map.nodes, (node) => {
-                node.w = node.w || this.nodeSize
-                node.h = node.h || this.canvas.nodeSize
-                node.label = node.label || 'idea'
-                node.type = node.type || 'idea'
-                node.children = node.children || []
-                node.labelPosition = node.labelPosition || []
-                node.cssClass = node.cssClass || ''
-                node.perspective = node.perspective || {
-                    has: false,
-                    count: 0,
-                    class: 'none'
-                }
-            })
-        }
-    }
-
     // load the data.
     loadData() {
         const toolkit = this.jsToolkit
         const renderer = this.jsRenderer
 
         if (this.map && this.map.data) {
-            this.updateSchema(this.map.data)
+            this.schema.upgrade(this.map.data)
             toolkit.load({
                 type: 'json',
                 data: this.map.data
@@ -162,13 +143,7 @@ class Canvas {
     }
 
     updateData(obj) {
-
-        if (obj.edge) {
-            this.jsToolkit.updateEdge(obj.edge)
-        }
-        if (obj.node) {
-            this.jsToolkit.updateNode(obj.node)
-        }
+        this.schema.updateData(obj)
 
         //I don't think these should be required, but they seem to be
         this.jsRenderer.relayout()
@@ -184,72 +159,6 @@ class Canvas {
         this.events.update()
         this.rndrr.update()
         this.dialog.update()
-    }
-
-    deleteAll(selected) {
-        const toolkit = this.jsToolkit
-
-        const deleteRThing = (child) => {
-            if (child && child.data && child.data.rthing && child.data.rthing.edgeId) {
-                let edge = toolkit.getEdge(child.data.rthing.edgeId)
-                edge.data.rthing = null
-                toolkit.updateEdge(edge)
-            }
-        }
-
-        const recurse = (node) => {
-            if(node && node.data && node.data.children) {
-                _.each(node.data.children, (id, i) => {
-                    let child = toolkit.getNode(id)
-                    recurse(child)
-                })
-            }
-            deleteRThing(node)
-            if (node.data.parentId) {
-                let parent = toolkit.getNode(node.data.parentId)
-                if (parent) {
-                    parent.data.children = _.remove(parent.data.children, (id) => { return id != node.data.id })
-                    toolkit.updateNode(parent)
-                }
-            }
-            _.each(node.getAllEdges(), (edge) => {
-                deleteEdge(edge)
-            })
-            //Delete children before parents
-            toolkit.removeNode(node)
-        }
-
-        const deleteEdge = (edge) => {
-            if (edge && edge.data) {
-                //Delete any r-things that are associated with the edges to be deleted
-                if(edge.data.rthing && edge.data.rthing.nodeId) {
-                    let child = toolkit.getNode(edge.data.rthing.nodeId)
-                    recurse(child)
-                }
-                if (edge.data.perspective.has && edge.data.perspective.nodeId) {
-                    let child = toolkit.getNode(edge.data.perspective.nodeId)
-                    child.data.perspective.edges = _.remove(child.data.perspective.edges, (id) => { return id != edge.data.id })
-                    child.data.perspective.has = child.data.perspective.edges.length > 0
-                    child.data.perspective.class = (child.data.perspective.has) ? child.data.perspective.class : 'none'
-                    toolkit.updateNode(child)
-                }
-                toolkit.removeEdge(edge)
-            }
-        }
-
-        try {
-            selected.eachEdge(function (i, edge) {
-                deleteEdge(edge)
-            });
-
-            //Recurse over all children
-            selected.eachNode((i, n) => {
-                recurse(n)
-            });
-            toolkit.remove(selected)
-        } catch (e) {
-            this.metaMap.error(e)
-        }
     }
 
     get partSize() {

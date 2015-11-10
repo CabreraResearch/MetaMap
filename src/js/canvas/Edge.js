@@ -15,6 +15,99 @@ class Edge extends _CanvasBase {
 
     }
 
+    getToolkitEvents() {
+        return {
+            beforeStartConnect: (fromNode, edgeType) => {
+                let ret = {
+                    type: edgeType
+                }
+                if (edgeType == 'perspective') {
+                    _.extend(ret, {
+                        visible: true,
+                        perspective: {
+                            nodeId: fromNode.id
+                        }
+                    })
+                } else {
+                    _.extend(ret, {
+                        direction: 'none',
+                        leftSize: 0,
+                        rightSize: 0
+                    })
+                }
+                return ret
+            },
+            beforeConnect: (fromNode, toNode, edgeData) => {
+                var ret = true
+                //Prevent self-referencing connections
+                if (fromNode == toNode) {
+                    ret = false
+                } else {
+                    //Between the same two nodes, only one perspective connection may exist
+                    switch (edgeData.type) {
+                        case 'perspective':
+                            var edges = fromNode.getEdges({ filter: function (e) { return e.data.type == 'perspective' } })
+                            for (var i = 0; i < edges.length; i+= 1) {
+                                var ed = edges[i]
+                                if ((ed.source == fromNode && ed.target == toNode) || (ed.target == fromNode && ed.source == toNode)) {
+                                    ret = false
+                                    break
+                                }
+                            }
+                            if (ret) {
+                                fromNode.data.perspective = fromNode.data.perspective || {
+                                    has: true,
+                                    edges: [],
+                                    class: 'open'
+                                }
+                                fromNode.data.perspective.has = true
+                                fromNode.data.perspective.edges = fromNode.data.perspective.edges || []
+                                fromNode.data.perspective.class = 'open'
+                                this.canvas.updateData({ node: fromNode })
+                            }
+                            break
+                    }
+                }
+                return ret
+            }
+        }
+    }
+
+    getClickEvents() {
+        return {
+            click: {
+                eye_closed: (el, node) => {
+                    if (node.data.perspective.has) {
+                        node.data.perspective.class = 'open'
+                        this.canvas.updateData({ node: node })
+                        let sel = this.jsToolkit.select(node.data.perspective.edges)
+                        sel.eachEdge((i, edge) => {
+                            edge.data.visible = true
+                            this.canvas.updateData({ edge: edge })
+                            this.jsRenderer.setVisible(edge, true)
+                        })
+                        this.canvas.clearSelection()
+                        //this.jsRenderer.setVisible(sel, true)
+                    }
+                },
+                eye_open: (el, node) => {
+                    if (node.data.perspective.has) {
+                        node.data.perspective.class = 'closed'
+                        this.canvas.updateData({ node: node })
+                        let sel = this.jsToolkit.select(node.data.perspective.edges)
+                        sel.eachEdge((i, edge) => {
+                            edge.data.visible = false
+                            this.canvas.updateData({ edge: edge })
+                            this.jsRenderer.setVisible(edge, false)
+                        })
+                        this.canvas.clearSelection()
+                        //this.jsRenderer.setVisible(sel, true)
+                    }
+                }
+            }
+        }
+    }
+
     getView() {
         return {
             all: {
@@ -237,6 +330,32 @@ class Edge extends _CanvasBase {
         this.hideRDots()
 
         this.canvas.updateData({ node: newNode, edge: obj.edge })
+    }
+
+    onAdded(obj) {
+        if (obj.edge.data.type == 'perspective') {
+            if (!_.contains(obj.edge.source.data.perspective.edges, obj.edge.data.id)) {
+                obj.edge.source.data.perspective.edges.push(obj.edge.data.id)
+                this.canvas.updateData({ node: obj.edge.source })
+            }
+            //Kludge: for some reason, dragging from the P button toggle the eye class back to open
+            //This is probably desirable, but I have no idea why it's happening
+            //Creating a new perspective should then just show all perspectives
+            if (obj.edge.source.data.perspective.class == 'open') {
+                _.each(obj.edge.source.data.perspective.edges, (edgeId) => {
+                    let edge = this.jsToolkit.getEdge(edgeId)
+                    if (edge) {
+                        edge.data.visible = true
+                        this.jsRenderer.setVisible(edge, true)
+                    }
+                })
+            }
+        }
+        //Kludge: this seems like a bit of a hack, but there isn't another way AFAIK to persist visibility on an edge
+        if (obj.edge.data.visible === false) {
+            this.jsRenderer.setVisible(obj.edge, false)
+        }
+        return obj
     }
 
 }
