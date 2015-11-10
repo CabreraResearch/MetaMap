@@ -49,7 +49,7 @@ class Canvas {
             this.schema = new Schema(this)
 
             //6: Load the data
-            this.loadData() 
+            this.loadData()
 
             //7: Bind the events
             this.tk.bindEvents()
@@ -59,11 +59,11 @@ class Canvas {
     }
 
     _init(opts) {
-        if(opts.map) this.map = opts.map;
-        if(opts.mapId) this.mapId = opts.mapId;
+        if (opts.map) this.map = opts.map;
+        if (opts.mapId) this.mapId = opts.mapId;
 
         this.isReadOnly = false
-        if(opts.doAutoSave == true || opts.doAutoSave == false) this.doAutoSave = opts.doAutoSave
+        if (opts.doAutoSave == true || opts.doAutoSave == false) this.doAutoSave = opts.doAutoSave
         if (this.map && this.doAutoSave) {
             this.permissions = new Permissions(this.map)
             this.isReadOnly = !this.permissions.canEdit()
@@ -71,7 +71,7 @@ class Canvas {
     }
 
     reInit(opts) {
-         this._init(opts)
+        this._init(opts)
     }
 
     //Convenience getters
@@ -101,6 +101,10 @@ class Canvas {
         const toolkit = this.jsToolkit
         const renderer = this.jsRenderer
 
+        if ((!this.map || !this.map.data) && this.doAutoSave && !this.isReadOnly) {
+            this.map = this.map || {}
+            this.map.data = this.schema.getDefaultMap()
+        }
         if (this.map && this.map.data) {
             this.schema.upgrade(this.map.data)
             toolkit.load({
@@ -109,9 +113,6 @@ class Canvas {
             })
             let state = localStorage.getItem(`jtk-state-metaMapCanvas_${this.mapId || this.mapName}`)
             renderer.State.restore(state)
-            toolkit.eachEdge((i,e) => {
-                //console.log(e)
-            })
         }
     }
 
@@ -177,7 +178,7 @@ class Canvas {
     // a couple of random examples of the filter function, allowing you to query your data
     // --------------------------------------------------------------------------------------------------------
     countEdgesOfType(type) {
-        return this.jsToolkit.filter(function(obj) { return obj.objectType == "Edge" && obj.data.type===type; }).getEdgeCount()
+        return this.jsToolkit.filter(function (obj) { return obj.objectType == "Edge" && obj.data.type === type; }).getEdgeCount()
     }
 
     dumpEdgeCounts() {

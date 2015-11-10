@@ -12,6 +12,41 @@ class Schema extends _CanvasBase {
 
     }
 
+    getDefaultMap() {
+        return {
+            nodes: [{
+                w: 50,
+                h: 50,
+                label: "idea",
+                type: "idea",
+                children: [
+
+                ],
+                labelPosition: [
+
+                ],
+                cssClass: "",
+                perspective: {
+                    has: false,
+                    edges: [
+
+                    ],
+                    class: "none"
+                },
+                left: (window.innerWidth/2) - 50,
+                top: (window.innerHeight/2) - 150,
+                id: "d38a397c-69b6-4b98-a8d5-665786848ffb"
+            }
+            ],
+            edges: [
+
+            ],
+            ports: [
+
+            ]
+        }
+    }
+
     deleteRThing(child) {
         if (child && child.data && child.data.rthing && child.data.rthing.edgeId) {
             let edge = this.jsToolkit.getEdge(child.data.rthing.edgeId)
