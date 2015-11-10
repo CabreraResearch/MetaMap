@@ -13,7 +13,7 @@ class Events extends _CanvasBase {
     }
 
     get _types() {
-        this.__types = this.__types || [ ['red', 'D'], ['orange', 'P'], ['green', 'S'], ['blue','R'], ['eye_closed'], ['eye_open'] ]
+        this.__types = this.__types || [['red', 'D'], ['orange', 'P'], ['green', 'S'], ['blue', 'R'], ['eye_closed'], ['eye_open']]
         return this.__types
     }
 
@@ -46,7 +46,7 @@ class Events extends _CanvasBase {
     clickLogger(type, event, el, node) {
         console.log(event + ' ' + type)
         console.dir(node.data)
-        if(event == 'dblclick') {
+        if (event == 'dblclick') {
             this.canvas.clearSelection()
         }
     }
@@ -58,7 +58,7 @@ class Events extends _CanvasBase {
         _.each(array, (selector) => {
             let _el = el.querySelector('.' + selector)
             jsPlumb.on(_el, 'click', () => {
-                if(this._clickHandlers['click'][segment]) {
+                if (this._clickHandlers['click'][segment]) {
                     this._clickHandlers['click'][segment](el, node)
                 }
             })
@@ -101,26 +101,26 @@ class Events extends _CanvasBase {
 
     getRenderEvents() {
         return {
-            canvasClick: (e)=> {
+            canvasClick: (e) => {
                 this.canvas.clearSelection()
             },
-            canvasDblClick:(e)=> {
-               this.node.createNode(e)
+            canvasDblClick: (e) => {
+                this.node.createNode(e)
             },
-            contextmenu:  (node, port, el, e) => {
+            contextmenu: (node, port, el, e) => {
                 debugger
             },
             nodeAdded: (params) => {
                 this.registerHandlers(params)
                 this.node.onAdded(params)
             },
-            edgeAdded: (obj)=> {
+            edgeAdded: (obj) => {
                 this.edge.onAdded(obj)
             },
             onComplete: () => {
 
             },
-            relayout: ()=> {
+            relayout: () => {
                 let that = this
                 $('.edge-relationship').off('mouseleave')
                 $('.edge-relationship').off('mouseenter')
@@ -191,7 +191,7 @@ class Events extends _CanvasBase {
             var selected = toolkit.getSelection();
             switch (event.keyCode) {
                 case 8:
-                    if(event.target.nodeName.toLowerCase() != 'textarea' && event.target.nodeName.toLowerCase() != 'input' && selected) {
+                    if (event.target.nodeName.toLowerCase() != 'textarea' && event.target.nodeName.toLowerCase() != 'input' && selected) {
                         event.preventDefault()
                         this.schema.deleteAll(selected)
                     }
@@ -220,7 +220,13 @@ class Events extends _CanvasBase {
                     break
                 case 46:
                     this.schema.deleteAll(selected);
-                    break;
+                    break
+
+                case 65:
+                    if (event.ctrlKey) {
+
+                    }
+                    break
             }
         })
 
@@ -229,7 +235,7 @@ class Events extends _CanvasBase {
         })
 
         jsPlumb.on(document, 'keydown', (event) => {
-            if (event.ctrlKey) {
+            if (event.ctrlKey && event.keyCode == 17) {
                 if (!mode) {
                     mode = 'select'
                     renderer.setMode('select')
@@ -240,11 +246,24 @@ class Events extends _CanvasBase {
                         if (event.target.nodeName.toLowerCase() != 'textarea' && event.target.nodeName.toLowerCase() != 'input') {
                             event.preventDefault()
                         }
-                        break;
+                        break
                     case 46:
-                        var selected = toolkit.getSelection();
+                        var selected = toolkit.getSelection()
                         this.schema.deleteAll(selected);
-                        break;
+                        break
+                    case 65:
+                        if (event.ctrlKey) {
+                            event.preventDefault()
+                            let selection = toolkit.getSelection()
+                            toolkit.eachNode((i, node) => {
+                                selection.append(node)
+                            })
+                            toolkit.eachEdge((i, edge) => {
+                                selection.append(edge)
+                            })
+
+                        }
+                        break
                 }
             }
         })
