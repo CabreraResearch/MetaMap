@@ -79,12 +79,25 @@ class Edge extends _CanvasBase {
                 ],
                 events: {
                     tap: (obj) => {
+                        //Before we set this as the selected edge, get the current selection
+                        let selected = this.jsToolkit.getSelection()
+                        //If there is only one selected edge, proceed
+                        if (selected.getEdgeCount() == 1) {
+                            let isSelected = false
+                            selected.eachEdge((idx, edge) => {
+                                if (edge.data.id == obj.edge.data.id) {
+                                    isSelected = true
+                                }
+                            })
+                            //if the selected edge is this edge, this is the 2nd click
+                            if (isSelected) {
+                                this.toggleRDirection(obj.e, obj.edge, obj.connection)
+                                this.canvas.updateData(obj)
+                            }
+                        }
+                        //Now set the selection
                         this.canvas.clearSelection(obj)
 
-                        if (obj.e.target.getAttribute('class') == 'relationship-overlay' || obj.edge.data.direction == 'none') {
-                            this.toggleRDirection(obj.e, obj.edge, obj.connection)
-                            this.canvas.updateData(obj)
-                        }
                         this.showRDot(obj.edge.data.id, obj)
                         return true
                     }
