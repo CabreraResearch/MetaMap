@@ -14,8 +14,8 @@ class Node extends _CanvasBase {
     //
     getNewNode(opts) {
         let ret = {
-            w:this.nodeSize,
-            h:this.nodeSize,
+            w:this.canvas.nodeSize,
+            h:this.canvas.nodeSize,
             label:'idea',
             type: 'idea',
             children: [],
@@ -35,7 +35,8 @@ class Node extends _CanvasBase {
         return {
             dblclick: {
                 red: (el, node) => {
-                    this.jsToolkit.addNode(this.getNewNode())
+                    let newNode = this.getNewNode()
+                    this.jsToolkit.addNode(newNode)
                 },
                 green:(el, node) => {
                     var newWidth = node.data.w * this.canvas.partSize
@@ -58,20 +59,24 @@ class Node extends _CanvasBase {
                     this.jsRenderer.relayout()
                 },
                 orange:(el, node) => {
-                    var newNode = this.jsToolkit.addNode(this.getNewNode())
+                    let data = this.getNewNode()
+                    var newNode = this.jsToolkit.addNode(data)
 
                     this.jsToolkit.connect({source:node, target:newNode, data:{
-                        type:'perspective'
+                        type: 'perspective',
+                        visible: true
                     }})
                 },
                 blue:(el, node) => {
-                    var newNode = this.jsToolkit.addNode(this.getNewNode())
+                    let data = this.getNewNode()
+                    var newNode = this.jsToolkit.addNode(data)
 
                     this.jsToolkit.connect({source:node, target:newNode, data:{
                         type: 'relationship',
                         direction: 'none',
                         leftSize: 0,
-                        rightSize: 0
+                        rightSize: 0,
+                        visible: true
                     }})
                 }
             }
