@@ -106,7 +106,7 @@ class Schema extends _CanvasBase {
 
             })
             _.each(map.nodes, (node) => {
-                node.w = node.w || this.nodeSize
+                node.w = node.w || this.canvas.nodeSize
                 node.h = node.h || this.canvas.nodeSize
                 node.label = node.label || 'idea'
                 node.type = node.type || 'idea'
@@ -118,6 +118,7 @@ class Schema extends _CanvasBase {
                     edges: [],
                     class: 'none'
                 }
+                node.perspective.edges = node.perspective.edges || []
             })
         }
     }

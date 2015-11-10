@@ -93,11 +93,44 @@ class Node extends _CanvasBase {
                     mouseenter: (obj) => {
 
                     },
-                    contextmenu: (node, port, el, e) => {
-                        if (node && node.el) {
+                    contextmenu: (obj, port, el, e) => {
+                        if (obj && obj.el) {
+                            let node = obj.node
                             $.contextMenu({
-                                selector: `#${node.el.id}`,
+                                selector: `#${obj.el.id}`,
                                 items: {
+                                    layout: {
+                                        name: 'Layout',
+                                        icon: ' icn-Sstack',
+                                        items: {
+                                            left: {
+                                                name: 'Left Align',
+                                                icon: ' icn-Sleft',
+                                                callback: () => {
+                                                    node.data.suspendLayout = false
+                                                    node.data.partAlign = 'left'
+                                                    this.canvas.updateData({ node: node })
+                                                }
+                                            },
+                                            right: {
+                                                name: 'Right Align',
+                                                icon: ' icn-Sright',
+                                                callback: () => {
+                                                    node.data.suspendLayout = false
+                                                    node.data.partAlign = 'right'
+                                                    this.canvas.updateData({ node: node })
+                                                }
+                                            },
+                                            free: {
+                                                name: 'Free Hand',
+                                                icon: ' icn-Sfreehand',
+                                                callback: () => {
+                                                    node.data.suspendLayout = true
+                                                    this.canvas.updateData({ node: node })
+                                                }
+                                            }
+                                        }
+                                    },
                                     copy: {
                                         name: 'Copy',
                                         callback: function(key, opt){

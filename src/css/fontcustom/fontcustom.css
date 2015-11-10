@@ -2,13 +2,17 @@
   Icon Font: fontcustom
 */
 
+/*
+    WARNING: customizations have been made. Reapply these when running FontCustom again.
+*/
+
 @font-face {
   font-family: "fontcustom";
-  src: url("./fontcustom_265e36965e341050bc103bcb6be8c0e6.eot");
-  src: url("./fontcustom_265e36965e341050bc103bcb6be8c0e6.eot?#iefix") format("embedded-opentype"),
-       url("./fontcustom_265e36965e341050bc103bcb6be8c0e6.woff") format("woff"),
-       url("./fontcustom_265e36965e341050bc103bcb6be8c0e6.ttf") format("truetype"),
-       url("./fontcustom_265e36965e341050bc103bcb6be8c0e6.svg#fontcustom") format("svg");
+  src: url("../src/css/fontcustom/fontcustom_265e36965e341050bc103bcb6be8c0e6.eot");
+  src: url("../src/css/fontcustom/fontcustom_265e36965e341050bc103bcb6be8c0e6.eot?#iefix") format("embedded-opentype"),
+       url("../src/css/fontcustom/fontcustom_265e36965e341050bc103bcb6be8c0e6.woff") format("woff"),
+       url("../src/css/fontcustom/fontcustom_265e36965e341050bc103bcb6be8c0e6.ttf") format("truetype"),
+       url("../src/css/fontcustom/fontcustom_265e36965e341050bc103bcb6be8c0e6.svg#fontcustom") format("svg");
   font-weight: normal;
   font-style: normal;
 }
@@ -16,25 +20,29 @@
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   @font-face {
     font-family: "fontcustom";
-    src: url("./fontcustom_265e36965e341050bc103bcb6be8c0e6.svg#fontcustom") format("svg");
+    src: url("../src/css/fontcustom/fontcustom_265e36965e341050bc103bcb6be8c0e6.svg#fontcustom") format("svg");
   }
 }
 
 [data-icon]:before { content: attr(data-icon); }
 
+/*
+    .icon collides with glyphicon media queries, so change the name!
+*/
+
 [data-icon]:before,
-.icon-Dclone:before,
-.icon-Dtag:before,
-.icon-Pboth:before,
-.icon-Plines:before,
-.icon-Pmain:before,
-.icon-Pspotlight:before,
-.icon-Sfreehand:before,
-.icon-Sleft:before,
-.icon-Smain:before,
-.icon-Sright:before,
-.icon-Sstack:before,
-.icon-jig:before {
+.icn-Dclone:before,
+.icn-Dtag:before,
+.icn-Pboth:before,
+.icn-Plines:before,
+.icn-Pmain:before,
+.icn-Pspotlight:before,
+.icn-Sfreehand:before,
+.icn-Sleft:before,
+.icn-Smain:before,
+.icn-Sright:before,
+.icn-Sstack:before,
+.icn-jig:before {
   display: inline-block;
   font-family: "fontcustom";
   font-style: normal;
@@ -49,15 +57,15 @@
   font-smoothing: antialiased;
 }
 
-.icon-Dclone:before { content: "\f100"; }
-.icon-Dtag:before { content: "\f101"; }
-.icon-Pboth:before { content: "\f102"; }
-.icon-Plines:before { content: "\f103"; }
-.icon-Pmain:before { content: "\f104"; }
-.icon-Pspotlight:before { content: "\f105"; }
-.icon-Sfreehand:before { content: "\f106"; }
-.icon-Sleft:before { content: "\f107"; }
-.icon-Smain:before { content: "\f108"; }
-.icon-Sright:before { content: "\f109"; }
-.icon-Sstack:before { content: "\f10a"; }
-.icon-jig:before { content: "\f10b"; }
+.icn-Dclone:before { content: "\f100"; }
+.icn-Dtag:before { content: "\f101"; }
+.icn-Pboth:before { content: "\f102"; }
+.icn-Plines:before { content: "\f103"; }
+.icn-Pmain:before { content: "\f104"; }
+.icn-Pspotlight:before { content: "\f105"; }
+.icn-Sfreehand:before { content: "\f106"; }
+.icn-Sleft:before { content: "\f107"; }
+.icn-Smain:before { content: "\f108"; }
+.icn-Sright:before { content: "\f109"; }
+.icn-Sstack:before { content: "\f10a"; }
+.icn-jig:before { content: "\f10b"; }
