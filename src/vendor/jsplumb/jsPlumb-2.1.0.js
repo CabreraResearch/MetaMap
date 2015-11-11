@@ -2288,6 +2288,9 @@
         _isf = function (o) {
             return Object.prototype.toString.call(o) === "[object Function]";
         },
+        _isNamedFunction = function(o) {
+            return _isf(o) && o.name != null && o.name.length > 0;
+        },
         _ise = function (o) {
             for (var i in o) {
                 if (o.hasOwnProperty(i)) return false;
@@ -2423,7 +2426,7 @@
             return successValue;
         },
         // take the given model and expand out any parameters.
-        populate: function (model, values) {
+        populate: function (model, values, functionPrefix) {
             // for a string, see if it has parameter matches, and if so, try to make the substitutions.
             var getValue = function (fromString) {
                     var matches = fromString.match(/(\${.*?})/g);
@@ -2442,6 +2445,9 @@
                     if (d != null) {
                         if (_iss(d)) {
                             return getValue(d);
+                        }
+                        else if (_isf(d) && (functionPrefix == null || (d.name || "").indexOf(functionPrefix) === 0)) {
+                            return d(values);
                         }
                         else if (_isa(d)) {
                             var r = [];
@@ -2857,7 +2863,7 @@
                 }
 
                 if (params) {
-                    o = _ju.populate(o, params);
+                    o = _ju.populate(o, params, "_");
                 }
 
                 component.applyType(o, doNotRepaint, map);
@@ -3025,7 +3031,7 @@
         }
     };
 
-    _ju.extend(jsPlumbUIComponent, _ju.EventGenerator, {
+    _ju.extend(root.jsPlumbUIComponent, _ju.EventGenerator, {
 
         getParameter: function (name) {
             return this._jsPlumb.parameters[name];
@@ -5813,8 +5819,8 @@
 
 // create static instance and assign to window if window exists.	
     var jsPlumb = new jsPlumbInstance();
-    // register on window if defined (lets us run on server)
-    if (typeof window != 'undefined') window.jsPlumb = jsPlumb;
+    // register on 'root' (lets us run on server or browser)
+    root.jsPlumb = jsPlumb;
     // add 'getInstance' method to static instance
     jsPlumb.getInstance = function (_defaults) {
         var j = new jsPlumbInstance(_defaults);
@@ -6490,7 +6496,7 @@
         }
     };
 
-    _ju.extend(_jp.OverlayCapableJsPlumbUIComponent, jsPlumbUIComponent, {
+    _ju.extend(_jp.OverlayCapableJsPlumbUIComponent, root.jsPlumbUIComponent, {
 
         setHover: function (hover, ignoreAttachedElements) {
             if (this._jsPlumb && !this._jsPlumb.instance.isConnectionBeingDragged()) {
