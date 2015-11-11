@@ -48,18 +48,11 @@ class Edge extends _CanvasBase {
                 overlays: [
                     [ 'PlainArrow', {
                         location: 1,
-                        id: "leftArrow",
-                        width: '${leftSize}', //it took an age to figure out how to make this work. The `0+` part is what did it in the end (otherwise the overlays would always appear)
+                        id: "left",
+                        width: '${leftSize}',
                         length: '${leftSize}',
-                        qwidth: 10,
-                        qheight: 10,
                         cssClass: 'relationship-overlay',
-                        visible: "${direction == 1}",
-                        events: {
-                            click: function () {
-                                alert("you clicked an arrow")
-                            }
-                        }
+                        visible: "${direction === 'left' || direction === 'left-right'}"
                     }],
                     ['Custom', {
                         create: (component) => {
@@ -89,11 +82,11 @@ class Edge extends _CanvasBase {
                     }],
                     [ 'PlainArrow', {
                         location: 0,
-                        id: "rightArrow",
+                        id: "right",
                         width: '${rightSize}',
                         length: '${rightSize}',
                         cssClass: 'relationship-overlay',
-                        visible: "${direction == -1}",
+                        visible: "${direction === 'right' || direction === 'left-right'}",
                         direction: -1
                     } ]
                 ],
@@ -140,75 +133,31 @@ class Edge extends _CanvasBase {
         }
     }
 
+    /**
+     * Toggle the 'direction' value for the edge, hiding and showing related overlays as necessary.
+     * @param event
+     * @param edge
+     * @param connection
+     */
     toggleRDirection(event, edge, connection) {
-        let newDirection = 'none'
-        switch (edge.data.direction) {
-            case 'left':
-                newDirection = 'right'
-                break
-            case 'right':
-                newDirection = 'left-right'
-                break
-            case 'left-right':
-                newDirection = 'none'
-                break
-            case 'none':
-                newDirection = 'left'
-                break
-        }
-        edge.data.direction = newDirection
-        edge.data.leftSize = (newDirection == 'left' || newDirection == 'left-right' ) ? this.canvas.arrowSize : 0
-        edge.data.rightSize = (newDirection == 'right' || newDirection == 'left-right' ) ? this.canvas.arrowSize : 0
 
-        //At this moment, you'd think jsPlumb has everything needed to render the overlay correctly;
-        //however, simply updating the data seems to have no effect (until you refresh the page)
-        //so, use the setVisible() methods to tell jsPlumb, "no, really, show/hide these things"
-
-        let left = false
-        let right = false
-        switch (newDirection) {
-            case 'left':
-                left = true
-                break
-            case 'right':
-                right = true
-                break
-            case 'left-right':
-                left = true
-                right = true
-                break
-        }
-
-        let overlays = connection.getOverlays()
-        _.each(overlays, (o, key) => {
-            if (o.loc == 0) {
-                if (left) {
-                    o.show()
-                } else {
-                    o.hide()
-                }
-                //o.setVisible(left)
-            } else {
-                if (right) {
-                    o.show()
-                } else {
-                    o.hide()
-                }
-            }
-        })
-
-
-        this.jsToolkit.updateEdge(edge)
-
-
-        //I don't think these should be required, but they seem to be
-        this.jsRenderer.relayout()
-        this.jsRenderer.refresh()
-
-        //This line is most likely redundant as updateEdge should implicitly do it
-        this.jsToolkit.fire('dataUpdated')
-
-        console.log('changed direction to ' + newDirection + ' the arrow should have updated in the UI')
+        let currentDirection = edge.data.direction || "none";
+        connection.hideOverlays();       // hide everything and then selectively show below
+        // the updateXXXX methods take a second argument that provides the updates - you do not need to manually
+        // set values in the data and then call update.
+        this.jsToolkit.updateEdge(edge, {
+            direction: ({
+                "none": "left",
+                "left": "right",
+                "right": "left-right",
+                "left-right": "none"
+            })[currentDirection]
+        });
+        // show the overlays we need.  use a little regex for this. the values map to the `id` values
+        // of the overlays defined in the relationship edge type.
+        _.each(edge.data.direction.match(/left|right/g), function(oid) {
+            connection.showOverlay(oid);
+        });
     }
 
     showRDot(connection) {
