@@ -4,6 +4,10 @@ const _ = require('lodash')
 
 const _CanvasBase = require('./_CanvasBase')
 
+const LEFT = "left"
+const RIGHT = "right"
+const BOTH = "left-right"
+
 class Edge extends _CanvasBase {
 
     constructor(canvas) {
@@ -52,7 +56,9 @@ class Edge extends _CanvasBase {
                         width: '${leftSize}',
                         length: '${leftSize}',
                         cssClass: 'relationship-overlay',
-                        visible: "${direction === 'left' || direction === 'left-right'}"
+                        visible:function _visible(data) {
+                            return data == null || (data.direction === LEFT || data.direction === BOTH)
+                        }
                     }],
                     ['Custom', {
                         create: (component) => {
@@ -86,7 +92,9 @@ class Edge extends _CanvasBase {
                         width: '${rightSize}',
                         length: '${rightSize}',
                         cssClass: 'relationship-overlay',
-                        visible: "${direction === 'right' || direction === 'left-right'}",
+                        visible:function _visible(data) {
+                            return data == null || (data.direction === RIGHT || data.direction === BOTH)
+                        },
                         direction: -1
                     } ]
                 ],
