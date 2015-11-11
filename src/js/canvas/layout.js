@@ -34,10 +34,10 @@ const _ = require('lodash')
     var originalLocationMap = {}, self = this, magnetizeNodes = [],
         _childPositions = {}, _childBounds = {};
 
-    var _oneSet = function(parent, position, size, params, toolkit) {
+    var _oneSet = function(parentNode, position, size, params, toolkit) {
       params = params || {};
       var padding = params.partPadding || 5,
-          parentSize = size || this.getSize(parent.id),             // get its size
+          parentSize = size || this.getSize(parentNode.id),             // get its size
       // we need to track the entire Y size of the node plus all its children, for nested layouts. Where
       // previously we would place a child and then increment the Y cursor by the size of the child plus
       // the padding, we now need to render all the child's child nodes and increment our Y cursor to take them
@@ -45,22 +45,22 @@ const _ = require('lodash')
           totalHeightForThisNode = parentSize[1];
 
         // look for nodes that have children but no parent.
-      if (parent.data.suspendLayout !== true && parent.data.children) {
+      if (parentNode.data.suspendLayout !== true && parentNode.data.children) {
 
-          originalLocationMap[parent.id] = {};
+          originalLocationMap[parentNode.id] = {};
 
-          var c = parent.data.children,                                 // get child node IDs
+          var c = parentNode.data.children,                                 // get child node IDs
               childNodes = _.map(c, toolkit.getNode),                   // map them to actual Node objects
-              parentPos = position || this.getPosition(parent.id),      // get the position of the parent (if not provided)
+              parentPos = position || this.getPosition(parentNode.id),      // get the position of the parent (if not provided)
 
-              align = (parent.data.partAlign || "right") === "left" ? 0 : 1,// and the face to align to.
+              align = (parentNode.data.partAlign || "right") === "left" ? 0 : 1,// and the face to align to.
 
           // and finally, move the Y cursor down to accomodate the size of the parent. Here, when nesting, the
               // parent size is actually the size of the parent plus all of its children and the padding in
               // between them all
               y = parentPos[1] + parentSize[1] + padding;
 
-          magnetizeNodes.push( parent.id );
+          //magnetizeNodes.push( parentNode.id );
 
           // sort nodes
           childNodes.sort(childNodeComparator);
@@ -72,7 +72,7 @@ const _ = require('lodash')
               }
           });
 
-          _childPositions[parent.id] = [];
+          _childPositions[parentNode.id] = [];
           var childBounds = {xmin:Infinity, xmax:-Infinity, ymin:Infinity, ymax:-Infinity};
 
           for (var i = 0; i < childNodes.length; i++) {
@@ -81,16 +81,16 @@ const _ = require('lodash')
                   var childSize = this.getSize(cn.id),
                       x = parentPos[0] + (align * (parentSize[0] - childSize[0]));
 
-                  if (originalLocationMap[parent.id][cn.id] == null) {
+                  if (originalLocationMap[parentNode.id][cn.id] == null) {
                       var p = this.getPosition(cn.id);
-                      originalLocationMap[parent.id][cn.id] = [p[0], p[1]];
+                      originalLocationMap[parentNode.id][cn.id] = [p[0], p[1]];
                   }
 
                   _updateBounds(childBounds, x, x + childSize[0], y, y + childSize[1]);
-                  _childPositions[parent.id].push([x,y,cn]);
+                  _childPositions[parentNode.id].push([x,y,cn]);
 
                   this.setPosition(cn.id, x, y, true);
-                  magnetizeNodes.push(cn.id);
+                  //magnetizeNodes.push(cn.id);
 
                   var childRenderedHeight = _oneSet(cn, [x,y], childSize, params, toolkit);
 
@@ -102,7 +102,7 @@ const _ = require('lodash')
           // gives us the bounds of the child nodes. when we subsequently drag a child node we can check if
           // it at least intersects this rectangle. If so, we find its new natural ordering (on drag stop),
           // and set it, and redraw.
-          _childBounds[parent.id] = childBounds;
+          _childBounds[parentNode.id] = childBounds;
 
       }
         return totalHeightForThisNode;

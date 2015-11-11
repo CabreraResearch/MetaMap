@@ -13,7 +13,7 @@ class Events extends _CanvasBase {
     }
 
     get _types() {
-        this.__types = this.__types || [['red', 'D'], ['orange', 'P'], ['green', 'S'], ['blue', 'R'], ['eye_closed'], ['eye_open']]
+        this.__types = this.__types || [ ['red', 'D'], ['orange', 'P'], ['green', 'S'], ['blue','R'], ['eye_closed'], ['eye_open'] ]
         return this.__types
     }
 
@@ -24,21 +24,71 @@ class Events extends _CanvasBase {
         // labels. When a drag starts we set the zoom on that jsPlumb instance to
         // match our current zoom.
         //
-        if (!this.__clickHandlers) {
-            let events = {
-                click: {
-
+        this.__clickHandlers = this.__clickHandlers || {
+            click:{
+                eye_closed: (el, node) => {
+                    this.clickLogger('eye closed', 'click', el, node)
+                    if (node.data.perspective.has) {
+                        node.data.perspective.class = 'open'
+                        this.canvas.updateData({ node: node })
+                        let sel = this.jsToolkit.select(node.data.perspective.edges)
+                        this.jsRenderer.setVisible(sel, true)
+                    }
                 },
-                dblclick: {
+                eye_open: (el, node) => {
+                    this.clickLogger('eye open', 'click', el, node)
+                    if (node.data.perspective.has) {
+                        node.data.perspective.class = 'closed'
+                        this.canvas.updateData({ node: node })
+                        let sel = this.jsToolkit.select(node.data.perspective.edges)
+                        this.jsRenderer.setVisible(sel, true)
+                    }
+                }
+            },
+            dblclick:{
+                red:(el, node) => {
+                    this.clickLogger('R', 'dblclick', el, node)
+                    this.canvas.jsToolkit.addNode(this.canvas.node.getNewNode())
+                },
+                green:(el, node) => {
+                    this.clickLogger('G', 'dblclick', el, node)
+                    var newWidth = node.data.w * this.canvas.partSize
+                    var newHeight = node.data.h * this.canvas.partSize
 
+                    node.data.children = node.data.children || []
+                    var newLabel = 'Part'
+
+                    var newNode = this.canvas.jsToolkit.addNode({
+                        parentId:node.id,
+                        w:newWidth,
+                        h:newHeight,
+                        label: newLabel,
+                        order: node.data.children.length
+                        })
+
+                    node.data.children.push(newNode.id)
+                    this.canvas.jsRenderer.relayout()
+                },
+                orange:(el, node) => {
+                    this.clickLogger('O', 'dblclick', el, node)
+                    var newNode = this.canvas.jsToolkit.addNode(this.canvas.node.getNewNode())
+
+                    this.canvas.jsToolkit.connect({source:node, target:newNode, data:{
+                        type:'perspective'
+                    }})
+                },
+                blue:(el, node) => {
+                    this.clickLogger('B', 'dblclick', el, node)
+                    var newNode = this.canvas.jsToolkit.addNode(this.canvas.node.getNewNode())
+
+                    this.canvas.jsToolkit.connect({source:node, target:newNode, data:{
+                        type: 'relationship',
+                        direction: 'none',
+                        leftSize: 0,
+                        rightSize: 0
+                    }})
                 }
             }
-            let edgeEvents = this.edge.getClickEvents()
-            let nodeEvents = this.node.getClickEvents()
-            _.extend(events, edgeEvents)
-            _.extend(events, nodeEvents)
-
-            this.__clickHandlers = events
         }
         return this.__clickHandlers
     }
@@ -138,36 +188,7 @@ class Events extends _CanvasBase {
                         that.canvas.rndrr.showRDot(id, { edge: edge })
                     }
                 })
-            }/*,
-            nodeDropped:(params)=> {
-                let target = params.target
-                let source = params.source
-                let sourceId = params.source.data.id
-                let targetId = params.target.data.id
-
-                //If the source was previously a child of any parent, disassociate
-                if (source.data.parent) {
-                    let oldParent = this.canvas.jsToolkit.getNode(source.data.parent)
-                    if (oldParent) {
-                        oldParent.data.children = _.remove(oldParent.data.children, (id) => { return id == sourceId })
-                        this.canvas.jsToolkit.updateNode(oldParent)
-                    }
-                }
-
-                //Assign the source to the new parent
-                target.data.children = target.data.children || []
-                target.data.children.push(source.data.id)
-                this.canvas.jsToolkit.updateNode(target)
-
-                //Update the source
-                source.data.parent = targetId
-                source.data.h = target.data.h * this.canvas.partSize
-                source.data.w = target.data.w * this.canvas.partSize
-                source.data.order = target.children.length
-                this.canvas.jsToolkit.updateNode(source)
-
-                this.canvas.jsRenderer.refresh()
-            }*/
+            }
         }
     }
 
