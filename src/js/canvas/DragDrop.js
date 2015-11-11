@@ -140,11 +140,25 @@ class DragDropHandler {
             return true;
         }
 
-        function reorderChild(sourceNode, targetNode, event, dragEl, dropEl) {
-            jsPlumbUtil.consume(event);
-            alert("reorder child!")
-            let targetIndex = targetNode.data.order || 0;
-
+        function reorderChild(sourceNode, targetNode, params) {
+            jsPlumbUtil.consume(params.e);
+            let layout = getRenderer().getLayout();
+            var childPositions = layout.getChildPositions(params.drag.el._metamapParent.id), idx = null;
+            // here we map child positions to a list containing entries that have [ pos, delta, idx ], which we then
+            // sort by delta (where delta is the distance from that node's top edge from the dropped node's top edge).
+            // the first entry in this array, then, gives us the new index for the dropped node.
+            let sortedLocations = (_.map(childPositions, function(cp, i) { return [cp[1], Math.abs(cp[1] - params.pos[1]), i ]; })).sort(function(a, b) {
+                return a[1] < b[1] ? -1 : a[1] > b[1] ? 1 : 0;
+            });
+            // move the dropped node
+            childPositions.splice(sortedLocations[0][2], 0, childPositions.splice(sourceNode.data.order, 1)[0]);
+            // iterate through and reassign order.
+            _.each(childPositions, function(cp, i) {
+                toolkit.updateNode(cp[2], {
+                    order:i
+                });
+            });
+            return true;
         }
 
         this.getDropOptions = function () {
@@ -162,7 +176,7 @@ class DragDropHandler {
                             outcome = addAsChild(sourceInfo.obj, targetInfo.obj, params.e)
                         }
                         else {
-                            outcome = reorderChild(sourceInfo.obj, targetInfo.obj, params.e, params.dragEl, params.dropEl)
+                            outcome = reorderChild(sourceInfo.obj, targetInfo.obj, params)
                         }
                     }
                     else {
