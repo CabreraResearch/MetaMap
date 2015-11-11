@@ -1766,7 +1766,7 @@
         };
 
         this.drop = function(drag, event) {
-            return this.params.events["drop"]({ drag:drag, e:event, drop:this });
+            return this.params.events["drop"]({ drag:drag, e:event, drop:this, pos:this.params.getPosition(drag.el) });
         };
 
         this.destroy = function() {
