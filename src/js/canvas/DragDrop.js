@@ -130,6 +130,7 @@ class DragDropHandler {
             var newSize = canvas.getPartSizeAtDepth(depth)
             sourceNode.data.w = newSize;
             sourceNode.data.h = newSize;
+            getRenderer().getLayout().setSize(sourceNode.id, [newSize, newSize])
 
             // update target
             toolkit.updateNode(targetNode);
