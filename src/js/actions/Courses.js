@@ -15,7 +15,6 @@ class Courses extends ActionBase {
         tag.update()
         this.eventer.do(CONSTANTS.PAGES.COURSE_LIST, { id: id }, ...params);
         this.eventer.do(CONSTANTS.EVENTS.PAGE_NAME, { name: 'Courses' }, ...params);
-        this.closeSidebar();
 
         return true;
     }

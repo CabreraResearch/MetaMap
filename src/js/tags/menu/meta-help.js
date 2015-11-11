@@ -8,7 +8,7 @@ const html = `<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdo
         </a>
         <ul class="dropdown-menu">
             <li>
-                <ul class="dropdown-menu-list scroller" style="height: 270px;" data-handle-color="#637283">
+                <ul class="dropdown-menu-list scroller" data-handle-color="#637283">
                     <li if="{ help }"
                         each="{ help }"
                         onclick="{ parent.onClick }">
