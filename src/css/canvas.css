@@ -43,13 +43,39 @@
 }
 
 /* styles for the idea node. */
-
-.perspective_closed {
+.eye_closed[data-show="none"] {
     opacity:0;
+    fill-opacity: 0;
+    display: none;
+    visibility: hidden;
 }
 
-.perspective_open {
+.eye_closed[data-show="open"] {
     opacity:0;
+    fill-opacity: 0;
+    display: none;
+    visibility: hidden;
+}
+.eye_closed[data-show="closed"] {
+    opacity:1;
+    fill-opacity: 1;
+}
+
+.eye_open[data-show="open"] {
+    opacity:1;
+    fill-opacity: 1;
+}
+.eye_open[data-show="closed"] {
+    opacity:0;
+    fill-opacity: 0;
+    display: none;
+    visibility: hidden;
+}
+.eye_open[data-show="none"] {
+    opacity:0;
+    fill-opacity: 0;
+    display: none;
+    visibility: hidden;
 }
 
 .paperclip {
@@ -121,6 +147,10 @@
 
 .green {
     fill: #93C63D;
+}
+
+.grey {
+    fill:#B3C2C7;
 }
 
 /* styles for edges */

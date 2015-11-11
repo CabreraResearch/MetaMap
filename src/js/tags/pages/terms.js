@@ -1,4 +1,6 @@
 const riot = require('riot');
+const $ = require('jquery')
+const _ = require('lodash')
 const CONSTANTS = require('../../constants/constants');
 
 const html = `

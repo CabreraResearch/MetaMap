@@ -1,4 +1,7 @@
 const riot = require('riot')
+const $ = require('jquery')
+const _ = require('lodash')
+
 const AllTags = require('../mixins/all-tags')
 const CONSTANTS = require('../../constants/constants')
 const VideoPlayer = require('../../tools/VideoPlayer')
@@ -91,7 +94,7 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO, html, function(o
         }
     }
 
-    this.on('mount update', (opts) => {
+    this.on('mount update', (event, opts) => {
         update(opts)
     })
 

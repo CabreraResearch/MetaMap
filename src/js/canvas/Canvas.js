@@ -1,13 +1,17 @@
 const jsPlumb = window.jsPlumb;
 const jsPlumbToolkit = window.jsPlumbToolkit;
+const $ = require('jquery')
 const _ = require('lodash')
+
 const CONSTANTS = require('../constants/constants')
 const Permissions = require('../app/Permissions')
 const Toolkit = require('./Toolkit')
 const Node = require('./Node')
+const Edge = require('./Edge')
 const Renderer = require('./Renderer')
 const Events = require('./Events')
 const Dialog = require('./Dialog')
+const Schema = require('./Schema')
 
 require('./layout')
 
@@ -41,6 +45,10 @@ class Canvas {
 
             //Load the classes
             //Order of ops matters
+            //0. Load nodes and edges
+            this.node = new Node(this)
+            this.edge = new Edge(this)
+
             //1. Load the toolkit
             this.tk = new Toolkit(this)
             this.jsToolkit = this.tk.toolkit
@@ -52,11 +60,11 @@ class Canvas {
             this.rndrr = new Renderer(this)
             this.jsRenderer = this.rndrr.renderer
 
-            //4: Load the node
-            this.node = new Node(this)
 
             //5: Dialog (order doesn't really matter here)
             this.dialog = new Dialog(this)
+
+            this.schema = new Schema(this)
 
             //6: Load the data
             this.loadData()
@@ -69,11 +77,11 @@ class Canvas {
     }
 
     _init(opts) {
-        if(opts.map) this.map = opts.map;
-        if(opts.mapId) this.mapId = opts.mapId;
+        if (opts.map) this.map = opts.map;
+        if (opts.mapId) this.mapId = opts.mapId;
 
         this.isReadOnly = false
-        if(opts.doAutoSave == true || opts.doAutoSave == false) this.doAutoSave = opts.doAutoSave
+        if (opts.doAutoSave == true || opts.doAutoSave == false) this.doAutoSave = opts.doAutoSave
         if (this.map && this.doAutoSave) {
             this.permissions = new Permissions(this.map)
             this.isReadOnly = !this.permissions.canEdit()
@@ -81,14 +89,20 @@ class Canvas {
     }
 
     reInit(opts) {
-         this._init(opts)
+        this._init(opts)
+    }
+
+    //Convenience getters
+
+    get dragDropHandler() {
+        return this.rndrr.dragDropHandler
     }
 
     onAutoSave(data) {
         if (this.doAutoSave && this.permissions.canEdit()) {
             //KLUDGE: looks like the exportData now includes invalid property values (Infinity) and types (methods)
             //Parsing to/from string fixes for now
-            data = JSON.parse(JSON.stringify(data))
+            data = this.exportData()
             let postData = {
                 data: data,
                 changed_by: {
@@ -105,16 +119,18 @@ class Canvas {
         const toolkit = this.jsToolkit
         const renderer = this.jsRenderer
 
+        if ((!this.map || !this.map.data) && this.doAutoSave && !this.isReadOnly) {
+            this.map = this.map || {}
+            this.map.data = this.schema.getDefaultMap()
+        }
         if (this.map && this.map.data) {
+            this.schema.upgrade(this.map.data)
             toolkit.load({
                 type: 'json',
                 data: this.map.data
             })
             let state = localStorage.getItem(`jtk-state-metaMapCanvas_${this.mapId || this.mapName}`)
             renderer.State.restore(state)
-            toolkit.eachEdge((i,e) => {
-                //console.log(e)
-            })
         }
     }
 
@@ -146,13 +162,7 @@ class Canvas {
     }
 
     updateData(obj) {
-
-        if (obj.edge) {
-            this.jsToolkit.updateEdge(obj.edge)
-        }
-        if (obj.node) {
-            this.jsToolkit.updateNode(obj.node)
-        }
+        this.schema.updateData(obj)
 
         //I don't think these should be required, but they seem to be
         this.jsRenderer.relayout()
@@ -168,48 +178,6 @@ class Canvas {
         this.events.update()
         this.rndrr.update()
         this.dialog.update()
-    }
-
-    deleteAll(selected) {
-        const toolkit = this.jsToolkit
-
-        const deleteRThing = (child) => {
-            if (child && child.data && child.data.rthing && child.data.rthing.edgeId) {
-                let edge = toolkit.getEdge(child.data.rthing.edgeId)
-                edge.data.rthing = null
-                toolkit.updateEdge(edge)
-            }
-        }
-
-        const recurse = (node) => {
-            if(node && node.data && node.data.children) {
-                _.each(node.data.children, (id, i) => {
-                    let child = toolkit.getNode(id)
-                    recurse(child)
-                })
-            }
-            deleteRThing(node)
-            //Delete children before parents
-            toolkit.removeNode(node)
-        }
-
-        try {
-            selected.eachEdge(function (i, edge) {
-                //Delete any r-things that are associated with the edges to be deleted
-                if (edge && edge.data && edge.data.rthing && edge.data.rthing.nodeId) {
-                    let child = toolkit.getNode(edge.data.rthing.nodeId)
-                    recurse(child)
-                }
-            });
-
-            //Recurse over all children
-            selected.eachNode((i, n) => {
-                recurse(n)
-            });
-            toolkit.remove(selected)
-        } catch (e) {
-            this.metaMap.error(e)
-        }
     }
 
     get partSize() {
@@ -228,7 +196,7 @@ class Canvas {
     // a couple of random examples of the filter function, allowing you to query your data
     // --------------------------------------------------------------------------------------------------------
     countEdgesOfType(type) {
-        return this.jsToolkit.filter(function(obj) { return obj.objectType == "Edge" && obj.data.type===type; }).getEdgeCount()
+        return this.jsToolkit.filter(function (obj) { return obj.objectType == "Edge" && obj.data.type === type; }).getEdgeCount()
     }
 
     dumpEdgeCounts() {

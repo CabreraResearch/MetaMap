@@ -11,24 +11,6 @@ class ActionBase {
     act(id, ...params) {
         return false;
     }
-
-    toggleSidebar() {
-        if(this.sidebarOpen) {
-            this.openSidebar()
-        } else {
-            this.closeSidebar()
-        }
-    }
-
-    openSidebar(id) {
-        this.sidebarOpen = true
-        this.eventer.do(CONSTANTS.EVENTS.SIDEBAR_OPEN, id)
-    }
-
-    closeSidebar() {
-        this.sidebarOpen = false
-        this.eventer.do(CONSTANTS.EVENTS.SIDEBAR_CLOSE)
-    }
 }
 
 module.exports = ActionBase;

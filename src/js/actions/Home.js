@@ -13,7 +13,6 @@ class Home extends ActionBase {
         $(`#${CONSTANTS.ELEMENTS.APP_CONTAINER}`).empty();
         riot.mount(document.getElementById(CONSTANTS.ELEMENTS.APP_CONTAINER), CONSTANTS.TAGS.HOME);
         this.eventer.do(CONSTANTS.EVENTS.PAGE_NAME, { name: 'Home' }, ...params);
-        this.closeSidebar();
         return true;
     }
 }

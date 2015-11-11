@@ -1,5 +1,7 @@
 const jsPlumb = window.jsPlumb;
 const $ = require('jquery')
+const _ = require('lodash')
+
 const _CanvasBase = require('./_CanvasBase')
 
 class Edge extends _CanvasBase {
@@ -11,6 +13,101 @@ class Edge extends _CanvasBase {
 
     bindHover() {
 
+    }
+
+    getToolkitEvents() {
+        return {
+            beforeStartConnect: (fromNode, edgeType) => {
+                let ret = {
+                    type: edgeType
+                }
+                if (edgeType == 'perspective') {
+                    _.extend(ret, {
+                        visible: true,
+                        perspective: {
+                            nodeId: fromNode.id
+                        }
+                    })
+                } else {
+                    _.extend(ret, {
+                        direction: 'none',
+                        leftSize: 0,
+                        rightSize: 0
+                    })
+                }
+                return ret
+            },
+            beforeConnect: (fromNode, toNode, edgeData) => {
+                var ret = true
+                //Prevent self-referencing connections
+                if (fromNode == toNode) {
+                    ret = false
+                } else {
+                    //Between the same two nodes, only one perspective connection may exist
+                    switch (edgeData.type) {
+                        case 'perspective':
+                            var edges = fromNode.getEdges({ filter: function (e) { return e.data.type == 'perspective' } })
+                            for (var i = 0; i < edges.length; i += 1) {
+                                var ed = edges[i]
+                                if ((ed.source == fromNode && ed.target == toNode) || (ed.target == fromNode && ed.source == toNode)) {
+                                    ret = false
+                                    break
+                                }
+                            }
+                            if (ret) {
+                                fromNode.data.perspective = fromNode.data.perspective || {
+                                    has: true,
+                                    edges: [],
+                                    class: 'open'
+                                }
+                                fromNode.data.perspective.has = true
+                                fromNode.data.perspective.edges = fromNode.data.perspective.edges || []
+                                fromNode.data.perspective.class = 'open'
+                                this.canvas.updateData({ node: fromNode })
+                            }
+                            break
+                    }
+                }
+                return ret
+            }
+        }
+    }
+
+    getClickEvents() {
+        return {
+            click: {
+                eye_closed: (el, node) => {
+                    if (node.data.perspective.has) {
+                        node.data.perspective.class = 'open'
+                        this.canvas.updateData({ node: node })
+                        _.each(node.data.perspective.edges, (edgeId) => {
+                            let edge = this.jsToolkit.getEdge(edgeId)
+                            if (edge) {
+                                edge.data.visible = true
+                                this.canvas.updateData({ edge: edge })
+                                this.jsRenderer.setVisible(edge, true)
+                            }
+                        })
+                        this.canvas.clearSelection()
+                    }
+                },
+                eye_open: (el, node) => {
+                    if (node.data.perspective.has) {
+                        node.data.perspective.class = 'closed'
+                        this.canvas.updateData({ node: node })
+                        _.each(node.data.perspective.edges, (edgeId) => {
+                            let edge = this.jsToolkit.getEdge(edgeId)
+                            if (edge) {
+                                edge.data.visible = false
+                                this.canvas.updateData({ edge: edge })
+                                this.jsRenderer.setVisible(edge, false)
+                            }
+                        })
+                        this.canvas.clearSelection()
+                    }
+                }
+            }
+        }
     }
 
     getView() {
@@ -28,27 +125,27 @@ class Edge extends _CanvasBase {
                     }
                 }
             },
-            default:{
+            default: {
                 parent: 'all',
-                anchors:['Continuous','Continuous'],
+                anchors: ['Continuous', 'Continuous'],
 
             },
             connector: {
                 parent: 'all',
-                connector:['StateMachine', {
-                    margin: 0.00001,
-                    curviness:15
+                connector: ['StateMachine', {
+                    margin: 0.00001, //This seems to be the most precision that has any effect. The Edge is as close as it's going to get.
+                    curviness: 15
                 }]
             },
-            relationship:{
-                cssClass:'edge-relationship ${id}',
+            relationship: {
+                cssClass: 'edge-relationship ${id}',
                 parent: 'connector',
                 endpoint: 'Blank', //[ [ 'Dot', { radius:2, cssClass:'grey' }], [ 'Dot', { radius:2, cssClass:'grey' }]],
-                overlays:[
-                    [ 'PlainArrow', {
-                        location:1,
-                        width:0+'${leftSize}', //it took an age to figure out how to make this work. The `0+` part is what did it in the end (otherwise the overlays would always appear)
-                        length:0+'${leftSize}',
+                overlays: [
+                    ['PlainArrow', {
+                        location: 1,
+                        width: 0 + '${leftSize}', //it took an age to figure out how to make this work. The `0+` part is what did it in the end (otherwise the overlays would always appear)
+                        length: 0 + '${leftSize}',
                         cssClass: 'relationship-overlay'
                     }],
                     ['Custom', {
@@ -64,33 +161,46 @@ class Edge extends _CanvasBase {
                             }
                             return ret
                         },
-                        location:0.5,
-                        id:"customOverlay"
+                        location: 0.5,
+                        id: "customOverlay"
                     }],
-                    [ 'PlainArrow', {
-                        location:0,
-                        width:0+'${rightSize}',
-                        length:0+'${rightSize}',
+                    ['PlainArrow', {
+                        location: 0,
+                        width: 0 + '${rightSize}',
+                        length: 0 + '${rightSize}',
                         cssClass: 'relationship-overlay',
                         direction: -1
-                    } ]
+                    }]
                 ],
                 events: {
                     tap: (obj) => {
+                        //Before we set this as the selected edge, get the current selection
+                        let selected = this.jsToolkit.getSelection()
+                        //If there is only one selected edge, proceed
+                        if (selected.getEdgeCount() == 1) {
+                            let isSelected = false
+                            selected.eachEdge((idx, edge) => {
+                                if (edge.data.id == obj.edge.data.id) {
+                                    isSelected = true
+                                }
+                            })
+                            //if the selected edge is this edge, this is the 2nd click
+                            if (isSelected) {
+                                this.toggleRDirection(obj.e, obj.edge, obj.connection)
+                                this.canvas.updateData(obj)
+                            }
+                        }
+                        //Now set the selection
                         this.canvas.clearSelection(obj)
 
-                        if (obj.e.target.getAttribute('class') == 'relationship-overlay' || obj.edge.data.direction == 'none') {
-                            this.toggleRDirection(obj.e, obj.edge, obj.connection)
-                            this.canvas.updateData(obj)
-                        }
                         this.showRDot(obj.edge.data.id, obj)
                         return true
                     }
                 }
             },
-            perspective:{
-                cssClass:'edge-perspective',
-                endpoints:[ 'Blank', [ 'Dot', { radius:5, cssClass:'orange' }]],
+            perspective: {
+                cssClass: 'edge-perspective',
+                endpoints: ['Blank', ['Dot', { radius: 5, cssClass: 'orange' }]],
                 parent: 'connector',
                 events: {
                     tap: (obj) => {
@@ -118,8 +228,8 @@ class Edge extends _CanvasBase {
                 break
         }
         edge.data.direction = newDirection
-        edge.data.leftSize = (newDirection == 'left' || newDirection == 'left-right' ) ? this.canvas.arrowSize : 0
-        edge.data.rightSize = (newDirection == 'right' || newDirection == 'left-right' ) ? this.canvas.arrowSize : 0
+        edge.data.leftSize = (newDirection == 'left' || newDirection == 'left-right') ? this.canvas.arrowSize : 0
+        edge.data.rightSize = (newDirection == 'right' || newDirection == 'left-right') ? this.canvas.arrowSize : 0
 
         //At this moment, you'd think jsPlumb has everything needed to render the overlay correctly;
         //however, simply updating the data seems to have no effect (until you refresh the page)
@@ -204,11 +314,11 @@ class Edge extends _CanvasBase {
         let d = {
             w: size,
             h: size,
-            left: dot.position().left - (size/2),
-            top: dot.position().top - (size/2)
+            left: dot.position().left - (size / 2),
+            top: dot.position().top - (size / 2)
         }
 
-        let nodeData = jsPlumb.extend(this.canvas.node.getNewNode({ type: 'r-thing', cssClass: 'donotdrag'}), d)
+        let nodeData = jsPlumb.extend(this.canvas.node.getNewNode({ type: 'r-thing', cssClass: 'donotdrag' }), d)
         nodeData.rthing = {
             edgeId: obj.edge.data.id,
             rDot: obj.edge.data.id + '_rthing'
@@ -222,6 +332,32 @@ class Edge extends _CanvasBase {
         this.hideRDots()
 
         this.canvas.updateData({ node: newNode, edge: obj.edge })
+    }
+
+    onAdded(obj) {
+        if (obj.edge.data.type == 'perspective') {
+            if (!_.contains(obj.edge.source.data.perspective.edges, obj.edge.data.id)) {
+                obj.edge.source.data.perspective.edges.push(obj.edge.data.id)
+                this.canvas.updateData({ node: obj.edge.source })
+            }
+            //Kludge: for some reason, dragging from the P button toggle the eye class back to open
+            //This is probably desirable, but I have no idea why it's happening
+            //Creating a new perspective should then just show all perspectives
+            if (obj.edge.source.data.perspective.class == 'open') {
+                _.each(obj.edge.source.data.perspective.edges, (edgeId) => {
+                    let edge = this.jsToolkit.getEdge(edgeId)
+                    if (edge) {
+                        edge.data.visible = true
+                        this.jsRenderer.setVisible(edge, true)
+                    }
+                })
+            }
+        }
+        //Kludge: this seems like a bit of a hack, but there isn't another way AFAIK to persist visibility on an edge
+        if (obj.edge.data.visible === false) {
+            this.jsRenderer.setVisible(obj.edge, false)
+        }
+        return obj
     }
 
 }

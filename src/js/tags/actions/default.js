@@ -7,7 +7,7 @@ const CONSTANTS = require('../../constants/constants')
 const html = `
 <div class="portlet-body">
     <div if="{ true != archived }" class="finish">
-        <a if="{ hasFinish }" onclick="{ onFinish }" class="btn red">{_.capitalize(data.action)} <i class="fa fa-check-circle"></i></a>
+        <a if="{ hasFinish }" onclick="{ onFinish }" class="btn red">{ getAction(data.action) } <i class="fa fa-check-circle"></i></a>
     </div>
 </div>
 `
@@ -43,6 +43,10 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.DEFAULT, html, function
     this.on('update', (opts) => {
         update(opts)
     })
+
+    this.getAction = (action) => {
+        return _.capitalize(action)
+    }
 
     this.onFinish = () => {
         this.cortex.processUserResponse({

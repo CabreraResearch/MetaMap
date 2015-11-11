@@ -14,8 +14,7 @@ class MyMaps extends ActionBase {
         riot.mount(document.getElementById(CONSTANTS.ELEMENTS.APP_CONTAINER), CONSTANTS.TAGS.MY_MAPS);
         this.eventer.do(CONSTANTS.PAGES.MY_MAPS, { id: id }, ...params);
         this.eventer.do(CONSTANTS.EVENTS.PAGE_NAME, { name: 'My Maps' }, ...params);
-        this.closeSidebar();
-        
+
         return true;
     }
 }

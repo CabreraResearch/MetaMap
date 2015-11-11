@@ -1,6 +1,7 @@
 const jsPlumb = window.jsPlumb;
-const Node = require('./Node')
-const Edge = require('./Edge')
+const $ = require('jquery')
+const _ = require('lodash')
+
 const DragDropHandler = require('./DragDrop')
 const _CanvasBase = require('./_CanvasBase')
 
@@ -10,8 +11,6 @@ class Renderer extends _CanvasBase {
         super(canvas)
 
         this.opts = canvas.opts
-        this.node = new Node(canvas, this)
-        this.edge = new Edge(canvas, this)
 
         const toolkit = canvas.jsToolkit
 
@@ -19,7 +18,7 @@ class Renderer extends _CanvasBase {
 		// drag/drop handler is instantiated (and it currently does not pass itself in to any of the
 		// drag/drop callbacks, something that is on the jsplumb roadmap)
 		var renderer;
-		let dragDropHandler = new DragDropHandler(canvas, toolkit, function() {
+		let dragDropHandler = this.dragDropHandler = new DragDropHandler(canvas, toolkit, function() {
 			return renderer;
 		});
 

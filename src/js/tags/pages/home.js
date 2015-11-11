@@ -1,5 +1,6 @@
 const riot = require('riot');
 const CONSTANTS = require('../../constants/constants');
+const _ = require('lodash')
 
 const html = `
 <div class="portlet light">

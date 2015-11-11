@@ -1,5 +1,6 @@
 const riot = require('riot');
 const $ = require('jquery')
+const _ = require('lodash')
 require('bootstrap-hover-dropdown')
 
 const html = `<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">

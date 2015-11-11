@@ -86,7 +86,7 @@ gulp.task('cdn', function () {
         downloadAndParse('https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.2/css/bootstrap3/bootstrap-switch.min.css')
         downloadAndParse('https://cdn.datatables.net/plug-ins/1.10.9/integration/bootstrap/3/dataTables.bootstrap.css')
         downloadAndParse('https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/css/bootstrap-editable.css', true)
-        downloadAndParse('https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.7.4/css/bootstrap-select.min.css')
+        downloadAndParse('https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.7.5/css/bootstrap-select.min.css')
         downloadAndParse('https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.2.0/min/dropzone.min.css')
         downloadAndParse('https://code.jquery.com/ui/1.11.4/themes/ui-lightness/jquery-ui.css', true)
         downloadAndParse('https://cdnjs.cloudflare.com/ajax/libs/jquery.perfect-scrollbar/0.6.7/css/perfect-scrollbar.min.css')
@@ -117,6 +117,8 @@ gulp.task('vendor2', function (cb) {
         });
 });
 
-gulp.task('vendor', ['vendor1', 'vendor2']);
+gulp.task('vendor-all', ['vendor1', 'vendor2']);
+
+gulp.task('vendor', ['vendor1', 'concatOthers']);
 
 

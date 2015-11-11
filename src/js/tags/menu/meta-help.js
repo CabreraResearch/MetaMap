@@ -1,13 +1,14 @@
 const riot = require('riot');
 const $ = require('jquery')
 require('bootstrap-hover-dropdown')
+const _ = require('lodash')
 
 const html = `<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
             <i class="fa fa-graduation-cap"></i>
         </a>
         <ul class="dropdown-menu">
             <li>
-                <ul class="dropdown-menu-list scroller" style="height: 270px;" data-handle-color="#637283">
+                <ul class="dropdown-menu-list scroller" data-handle-color="#637283">
                     <li if="{ help }"
                         each="{ help }"
                         onclick="{ parent.onClick }">
