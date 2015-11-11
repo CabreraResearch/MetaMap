@@ -254,12 +254,12 @@ class Events extends _CanvasBase {
                     case 65:
                         if (event.ctrlKey) {
                             event.preventDefault()
-                            let selection = toolkit.getSelection()
+                            
                             toolkit.eachNode((i, node) => {
-                                selection.append(node)
+                                toolkit.addToSelection(node)
                             })
                             toolkit.eachEdge((i, edge) => {
-                                selection.append(edge)
+                                toolkit.addToSelection(edge)
                             })
 
                         }
