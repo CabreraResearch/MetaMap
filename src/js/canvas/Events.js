@@ -168,6 +168,7 @@ class Events extends _CanvasBase {
             nodeAdded: (params) => { this.registerHandlers(params) }, // see below
             edgeAdded: (obj)=> {
                 if (obj.edge.data.type == 'perspective') {
+                    obj.edge.source.data.perspective.edges = obj.edge.source.data.perspective.edges || [];
                     if (!_.contains(obj.edge.source.data.perspective.edges, obj.edge.data.id)) {
                         obj.edge.source.data.perspective.edges.push(obj.edge.data.id)
                         this.canvas.updateData({ node: obj.edge.source })
