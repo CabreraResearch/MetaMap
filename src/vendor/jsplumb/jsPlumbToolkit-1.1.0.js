@@ -6872,6 +6872,16 @@
         };
 
         /**
+         * Sets what the layout considers to be the size of the node with the given id. This method is not
+         * generally necessary if you use the `layout` methods on the surface widget.
+         * @param {String} id ID of the Node to set the size for.
+         * @param {Number[]} s Size of the node.
+         */
+        var setSize = this.setSize = function(id, s) {
+            sizes[id] = s;
+        };
+
+        /**
          * This is an abstract function that subclasses may implement if they wish. It will be called at the beginning of a layout.
          * @method begin
          * @abstract
@@ -6958,6 +6968,7 @@
             setPosition: _setPosition,
             getRandomPosition: _getRandomPosition,
             getSize: _getSize,
+            setSize: setSize,
             getPositions: getPositions,
             setPositions: function (p) {
                 positions = p;
