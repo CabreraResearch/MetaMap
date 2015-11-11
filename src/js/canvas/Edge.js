@@ -62,7 +62,7 @@ class Edge extends _CanvasBase {
                     }],
                     ['Custom', {
                         create: (component) => {
-                            let ret = $(`<div data-class="relationship-rthing" style="display: none; background: #B3C2C7; border-radius: 50%; visibility: hidden;"></div>`)
+                            let ret = $(`<div data-class="relationship-rthing" style="background: #B3C2C7; border-radius: 50%; visibility: hidden;"></div>`)
                             let data = component.getData()
                             if (!data.nodeId && component.edge) {
                                 const id = `${component.edge.data.id}_rthing`
@@ -84,7 +84,8 @@ class Edge extends _CanvasBase {
                             dblclick: function (params) {
                                 console.log("dblclick on RDOT overlay")
                             }
-                        }
+                        },
+                        visible:false
                     }],
                     [ 'PlainArrow', {
                         location: 0,
@@ -125,6 +126,9 @@ class Edge extends _CanvasBase {
                     mouseover: (params) => {
                         this.hideRDots();
                         this.showRDot(params.connection)
+                    },
+                    mouseout: (params) => {
+                        this.hideRDot(params.connection);
                     }
                 }
             },
@@ -173,12 +177,10 @@ class Edge extends _CanvasBase {
     }
 
     hideRDots() {
-        /*$('.relationship-rthing')
-         .css('display', 'none')
-         .css('visibility', 'hidden')
-         .removeClass('relationship-rthing')
-         .off('dblclick')*/
-        console.log("hide RDOTS; disabled temporarily by Simon")
+        this.jsRenderer.getJsPlumb().select().each(function(conn) {
+            var o = conn.getOverlay("customOverlay");
+            if (o) o.hide();
+        })
     }
 
     hideRDot(connection) {
