@@ -19,6 +19,102 @@ class Edge extends _CanvasBase {
 
     }
 
+    getToolkitEvents() {
+        return {
+            beforeStartConnect: (fromNode, edgeType) => {
+                let ret = {
+                    type: edgeType
+                }
+                if (edgeType == 'perspective') {
+                    _.extend(ret, {
+                        visible: true,
+                        perspective: {
+                            nodeId: fromNode.id
+                        }
+                    })
+                } else {
+                    _.extend(ret, {
+                        direction: 'none',
+                        leftSize: 0,
+                        rightSize: 0
+                    })
+                }
+                return ret
+            },
+            beforeConnect: (fromNode, toNode, edgeData) => {
+                var ret = true
+                //Prevent self-referencing connections
+                if (fromNode == toNode) {
+                    ret = false
+                } else {
+                    //Between the same two nodes, only one perspective connection may exist
+                    switch (edgeData.type) {
+                        case 'perspective':
+                            var edges = fromNode.getEdges({ filter: function (e) { return e.data.type == 'perspective' } })
+                            for (var i = 0; i < edges.length; i += 1) {
+                                var ed = edges[i]
+                                if ((ed.source == fromNode && ed.target == toNode) || (ed.target == fromNode && ed.source == toNode)) {
+                                    ret = false
+                                    break
+                                }
+                            }
+                            if (ret) {
+                                fromNode.data.perspective = fromNode.data.perspective || {
+                                    has: true,
+                                    edges: [],
+                                    class: 'open'
+                                }
+                                fromNode.data.perspective.has = true
+                                fromNode.data.perspective.edges = fromNode.data.perspective.edges || []
+                                fromNode.data.perspective.class = 'open'
+                                this.canvas.updateData({ node: fromNode })
+                            }
+                            break
+                    }
+                }
+                return ret
+            }
+        }
+    }
+
+    getClickEvents() {
+        return {
+            click: {
+                eye_closed: (el, node) => {
+                    if (node.data.perspective.has) {
+                        node.data.perspective.class = 'open'
+                        this.canvas.updateData({ node: node })
+                        _.each(node.data.perspective.edges, (edgeId) => {
+                            let edge = this.jsToolkit.getEdge(edgeId)
+                            if (edge) {
+                                edge.data.visible = true
+                                this.canvas.updateData({ edge: edge })
+                                this.jsRenderer.setVisible(edge, true)
+                            }
+                        })
+                        this.canvas.clearSelection()
+                    }
+                },
+                eye_open: (el, node) => {
+                    if (node.data.perspective.has) {
+                        node.data.perspective.class = 'closed'
+                        this.canvas.updateData({ node: node })
+                        _.each(node.data.perspective.edges, (edgeId) => {
+                            let edge = this.jsToolkit.getEdge(edgeId)
+                            if (edge) {
+                                edge.data.visible = false
+                                this.canvas.updateData({ edge: edge })
+                                this.jsRenderer.setVisible(edge, false)
+                            }
+                        })
+                        this.canvas.clearSelection()
+                    }
+                }
+            }
+        }
+    }
+
+
     getView() {
         return {
             all: {
