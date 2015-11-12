@@ -142,10 +142,12 @@ class Canvas {
     //Whenever changing the selection, clear what was previously selected
     clearSelection(obj) {
         const toolkit = this.jsToolkit
-        toolkit.clearSelection();
-        $('.node-selected').each(function () {
-            this.setAttribute('class', 'node-border')
-        })
+        if (!obj.e.ctrlKey) {
+            toolkit.clearSelection();
+            $('.node-selected').each(function () {
+                this.setAttribute('class', 'node-border')
+            })
+        }
         this.rndrr.hideRDots()
 
         if (obj) {
@@ -153,10 +155,10 @@ class Canvas {
                 this.setAttribute('class', 'node-selected')
             })
             if (obj.node) {
-                toolkit.setSelection(obj.node);
+                toolkit.addToSelection(obj.node);
             }
             if (obj.edge) {
-                toolkit.setSelection(obj.edge);
+                toolkit.addToSelection(obj.edge);
             }
         }
     }

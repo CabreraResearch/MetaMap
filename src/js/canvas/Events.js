@@ -110,7 +110,7 @@ class Events extends _CanvasBase {
     getRenderEvents() {
         return {
             canvasClick: (e) => {
-                this.canvas.clearSelection()
+                this.canvas.clearSelection({ e: e })
             },
             canvasDblClick: (e) => {
                 this.node.createNode(e)
@@ -147,10 +147,11 @@ class Events extends _CanvasBase {
             }
         });
 
-        let mode = null;
+        this.mode = null;
         //map backspace to delete if anything is selected
         jsPlumb.on(document, 'keyup', (event) => {
-            mode = null
+            this.mode = null
+            renderer.setMode('pan')
             var selected = toolkit.getSelection();
             switch (event.keyCode) {
                 case 8:
@@ -199,8 +200,8 @@ class Events extends _CanvasBase {
 
         jsPlumb.on(document, 'keydown', (event) => {
             if (event.ctrlKey && event.keyCode == 17) {
-                if (!mode) {
-                    mode = 'select'
+                if (!this.mode) {
+                    this.mode = 'select'
                     renderer.setMode('select')
                 }
             } else {

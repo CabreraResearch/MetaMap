@@ -189,7 +189,8 @@ class Edge extends _CanvasBase {
                 events: {
                     tap: (obj) => {
                         let target = obj.e.target
-                        if (target.dataset.class != 'relationship-rthing') {
+                        //Ignore this event if we're clicking on the r-dot
+                        if (!target.dataset || target.dataset.class != 'relationship-rthing') {
                             //Before we set this as the selected edge, get the current selection
                             let selected = this.jsToolkit.getSelection()
                             //If there is only one selected edge, proceed
