@@ -50,7 +50,8 @@ class Node extends _CanvasBase {
                         w:newWidth,
                         h:newHeight,
                         label: newLabel,
-                        order: node.data.children.length
+                        order: node.data.children.length,
+                        partAlign:  'left'
                     })
 
                     var newNode = this.jsToolkit.addNode(nodeData)
@@ -83,12 +84,26 @@ class Node extends _CanvasBase {
         }
     }
 
+    changeAlignment(node, align, doRefresh) {
+        if (node && align) {
+            node.data.suspendLayout = align == 'freehand'
+            node.data.partAlign = align
+            _.each(node.data.children, (childId) => {
+                let child = this.jsToolkit.getNode(childId)
+                this.changeAlignment(child, align, false)
+            })
+            this.canvas.updateData({ node: node }, doRefresh)
+        }
+    }
+
     getView() {
         return {
             all: {
                 events: {
                     tap: (obj) => {
-                        this.canvas.clearSelection(obj)
+                        if (!_.contains(obj.e.target.className, 'name')) {
+                            this.canvas.clearSelection(obj)
+                        }
                     },
                     mouseover: (obj) => {
                         this.canvas.rndrr.hideRDots();
@@ -107,26 +122,21 @@ class Node extends _CanvasBase {
                                                 name: 'Left Align',
                                                 icon: ' icn-Sleft',
                                                 callback: () => {
-                                                    node.data.suspendLayout = false
-                                                    node.data.partAlign = 'left'
-                                                    this.canvas.updateData({ node: node })
+                                                    this.changeAlignment(node, 'left', true)
                                                 }
                                             },
                                             right: {
                                                 name: 'Right Align',
                                                 icon: ' icn-Sright',
                                                 callback: () => {
-                                                    node.data.suspendLayout = false
-                                                    node.data.partAlign = 'right'
-                                                    this.canvas.updateData({ node: node })
+                                                    this.changeAlignment(node, 'right', true)
                                                 }
                                             },
                                             free: {
                                                 name: 'Free Hand',
                                                 icon: ' icn-Sfreehand',
                                                 callback: () => {
-                                                    node.data.suspendLayout = true
-                                                    this.canvas.updateData({ node: node })
+                                                    this.changeAlignment(node, 'freehand', true)
                                                 }
                                             }
                                         }

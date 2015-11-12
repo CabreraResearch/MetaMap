@@ -13,7 +13,7 @@ class Events extends _CanvasBase {
     }
 
     get _types() {
-        this.__types = this.__types || [ ['red', 'D'], ['orange', 'P'], ['green', 'S'], ['blue','R'], ['eye_closed'], ['eye_open'] ]
+        this.__types = this.__types || [['red', 'D'], ['orange', 'P'], ['green', 'S'], ['blue', 'R'], ['eye_closed'], ['eye_open']]
         return this.__types
     }
 
@@ -76,29 +76,35 @@ class Events extends _CanvasBase {
     registerHandlers(params) {
         // here you have params.el, the DOM element
         // and params.node, the underlying node. it has a `data` member with the node's payload.
-        var el = params.el, node = params.node, label = el.querySelector('.name')
+        var el = params.el, node = params.node, label = el.querySelector('.freehand_name')
         for (var i = 0; i < this._types.length; i++) {
             this._curryHandler(el, this._types[i], node)
         }
 
-        // make the label draggable (see note above).
-        this.labelDragHandler.draggable(label, {
-            start: () => {
-                this.labelDragHandler.setZoom(this.canvas.jsRenderer.getZoom())
-            },
-            stop: (e) => {
-                node.data.labelPosition = [
-                    parseInt(label.style.left, 10),
-                    parseInt(label.style.top, 10)
-                ]
-                this.canvas.onAutoSave(this.canvas.jsToolkit.exportData())
-            }
+        if (label) {
+            // make the label draggable (see note above).
+            this.labelDragHandler.draggable(label, {
+                start: () => {
+                    this.labelDragHandler.setZoom(this.canvas.jsRenderer.getZoom())
+                },
+                stop: (e) => {
+                    node.data.labelPosition = [
+                        parseInt(label.style.left, 10),
+                        parseInt(label.style.top, 10)
+                    ]
+                    this.canvas.onAutoSave(this.canvas.jsToolkit.exportData())
+                }
+            })
+        }
+        let editLabel = el.querySelectorAll('.name')
+        jsPlumb.on(editLabel, 'click', (e) => {
+            e.preventDefault()
+        })
+        jsPlumb.on(editLabel, 'dblclick', (e) => {
+            e.preventDefault()
+            this.canvas.dialog.open(e.target, node)
         })
 
-        jsPlumb.on(label, 'dblclick', () => {
-            //this.canvas.dialog.show(label, node)
-            this.canvas.dialog.open(label, node)
-        })
     }
 
     getRenderEvents() {

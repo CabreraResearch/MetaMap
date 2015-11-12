@@ -14,16 +14,36 @@
 
 .ideaNode .name {
     color: black;
-    cursor: move;
     font-size: 16px;
     line-height: 24px;
     padding: 0;
     height:24px;
     white-space: pre;
-    text-align: left;
     position:absolute;
+}
+.ideaNode .name.freehand_name {
+    cursor: move;
+    white-space: pre;
+    text-align: left;
     left:120%;
     top:20%;
+}
+.ideaNode .name.left_name {
+    cursor: pointer;
+    text-align: left;
+    left:120%;
+    top:20%;
+}
+.ideaNode .name.right_name {
+    cursor: pointer;
+    text-align: right;
+    right:120%;
+    top:20%;
+}
+
+.ideaNode .name.none {
+    display: none;
+    visibility: hidden;
 }
 
 .white_circle {
@@ -171,6 +191,10 @@ div[data-class="relationship-rthing"] {
 }
 
 /* styles for edges */
+
+.edge-perspective {
+    fill: orange
+}
 
 .edge-perspective path {
     stroke:orange;

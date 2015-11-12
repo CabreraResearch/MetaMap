@@ -14,7 +14,7 @@ class DragDropHandler {
 
         this.getDragOptions = function () {
             return {
-                filter: '.donotdrag',       // can't drag nodes by the color segments.
+                filter: '.donotdrag, .name',       // can't drag nodes by the color segments.
                 stop: (params) => {
                     // when _any_ node stops dragging, run the layout again.
                     // this will cause child nodes to snap to their new parent, and also
@@ -171,9 +171,16 @@ class DragDropHandler {
                 }
                 else {
                     var posses = [node.id], par = node.data.parentId;
-                    while (par != null) {
-                        posses.push({ id: par, active: false });
-                        par = toolkit.getNode(par).data.parentId;
+                    if (toolkit.getNode(par)) {
+                        while (par != null) {
+                            posses.push({ id: par, active: false });
+                            let parent = toolkit.getNode(par)
+                            if (parent && par != node.data.parentId) {
+                                par = node.data.parentId;
+                            } else {
+                                par = null
+                            }
+                        }
                     }
                     return posses;
                 }

@@ -148,6 +148,8 @@ class Schema extends _CanvasBase {
                 node.children = node.children || []
                 node.labelPosition = node.labelPosition || []
                 node.cssClass = node.cssClass || ''
+                node.partAlign = node.partAlign || 'left'
+                node.suspendLayout = node.suspendLayout || false
                 node.perspective = node.perspective || {
                     has: false,
                     edges: [],

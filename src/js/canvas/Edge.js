@@ -119,12 +119,6 @@ class Edge extends _CanvasBase {
         return {
             all: {
                 events: {
-                    mouseenter: (e) => {
-                        window.alert(`It's a LIE! This event is not implemented!`)
-                    },
-                    mouseleave: (e) => {
-                        window.alert(`It's a LIE! This event is not implemented!`)
-                    },
                     contextmenu: (node, port, el, e) => {
                         console.log('context click on edge')
                     }
@@ -220,10 +214,6 @@ class Edge extends _CanvasBase {
                         return true
                     },
                     dblclick: (obj) => {
-                        // let target = obj.e.target
-                        // if (target.dataset.class == 'relationship-rthing') {
-                        //     this.createRThing(obj)
-                        // }
                         return true
                     },
                     mouseover: (params) => {
@@ -293,8 +283,6 @@ class Edge extends _CanvasBase {
             var o = conn.getOverlay("customOverlay");
             if (o) {
                 o.removeClass('relationship-rthing-visible')
-            } else {
-                console.log(`Didn't hide rdot`)
             }
         })
     }
@@ -355,7 +343,7 @@ class Edge extends _CanvasBase {
                 obj.edge.source.data.perspective.edges.push(obj.edge.data.id)
                 this.canvas.updateData({ node: obj.edge.source })
             }
-            //Kludge: for some reason, dragging from the P button toggle the eye class back to open
+            //Kludge: for some reason, dragging from the P button toggles the eye class back to open
             //This is probably desirable, but I have no idea why it's happening
             //Creating a new perspective should then just show all perspectives
             if (obj.edge.source.data.perspective.class == 'open') {
