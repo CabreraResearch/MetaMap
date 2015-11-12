@@ -310,6 +310,33 @@ class Edge extends _CanvasBase {
         this.canvas.updateData({ node: newNode, edge: obj.edge })
     }
 
+    onAdded(obj) {
+        if (obj.edge.data.type == 'perspective') {
+            if (!_.contains(obj.edge.source.data.perspective.edges, obj.edge.data.id)) {
+                obj.edge.source.data.perspective.edges.push(obj.edge.data.id)
+                this.canvas.updateData({ node: obj.edge.source })
+            }
+            //Kludge: for some reason, dragging from the P button toggle the eye class back to open
+            //This is probably desirable, but I have no idea why it's happening
+            //Creating a new perspective should then just show all perspectives
+            if (obj.edge.source.data.perspective.class == 'open') {
+                _.each(obj.edge.source.data.perspective.edges, (edgeId) => {
+                    let edge = this.jsToolkit.getEdge(edgeId)
+                    if (edge) {
+                        edge.data.visible = true
+                        this.jsRenderer.setVisible(edge, true)
+                    }
+                })
+            }
+        }
+        //Kludge: this seems like a bit of a hack, but there isn't another way AFAIK to persist visibility on an edge
+        if (obj.edge.data.visible === false) {
+            this.jsRenderer.setVisible(obj.edge, false)
+        }
+        return obj
+    }
+
+
 }
 
 module.exports = Edge
