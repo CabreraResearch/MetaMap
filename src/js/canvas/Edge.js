@@ -149,8 +149,8 @@ class Edge extends _CanvasBase {
                     [ 'PlainArrow', {
                         location: 1,
                         id: "left",
-                        width: '${leftSize}',
-                        length: '${leftSize}',
+                        width: 5,
+                        length: 5,
                         cssClass: 'relationship-overlay',
                         visible:function _visible(data) {
                             return data == null || (data.direction === LEFT || data.direction === BOTH)
@@ -158,27 +158,21 @@ class Edge extends _CanvasBase {
                     }],
                     ['Custom', {
                         create: (component) => {
-                            let ret = $(`<div data-class="relationship-rthing" style="background: #B3C2C7; border-radius: 50%; visibility: hidden;"></div>`)
+                            const id = `${component.edge.data.id}_rthing`
                             let data = component.getData()
                             if (!data.nodeId && component.edge) {
-                                const id = `${component.edge.data.id}_rthing`
                                 this.relationshipOverlays.push(id)
-
-                                //Unfortunately, any classes supplied here will be stripped out; so hard code the styles needed and massage them later
-                                //ret = $(`<div id="${id}" data-class="relationship-rthing" style="display: none; background: #B3C2C7; border-radius: 50%; visibility: hidden;"></div>`)
-
-                                ret = $(`<div id="${id}" data-class="relationship-rthing" style="background: #B3C2C7; border-radius: 50%; "></div>`)
                             }
-                            return ret
+                            return $(`<div id="${id}" data-class="relationship-rthing"></div>`)
                         },
                         location: 0.5,
                         id: "customOverlay",
                         events: {
                             tap: function () {
-                                alert("hey");
+
                             },
-                            dblclick: function (params) {
-                                console.log("dblclick on RDOT overlay")
+                            dblclick: (params) => {
+                                this.createRThing(params)
                             }
                         },
                         visible:false
@@ -186,8 +180,8 @@ class Edge extends _CanvasBase {
                     [ 'PlainArrow', {
                         location: 0,
                         id: "right",
-                        width: '${rightSize}',
-                        length: '${rightSize}',
+                        width: 5,
+                        length: 5,
                         cssClass: 'relationship-overlay',
                         visible:function _visible(data) {
                             return data == null || (data.direction === RIGHT || data.direction === BOTH)

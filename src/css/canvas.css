@@ -42,6 +42,12 @@
     fill: #000;
 }
 
+div[data-class="relationship-rthing"] {
+    background: #EF614A;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
 /* styles for the idea node. */
 .eye_closed[data-show="none"] {
     opacity:0;

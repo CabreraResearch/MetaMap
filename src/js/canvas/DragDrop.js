@@ -10,16 +10,39 @@ const $ = require('jquery');
 
 class DragDropHandler {
 
-	constructor(canvas, toolkit, getRenderer) {
+    constructor(canvas, toolkit, getRenderer) {
 
         this.getDragOptions = function () {
             return {
                 filter: '.donotdrag',       // can't drag nodes by the color segments.
-                stop: (params) => {                    
+                stop: (params) => {
                     // when _any_ node stops dragging, run the layout again.
                     // this will cause child nodes to snap to their new parent, and also
                     // cleanup nicely if a node is dropped on another node.
                     getRenderer().refresh();
+
+                    // when any two nodes with a relationship and an r-thing between them move
+                    // this should update the position of the r-thing to be the same as the r-dot overlay
+                    let info = toolkit.getObjectInfo(params.el)
+                    if (info && info.obj) {
+                        let node = info.obj
+                        let edges = node.getEdges()
+                        if (edges.length > 0) {
+                            _.each(edges, (edge) => {
+                                if (edge.data.rthing && edge.data.rthing.nodeId) {
+                                    let rnode = toolkit.getNode(edge.data.rthing.nodeId)
+                                    let dotNode = document.getElementById(edge.data.rthing.rDot)
+                                    if (dotNode) {
+                                        let dot = $(dotNode)
+                                        rnode.data.left = dot.css('left').split('px')[0] - (rnode.data.h / 2)
+                                        rnode.data.top = dot.css('top').split('px')[0] - (rnode.data.h / 2)
+                                        toolkit.updateNode(rnode)
+                                        getRenderer().relayout()
+                                    }
+                                }
+                            })
+                        }
+                    }
                 },
                 start: (params) => {
                     // on start, if there is a parent, find it and stash it on the element, for us to
@@ -90,15 +113,15 @@ class DragDropHandler {
             // here we map child positions to a list containing entries that have [ pos, delta, idx ], which we then
             // sort by delta (where delta is the distance from that node's top edge from the dropped node's top edge).
             // the first entry in this array, then, gives us the new index for the dropped node.
-            let sortedLocations = (_.map(childPositions, function(cp, i) { return [cp[1], Math.abs(cp[1] - params.pos[1]), i ]; })).sort(function(a, b) {
+            let sortedLocations = (_.map(childPositions, function (cp, i) { return [cp[1], Math.abs(cp[1] - params.pos[1]), i]; })).sort(function (a, b) {
                 return a[1] < b[1] ? -1 : a[1] > b[1] ? 1 : 0;
             });
             // move the dropped node
             childPositions.splice(sortedLocations[0][2], 0, childPositions.splice(sourceNode.data.order, 1)[0]);
             // iterate through and reassign order.
-            _.each(childPositions, function(cp, i) {
+            _.each(childPositions, function (cp, i) {
                 toolkit.updateNode(cp[2], {
-                    order:i
+                    order: i
                 });
             });
             return true;
