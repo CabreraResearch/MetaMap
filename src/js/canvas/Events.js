@@ -97,14 +97,10 @@ class Events extends _CanvasBase {
             })
         }
         let editLabel = el.querySelectorAll('.name')
-        jsPlumb.on(editLabel, 'click', (e) => {
-            e.preventDefault()
-        })
         jsPlumb.on(editLabel, 'dblclick', (e) => {
             e.preventDefault()
             this.canvas.dialog.open(e.target, node)
         })
-
     }
 
     getRenderEvents() {
@@ -147,11 +143,8 @@ class Events extends _CanvasBase {
             }
         });
 
-        this.mode = null;
         //map backspace to delete if anything is selected
         jsPlumb.on(document, 'keyup', (event) => {
-            this.mode = null
-            renderer.setMode('pan')
             var selected = toolkit.getSelection();
             switch (event.keyCode) {
                 case 8:
@@ -200,8 +193,8 @@ class Events extends _CanvasBase {
 
         jsPlumb.on(document, 'keydown', (event) => {
             if (event.ctrlKey && event.keyCode == 17) {
-                if (!this.mode) {
-                    this.mode = 'select'
+                if (this.canvas.mode != 'select') {
+                    this.canvas.mode = 'select'
                     renderer.setMode('select')
                 }
             } else {

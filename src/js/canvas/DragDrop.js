@@ -45,6 +45,11 @@ class DragDropHandler {
                     }
                 },
                 start: (params) => {
+
+                    if (canvas.mode != 'select' || !_.contains(params.el.className, 'jtk-surface-selected-element')) {
+                        canvas.clearSelection({ el: params.el, node: params.el.jtk.node, e: params.e || {} })
+                    } 
+
                     // on start, if there is a parent, find it and stash it on the element, for us to
                     // look at on stop.
                     var node = params.el.jtk.node;

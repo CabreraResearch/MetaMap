@@ -143,6 +143,8 @@ class Canvas {
     clearSelection(obj) {
         const toolkit = this.jsToolkit
         if (!obj.e.ctrlKey) {
+            this.mode = 'pan'
+            this.jsRenderer.setMode('pan')
             toolkit.clearSelection();
             $('.node-selected').each(function () {
                 this.setAttribute('class', 'node-border')
