@@ -39,6 +39,7 @@ class CopyPaste extends _CanvasBase {
         if (this.data) {
 
             //It's possible to paste multiple times from the same copy. In case we do this, operate on the last mutation instead of the original
+            //To prevent writing over object references, this could include _.clone(obj, true) in the assignment
             let data = (this._copyData) ? this._copyData : this.data
 
             let idMap = {}
@@ -47,11 +48,11 @@ class CopyPaste extends _CanvasBase {
                 edges: []
             }
 
-            //1. Map each existing node id to a new UUID
+            //1. Match each existing node id to a new UUID
             _.each(data.nodes, (node) => {
                 idMap[node.id] = jsPlumbUtil.uuid()
             })
-            //2. Map each existing edge id to a new UUID
+            //2. Match each existing edge id to a new UUID
             _.each(data.edges, (edge) => {
                 idMap[edge.data.id] = jsPlumbUtil.uuid()
             })
@@ -95,7 +96,7 @@ class CopyPaste extends _CanvasBase {
                     ret.left = node.left + 100
                     let topMove = 0
                     //If copying edges, move down as well
-                    if (data.edges.length > 0) topMove = -100
+                    if (data.edges.length > 0) topMove = 100
                     ret.top = node.top + topMove
                 }
 
@@ -104,25 +105,28 @@ class CopyPaste extends _CanvasBase {
                 }
                 return ret
             })
+
             //4: map over the edges and return new objects
             newData.edges = _.map(data.edges, (edge) => {
                 let ret = {
                     data: {
                         id: idMap[edge.data.id],
                         direction: edge.data.direction || 'none',
-                        type: edge.data.type
+                        type: edge.data.type,
+                        rthing: {},
+                        perspective: {}
                     },
                     source: idMap[edge.source],
                     target: idMap[edge.target]
                 }
-                ret.data.rthing = {}
+
                 if (edge.data.rthing && edge.data.rthing.nodeId) {
                     ret.data.rthing = {
                         nodeId: idMap[edge.data.rthing.nodeId],
                         rDot: ret.data.id + '_rthing'
                     }
                 }
-                ret.data.perspective = {}
+
                 if (edge.data.perspective && edge.data.perspective.nodeId) {
                     ret.data.perspective = {
                         nodeId: idMap[edge.data.perspective.nodeId]
@@ -132,9 +136,6 @@ class CopyPaste extends _CanvasBase {
             })
 
             this._copyData = newData
-
-            console.log(idMap)
-            console.log(newData)
 
             this.canvas.clearSelection({ e: {}})
             _.each(newData.nodes, (n) => {
