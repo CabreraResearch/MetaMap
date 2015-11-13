@@ -55,6 +55,17 @@ class Schema extends _CanvasBase {
         }
     }
 
+    getAllChildren(node, ret=[]) {
+        if (node && node.data && node.data.children) {
+            _.each(node.data.children, (id, i) => {
+                let child = this.jsToolkit.getNode(id)
+                ret.push(id)
+                this.getAllChildren(child, ret)
+            })
+        }
+        return ret
+    }
+
     recurse(node) {
         if (node && node.data && node.data.children) {
             _.each(node.data.children, (id, i) => {

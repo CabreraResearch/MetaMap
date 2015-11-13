@@ -164,6 +164,8 @@ class Canvas {
             if (obj.node) {
                 //push selected nodes onto the state
                 this._selection.nodeIds.push(obj.node.id)
+                let children = this.schema.getAllChildren(obj.node)
+                this._selection.nodeIds = _.union(this._selection.nodeIds, children)
                 this.jsToolkit.addToSelection(obj.node);
             }
             if (obj.edge) {
@@ -177,7 +179,7 @@ class Canvas {
     //Whenever changing the selection, clear what was previously selected
     clearSelection(obj) {
         const toolkit = this.jsToolkit
-        if (!obj.e.ctrlKey) {
+        if (!obj || !obj.e || !obj.e.ctrlKey) {
             this.mode = 'pan'
             this.jsRenderer.setMode('pan')
             toolkit.clearSelection();

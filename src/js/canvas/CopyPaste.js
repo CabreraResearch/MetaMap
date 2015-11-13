@@ -28,6 +28,7 @@ class CopyPaste extends _CanvasBase {
     copy(event) {
         event.preventDefault()
 
+        this._copyData = null
         this.data = this.canvas.exportData(true)
 
         console.log(this.data)
@@ -36,56 +37,102 @@ class CopyPaste extends _CanvasBase {
     paste(event) {
         event.preventDefault()
         if (this.data) {
-            let data = _.clone(this.data, true)
-            
+
+            //It's possible to paste multiple times from the same copy. In case we do this, operate on the last mutation instead of the original
+            let data = (this._copyData) ? this._copyData : this.data
+
             let idMap = {}
             let newData = {
                 nodes: [],
                 edges: []
             }
+
+            //1. Map each existing node id to a new UUID
             _.each(data.nodes, (node) => {
                 idMap[node.id] = jsPlumbUtil.uuid()
             })
+            //2. Map each existing edge id to a new UUID
             _.each(data.edges, (edge) => {
                 idMap[edge.data.id] = jsPlumbUtil.uuid()
             })
-            _.each(data.nodes, (node) => {
-                node.id = idMap[node.id]
+
+            //3: Map the selected nodes to new objects
+            newData.nodes = _.map(data.nodes, (node) => {
+                let ret = {
+                    children: [],
+                    cssClass: node.cssClass,
+                    h: node.h,
+                    id: idMap[node.id],
+                    label: node.label,
+                    labelPosition: [],
+                    order: node.order || 0,
+                    partAlign: node.partAlign,
+                    perspective: { edges: [], class: 'none', has: false },
+                    suspendLayout: node.suspendLayout || false,
+                    type: node.type,
+                    w: node.w
+                }
 
                 //update parent keys
                 if (node.parentId) {
-                    node.parentId = idMap[node.parentId]
+                    ret.parentId = idMap[node.parentId]
                 }
+
                 //update child keys
-                let children = []
                 _.each(node.children, (childId) => {
-                    children.push(idMap[childId])
+                    ret.children.push(idMap[childId])
                 })
-                node.children = children
+
                 //update perspective edges
-                let perspectives = []
                 _.each(node.perspective.edges, (edgeId) => {
-                    perspectives.push(idMap[edgeId])
+                    ret.perspective.edges.push(idMap[edgeId])
+                    ret.perspective.has = node.perspective.has
+                    ret.perspective.class = node.perspective.class
                 })
-                node.left += 100
+
+                if (node.left) {
+                    //position the new node just to the right of the copied node
+                    ret.left = node.left + 100
+                    let topMove = 0
+                    //If copying edges, move down as well
+                    if (data.edges.length > 0) topMove = -100
+                    ret.top = node.top + topMove
+                }
+
                 if (node.labelPosition[0]) {
-                    node.labelPosition[0] += 100
+                    ret.labelPosition = [node.labelPosition[0] + 100, node.labelPosition[1]]
                 }
-                newData.nodes.push(node)
+                return ret
             })
-            _.each(data.edges, (edge) => {
-                edge.data.id = idMap[edge.data.id]
-                edge.source = idMap[edge.source]
-                edge.target = idMap[edge.target]
+            //4: map over the edges and return new objects
+            newData.edges = _.map(data.edges, (edge) => {
+                let ret = {
+                    data: {
+                        id: idMap[edge.data.id],
+                        direction: edge.data.direction || 'none',
+                        type: edge.data.type
+                    },
+                    source: idMap[edge.source],
+                    target: idMap[edge.target]
+                }
+                ret.data.rthing = {}
                 if (edge.data.rthing && edge.data.rthing.nodeId) {
-                    edge.data.rthing.nodeId = idMap[edge.data.rthing.nodeId]
-                    edge.data.rthing.rDot = edge.data.id + '_rthing'
+                    ret.data.rthing = {
+                        nodeId: idMap[edge.data.rthing.nodeId],
+                        rDot: ret.data.id + '_rthing'
+                    }
                 }
+                ret.data.perspective = {}
                 if (edge.data.perspective && edge.data.perspective.nodeId) {
-                    edge.data.perspective.nodeId = idMap[edge.data.perspective.nodeId]
+                    ret.data.perspective = {
+                        nodeId: idMap[edge.data.perspective.nodeId]
+                    }
                 }
-                newData.edges.push(edge)
+                return ret
             })
+
+            this._copyData = newData
+
             console.log(idMap)
             console.log(newData)
 
