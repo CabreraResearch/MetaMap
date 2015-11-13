@@ -12,6 +12,7 @@ const Renderer = require('./Renderer')
 const Events = require('./Events')
 const Dialog = require('./Dialog')
 const Schema = require('./Schema')
+const CopyPaste = require('./CopyPaste')
 
 require('./layout')
 
@@ -73,6 +74,7 @@ class Canvas {
             this.tk.bindEvents()
             this.events.bindEvents()
 
+            this.copyPaste = new CopyPaste(this)
         })
     }
 
@@ -134,9 +136,42 @@ class Canvas {
         }
     }
 
-    exportData() {
-        let ret = JSON.parse(JSON.stringify(this.jsToolkit.exportData()))
+    exportData(limitToSelected=false) {
+        let ret = this.jsToolkit.exportData()
+        if (limitToSelected) {
+            //getSelection rarely has the actual selection; use our own state
+            // let selected = this.jsToolkit.getSelection()
+            ret.edges = _.remove(ret.edges, (edge) => {
+                let ret = _.contains(this._selection.edgeIds, edge.data.id)
+                return ret
+            })
+            ret.nodes = _.remove(ret.nodes, (node) => {
+                let ret = _.contains(this._selection.nodeIds, node.id)
+                return ret
+            })
+        }
+
         return ret
+    }
+
+    addToSelection(obj) {
+        if (obj) {
+            //setup our own state for selected nodes/edges
+            this._selection = this._selection || { nodeIds: [], edgeIds: [] }
+            $(obj.el).find('.node-border').each(function () {
+                this.setAttribute('class', 'node-selected')
+            })
+            if (obj.node) {
+                //push selected nodes onto the state
+                this._selection.nodeIds.push(obj.node.id)
+                this.jsToolkit.addToSelection(obj.node);
+            }
+            if (obj.edge) {
+                //push selected edges onto the state
+                this._selection.edgeIds.push(obj.edge.data.id)
+                this.jsToolkit.addToSelection(obj.edge);
+            }
+        }
     }
 
     //Whenever changing the selection, clear what was previously selected
@@ -146,33 +181,27 @@ class Canvas {
             this.mode = 'pan'
             this.jsRenderer.setMode('pan')
             toolkit.clearSelection();
+            //clear our internal state
+            this._selection = { nodeIds: [], edgeIds: [] }
             $('.node-selected').each(function () {
                 this.setAttribute('class', 'node-border')
             })
         }
         this.rndrr.hideRDots()
+        this.addToSelection(obj)
+    }
 
-        if (obj) {
-            $(obj.el).find('.node-border').each(function () {
-                this.setAttribute('class', 'node-selected')
-            })
-            if (obj.node) {
-                toolkit.addToSelection(obj.node);
-            }
-            if (obj.edge) {
-                toolkit.addToSelection(obj.edge);
-            }
-        }
+    refresh() {
+        //I don't think these should be required, but they seem to be
+        this.jsRenderer.relayout()
+        this.jsRenderer.refresh()
     }
 
     updateData(obj, doRefresh = true) {
         this.schema.updateData(obj)
 
         if (doRefresh) {
-            //I don't think these should be required, but they seem to be
-            this.jsRenderer.relayout()
-            this.jsRenderer.refresh()
-
+            this.refresh()
             //This line is most likely redundant as updateEdge should implicitly do it
             this.jsToolkit.fire('dataUpdated')
         }

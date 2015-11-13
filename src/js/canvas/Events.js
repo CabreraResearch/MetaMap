@@ -147,13 +147,16 @@ class Events extends _CanvasBase {
         jsPlumb.on(document, 'keyup', (event) => {
             var selected = toolkit.getSelection();
             switch (event.keyCode) {
-                case 8:
+                case 8: //backspace
                     if (event.target.nodeName.toLowerCase() != 'textarea' && event.target.nodeName.toLowerCase() != 'input' && selected) {
                         event.preventDefault()
                         this.schema.deleteAll(selected)
                     }
                     break
-                case 17:
+                case 46: //delete
+                    this.schema.deleteAll(selected)
+                    break
+                case 17: //ctrl
                     selected.eachNode((i, node) => {
                         let info = toolkit.getObjectInfo(node)
                         if (info.el) {
@@ -173,17 +176,6 @@ class Events extends _CanvasBase {
                             })
                         }
                     })
-
-                    break
-                case 46:
-                    this.schema.deleteAll(selected);
-                    break
-
-                case 65:
-                    if (event.ctrlKey) {
-
-                    }
-                    break
             }
         })
 
@@ -199,24 +191,20 @@ class Events extends _CanvasBase {
                 }
             } else {
                 switch (event.keyCode) {
-                    case 8:
+                    case 8: //backspace
                         if (event.target.nodeName.toLowerCase() != 'textarea' && event.target.nodeName.toLowerCase() != 'input') {
                             event.preventDefault()
                         }
                         break
-                    case 46:
-                        var selected = toolkit.getSelection()
-                        this.schema.deleteAll(selected);
-                        break
-                    case 65:
+                    case 65: //a
                         if (event.ctrlKey) {
                             event.preventDefault()
 
                             toolkit.eachNode((i, node) => {
-                                toolkit.addToSelection(node)
+                                this.canvas.addToSelection({ node: node })
                             })
                             toolkit.eachEdge((i, edge) => {
-                                toolkit.addToSelection(edge)
+                                this.canvas.addToSelection({ edge: edge })
                             })
 
                         }

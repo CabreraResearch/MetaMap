@@ -112,8 +112,7 @@ class Schema extends _CanvasBase {
         }
     }
 
-    updateData(obj) {
-
+    updateData(obj={}) {
         if (obj.edge) {
             this.jsToolkit.updateEdge(obj.edge)
         }
