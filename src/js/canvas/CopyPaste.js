@@ -137,14 +137,17 @@ class CopyPaste extends _CanvasBase {
 
             this._copyData = newData
 
-            this.canvas.clearSelection({ e: {}})
+            this.canvas.clearSelection({ e: {} })
+            let newNodes = {}
             _.each(newData.nodes, (n) => {
-                let node = this.jsToolkit.addNode(n)
-                this.canvas.addToSelection({node: node})
+                newNodes[n.id] = this.jsToolkit.addNode(n)
+                this.canvas.addToSelection({node: newNodes[n.id]})
             })
             _.each(newData.edges, (e) => {
-                let edge = this.jsToolkit.addEdge(e)
-                this.canvas.addToSelection({edge: edge})
+                if (newNodes[e.source] && newNodes[e.target]) {
+                    let edge = this.jsToolkit.addEdge(e)
+                    this.canvas.addToSelection({ edge: edge })
+                }
             })
             this.canvas.refresh()
         }
