@@ -119,12 +119,6 @@ class Edge extends _CanvasBase {
         return {
             all: {
                 events: {
-                    mouseenter: (e) => {
-                        window.alert(`It's a LIE! This event is not implemented!`)
-                    },
-                    mouseleave: (e) => {
-                        window.alert(`It's a LIE! This event is not implemented!`)
-                    },
                     contextmenu: (node, port, el, e) => {
                         console.log('context click on edge')
                     }
@@ -146,22 +140,25 @@ class Edge extends _CanvasBase {
                 parent: 'connector',
                 endpoint: 'Blank', //[ [ 'Dot', { radius:2, cssClass:'grey' }], [ 'Dot', { radius:2, cssClass:'grey' }]],
                 overlays: [
-                    [ 'PlainArrow', {
+                    ['PlainArrow', {
                         location: 1,
                         id: "left",
                         width: 5,
                         length: 5,
                         cssClass: 'relationship-overlay',
-                        visible:function _visible(data) {
+                        visible: function _visible(data) {
                             return data == null || (data.direction === LEFT || data.direction === BOTH)
                         }
                     }],
                     ['Custom', {
                         create: (component) => {
-                            const id = `${component.edge.data.id}_rthing`
-                            let data = component.getData()
-                            if (!data.nodeId && component.edge) {
-                                this.relationshipOverlays.push(id)
+                            let id = ''
+                            if (component.edge) {
+                                id = `${component.edge.data.id}_rthing`
+                                let data = component.getData()
+                                if (!data.nodeId && component.edge) {
+                                    this.relationshipOverlays.push(id)
+                                }
                             }
                             return $(`<div id="${id}" data-class="relationship-rthing"></div>`)
                         },
@@ -175,57 +172,66 @@ class Edge extends _CanvasBase {
                                 this.createRThing(params)
                             }
                         },
-                        visible:false
+                        visible: true
                     }],
-                    [ 'PlainArrow', {
+                    ['PlainArrow', {
                         location: 0,
                         id: "right",
                         width: 5,
                         length: 5,
                         cssClass: 'relationship-overlay',
-                        visible:function _visible(data) {
+                        visible: function _visible(data) {
                             return data == null || (data.direction === RIGHT || data.direction === BOTH)
                         },
                         direction: -1
-                    } ]
+                    }]
                 ],
                 events: {
                     tap: (obj) => {
-                        //Before we set this as the selected edge, get the current selection
-                        let selected = this.jsToolkit.getSelection()
-                        //If there is only one selected edge, proceed
-                        if (selected.getEdgeCount() == 1) {
-                            let isSelected = false
-                            selected.eachEdge((idx, edge) => {
-                                if (edge.data.id == obj.edge.data.id) {
-                                    isSelected = true
+                        let target = obj.e.target
+                        //Ignore this event if we're clicking on the r-dot
+                        if (!target.dataset || target.dataset.class != 'relationship-rthing') {
+                            //Before we set this as the selected edge, get the current selection
+                            let selected = this.jsToolkit.getSelection()
+                            //If there is only one selected edge, proceed
+                            if (selected.getEdgeCount() == 1) {
+                                let isSelected = false
+                                selected.eachEdge((idx, edge) => {
+                                    if (edge.data.id == obj.edge.data.id) {
+                                        isSelected = true
+                                    }
+                                })
+                                //if the selected edge is this edge, this is the 2nd (or greater) click
+                                if (isSelected) {
+                                    this.toggleRDirection(obj.e, obj.edge, obj.connection)
+                                    this.canvas.updateData(obj)
                                 }
-                            })
-                            //if the selected edge is this edge, this is the 2nd (or greater) click
-                            if (isSelected) {
-                                this.toggleRDirection(obj.e, obj.edge, obj.connection)
-                                this.canvas.updateData(obj)
                             }
-                        }
-                        //Now set the selection
-                        this.canvas.clearSelection(obj)
+                            //Now set the selection
+                            this.canvas.clearSelection(obj)
 
-                        this.showRDot(obj.connection)
+                            this.showRDot(obj)
+                        }
+                        return true
+                    },
+                    dblclick: (obj) => {
                         return true
                     },
                     mouseover: (params) => {
                         this.hideRDots();
-                        this.showRDot(params.connection)
+                        this.showRDot(params)
                     },
                     mouseout: (params) => {
-                        this.hideRDot(params.connection);
+                        this.hideRDot(params);
                     }
                 }
             },
             perspective: {
                 cssClass: 'edge-perspective',
-                endpoints: [ 'Blank', [ 'Dot', { radius: 5, cssClass: 'orange' }]],
-                parent: 'connector',
+                endpoints: ['Blank', ['Dot', { radius: 5, cssClass: 'orange' }]],
+                parent: 'all',
+                anchors: ['Continuous', 'Continuous'],
+                connector: ['Straight'],
                 events: {
                     tap: (obj) => {
                         this.canvas.clearSelection(obj)
@@ -257,38 +263,66 @@ class Edge extends _CanvasBase {
         });
         // show the overlays we need.  use a little regex for this. the values map to the `id` values
         // of the overlays defined in the relationship edge type.
-        _.each(edge.data.direction.match(/left|right/g), function(oid) {
+        _.each(edge.data.direction.match(/left|right/g), function (oid) {
             connection.showOverlay(oid);
         });
     }
 
-    showRDot(connection) {
-        connection.getOverlay("customOverlay").show()
+    showRDot(params) {
+        let connection = params.connection
+        if (params.edge && (!params.edge.data.rthing || !params.edge.data.rthing.nodeId)) {
+            let o = connection.getOverlay("customOverlay")
+            if (o) {
+                o.addClass('relationship-rthing-visible')
+                o.show()
+            }
+        }
     }
 
     hideRDots() {
-        this.jsRenderer.getJsPlumb().select().each(function(conn) {
+        this.jsRenderer.getJsPlumb().select().each(function (conn) {
             var o = conn.getOverlay("customOverlay");
-            if (o) o.hide();
+            if (o) {
+                o.removeClass('relationship-rthing-visible')
+            }
         })
     }
 
-    hideRDot(connection) {
-        connection.getOverlay("customOverlay").hide()
+    hideRDot(params) {
+        let connection = params.connection
+        let isSelected = false
+        let sel = this.jsToolkit.getSelection()
+        sel.eachEdge((i, edge) => {
+            isSelected = isSelected || edge.data.id == params.edge.data.id
+        })
+        if (!isSelected) {
+            var o = connection.getOverlay("customOverlay");
+            if (o) {
+                o.removeClass('relationship-rthing-visible')
+            }
+        }
     }
 
     createRThing(obj) {
-        let dot = $('#' + obj.edge.data.id + '_rthing')
+        let dotEl = document.getElementById(obj.edge.data.id + '_rthing')
+        let left = this.jsRenderer.mapEventLocation(obj.e).left
+        let top = this.jsRenderer.mapEventLocation(obj.e).top
         let size = obj.edge.source.data.w * this.canvas.partSize
+
+        if (dotEl) {
+            let dot = $(dotEl)
+            left = dot.position().left - (size / 2)
+            top = dot.position().top - (size / 2)
+        }
 
         let d = {
             w: size,
             h: size,
-            left: dot.position().left - (size / 2),
-            top: dot.position().top - (size / 2)
+            left: left,
+            top: top
         }
 
-        let nodeData = jsPlumb.extend(this.canvas.node.getNewNode({ type: 'r-thing', cssClass: 'donotdrag'}), d)
+        let nodeData = jsPlumb.extend(this.canvas.node.getNewNode({ type: 'r-thing', cssClass: 'donotdrag' }), d)
         nodeData.rthing = {
             edgeId: obj.edge.data.id,
             rDot: obj.edge.data.id + '_rthing'
@@ -310,7 +344,7 @@ class Edge extends _CanvasBase {
                 obj.edge.source.data.perspective.edges.push(obj.edge.data.id)
                 this.canvas.updateData({ node: obj.edge.source })
             }
-            //Kludge: for some reason, dragging from the P button toggle the eye class back to open
+            //Kludge: for some reason, dragging from the P button toggles the eye class back to open
             //This is probably desirable, but I have no idea why it's happening
             //Creating a new perspective should then just show all perspectives
             if (obj.edge.source.data.perspective.class == 'open') {

@@ -55,6 +55,17 @@ class Schema extends _CanvasBase {
         }
     }
 
+    getAllChildren(node, ret=[]) {
+        if (node && node.data && node.data.children) {
+            _.each(node.data.children, (id, i) => {
+                let child = this.jsToolkit.getNode(id)
+                ret.push(id)
+                this.getAllChildren(child, ret)
+            })
+        }
+        return ret
+    }
+
     recurse(node) {
         if (node && node.data && node.data.children) {
             _.each(node.data.children, (id, i) => {
@@ -112,8 +123,7 @@ class Schema extends _CanvasBase {
         }
     }
 
-    updateData(obj) {
-
+    updateData(obj={}) {
         if (obj.edge) {
             this.jsToolkit.updateEdge(obj.edge)
         }
@@ -148,6 +158,8 @@ class Schema extends _CanvasBase {
                 node.children = node.children || []
                 node.labelPosition = node.labelPosition || []
                 node.cssClass = node.cssClass || ''
+                node.partAlign = node.partAlign || 'left'
+                node.suspendLayout = node.suspendLayout || false
                 node.perspective = node.perspective || {
                     has: false,
                     edges: [],

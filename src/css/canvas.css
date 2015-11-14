@@ -14,16 +14,36 @@
 
 .ideaNode .name {
     color: black;
-    cursor: move;
     font-size: 16px;
     line-height: 24px;
     padding: 0;
     height:24px;
     white-space: pre;
-    text-align: left;
     position:absolute;
+}
+.ideaNode .name.freehand_name {
+    cursor: move;
+    white-space: pre;
+    text-align: left;
     left:120%;
     top:20%;
+}
+.ideaNode .name.left_name {
+    cursor: pointer;
+    text-align: left;
+    left:120%;
+    top:20%;
+}
+.ideaNode .name.right_name {
+    cursor: pointer;
+    text-align: right;
+    right:120%;
+    top:20%;
+}
+
+.ideaNode .name.none {
+    display: none;
+    visibility: hidden;
 }
 
 .white_circle {
@@ -42,10 +62,21 @@
     fill: #000;
 }
 
+.relationship-rthing-visible {
+    background: #F2624C !important;
+    width: 10px !important;
+    height: 10px !important;
+    border-radius: 50% !important;
+    display: block !important;
+    cursor:pointer;
+}
 div[data-class="relationship-rthing"] {
-    background: #EF614A;
+    background: #B3C2C7;
+    width: 3px;
+    height: 3px;
     border-radius: 50%;
-    cursor: pointer;
+    display: block !important;
+    cursor: default;
 }
 
 /* styles for the idea node. */
@@ -161,6 +192,10 @@ div[data-class="relationship-rthing"] {
 
 /* styles for edges */
 
+.edge-perspective {
+    fill: orange
+}
+
 .edge-perspective path {
     stroke:orange;
     stroke-width:4;
@@ -174,6 +209,7 @@ div[data-class="relationship-rthing"] {
 .edge-perspective:hover path {
     stroke:#F74A00;
     stroke-width:6;
+    cursor:pointer;
 }
 
 .edge-relationship path {
@@ -189,25 +225,5 @@ div[data-class="relationship-rthing"] {
 .edge-relationship:hover path {
     stroke:#4CBFC2;
     stroke-width:6;
-}
-
-.relationship-rthing {
-    background: #F2624C !important;
-    width: 10px !important;
-    height: 10px !important;
-    border-radius: 50% !important;
-    display: block;
-    visibility: initial;
     cursor:pointer;
-}
-
-.edge-relationship:hover .relationship-rthing {
-    background: #F2624C;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-}
-
-.relationship-overlay {
-    fill:#B3C2C7;
 }

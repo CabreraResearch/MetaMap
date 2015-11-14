@@ -14,7 +14,7 @@ class DragDropHandler {
 
         this.getDragOptions = function () {
             return {
-                filter: '.donotdrag',       // can't drag nodes by the color segments.
+                filter: '.donotdrag, .name',       // can't drag nodes by the color segments.
                 stop: (params) => {
                     // when _any_ node stops dragging, run the layout again.
                     // this will cause child nodes to snap to their new parent, and also
@@ -45,6 +45,11 @@ class DragDropHandler {
                     }
                 },
                 start: (params) => {
+
+                    if (canvas.mode != 'select' || !_.contains(params.el.className, 'jtk-surface-selected-element')) {
+                        canvas.clearSelection({ el: params.el, node: params.el.jtk.node, e: params.e || {} })
+                    } 
+
                     // on start, if there is a parent, find it and stash it on the element, for us to
                     // look at on stop.
                     var node = params.el.jtk.node;
@@ -171,9 +176,16 @@ class DragDropHandler {
                 }
                 else {
                     var posses = [node.id], par = node.data.parentId;
-                    while (par != null) {
-                        posses.push({ id: par, active: false });
-                        par = toolkit.getNode(par).data.parentId;
+                    if (toolkit.getNode(par)) {
+                        while (par != null) {
+                            posses.push({ id: par, active: false });
+                            let parent = toolkit.getNode(par)
+                            if (parent && par != node.data.parentId) {
+                                par = node.data.parentId;
+                            } else {
+                                par = null
+                            }
+                        }
                     }
                     return posses;
                 }

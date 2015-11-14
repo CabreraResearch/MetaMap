@@ -12,6 +12,7 @@ const Renderer = require('./Renderer')
 const Events = require('./Events')
 const Dialog = require('./Dialog')
 const Schema = require('./Schema')
+const CopyPaste = require('./CopyPaste')
 
 require('./layout')
 
@@ -22,23 +23,23 @@ class Canvas {
         this.opts = opts
         this._init(opts)
         this.config = this.metaMap.config.metamap.canvas
-		
+
 		/**
-		* 
+		*
 		*/
-		this.getPartSizeAtDepth = function(depth) {   
+		this.getPartSizeAtDepth = function(depth) {
 			var s = this.nodeSize, ps = this.partSize;
-			for (var i = 1; i <= depth; i++) {  
+			for (var i = 1; i <= depth; i++) {
 				s *= ps;
 			}
 			return s;
 		};
-	
+
 		this.getDepth = function(node, d = 0) {
 			if (node.data.parentId == null) return d;
 			else {
 				return this.getDepth(this.jsToolkit.getNode(node.data.parentId), ++d);
-			}    
+			}
 		};
 
         jsPlumbToolkit.ready(() => {
@@ -73,6 +74,7 @@ class Canvas {
             this.tk.bindEvents()
             this.events.bindEvents()
 
+            this.copyPaste = new CopyPaste(this)
         })
     }
 
@@ -134,42 +136,77 @@ class Canvas {
         }
     }
 
-    exportData() {
-        let ret = JSON.parse(JSON.stringify(this.jsToolkit.exportData()))
+    exportData(limitToSelected=false) {
+        let ret = this.jsToolkit.exportData()
+        if (limitToSelected) {
+            //getSelection rarely has the actual selection; use our own state
+            // let selected = this.jsToolkit.getSelection()
+            ret.edges = _.remove(ret.edges, (edge) => {
+                let ret = _.contains(this._selection.edgeIds, edge.data.id)
+                return ret
+            })
+            ret.nodes = _.remove(ret.nodes, (node) => {
+                let ret = _.contains(this._selection.nodeIds, node.id)
+                return ret
+            })
+        }
+
         return ret
+    }
+
+    addToSelection(obj) {
+        if (obj) {
+            //setup our own state for selected nodes/edges
+            this._selection = this._selection || { nodeIds: [], edgeIds: [] }
+            $(obj.el).find('.node-border').each(function () {
+                this.setAttribute('class', 'node-selected')
+            })
+            if (obj.node) {
+                //push selected nodes onto the state
+                this._selection.nodeIds.push(obj.node.id)
+                let children = this.schema.getAllChildren(obj.node)
+                this._selection.nodeIds = _.union(this._selection.nodeIds, children)
+                this.jsToolkit.addToSelection(obj.node);
+            }
+            if (obj.edge) {
+                //push selected edges onto the state
+                this._selection.edgeIds.push(obj.edge.data.id)
+                this.jsToolkit.addToSelection(obj.edge);
+            }
+        }
     }
 
     //Whenever changing the selection, clear what was previously selected
     clearSelection(obj) {
         const toolkit = this.jsToolkit
-        toolkit.clearSelection();
-        $('.node-selected').each(function () {
-            this.setAttribute('class', 'node-border')
-        })
-        this.rndrr.hideRDots()
-
-        if (obj) {
-            $(obj.el).find('.node-border').each(function () {
-                this.setAttribute('class', 'node-selected')
+        if (!obj || !obj.e || !obj.e.ctrlKey) {
+            this.mode = 'pan'
+            this.jsRenderer.setMode('pan')
+            toolkit.clearSelection();
+            //clear our internal state
+            this._selection = { nodeIds: [], edgeIds: [] }
+            $('.node-selected').each(function () {
+                this.setAttribute('class', 'node-border')
             })
-            if (obj.node) {
-                toolkit.setSelection(obj.node);
-            }
-            if (obj.edge) {
-                toolkit.setSelection(obj.edge);
-            }
         }
+        this.rndrr.hideRDots()
+        this.addToSelection(obj)
     }
 
-    updateData(obj) {
-        this.schema.updateData(obj)
-
+    refresh() {
         //I don't think these should be required, but they seem to be
         this.jsRenderer.relayout()
         this.jsRenderer.refresh()
+    }
 
-        //This line is most likely redundant as updateEdge should implicitly do it
-        this.jsToolkit.fire('dataUpdated')
+    updateData(obj, doRefresh = true) {
+        this.schema.updateData(obj)
+
+        if (doRefresh) {
+            this.refresh()
+            //This line is most likely redundant as updateEdge should implicitly do it
+            this.jsToolkit.fire('dataUpdated')
+        }
         this.update()
     }
 
