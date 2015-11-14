@@ -28,16 +28,22 @@ class DragDropHandler {
                         let node = info.obj
                         let edges = node.getEdges()
                         if (edges.length > 0) {
+                            let renderer = getRenderer()
                             _.each(edges, (edge) => {
                                 if (edge.data.rthing && edge.data.rthing.nodeId) {
-                                    let rnode = toolkit.getNode(edge.data.rthing.nodeId)
+                                    let rnode = toolkit.getNode(edge.data.rthing.nodeId),
+                                        rnodeEl = renderer.getRenderedElement(rnode);
                                     let dotNode = document.getElementById(edge.data.rthing.rDot)
                                     if (dotNode) {
-                                        let dot = $(dotNode)
-                                        rnode.data.left = dot.css('left').split('px')[0] - (rnode.data.h / 2)
-                                        rnode.data.top = dot.css('top').split('px')[0] - (rnode.data.h / 2)
-                                        toolkit.updateNode(rnode)
-                                        getRenderer().relayout()
+                                        let dot = $(dotNode),
+                                            left = dot.css('left').split('px')[0] - (rnode.data.w / 2),
+                                            top = dot.css('top').split('px')[0] - (rnode.data.h / 2);
+
+                                        toolkit.updateNode(rnode, {
+                                            left:left,
+                                            top:top
+                                        });
+                                        renderer.setAbsolutePosition(rnodeEl, [left, top])
                                     }
                                 }
                             })
