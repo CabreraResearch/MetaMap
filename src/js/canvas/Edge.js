@@ -322,7 +322,8 @@ class Edge extends _CanvasBase {
             top: top
         }
 
-        let nodeData = jsPlumb.extend(this.canvas.node.getNewNode({ type: 'r-thing', cssClass: 'donotdrag' }), d)
+        let rType = this.node.getPartNodeType(obj.edge.source.data)
+        let nodeData = jsPlumb.extend(this.node.getNewNode({ type: rType, cssClass: 'donotdrag' }), d)
         nodeData.rthing = {
             edgeId: obj.edge.data.id,
             rDot: obj.edge.data.id + '_rthing'

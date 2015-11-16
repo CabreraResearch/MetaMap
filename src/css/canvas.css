@@ -21,24 +21,45 @@
     white-space: pre;
     position:absolute;
 }
-.ideaNode .name.freehand_name {
+.ideaNode .name.freehand-name {
     cursor: move;
     white-space: pre;
     text-align: left;
     left:120%;
-    top:20%;
 }
-.ideaNode .name.left_name {
+.ideaNode .name.left-name {
     cursor: pointer;
     text-align: left;
     left:120%;
-    top:20%;
 }
-.ideaNode .name.right_name {
+.ideaNode .name.right-name {
     cursor: pointer;
     text-align: right;
     right:120%;
-    top:20%;
+}
+
+.ideaNode.A .name {
+    top: 20%;
+}
+
+.ideaNode.B .name {
+    top: 5%;
+}
+
+.ideaNode.C .name {
+    top: -5px;
+}
+
+.ideaNode.D .name {
+    top: -2px;
+}
+
+.ideaNode.E .name {
+    top: 5%;
+}
+
+.ideaNode.F .name {
+    top: 5%;
 }
 
 .ideaNode .name.none {
@@ -46,7 +67,7 @@
     visibility: hidden;
 }
 
-.white_circle {
+.white-circle {
     cursor: move;
 }
 
@@ -59,7 +80,7 @@
 }
 
 .node-selected {
-    fill: #000;
+    stroke: #000;
 }
 
 .relationship-rthing-visible {
@@ -79,56 +100,65 @@ div[data-class="relationship-rthing"] {
     cursor: default;
 }
 
+.eyeball {
+    cursor: pointer;
+}
+
 /* styles for the idea node. */
-.eye_closed[data-show="none"] {
+.eye-closed[data-show="none"] {
     opacity:0;
     fill-opacity: 0;
     display: none;
     visibility: hidden;
 }
 
-.eye_closed[data-show="open"] {
+.eye-closed[data-show="open"] {
     opacity:0;
     fill-opacity: 0;
     display: none;
     visibility: hidden;
 }
-.eye_closed[data-show="closed"] {
+.eye-closed[data-show="closed"] {
     opacity:1;
     fill-opacity: 1;
 }
 
-.eye_open[data-show="open"] {
+.eye-open[data-show="open"] {
     opacity:1;
     fill-opacity: 1;
 }
-.eye_open[data-show="closed"] {
-    opacity:0;
-    fill-opacity: 0;
-    display: none;
-    visibility: hidden;
-}
-.eye_open[data-show="none"] {
+
+.eye-open[data-show="none"] {
     opacity:0;
     fill-opacity: 0;
     display: none;
     visibility: hidden;
 }
 
-.paperclip {
+.file.attachment {
     opacity:0;
 }
 
-.node_internal {
+.parts {
+    opacity: 0;
+}
+
+.node.internal {
     opacity:0;
 }
 
-.ideaNode:hover .node_internal {
+.ideaNode:hover .node.internal {
     opacity:1;
 }
+
 
 .donotdrag {
     cursor: pointer !important;
+}
+
+.node-rect {
+    opacity: 1;
+    fill: #fff;
 }
 
 .ideaNode:hover .node-rect {
@@ -169,7 +199,7 @@ div[data-class="relationship-rthing"] {
     fill:#F9A736;
 }
 
-.orange_proxy, .orange_proxy circle {
+.orange-proxy, .orange-proxy circle {
     fill:#F9A736;
     opacity: 0;
 }

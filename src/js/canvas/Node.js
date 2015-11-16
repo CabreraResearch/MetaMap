@@ -17,7 +17,7 @@ class Node extends _CanvasBase {
             w:this.canvas.nodeSize,
             h:this.canvas.nodeSize,
             label:'idea',
-            type: 'idea',
+            type: 'idea_A',
             children: [],
             labelPosition: [],
             cssClass: '',
@@ -33,6 +33,24 @@ class Node extends _CanvasBase {
 
     getClickEvents() {
         return {
+            click:{
+                'eye-closed': (el, node) => {
+                    if (node.data.perspective.has) {
+                        node.data.perspective.class = 'open'
+                        this.canvas.updateData({ node: node })
+                        let sel = this.jsToolkit.select(node.data.perspective.edges)
+                        this.jsRenderer.setVisible(sel, true)
+                    }
+                },
+                'eye-open': (el, node) => {
+                    if (node.data.perspective.has) {
+                        node.data.perspective.class = 'closed'
+                        this.canvas.updateData({ node: node })
+                        let sel = this.jsToolkit.select(node.data.perspective.edges)
+                        this.jsRenderer.setVisible(sel, true)
+                    }
+                }
+            },
             dblclick: {
                 red: (el, node) => {
                     let newNode = this.getNewNode()
@@ -45,13 +63,15 @@ class Node extends _CanvasBase {
                     node.data.children = node.data.children || []
                     var newLabel = 'Part'
 
+                    let type = this.getPartNodeType(node.data)
                     let nodeData = this.getNewNode({
                         parentId:node.id,
                         w:newWidth,
                         h:newHeight,
                         label: newLabel,
                         order: node.data.children.length,
-                        partAlign:  'left'
+                        partAlign: 'left',
+                        type: type
                     })
 
                     var newNode = this.jsToolkit.addNode(nodeData)
@@ -153,21 +173,50 @@ class Node extends _CanvasBase {
                     }
                 }
             },
-            default: {
+            idea_A: {
                 parent: 'all',
-                template:'tmplNode'
+                template:'nodeA'
             },
-            idea: {
-                parent: 'default'
+            idea_B: {
+                parent: 'all',
+                template:'nodeB'
             },
-            'r-thing': {
-                parent: 'idea'
+            idea_C: {
+                parent: 'all',
+                template:'nodeC'
+            },
+            idea_D: {
+                parent: 'all',
+                template:'nodeD'
+            },
+            idea_E: {
+                parent: 'all',
+                template:'nodeE'
+            },
+            idea_F: {
+                parent: 'all',
+                template:'nodeF'
             }
         }
     }
 
     onAdded(obj) {
 
+    }
+
+    getPartNodeType(node) {
+        let ret = 'idea_A'
+        if (node) {
+            let types = ['A', 'B', 'C', 'D', 'E', 'F']
+            let type = node.type.split('_')[1]
+            if (type != 'F') {
+                ret = `idea_${types[types.indexOf(type)+1]}`
+            } else {
+                ret = ''
+            }
+
+        }
+        return ret;
     }
 
     createNode(e) {

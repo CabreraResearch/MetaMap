@@ -13,7 +13,7 @@ class Events extends _CanvasBase {
     }
 
     get _types() {
-        this.__types = this.__types || [['red', 'D'], ['orange', 'P'], ['green', 'S'], ['blue', 'R'], ['eye_closed'], ['eye_open']]
+        this.__types = this.__types || [['red', 'D'], ['orange', 'P'], ['green', 'S'], ['blue', 'R'], ['eye-closed'], ['eye-open']]
         return this.__types
     }
 
@@ -76,7 +76,7 @@ class Events extends _CanvasBase {
     registerHandlers(params) {
         // here you have params.el, the DOM element
         // and params.node, the underlying node. it has a `data` member with the node's payload.
-        var el = params.el, node = params.node, label = el.querySelector('.freehand_name')
+        var el = params.el, node = params.node, label = el.querySelector('.freehand-name')
         for (var i = 0; i < this._types.length; i++) {
             this._curryHandler(el, this._types[i], node)
         }
@@ -160,7 +160,7 @@ class Events extends _CanvasBase {
                     selected.eachNode((i, node) => {
                         let info = toolkit.getObjectInfo(node)
                         if (info.el) {
-                            $(info.el).find('.node-border').each(function () {
+                            $(info.el).find('.node.border').each(function () {
                                 this.setAttribute('class', 'node-selected')
                             })
                         }
@@ -168,7 +168,7 @@ class Events extends _CanvasBase {
                             _.each(info.els, (array) => {
                                 _.each(array, (el) => {
                                     if (el.innerHTML) {
-                                        $(el).find('.node-border').each(function () {
+                                        $(el).find('.node.border').each(function () {
                                             this.setAttribute('class', 'node-selected')
                                         })
                                     }

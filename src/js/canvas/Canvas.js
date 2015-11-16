@@ -158,7 +158,7 @@ class Canvas {
         if (obj) {
             //setup our own state for selected nodes/edges
             this._selection = this._selection || { nodeIds: [], edgeIds: [] }
-            $(obj.el).find('.node-border').each(function () {
+            $(obj.el).find('.node.border').each(function () {
                 this.setAttribute('class', 'node-selected')
             })
             if (obj.node) {
@@ -186,7 +186,7 @@ class Canvas {
             //clear our internal state
             this._selection = { nodeIds: [], edgeIds: [] }
             $('.node-selected').each(function () {
-                this.setAttribute('class', 'node-border')
+                this.setAttribute('class', 'node border')
             })
         }
         this.rndrr.hideRDots()
