@@ -8347,8 +8347,34 @@
             }
         };
 
+        var _doAssignPosse = function(el, node) {
+            if (!_suspendRendering) {
+                var posse = posseAssigner(node);
+                if (posse != null) {
+                    // posse assign function can return just a string, giving the name of a posse in which the
+                    // element acts as a drag master, or an array of [ name, isMaster ], if you want the element
+                    // to belong to a posse but be a drag slave.
+                    var args = jsPlumbUtil.isArray(posse) ? posse : [ posse ];
+                    args.unshift(el);
+                    _jsPlumb.addToPosse.apply(_jsPlumb, args);
+                }
+            }
+            else {
+                _pendingPosseAssignments.push([ el, node ]);
+            }
+        };
+
+        var _assignPendingPosses = function() {
+            for (var i = 0; i < _pendingPosseAssignments.length; i++) {
+                _doAssignPosse.apply(this, _pendingPosseAssignments[i]);
+            }
+        };
+
+        var _pendingPosseAssignments = []; //  a list of posse assignments that were not done due to rendering
+        // being suspended. Calling _assignPendingPosses will get these done.
         if (this.bindToolkitEvents !== false) {
             var _startFn = function () {
+                _pendingPosseAssignments.length = 0;
                 _jsPlumb.setSuspendDrawing(true);
                 this.setSuspendRendering(true);
             }.bind(this);
@@ -8357,12 +8383,16 @@
             _toolkit.bind(_e.dataAppendStart, _startFn);
             _toolkit.bind(_e.dataLoadEnd, function () {
                 this.setSuspendRendering(false);
+                // assign all posses that were not assigned due to rendering suspended.
+                _assignPendingPosses();
                 self.relayout();
                 _jsPlumb.setSuspendDrawing(false, true);
                 if (_layout) self.fire(_e.dataLoadEnd);
             }.bind(this));
             _toolkit.bind(_e.dataAppendEnd, function () {
                 this.setSuspendRendering(false);
+                // assign all posses that were not assigned due to rendering suspended.
+                _assignPendingPosses();
                 self.refresh();
                 _jsPlumb.setSuspendDrawing(false, true);
                 if (_layout) self.fire(_e.dataAppendEnd);
@@ -8390,15 +8420,7 @@
                     nodeEl.jtk = { node: n };
                     self.append(nodeEl, elId, eventInfo ? eventInfo.position : null);
 
-                    var posse = posseAssigner(n);
-                    if (posse != null) {
-                        // posse assign function can return just a string, giving the name of a posse in which the
-                        // element acts as a drag master, or an array of [ name, isMaster ], if you want the element
-                        // to belong to a posse but be a drag slave.
-                        var args = jsPlumbUtil.isArray(posse) ? posse : [ posse ];
-                        args.unshift(nodeEl);
-                        _jsPlumb.addToPosse.apply(_jsPlumb, args);
-                    }
+                    _doAssignPosse(nodeEl, n);
 
                     _checkForPorts(nodeEl, n, n.id);
                     var np = {node: n, el: nodeEl};
@@ -8688,6 +8710,9 @@
                         var args = jsPlumbUtil.isArray(posse) ? posse : [ posse ];
                         args.unshift(nodeEl);
                         _jsPlumb.setPosse.apply(_jsPlumb, args);
+                    }
+                    else {
+                        _jsPlumb.removeFromAllPosses(nodeEl);
                     }
 
                     self.repaint(nodeEl);
@@ -9662,10 +9687,28 @@
          * to be dragged. If false, this Node drags independently but is dragged whenever an _active_ member of the Posse
          * is dragged,
          */
-        this.addToPosse = function(obj, posse, active, unlessAlreadyMember, clearExisting) {
+        this.addToPosse = function(obj, posse, active) {
             jsPlumbToolkitUtil.each(obj, function(_obj) {
                 var info = _getObjectInfo(_obj);
-                if (info.el) _jsPlumb.addToPosse(info.el, posse, active, unlessAlreadyMember, clearExisting);
+                if (info.el) _jsPlumb.addToPosse(info.el, {id:posse, active:active !== false});
+            });
+        };
+
+        /**
+         * Sets the posse(s) for the element with the given id, creating those that do not yet exist, and removing from
+         * the element any current Posses that are not specified by this method call. This method will not change the
+         * active/passive state if it is given a posse in which the element is already a member.
+         * @method setPosse
+         * @param {Element} el Element to set posse(s) on.
+         * @param {String...|Object...} spec Variable args parameters. Each argument can be a either a String, indicating
+         * the ID of a Posse to which the element should be added as an active participant, or an Object containing
+         * `{ id:"posseId", active:false/true}`. In the latter case, if `active` is not provided it is assumed to be
+         * true.
+         */
+        this.setPosse = function(obj, posse) {
+            jsPlumbToolkitUtil.each(obj, function(_obj) {
+                var info = _getObjectInfo(_obj);
+                if (info.el) _jsPlumb.setPosse(info.el, posse);
             });
         };
 
