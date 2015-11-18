@@ -9,6 +9,7 @@ class Feedback extends ActionBase {
     act() {
         super.act();
         this.userSnap.openReportWindow();
+        this.metaMap.Router.back()
         return true;
     }
 }
