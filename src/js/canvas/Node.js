@@ -70,14 +70,14 @@ class Node extends _CanvasBase {
                         h:newHeight,
                         label: newLabel,
                         order: node.data.children.length,
-                        partAlign: 'left',
+                        partAlign: node.data.partAlign || 'left',
                         type: type
                     })
 
                     var newNode = this.jsToolkit.addNode(nodeData)
 
                     node.data.children.push(newNode.id)
-                    this.jsRenderer.relayout()
+                    this.canvas.updateData({node: node})
                 },
                 orange:(el, node) => {
                     let data = this.getNewNode()
@@ -192,10 +192,6 @@ class Node extends _CanvasBase {
             idea_E: {
                 parent: 'all',
                 template:'nodeE'
-            },
-            idea_F: {
-                parent: 'all',
-                template:'nodeF'
             }
         }
     }
@@ -207,9 +203,9 @@ class Node extends _CanvasBase {
     getPartNodeType(node) {
         let ret = 'idea_A'
         if (node) {
-            let types = ['A', 'B', 'C', 'D', 'E', 'F']
+            let types = ['A', 'B', 'C', 'D', 'E']
             let type = node.type.split('_')[1]
-            if (type != 'F') {
+            if (type != 'E') {
                 ret = `idea_${types[types.indexOf(type)+1]}`
             } else {
                 ret = ''
@@ -227,6 +223,43 @@ class Node extends _CanvasBase {
         pos.left = pos.left-50
         pos.top = pos.top-50
         this.jsToolkit.addNode(jsPlumb.extend(this.getNewNode(), pos))
+    }
+
+    createRThing(obj) {
+        let dotEl = document.getElementById(obj.edge.data.id + '_rthing')
+        let left = this.jsRenderer.mapEventLocation(obj.e).left
+        let top = this.jsRenderer.mapEventLocation(obj.e).top
+        let size = obj.edge.source.data.w * this.canvas.partSize
+
+        if (dotEl) {
+            let dot = $(dotEl)
+            left = dot.position().left - (size / 2)
+            top = dot.position().top - (size / 2)
+        }
+
+        let d = {
+            w: size,
+            h: size,
+            left: left,
+            top: top,
+            partAlign: 'freehand'
+        }
+
+        let rType = this.getPartNodeType(obj.edge.source.data)
+        let nodeData = jsPlumb.extend(this.getNewNode({ type: rType, cssClass: 'donotdrag' }), d)
+        nodeData.rthing = {
+            edgeId: obj.edge.data.id,
+            rDot: obj.edge.data.id + '_rthing'
+        }
+        let newNode = this.canvas.jsToolkit.addNode(nodeData)
+        obj.edge.data.rthing = {
+            nodeId: newNode.id,
+            rDot: obj.edge.data.id + '_rthing'
+        }
+
+        this.hideRDots()
+
+        this.canvas.updateData({ node: newNode, edge: obj.edge })
     }
 }
 

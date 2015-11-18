@@ -58,34 +58,38 @@ class Schema extends _CanvasBase {
     getAllChildren(node, ret=[]) {
         if (node && node.data && node.data.children) {
             _.each(node.data.children, (id, i) => {
-                let child = this.jsToolkit.getNode(id)
-                ret.push(id)
-                this.getAllChildren(child, ret)
+                if (!_.contains(ret, id)) {
+                    let child = this.jsToolkit.getNode(id)
+                    ret.push(id)
+                    this.getAllChildren(child, ret)
+                }
             })
         }
         return ret
     }
 
     recurse(node) {
-        if (node && node.data && node.data.children) {
-            _.each(node.data.children, (id, i) => {
-                let child = this.jsToolkit.getNode(id)
-                this.recurse(child)
-            })
-        }
-        this.deleteRThing(node)
-        if (node.data.parentId) {
-            let parent = this.jsToolkit.getNode(node.data.parentId)
-            if (parent) {
-                parent.data.children = _.remove(parent.data.children, (id) => { return id != node.data.id })
-                this.jsToolkit.updateNode(parent)
+        if (node) {
+            if (node.data && node.data.children) {
+                _.each(node.data.children, (id, i) => {
+                    let child = this.jsToolkit.getNode(id)
+                    this.recurse(child)
+                })
             }
+            this.deleteRThing(node)
+            if (node.data.parentId) {
+                let parent = this.jsToolkit.getNode(node.data.parentId)
+                if (parent) {
+                    parent.data.children = _.remove(parent.data.children, (id) => { return id != node.data.id })
+                    this.jsToolkit.updateNode(parent)
+                }
+            }
+            _.each(node.getAllEdges(), (edge) => {
+                this.deleteEdge(edge)
+            })
+            //Delete children before parents
+            this.jsToolkit.removeNode(node)
         }
-        _.each(node.getAllEdges(), (edge) => {
-            this.deleteEdge(edge)
-        })
-        //Delete children before parents
-        this.jsToolkit.removeNode(node)
     }
 
     deleteEdge(edge) {

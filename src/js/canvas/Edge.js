@@ -169,7 +169,7 @@ class Edge extends _CanvasBase {
 
                             },
                             dblclick: (params) => {
-                                this.createRThing(params)
+                                this.node.createRThing(params)
                             }
                         },
                         visible: true
@@ -228,7 +228,7 @@ class Edge extends _CanvasBase {
             },
             perspective: {
                 cssClass: 'edge-perspective',
-                endpoints: ['Blank', ['Dot', { radius: 5, cssClass: 'orange' }]],
+                endpoints: ['Blank', ['Dot', { radius: 4, cssClass: 'orange' }]],
                 parent: 'all',
                 anchors: ['Continuous', 'Continuous'],
                 connector: ['Straight'],
@@ -301,42 +301,6 @@ class Edge extends _CanvasBase {
                 o.removeClass('relationship-rthing-visible')
             }
         }
-    }
-
-    createRThing(obj) {
-        let dotEl = document.getElementById(obj.edge.data.id + '_rthing')
-        let left = this.jsRenderer.mapEventLocation(obj.e).left
-        let top = this.jsRenderer.mapEventLocation(obj.e).top
-        let size = obj.edge.source.data.w * this.canvas.partSize
-
-        if (dotEl) {
-            let dot = $(dotEl)
-            left = dot.position().left - (size / 2)
-            top = dot.position().top - (size / 2)
-        }
-
-        let d = {
-            w: size,
-            h: size,
-            left: left,
-            top: top
-        }
-
-        let rType = this.node.getPartNodeType(obj.edge.source.data)
-        let nodeData = jsPlumb.extend(this.node.getNewNode({ type: rType, cssClass: 'donotdrag' }), d)
-        nodeData.rthing = {
-            edgeId: obj.edge.data.id,
-            rDot: obj.edge.data.id + '_rthing'
-        }
-        let newNode = this.canvas.jsToolkit.addNode(nodeData)
-        obj.edge.data.rthing = {
-            nodeId: newNode.id,
-            rDot: obj.edge.data.id + '_rthing'
-        }
-
-        this.hideRDots()
-
-        this.canvas.updateData({ node: newNode, edge: obj.edge })
     }
 
     onAdded(obj) {

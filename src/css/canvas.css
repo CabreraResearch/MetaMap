@@ -93,8 +93,8 @@
 }
 div[data-class="relationship-rthing"] {
     background: #B3C2C7;
-    width: 3px;
-    height: 3px;
+    width: 1px;
+    height: 1px;
     border-radius: 50%;
     display: block !important;
     cursor: default;
@@ -105,7 +105,7 @@ div[data-class="relationship-rthing"] {
 }
 
 /* styles for the idea node. */
-.eye-closed[data-show="none"] {
+.eye-closed {
     opacity:0;
     fill-opacity: 0;
     display: none;
@@ -128,7 +128,7 @@ div[data-class="relationship-rthing"] {
     fill-opacity: 1;
 }
 
-.eye-open[data-show="none"] {
+.eye-open {
     opacity:0;
     fill-opacity: 0;
     display: none;
@@ -228,7 +228,7 @@ div[data-class="relationship-rthing"] {
 
 .edge-perspective path {
     stroke:orange;
-    stroke-width:4;
+    stroke-width:2;
 }
 
 .jtk-surface-selected-connection.edge-perspective {
@@ -244,7 +244,7 @@ div[data-class="relationship-rthing"] {
 
 .edge-relationship path {
     stroke:#B3C2C7;
-    stroke-width:4;
+    stroke-width:2;
 }
 
 .jtk-surface-selected-connection.edge-relationship path {
