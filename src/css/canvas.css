@@ -39,27 +39,23 @@
 }
 
 .ideaNode.A .name {
-    top: 20%;
+    top: 30%;
 }
 
 .ideaNode.B .name {
-    top: 5%;
+    top: 20%;
 }
 
 .ideaNode.C .name {
-    top: -5px;
+    top: 5%;
 }
 
 .ideaNode.D .name {
-    top: -2px;
+    top: -5%;
 }
 
 .ideaNode.E .name {
-    top: 5%;
-}
-
-.ideaNode.F .name {
-    top: 5%;
+    top: -5px;
 }
 
 .ideaNode .name.none {
