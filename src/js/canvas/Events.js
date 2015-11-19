@@ -76,7 +76,7 @@ class Events extends _CanvasBase {
     registerHandlers(params) {
         // here you have params.el, the DOM element
         // and params.node, the underlying node. it has a `data` member with the node's payload.
-        var el = params.el, node = params.node, label = el.querySelector('.freehand-name')
+        var el = params.el, node = params.node, label = el.querySelector('.name[data-align="freehand"]')
         for (var i = 0; i < this._types.length; i++) {
             this._curryHandler(el, this._types[i], node)
         }

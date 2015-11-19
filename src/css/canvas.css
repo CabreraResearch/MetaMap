@@ -21,21 +21,26 @@
     white-space: pre;
     position:absolute;
 }
-.ideaNode .name.freehand-name {
+.ideaNode .name[data-align="freehand"] {
     cursor: move;
     white-space: pre;
     text-align: left;
     left:120%;
 }
-.ideaNode .name.left-name {
+.ideaNode .name[data-align="left"] {
     cursor: pointer;
     text-align: left;
-    left:120%;
+    left:120% !important;
 }
-.ideaNode .name.right-name {
+.ideaNode .name[data-align="right"] {
     cursor: pointer;
     text-align: right;
-    right:120%;
+    right:120% !important;
+}
+
+.ideaNode .name[data-align="hide"] {
+    display: none;
+    visibility: hidden;
 }
 
 .ideaNode.A .name {

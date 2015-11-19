@@ -228,7 +228,7 @@ class Edge extends _CanvasBase {
             },
             perspective: {
                 cssClass: 'edge-perspective',
-                endpoints: ['Blank', ['Dot', { radius: 4, cssClass: 'orange' }]],
+                endpoints: ['Blank', ['Dot', { radius: 3, cssClass: 'orange' }]],
                 parent: 'all',
                 anchors: ['Continuous', 'Continuous'],
                 connector: ['Straight'],

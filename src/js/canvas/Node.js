@@ -16,7 +16,7 @@ class Node extends _CanvasBase {
         let ret = {
             w:this.canvas.nodeSize,
             h:this.canvas.nodeSize,
-            label:'idea',
+            label:'Idea',
             type: 'idea_A',
             children: [],
             labelPosition: [],
@@ -25,7 +25,8 @@ class Node extends _CanvasBase {
                 has: false,
                 edges: [],
                 class: 'none'
-            }
+            },
+            partAlign: 'left'
         }
         _.extend(ret, opts)
         return ret
@@ -129,6 +130,7 @@ class Node extends _CanvasBase {
                         this.canvas.rndrr.hideRDots();
                     },
                     contextmenu: (obj, port, el, e) => {
+                        this.canvas.clearSelection()
                         if (obj && obj.el) {
                             let node = obj.node
                             $.contextMenu({
