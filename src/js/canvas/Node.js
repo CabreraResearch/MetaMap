@@ -127,7 +127,7 @@ class Node extends _CanvasBase {
                         }
                     },
                     mouseover: (obj) => {
-                        this.canvas.rndrr.hideRDots();
+                        this.hideRDots()
                     },
                     contextmenu: (obj, port, el, e) => {
                         this.canvas.clearSelection()
@@ -249,14 +249,15 @@ class Node extends _CanvasBase {
 
         let rType = this.getPartNodeType(obj.edge.source.data)
         let nodeData = jsPlumb.extend(this.getNewNode({ type: rType, cssClass: 'donotdrag' }), d)
+        let edgeId = obj.edge.data.id || obj.edge.getId()
         nodeData.rthing = {
-            edgeId: obj.edge.data.id,
-            rDot: obj.edge.data.id + '_rthing'
+            edgeId: edgeId,
+            rDot: edgeId + '_rthing'
         }
         let newNode = this.canvas.jsToolkit.addNode(nodeData)
         obj.edge.data.rthing = {
             nodeId: newNode.id,
-            rDot: obj.edge.data.id + '_rthing'
+            rDot: edgeId + '_rthing'
         }
 
         this.hideRDots()

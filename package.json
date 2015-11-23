@@ -11,7 +11,7 @@
     "url": "https://github.com/CabreraResearch/MetaMap"
   },
   "dependencies": {
-    "riot": "^2.3.1"
+    "riot": "^2.3.11"
   },
   "description": "Meta cognition",
   "engines": {
@@ -80,7 +80,7 @@
     "babelify": "^7.2.0",
     "browserify": "^12.0.1",
     "browserify-shim": "^3.8.11",
-    "eslint": "^1.9.0",
+    "eslint": "^1.10.1",
     "firebase-tools": "^2.1.0",
     "gulp": "^3.9.0",
     "gulp-bump": "^1.0.0",
@@ -100,16 +100,16 @@
     "packageify": "^0.2.3",
     "pretty-hrtime": "^1.0.1",
     "rework-plugin-url": "^1.1.0",
-    "run-sequence": "^1.1.4",
+    "run-sequence": "^1.1.5",
     "through2": "^2.0.0",
     "tiny-lr": "^0.2.1",
     "vinyl-source-stream": "1.1.0",
-    "watchify": "^3.6.0",
+    "watchify": "^3.6.1",
     "wiredep": "^3.0.0-beta",
     "yargs": "^3.30.0"
   },
   "optionalDependencies": {
-    "babel-polyfill": "^6.1.19",
+    "babel-polyfill": "^6.2.0",
     "bluebird": "^3.0.5",
     "bootstrap": "^3.3.5",
     "bootstrap-hover-dropdown": "^2.1.3",

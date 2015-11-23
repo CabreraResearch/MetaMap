@@ -1,3 +1,4 @@
+///<reference path="./typings/jsplumb/jsPlumb.d.ts" />
 const jsPlumb = window.jsPlumb;
 const jsPlumbToolkit = window.jsPlumbToolkit;
 const $ = require('jquery')
@@ -24,28 +25,10 @@ class Canvas {
         this._init(opts)
         this.config = this.metaMap.config.metamap.canvas
 
-		/**
-		*
-		*/
-		this.getPartSizeAtDepth = function(depth) {
-			var s = this.nodeSize, ps = this.partSize;
-			for (var i = 1; i <= depth; i++) {
-				s *= ps;
-			}
-			return s;
-		};
-
-		this.getDepth = function(node, d = 0) {
-			if (node.data.parentId == null) return d;
-			else {
-				return this.getDepth(this.jsToolkit.getNode(node.data.parentId), ++d);
-			}
-		};
-
         jsPlumbToolkit.ready(() => {
 
-            //Load the classes
             //Order of ops matters
+            //Load the classes
             //0. Load nodes and edges
             this.node = new Node(this)
             this.edge = new Edge(this)
@@ -61,7 +44,6 @@ class Canvas {
             this.rndrr = new Renderer(this)
             this.jsRenderer = this.rndrr.renderer
 
-
             //5: Dialog (order doesn't really matter here)
             this.dialog = new Dialog(this)
 
@@ -76,6 +58,24 @@ class Canvas {
 
             this.copyPaste = new CopyPaste(this)
         })
+    }
+
+    /**
+    *
+    */
+    getPartSizeAtDepth(depth) {
+        var s = this.nodeSize, ps = this.partSize;
+        for (var i = 1; i <= depth; i++) {
+            s *= ps;
+        }
+        return s;
+    }
+
+    getDepth(node, d = 0) {
+        if (node.data.parentId == null) return d;
+        else {
+            return this.getDepth(this.jsToolkit.getNode(node.data.parentId), ++d);
+        }
     }
 
     _init(opts) {

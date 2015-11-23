@@ -59,14 +59,6 @@ class Renderer extends _CanvasBase {
         this.node.update()
         this.edge.update()
     }
-
-    showRDot(id, obj) {
-        this.edge.showRDot(id, obj)
-    }
-
-    hideRDots() {
-        this.edge.hideRDots()
-    }
 }
 
 module.exports = Renderer

@@ -54,6 +54,13 @@ class _CanvasBase {
 
     }
 
+    hideRDots() {
+        this.edge.hideRDots()
+    }
+
+    showRDot(id, obj) {
+        this.edge.showRDot(id, obj)
+    }
 
 }
 
