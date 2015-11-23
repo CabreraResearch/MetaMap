@@ -111,20 +111,22 @@ class Schema extends _CanvasBase {
     }
 
     deleteAll(selected) {
-        selected = selected || this.jsToolkit.getSelection()
-        try {
-            selected.eachEdge((i, edge) => {
-                this.deleteEdge(edge)
-            });
+        jsPlumb.batch(() => {
+            selected = selected || this.jsToolkit.getSelection()
+            try {
+                selected.eachEdge((i, edge) => {
+                    this.deleteEdge(edge)
+                });
 
-            //Recurse over all children
-            selected.eachNode((i, n) => {
-                this.recurse(n)
-            });
-            this.jsToolkit.remove(selected)
-        } catch (e) {
-            this.metaMap.error(e)
-        }
+                //Recurse over all children
+                selected.eachNode((i, n) => {
+                    this.recurse(n)
+                });
+                this.jsToolkit.remove(selected)
+            } catch (e) {
+                this.metaMap.error(e)
+            }
+        })
     }
 
     updateData(obj={}) {

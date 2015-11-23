@@ -23,7 +23,6 @@ class Node extends _CanvasBase {
             cssClass: '',
             perspective: {
                 has: false,
-                edges: [],
                 class: 'none'
             },
             partAlign: 'left'
@@ -84,10 +83,14 @@ class Node extends _CanvasBase {
                     let data = this.getNewNode()
                     var newNode = this.jsToolkit.addNode(data)
 
-                    this.jsToolkit.connect({source:node, target:newNode, data:{
+                    let edge = this.jsToolkit.connect({source:node, target:newNode, data:{
                         type: 'perspective',
                         visible: true
                     }})
+                    node.data.perspective = node.data.perspective || {}
+                    node.data.perspective.has = true
+                    node.data.perspective.edges = node.data.perspective.edges || []
+                    node.data.perspective.edges.push(edge.getId())
                 },
                 blue:(el, node) => {
                     let data = this.getNewNode()

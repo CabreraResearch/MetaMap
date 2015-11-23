@@ -65,7 +65,10 @@ class Edge extends _CanvasBase {
                                     class: 'open'
                                 }
                                 fromNode.data.perspective.has = true
-                                fromNode.data.perspective.edges = fromNode.data.perspective.edges || []
+                                if (edgeData.id && !_.contains(fromNode.data.perspective.edges)) {
+                                    fromNode.data.perspective.edges = fromNode.data.perspective.edges || []
+                                    fromNode.data.perspective.edges.push(edgeData.id)
+                                }
                                 fromNode.data.perspective.class = 'open'
                                 this.canvas.updateData({ node: fromNode })
                             }
@@ -305,7 +308,8 @@ class Edge extends _CanvasBase {
 
     onAdded(obj) {
         if (obj.edge.data.type == 'perspective') {
-            if (!_.contains(obj.edge.source.data.perspective.edges, obj.edge.data.id)) {
+            if (obj.edge.data.id && !_.contains(obj.edge.source.data.perspective.edges, obj.edge.data.id)) {
+                obj.edge.source.data.perspective.edges = obj.edge.source.data.perspective.edges || []
                 obj.edge.source.data.perspective.edges.push(obj.edge.data.id)
                 this.canvas.updateData({ node: obj.edge.source })
             }
