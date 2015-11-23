@@ -71,13 +71,18 @@ class Schema extends _CanvasBase {
     recurse(node) {
         if (node) {
             if (node.data && node.data.children) {
-                _.each(node.data.children, (id, i) => {
+                //break reference to array to handle mutations
+                let children = _.clone(node.data.children)
+                _.each(children, (id, i) => {
                     let child = this.jsToolkit.getNode(id)
+                    //delete parentId before recursing for performance
+                    delete child.data.parentId
                     this.recurse(child)
                 })
             }
             this.deleteRThing(node)
             if (node.data.parentId) {
+                //In the case where we're deleting only parts, update their parents
                 let parent = this.jsToolkit.getNode(node.data.parentId)
                 if (parent) {
                     parent.data.children = _.remove(parent.data.children, (id) => { return id != node.data.id })
