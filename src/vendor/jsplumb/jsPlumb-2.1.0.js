@@ -1587,6 +1587,7 @@
                 k.unmarkPosses(this, e);
                 this.stop(e);
                 k.notifySelectionDragStop(this, e);
+                k.notifyPosseDragStop(this, e);
                 moving = false;
                 if (clone) {
                     dragEl && dragEl.parentNode && dragEl.parentNode.removeChild(dragEl);
@@ -1766,7 +1767,7 @@
         };
 
         this.drop = function(drag, event) {
-            return this.params.events["drop"]({ drag:drag, e:event, drop:this, pos:this.params.getPosition(drag.el) });
+            return this.params.events["drop"]({ drag:drag, e:event, drop:this });
         };
 
         this.destroy = function() {
@@ -2019,16 +2020,24 @@
             _foreach(_selection, function(e) { e.moveBy(dx, dy); }, drag);
         };
 
-        this.updatePosses = function(dx, dy, drag) {
+        var _posseAction = function(fn, drag) {
             if (drag.posses) {
                 _each(drag.posses, function(p) {
                     if (drag.posseRoles[p] && _posses[p]) {
                         _foreach(_posses[p].members, function (e) {
-                            e.moveBy(dx, dy);
+                            fn(e);
                         }, drag);
                     }
                 });
             }
+        };
+
+        this.updatePosses = function(dx, dy, drag) {
+            _posseAction(function(e) { e.moveBy(dx, dy); }, drag);
+        };
+
+        this.notifyPosseDragStop = function(drag, evt) {
+            _posseAction(function(e) { e.stop(evt, true); }, drag);
         };
 
         this.notifySelectionDragStop = function(drag, evt) {
@@ -2426,6 +2435,10 @@
             return successValue;
         },
         // take the given model and expand out any parameters.
+        // 'functionPrefix' is optional, and if present, helps jsplumb figure out what to do if a value is a Function.
+        // if you do not provide it, jsplumb will run the given values through any functions it finds, and use the function's
+        // output as the value in the result. if you do provide the prefix, only functions that are named and have this prefix
+        // will be executed; other functions will be passed as values to the output.
         populate: function (model, values, functionPrefix) {
             // for a string, see if it has parameter matches, and if so, try to make the substitutions.
             var getValue = function (fromString) {
