@@ -16,10 +16,6 @@ class DragDropHandler {
             return {
                 filter: '.donotdrag, .name',       // can't drag nodes by the color segments.
                 stop: (params) => {
-                    // when _any_ node stops dragging, run the layout again.
-                    // this will cause child nodes to snap to their new parent, and also
-                    // cleanup nicely if a node is dropped on another node.
-                    getRenderer().refresh();
 
                     // when any two nodes with a relationship and an r-thing between them move
                     // this should update the position of the r-thing to be the same as the r-dot overlay
@@ -49,6 +45,13 @@ class DragDropHandler {
                             })
                         }
                     }
+
+                    // when _any_ node stops dragging, run the layout again.
+                    // this will cause child nodes to snap to their new parent, and also
+                    // cleanup nicely if a node is dropped on another node.
+                    // but note that we do this outside the current run through the event loop,
+                    // as we want to allow jsplumb to finish doing everything it needs.
+                    window.setTimeout(getRenderer().refresh, 0);
                 },
                 start: (params) => {
 
