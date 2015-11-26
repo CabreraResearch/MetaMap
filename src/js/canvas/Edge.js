@@ -326,6 +326,14 @@ class Edge extends _CanvasBase {
                 })
             }
         }
+        else if (obj.addedByMouse && obj.edge.data.type == 'relationship') {
+            // set the ID of the r-dot's DOM element; it is used on drag stop (in DragDrop) to update
+            // the position of the related r-thing.
+            let conn = this.jsRenderer.getRenderedConnection(obj.edge.getId())
+            let overlay = conn.getOverlay("customOverlay")
+            overlay.canvas.setAttribute("id", `${obj.edge.data.id}_rthing`)
+        }
+
         //Kludge: this seems like a bit of a hack, but there isn't another way AFAIK to persist visibility on an edge
         if (obj.edge.data.visible === false) {
             this.jsRenderer.setVisible(obj.edge, false)
