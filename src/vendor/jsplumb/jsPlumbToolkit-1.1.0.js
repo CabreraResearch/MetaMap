@@ -11969,13 +11969,15 @@
             }
 
             var iwh = Math.pow(2, params.options.maxZoom - zoom) * params.options.tileSize[0];
+            var iwhh = Math.pow(2, params.options.maxZoom - zoom) * params.options.tileSize[1];
             this.scaledImageSize = iwh;
+            this.scaledImageSizeH = iwhh;
 
             var _load = function (imgEl, img, x, y) {
                 imgEl.style.left = (x * iwh) + "px";
-                imgEl.style.top = (y * iwh) + "px";
+                imgEl.style.top = (y * iwhh) + "px";
                 imgEl.style.width = iwh + "px";
-                imgEl.style.height = iwh + "px";
+                imgEl.style.height = iwhh + "px";
                 img.onload = function () {
                     imgEl.setAttribute("src", img.src);
                     imgEl.style.opacity = 1;
@@ -12041,7 +12043,7 @@
                 vw = params.getWidth(viewport),
                 vh = params.getHeight(viewport),
                 tileW = currentLayer.scaledImageSize * widgetZoom,
-                tileH = currentLayer.scaledImageSize * widgetZoom,
+                tileH = currentLayer.scaledImageSizeH * widgetZoom,
                 xo = loc[0] < 0 ? Math.floor(-loc[0] / tileW) : loc[0] < vw ? 0 : null,
                 yo = loc[1] < 0 ? Math.floor(-loc[1] / tileH) : loc[1] < vh ? 0 : null,
                 xf = Math.min(currentLayer.xTiles, Math.floor((vw - loc[0]) / tileW)),
@@ -13212,6 +13214,11 @@
         var sap = this.setAbsolutePosition;
         this.setAbsolutePosition = function (el, xy, onComplete) {
             sap.call(this, el, xy);
+            // inform layout the position has changed
+            var objInfo = this.getObjectInfo(el);
+            if (objInfo && objInfo.id) {
+                this.getLayout().setPosition(objInfo.id, xy[0], xy[1]);
+            }
             // inform panzoom the position has changed.
             panzoom.positionChanged(el, xy);
             _super.jsPlumb.revalidate(el);
