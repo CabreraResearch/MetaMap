@@ -15,10 +15,10 @@ class Schema extends _CanvasBase {
     getDefaultMap() {
         return {
             nodes: [{
-                w: 50,
-                h: 50,
+                w: this.canvas.nodeSize,
+                h: this.canvas.nodeSize,
                 label: "idea",
-                type: "idea",
+                type: "idea_A",
                 children: [
 
                 ],
