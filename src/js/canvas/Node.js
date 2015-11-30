@@ -25,7 +25,10 @@ class Node extends _CanvasBase {
                 has: false,
                 class: 'none'
             },
-            partAlign: 'left'
+            partAlign: 'left',
+            parts: {
+                class: 'none'
+            }
         }
         _.extend(ret, opts)
         return ret
@@ -40,6 +43,7 @@ class Node extends _CanvasBase {
                         this.canvas.updateData({ node: node })
                         let sel = this.jsToolkit.select(node.data.perspective.edges)
                         this.jsRenderer.setVisible(sel, true)
+                        this.jsRenderer.relayout()
                     }
                 },
                 'eye-open': (el, node) => {
@@ -48,6 +52,41 @@ class Node extends _CanvasBase {
                         this.canvas.updateData({ node: node })
                         let sel = this.jsToolkit.select(node.data.perspective.edges)
                         this.jsRenderer.setVisible(sel, false)
+                    }
+                },
+                'parts.expanded': (el, node) => {
+                    if (node.data.parts.class == 'open') {
+                        node.data.parts.class = 'closed'
+                        this.canvas.updateData({ node: node })
+
+                        let recurse = (n) => {
+                            if (n&& n.data.children.length > 0) {
+                                _.each(n.data.children, (childId) => {
+                                    let child = this.jsToolkit.getNode(childId)
+                                    this.jsRenderer.setVisible(child, false)
+                                    recurse(child)
+                                })
+                            }
+                        }
+                        recurse(node)
+                    }
+                },
+                'parts.collapsed': (el, node) => {
+                    if (node.data.parts.class == 'closed') {
+                        node.data.parts.class = 'open'
+                        this.canvas.updateData({ node: node })
+
+                        let recurse = (n) => {
+                            if (n&& n.data.children.length > 0) {
+                                _.each(n.data.children, (childId) => {
+                                    let child = this.jsToolkit.getNode(childId)
+                                    this.jsRenderer.setVisible(child, true)
+                                    recurse(child)
+                                })
+                            }
+                        }
+                        recurse(node)
+                        this.jsRenderer.relayout()
                     }
                 }
             },
@@ -77,6 +116,10 @@ class Node extends _CanvasBase {
                     var newNode = this.jsToolkit.addNode(nodeData)
 
                     node.data.children.push(newNode.id)
+                    node.data.parts = node.data.parts || { class: 'open' }
+                    if (node.data.parts.class == 'none') {
+                        node.data.parts.class = 'open'
+                    }
                     this.canvas.updateData({node: node})
                 },
                 orange:(el, node) => {

@@ -13,7 +13,7 @@ class Events extends _CanvasBase {
     }
 
     get _types() {
-        this.__types = this.__types || [['red', 'D'], ['orange', 'P'], ['green', 'S'], ['blue', 'R'], ['eye-closed'], ['eye-open']]
+        this.__types = this.__types || [['red', 'D'], ['orange', 'P'], ['green', 'S'], ['blue', 'R'], ['eye-closed'], ['eye-open'], ['parts.expanded'], ['parts.collapsed']]
         return this.__types
     }
 

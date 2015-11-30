@@ -171,6 +171,7 @@ class Schema extends _CanvasBase {
                 node.cssClass = node.cssClass || ''
                 node.partAlign = node.partAlign || 'left'
                 node.suspendLayout = node.suspendLayout || false
+                node.parts = node.parts || { class: 'none' }
                 node.perspective = node.perspective || {
                     has: false,
                     edges: [],

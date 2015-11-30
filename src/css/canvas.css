@@ -144,10 +144,6 @@ div[data-class="relationship-rthing"] {
     opacity:0;
 }
 
-.parts {
-    opacity: 0;
-}
-
 .node.internal {
     opacity:0;
 }
@@ -175,6 +171,10 @@ div[data-class="relationship-rthing"] {
 .ideaNode:hover .segment {
     opacity:1;
     transition:opacity 0.2s;
+}
+
+.ideaNode:hover .parts {
+    fill: #fff
 }
 
 .letter {
@@ -261,4 +261,38 @@ div[data-class="relationship-rthing"] {
     stroke:#4CBFC2;
     stroke-width:6;
     cursor:pointer;
+}
+
+.parts {
+    fill: #B4C3C8
+}
+
+.parts.collapsed[data-show="open"] {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.parts.expanded[data-show="open"] {
+    opacity: 1;
+    visibility: visible;
+}
+
+.parts.collapsed[data-show="closed"] {
+    opacity: 1;
+    visibility: visible;
+}
+
+.parts.expanded[data-show="closed"] {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.parts.collapsed[data-show="none"] {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.parts.expanded[data-show="none"] {
+    opacity: 0;
+    visibility: hidden;
 }
