@@ -122,11 +122,15 @@ div[data-class="relationship-rthing"] {
 .eye-closed[data-show="closed"] {
     opacity:1;
     fill-opacity: 1;
+    display: block;
+    visibility: visible;
 }
 
 .eye-open[data-show="open"] {
     opacity:1;
     fill-opacity: 1;
+    display: block;
+    visibility: visible;
 }
 
 .eye-open {
@@ -229,7 +233,7 @@ div[data-class="relationship-rthing"] {
 
 .edge-perspective path {
     stroke:orange;
-    stroke-width:2;
+    stroke-width:3;
 }
 
 .jtk-surface-selected-connection.edge-perspective {
@@ -245,7 +249,7 @@ div[data-class="relationship-rthing"] {
 
 .edge-relationship path {
     stroke:#B3C2C7;
-    stroke-width:2;
+    stroke-width:3;
 }
 
 .jtk-surface-selected-connection.edge-relationship path {

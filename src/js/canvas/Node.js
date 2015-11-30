@@ -47,7 +47,7 @@ class Node extends _CanvasBase {
                         node.data.perspective.class = 'closed'
                         this.canvas.updateData({ node: node })
                         let sel = this.jsToolkit.select(node.data.perspective.edges)
-                        this.jsRenderer.setVisible(sel, true)
+                        this.jsRenderer.setVisible(sel, false)
                     }
                 }
             },

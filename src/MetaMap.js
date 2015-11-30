@@ -116,7 +116,7 @@ class MetaMap {
     }
 
     log(val) {
-        if (!this.debug) {
+        if (!this.debug && this.Integrations) {
             this.Integrations.sendEvent(val, 'event', 'log', 'label')
         }
         window.console.info(val)
@@ -124,7 +124,7 @@ class MetaMap {
 
     error(val) {
         window.console.error(val)
-        if (!this.debug) {
+        if (!this.debug && this.Integrations) {
             this.Integrations.sendError(val)
         }
     }

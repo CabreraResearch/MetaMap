@@ -58,7 +58,7 @@ class Events extends _CanvasBase {
 
         //Using an array allows multiple, separate objects to be bound to the same segment logic
         _.each(array, (selector) => {
-            let _el = el.querySelector('.' + selector)
+            let _el = el.querySelectorAll('.' + selector)
             jsPlumb.on(_el, 'click', (e) => {
                 if (this._clickHandlers['click'][segment]) {
                     this._clickHandlers['click'][segment](el, node)

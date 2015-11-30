@@ -81,7 +81,7 @@ var downloadAndParse = function (url, doParse) {
 gulp.task('cdn', function () {
         downloadAndParse('https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.css')
         //'https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css',
-        downloadAndParse('https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.css', true)
+        downloadAndParse('https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.css', true)
         downloadAndParse('https://cdnjs.cloudflare.com/ajax/libs/Uniform.js/2.1.2/themes/default/css/uniform.default.css', true)
         downloadAndParse('https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.2/css/bootstrap3/bootstrap-switch.min.css')
         downloadAndParse('https://cdn.datatables.net/plug-ins/1.10.9/integration/bootstrap/3/dataTables.bootstrap.css')
