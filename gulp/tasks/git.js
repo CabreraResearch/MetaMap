@@ -13,6 +13,12 @@ gulp.task('commit', function(){
     .pipe(git.commit(p))
 });
 
+gulp.task('push', function(){
+  git.push('origin', 'master', function (err) {
+    if (err) throw err;
+  });
+});
+
 // Tag the repo with a version
 gulp.task('tag', function () {
   var p = argv.message;
