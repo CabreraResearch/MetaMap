@@ -87,7 +87,7 @@ gulp.task('release', function (cb) {
         'bump',
         'compile-all',
         'bumpDist',
-        //'commit',
+        'commit',
         'tag',
         function (error) {
             if (error) {

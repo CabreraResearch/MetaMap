@@ -8,7 +8,7 @@ var argv = require('yargs').argv
 // branch is the remote branch to push to
 gulp.task('commit', function(){
   var p = argv.message;
-  return gulp.src(['./*'])
+  return gulp.src('./')
     .pipe(git.add())
     .pipe(git.commit(p))
 });
