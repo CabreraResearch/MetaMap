@@ -10,7 +10,7 @@ var header = require('gulp-header');
    */
 
 gulp.task('bump', function() {
-    return gulp.src(['./package.json','./.about']).pipe(bump()).pipe(gulp.dest('./'));
+    return gulp.src(['./package.json','./about.json']).pipe(bump()).pipe(gulp.dest('./'));
 });
 
 gulp.task('bumpDist', function () {

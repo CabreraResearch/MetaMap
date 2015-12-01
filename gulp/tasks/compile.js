@@ -81,9 +81,9 @@ var sendToSlack = function(i) {
 };
 
 gulp.task('release', function (cb) {
-    var pkg = require('../../package.json');
+
     var p = argv.message;
-    message.text = 'Just deployed MetaMap v'+pkg.version+' to https://www.metamap.co (' + p + ').';
+
     runSequence(
         'bump',
         'compile-all',
@@ -95,6 +95,9 @@ gulp.task('release', function (cb) {
                 console.log(error.message);
                 cb(error);
             } else {
+                var pkg = require('../../package.json');
+                message.text = 'Just deployed MetaMap v' + pkg.version + ' to https://www.metamap.co. ' + p;
+
                 client.deploy({
                     message: p
                 }).then(function () {
