@@ -9,7 +9,7 @@ var runSequence = require('run-sequence');
 gulp.task('default', ['compile']);
 
 gulp.task('compile', function (cb) {
-    runSequence(
+    var ret = runSequence(
         'browserify-dev',
         'cacheBust',
         function (error) {
@@ -26,10 +26,11 @@ gulp.task('compile', function (cb) {
             process.exit(0);
         });
     });
+    return ret
 })
 
 gulp.task('compile-all', function (cb) {
-    runSequence(
+    var ret = runSequence(
         'vendor',
         'browserify',
         'css',
@@ -48,10 +49,11 @@ gulp.task('compile-all', function (cb) {
             process.exit(0);
         });
     });
+    return ret
 })
 
 gulp.task('compile-test', function (cb) {
-    runSequence(
+    return runSequence(
         'compile-all',
         'test',
         'watch',
@@ -82,7 +84,11 @@ gulp.task('release', function (cb) {
     var p = argv.message;
     message.text = 'Just deployed new release to https://www.metamap.co that: ' + p;
     runSequence(
+        'bump',
         'compile-all',
+        'bumpDist',
+        //'commit',
+        'tag',
         function (error) {
             if (error) {
                 console.log(error.message);
@@ -91,7 +97,7 @@ gulp.task('release', function (cb) {
                 client.deploy({
                     message: p
                 }).then(function () {
-                    sendToSlack(message)
+                    //sendToSlack(message)
                     setTimeout(function () {
                         console.log('RELEASE FINISHED SUCCESSFULLY');
                         cb();

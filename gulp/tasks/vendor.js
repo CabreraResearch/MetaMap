@@ -116,8 +116,28 @@ gulp.task('vendor2', function (cb) {
         });
 });
 
-gulp.task('vendor-all', ['vendor1', 'vendor2']);
+gulp.task('vendor-all', function (cb) {
+    return runSequence(
+        'vendor1',
+        'vendor2',
+        function (error) {
+            if (error) {
+                console.log(error.message);
+            }
+            cb(error);
+        })
+});
 
-gulp.task('vendor', ['vendor1', 'concatOthers']);
+gulp.task('vendor', function(cb) {
+    return runSequence(
+        'vendor1',
+        'concatOthers',
+        function (error) {
+            if (error) {
+                console.log(error.message);
+            }
+            cb(error);
+        })
+})
 
 

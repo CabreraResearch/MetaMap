@@ -1,17 +1,30 @@
-﻿  var bump, gulp, gutil;
+﻿"use strict";
 
-  gulp = require('gulp');
-
-  gutil = require('gulp-util');
-
-  bump = require('gulp-bump');
+var gulp = require('gulp');
+var gutil = require('gulp-util');
+var bump = require('gulp-bump');
+var header = require('gulp-header');
 
   /*
    Bump the version in bower and package json
    */
 
-  gulp.task('bumpVersion', function() {
-    gulp.src(['./package.json', './bower.json']).pipe(bump()).pipe(gulp.dest('./'));
-  });
+gulp.task('bump', function() {
+    return gulp.src(['./package.json']).pipe(bump()).pipe(gulp.dest('./'));
+});
 
-  gulp.task('bump', ['bumpVersion', 'compile']);
+gulp.task('bumpDist', function () {
+    var pkg = require('../../package.json');
+
+      var banner = `/**
+* ${pkg.title} - ${pkg.description}
+* @version v${pkg.version}
+* @link ${pkg.homepage}
+* @license ${pkg.license}
+*/
+
+`
+      return gulp.src(['./dist/*.js', './dist/*.css'])
+          .pipe(header(banner, false))
+          .pipe(gulp.dest('./dist'))
+  })

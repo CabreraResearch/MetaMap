@@ -1,3 +1,5 @@
+"use strict";
+
 var browserify = require('browserify');
 var watchify = require('watchify');
 var Logger = require('../util/bundleLogger');
@@ -5,7 +7,6 @@ var notify = require('../util/notify');
 var gulp = require('gulp');
 var handleErrors = require('../util/handleErrors');
 var source = require('vinyl-source-stream');
-var pkg = require('../../package.json');
 var argv = require('yargs').argv;
 var babelify = require('babelify')
 var browserify_shim = require('browserify-shim')
@@ -29,7 +30,10 @@ var config = function (app) {
     }
 };
 
+
+
 var runbrowserify = function (name) {
+    var pkg = require('../../package.json');
     var standalone = 'MetaMap';
 
     var module;
