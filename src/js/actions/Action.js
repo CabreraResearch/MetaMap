@@ -12,6 +12,9 @@ class Action extends ActionBase {
         if (!ret) {
             let Method = null;
             switch(action) {
+                case CONSTANTS.ACTIONS.ABOUT:
+                    Method = require('./About');
+                    break;
                 case CONSTANTS.ACTIONS.OPEN_MAP:
                     Method = require('./OpenMap.js');
                     break;

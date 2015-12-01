@@ -1,4 +1,5 @@
 const TAGS = {
+    ABOUT: 'about',
     META_CANVAS: 'meta-canvas',
     HOME: 'home',
     TERMS: 'terms',

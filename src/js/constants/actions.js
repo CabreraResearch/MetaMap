@@ -1,4 +1,5 @@
 const ACTIONS = {
+    ABOUT: 'about',
     OPEN_MAP: 'map',
     OPEN_TRAINING: 'open_training',
     NEW_MAP: 'new_map',

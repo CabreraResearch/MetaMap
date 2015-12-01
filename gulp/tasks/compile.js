@@ -81,8 +81,9 @@ var sendToSlack = function(i) {
 };
 
 gulp.task('release', function (cb) {
+    var pkg = require('../../package.json');
     var p = argv.message;
-    message.text = 'Just deployed new release to https://www.metamap.co that: ' + p;
+    message.text = 'Just deployed MetaMap v'+pkg.version+' to https://www.metamap.co (' + p + ').';
     runSequence(
         'bump',
         'compile-all',
@@ -97,7 +98,7 @@ gulp.task('release', function (cb) {
                 client.deploy({
                     message: p
                 }).then(function () {
-                    //sendToSlack(message)
+                    sendToSlack(message)
                     setTimeout(function () {
                         console.log('RELEASE FINISHED SUCCESSFULLY');
                         cb();
