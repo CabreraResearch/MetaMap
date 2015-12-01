@@ -1,10 +1,12 @@
 const _ = require('lodash')
 const CONSTANTS = require('../constants/constants')
 const moment = require('moment')
+const uuid = require('../tools/uuid')
 
 class CortexMan {
 
-    constructor(trainingId) {
+    constructor(trainingId, trainingTag) {
+        this._cortex_id = uuid()
         this.MetaMap = require('../../MetaMap')
         this.messages = []
         this.trainingId = trainingId
@@ -12,20 +14,30 @@ class CortexMan {
         this._callbacks = []
         this.currentMessageKey = 0
         this.isTimerOn = true
+        this.trainingTag = trainingTag
     }
 
     restart() {
+        this.MetaMap.MetaFire.deleteData(`${CONSTANTS.ROUTES.TRAININGS.format(this.MetaMap.User.userId) }${this.trainingId}`)
+        this.destroy()
+        // this.runCallbacks()
+        // this.trainingTag.doBeforeNextStep({action: CONSTANTS.CORTEX.RESPONSE_TYPE.RESTART})
+        // this.getData()
+        window.location.reload()
+    }
+
+    destroy() {
+        this.MetaMap.MetaFire.off(`${CONSTANTS.ROUTES.TRAININGS.format(this.MetaMap.User.userId) }${this.trainingId}`)
+        this.MetaMap.MetaFire.off(`${CONSTANTS.ROUTES.COURSE_LIST}${this.trainingId}`)
         this.messages = []
         this.userTraining = { messages: [] }
         this.currentMessageKey = 0
         this._messageGen = null
         this._messages = null
-        this.MetaMap.MetaFire.deleteData(`${CONSTANTS.ROUTES.TRAININGS.format(this.MetaMap.User.userId) }${this.trainingId}`)
+        this.dataReady = null
         this.isTimerOn = true
-        this.runCallbacks()
-        this._getData = null
-        this.MetaMap.Eventer.do(CONSTANTS.EVENTS.BEFORE_TRAINING_NEXT_STEP, {action: CONSTANTS.CORTEX.RESPONSE_TYPE.RESTART})
-        this.getData()
+        this._isDestroyed = true
+        //this.trainingTag.unmount(true)
     }
 
     get picture() { return 'src/images/cortex-avatar-small.jpg' }
@@ -64,6 +76,12 @@ class CortexMan {
         return ret
     }
 
+    addToCallbacks(callback = _.noop) {
+        if (callback && !_.contains(this._callbacks, callback)) {
+            this._callbacks.push(callback)
+        }
+    }
+
     runCallbacks() {
         if (!this._runCallbacks) {
             this._runCallbacks = _.throttle(() => {
@@ -92,17 +110,22 @@ class CortexMan {
         return ret
     }
 
-    saveTraining(data) {
+    static saveTraining(id, data) {
+        let MetaMap = require('../../MetaMap')
         let updateObj = {
             updated_date: `${new Date() }`,
             updated_by: {
-                user_id: this.MetaMap.User.userId,
-                name: this.MetaMap.User.displayName,
-                picture: this.MetaMap.User.picture
+                user_id: MetaMap.User.userId,
+                name: MetaMap.User.displayName,
+                picture: MetaMap.User.picture
             }
         }
         _.extend(updateObj, data)
-        this.MetaMap.MetaFire.updateData(updateObj, `${CONSTANTS.ROUTES.COURSE_LIST}${this.trainingId}`)
+        MetaMap.MetaFire.updateData(updateObj, `${CONSTANTS.ROUTES.COURSE_LIST}${id}`)
+    }
+
+    saveTraining(data) {
+        return CortexMan.saveTraining(this.trainingId, data)
     }
 
     processFeedback(obj, int=50) {
@@ -148,33 +171,33 @@ class CortexMan {
                             this.runCallbacks()
                             switch (nextStep.action) {
                                 case CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO:
-                                    this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, nextStep)
+                                    this.trainingTag.doNextStep(nextStep)
                                     break
                                 case CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS:
                                     this.userTraining.isWaitingOnFeedback = true
-                                    this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, nextStep)
+                                    this.trainingTag.doNextStep(nextStep)
                                     break
                                 case CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS_CONTINUOUS:
                                     this.userTraining.isWaitingOnFeedback = false
-                                    this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, nextStep)
+                                    this.trainingTag.doNextStep(nextStep)
                                     break
                                 case CONSTANTS.CORTEX.RESPONSE_TYPE.LIKERT:
                                     this.userTraining.isWaitingOnFeedback = true
-                                    this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, nextStep)
+                                    this.trainingTag.doNextStep(nextStep)
                                     break
                                 case CONSTANTS.CORTEX.RESPONSE_TYPE.OK:
-                                    this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, nextStep)
+                                    this.trainingTag.doNextStep(nextStep)
                                     break
                                 case CONSTANTS.CORTEX.RESPONSE_TYPE.MORE:
-                                    this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, nextStep)
+                                    this.trainingTag.doNextStep(nextStep)
                                     break
                                 case CONSTANTS.CORTEX.RESPONSE_TYPE.MULTIPLE_CHOICE:
                                     this.userTraining.isWaitingOnFeedback = true
-                                    this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, nextStep)
+                                    this.trainingTag.doNextStep(nextStep)
                                     break
                                 case CONSTANTS.CORTEX.RESPONSE_TYPE.SHORT_ANSWER:
                                     this.userTraining.isWaitingOnFeedback = true
-                                    this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, nextStep)
+                                    this.trainingTag.doNextStep(nextStep)
                                     break
                                 default:
                                     this.MetaMap.log(`on buffer passed ${nextStep.action}`)
@@ -217,11 +240,11 @@ class CortexMan {
                             break
                         case CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS:
                             this.userTraining.isWaitingOnFeedback = true
-                            this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, obj)
+                            this.trainingTag.doNextStep(obj)
                             break
                         case CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS_CONTINUOUS:
                             this.userTraining.isWaitingOnFeedback = false
-                            this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, obj)
+                            this.trainingTag.doNextStep(obj)
                             break
                         case CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS_FINISH:
                             let line = ''
@@ -246,11 +269,11 @@ class CortexMan {
                             break
                         case CONSTANTS.CORTEX.RESPONSE_TYPE.MULTIPLE_CHOICE:
                             this.userTraining.isWaitingOnFeedback = true
-                            this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, obj)
+                            this.trainingTag.doNextStep(obj)
                             break
                         case CONSTANTS.CORTEX.RESPONSE_TYPE.SHORT_ANSWER:
                             this.userTraining.isWaitingOnFeedback = true
-                            this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, obj)
+                            this.trainingTag.doNextStep(obj)
                             break
                         case CONSTANTS.CORTEX.RESPONSE_TYPE.SHORT_ANSWER_FINISH:
                             this.userTraining.isWaitingOnFeedback = false
@@ -282,7 +305,7 @@ class CortexMan {
                                     this.moveToNextMessage(obj, { line: 'Thanks for the feedback!' })
                                 }
                             } else {
-                                this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, obj)
+                                this.trainingTag.doNextStep(obj)
                             }
                             break
                         case CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO:
@@ -292,16 +315,16 @@ class CortexMan {
                             }
                             switch (button) {
                                 case 'Finished':
-                                    this.MetaMap.Eventer.do(CONSTANTS.EVENTS.STOP_VIDEO, originalMessage)
+                                    this.trainingTag.stopVideo(originalMessage)
                                     if (originalMessage.action == CONSTANTS.CORTEX.RESPONSE_TYPE.VIDEO && !originalMessage.archived) {
                                         originalMessage.archived = true
                                         this.moveToNextMessage(obj)
                                     } else {
-                                        this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, originalMessage)
+                                        this.trainingTag.doNextStep(originalMessage)
                                     }
                                     break
                                 case 'Play':
-                                    this.MetaMap.Eventer.do(CONSTANTS.EVENTS.PLAY_VIDEO, obj)
+                                    this.trainingTag.playVideo(obj)
                                     break
                             }
                             break
@@ -352,76 +375,76 @@ class CortexMan {
                 }
             }
 
-            this.MetaMap.Eventer.do(CONSTANTS.EVENTS.BEFORE_TRAINING_NEXT_STEP, originalMessage)
+            this.trainingTag.doBeforeNextStep(originalMessage)
             this.runCallbacks()
             this.MetaMap.Integrations.sendEvent(obj.message, 'cortex', 'chat')
         }
     }
 
     getData(callback = _.noop) {
-        if (callback && !_.contains(this._callbacks, callback)) {
-            this._callbacks.push(callback)
-        }
-        this.MetaMap.Eventer.do(CONSTANTS.EVENTS.BEFORE_TRAINING_NEXT_STEP, this.currentMessage)
+        if (true !== this._isDestroyed) {
+            this.addToCallbacks(callback)
+            this.trainingTag.doBeforeNextStep(this.currentMessage)
 
-        if (this._getData) {
-            this.runCallbacks()
-            this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, this.currentMessage)
-        }
+            if (this.dataReady) {
+                this.runCallbacks()
+                this.trainingTag.doNextStep(this.currentMessage)
+            }
 
-        this._getData = this._getData || new Promise((resolve, reject) => {
+            this.dataReady = this.dataReady || new Promise((resolve, reject) => {
 
-            this.isTimerOn = true
-            var once = _.once(() => {
-                this._getData = this.MetaMap.MetaFire.getData(`${CONSTANTS.ROUTES.TRAININGS.format(this.MetaMap.User.userId) }${this.trainingId}`).then((data) => {
-                    this.userTraining = data
-                    if (!data) {
-                        this.userTraining = this.training
-                        this.runCallbacks()
-                    }
-                    let prms = Promise.resolve()
-                    if (!this.userTraining.messages) {
-                        prms = this.sendMessage(this.getNextMessage())
-                    }
-
-                    prms.then(() => {
-                        //Order of operations
-                        //1: Save the training so the user sees the messages
-                        this.isTimerOn = false
-                        this.runCallbacks()
-
-                        //2: Cache the current message
-                        this.currentMessageKey = _.findLastIndex(this.userTraining.messages, (m) => { return m.person == 'Cortex' })
-
-                        if (this.currentMessageKey >= 0) {
-                            this.currentMessage = this.userTraining.messages[this.currentMessageKey]
-
-                            //3: Action
-                            if (this.currentMessage.action &&
-                                this.currentMessage.action != CONSTANTS.CORTEX.RESPONSE_TYPE.OK &&
-                                this.currentMessage.action != CONSTANTS.CORTEX.RESPONSE_TYPE.MORE) {
-                                this.processUserResponse(this.currentMessage)
-                            } else {
-                                this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, this.currentMessage)
-                            }
-                        } else {
-                            this.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, { action: CONSTANTS.CORTEX.RESPONSE_TYPE.MORE })
+                this.isTimerOn = true
+                var once = _.once(() => {
+                    this.MetaMap.MetaFire.getData(`${CONSTANTS.ROUTES.TRAININGS.format(this.MetaMap.User.userId) }${this.trainingId}`).then((data) => {
+                        this.userTraining = data
+                        if (!data) {
+                            this.userTraining = this.training
+                            this.runCallbacks()
                         }
-                        resolve()
-                        window.NProgress.done()
+                        let prms = Promise.resolve()
+                        if (!this.userTraining.messages) {
+                            prms = this.sendMessage(this.getNextMessage())
+                        }
+
+                        prms.then(() => {
+                            //Order of operations
+                            //1: Save the training so the user sees the messages
+                            this.isTimerOn = false
+                            this.runCallbacks()
+
+                            //2: Cache the current message
+                            this.currentMessageKey = _.findLastIndex(this.userTraining.messages, (m) => { return m.person == 'Cortex' })
+
+                            if (this.currentMessageKey >= 0) {
+                                this.currentMessage = this.userTraining.messages[this.currentMessageKey]
+
+                                //3: Action
+                                if (this.currentMessage.action &&
+                                    this.currentMessage.action != CONSTANTS.CORTEX.RESPONSE_TYPE.OK &&
+                                    this.currentMessage.action != CONSTANTS.CORTEX.RESPONSE_TYPE.MORE) {
+                                    this.processUserResponse(this.currentMessage)
+                                } else {
+                                    this.trainingTag.doNextStep(this.currentMessage)
+                                }
+                            } else {
+                                this.trainingTag.doNextStep({ action: CONSTANTS.CORTEX.RESPONSE_TYPE.MORE })
+                            }
+                            resolve()
+                            window.NProgress.done()
+                        })
                     })
                 })
-                this.MetaMap.Eventer.do(CONSTANTS.EVENTS.SIDEBAR_OPEN, this.trainingId)
-            })
 
-            this.MetaMap.MetaFire.getData(`${CONSTANTS.ROUTES.COURSE_LIST}${this.trainingId}`).then((data) => {
-                this.training = data
-                this.MetaMap.Eventer.do(CONSTANTS.EVENTS.PAGE_NAME, data)
-                once()
-            })
+                this.MetaMap.MetaFire.getData(`${CONSTANTS.ROUTES.COURSE_LIST}${this.trainingId}`).then((data) => {
+                    this.training = data
+                    this.MetaMap.Eventer.do(CONSTANTS.EVENTS.PAGE_NAME, data)
+                    once()
+                    once = _.noop
+                })
 
-        })
-        return this._getData
+            })
+        }
+        return this.dataReady
     }
 
     _massageTrainingMessage(idx=0) {
@@ -482,7 +505,6 @@ class CortexMan {
                         }
                     })
                 }
-                //state.MetaMap.Eventer.do(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, next)
                 yield next
             }
         }

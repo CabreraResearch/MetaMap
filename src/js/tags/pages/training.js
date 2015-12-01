@@ -57,15 +57,17 @@ module.exports = riot.tag(CONSTANTS.TAGS.TRAINING, html, function(opts) {
         return _step
     }
 
-    this.on('mount update', (event, o) => {
-        this.sidebar = this.sidebar || riot.mount(this.quick_sidebar_container, 'quick-sidebar')[0]
+    this.on('update', (o) => {
         if (o) {
             this.config = o
             if (!this.cortex) {
-                this.cortex = this.getCortex(this.config.id)
+                this.cortex = this.getCortex(this.config.id, this)
+                this.sidebar = this.sidebar || riot.mount(this.quick_sidebar_container, 'quick-sidebar')[0]
                 this.cortex.getData().then(() => {
                     this.update()
+                    this.sidebar.update()
                 })
+                this.sidebar.setCortex({cortex: this.cortex})
             }
         }
         this.correctHeight()
@@ -89,19 +91,23 @@ module.exports = riot.tag(CONSTANTS.TAGS.TRAINING, html, function(opts) {
         }
     }
 
-    this.MetaMap.Eventer.on(CONSTANTS.EVENTS.BEFORE_TRAINING_NEXT_STEP, (message) => {
+    this.doBeforeNextStep = (message) => {
         if (message) {
             this.update()
             if (this.step) {
-                this.step.update(message)
+                if (message.action == CONSTANTS.CORTEX.RESPONSE_TYPE.RESTART) {
+                    this.unmountStep()
+                } else {
+                    this.step.update(message)
+                }
             }
         }
-    })
+    }
 
-    this.MetaMap.Eventer.on(CONSTANTS.EVENTS.TRAINING_NEXT_STEP, (message) => {
+    this.doNextStep = (message) => {
         if (message) {
             _.delay(() => {
-                this.guaranteeStep()
+                this.unmountStep()
                 this.update()
                 this.correctHeight()
                 let o = { message: message, cortex: this.cortex }
@@ -135,27 +141,18 @@ module.exports = riot.tag(CONSTANTS.TAGS.TRAINING, html, function(opts) {
                 }
             }, 1500)
         }
-    })
+    }
 
-    this.MetaMap.Eventer.on(CONSTANTS.EVENTS.PLAY_VIDEO, (message) => {
+    this.playVideo = (message) => {
         let o = { message: message, cortex: this.cortex }
+        this.sidebar.playVideo(message)
         buildVideo(o)
-    })
+    }
 
-    this.MetaMap.Eventer.on(CONSTANTS.EVENTS.STOP_VIDEO, (message) => {
+    this.stopVideo = (message) => {
         if (message) {
+            this.sidebar.stopVideo(message)
             this.unmountStep()
         }
-    })
-
-    this.MetaMap.Eventer.on(CONSTANTS.EVENTS.SIDEBAR_CLOSE, () => {
-        $(this.quick_sidebar_cell).addClass('hidden')
-        $(this.quick_sidebar_cell).removeClass('show')
-    })
-
-    this.MetaMap.Eventer.on(CONSTANTS.EVENTS.SIDEBAR_OPEN, (id) => {
-        $(this.quick_sidebar_cell).addClass('show')
-        $(this.quick_sidebar_cell).removeClass('hidden')
-     })
-
+    }
 })

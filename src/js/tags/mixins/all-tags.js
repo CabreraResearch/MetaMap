@@ -10,8 +10,8 @@ let AllTags = {
         this.cortex = null
     },
 
-    getCortex: function(trainingId) {
-        this.cortex = this.cortex || this.MetaMap.getCortex(trainingId)
+    getCortex: function(trainingId, trainingTag) {
+        this.cortex = this.cortex || this.MetaMap.getCortex(trainingId, trainingTag)
         return this.cortex
     },
 

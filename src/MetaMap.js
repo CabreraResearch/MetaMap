@@ -102,13 +102,15 @@ class MetaMap {
         })
     }
 
-    getCortex(trainingId) {
-        if (!trainingId) {
-            throw new Error('Training ID is required')
+    getCortex(trainingId, trainingTag) {
+        if (!trainingId || !trainingTag) {
+            throw new Error('Both Training ID and Tag are required')
         }
-        this._trainings[trainingId] = this._trainings[trainingId] || new Cortex(trainingId)
-        return this._trainings[trainingId]
-
+        if (this._lastCortex) {
+            this._lastCortex.destroy()
+        }
+        this._lastCortex = new Cortex(trainingId, trainingTag)
+        return this._lastCortex
     }
 
     get debug() {

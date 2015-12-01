@@ -1,5 +1,6 @@
 const CONSTANTS = require('../../constants/constants')
 const moment = require('moment')
+const Cortex = require('../../training/cortex')
 
 let TrainingMix = {
     init: function() {
@@ -12,19 +13,7 @@ let TrainingMix = {
 
     saveTraining: function (id, data) {
         if (id) {
-            let cortex = this.MetaMap.getCortex(id)
-            cortex.saveTraining(data)
-        }
-    },
-
-    getData: function(id) {
-        if (id) {
-            let cortex = this.MetaMap.getCortex(id)
-            let that = this
-
-            cortex.getTraining((data) => {
-                that.update();
-            })
+            Cortex.saveTraining(id, data)
         }
     }
 

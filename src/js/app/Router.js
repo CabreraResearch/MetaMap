@@ -90,12 +90,10 @@ class Router {
     }
 
     to(path) {
-        path = this.getPath(path);
+        //path = this.getPath(path);
         if (path) {
-            let args = path.split('/')
-            args[0] = `!${args[0]}`
             riot.route(path)
-            this.route.apply(this, args)
+            //this.route.apply(this, args)
         }
     }
 

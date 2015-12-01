@@ -99,7 +99,23 @@ riot.tag(CONSTANTS.TAGS.SIDEBAR, html, function(opts) {
 
     this.on('mount', () => {
         this.userPicture = this.MetaMap.User.picture
+        this.setHeight()
+        this.updateHeight()
     })
+
+    this.setCortex = (o) => {
+        if (o.cortex && o.cortex.MetaMap) {
+            this.cortex = o.cortex
+            this.actionFactory = this.actionFactory || new ActionFactory(this.cortex)
+            this.messages = this.cortex.userTraining.messages
+            this.outline = this.cortex.getOutline()
+            this.picture = this.cortex.picture
+            this.isTimerOn = this.cortex.isTimerOn
+            this.cortex.addToCallbacks(() => {
+                this.update()
+            })
+        }
+    }
 
     this.setHeight = _.once(() => {
         Ps.initialize(this.cortex_messages, {
@@ -121,18 +137,16 @@ riot.tag(CONSTANTS.TAGS.SIDEBAR, html, function(opts) {
         return true
     }
 
-	this.on('update', (cortex) => {
-        if (cortex && cortex.MetaMap) {
-            this.cortex = cortex
-            this.messages = cortex.userTraining.messages
-            this.outline = cortex.getOutline()
-            this.picture = cortex.picture
-            this.isTimerOn = cortex.isTimerOn
+	this.on('update', (o) => {
+        if (this.cortex) {
+            this.messages = this.cortex.userTraining.messages
+            this.outline = this.cortex.getOutline()
+            this.picture = this.cortex.picture
+            this.isTimerOn = this.cortex.isTimerOn
         }
-        if (this.cortex_messages) {
-            this.setHeight()
+        _.delay(() => {
             this.updateHeight()
-        }
+        },100)
 	})
 
     $(window).resize(() => {
@@ -185,31 +199,22 @@ riot.tag(CONSTANTS.TAGS.SIDEBAR, html, function(opts) {
         this.updateHeight()
     })
 
-    this.MetaMap.Eventer.on(CONSTANTS.EVENTS.PLAY_VIDEO, (data) => {
+    this.playVideo = (data) => {
         if (data) {
             this.currentVideo = data.id
             $(`#${data.id}_video_done`).show()
             $(`#${data.id}_video_play`).hide()
             this.updateHeight()
         }
-    })
+    }
 
-    this.MetaMap.Eventer.on(CONSTANTS.EVENTS.STOP_VIDEO, (data) => {
+    this.stopVideo = (data) => {
         if (data) {
             this.currentVideo = null
             $(`#${data.id}_video_done`).hide()
             $(`#${data.id}_video_play`).show()
             this.updateHeight()
         }
-    })
-
-    this.MetaMap.Eventer.on(CONSTANTS.EVENTS.SIDEBAR_OPEN, (id) => {
-        this.cortex = this.cortex || this.MetaMap.getCortex(id)
-        this.actionFactory = this.actionFactory || new ActionFactory(this.cortex)
-
-        this.cortex.getData((cortex) => {
-            this.update(cortex)
-        })
-    })
+    }
 
 })
