@@ -33,7 +33,7 @@ var config = function (app) {
 
 
 var runbrowserify = function (name) {
-    var pkg = require('../../package.json');
+    var pkg = global.MetaMapPackage
     var standalone = 'MetaMap';
 
     var module;

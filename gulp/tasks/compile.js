@@ -95,7 +95,7 @@ gulp.task('release', function (cb) {
                 console.log(error.message);
                 cb(error);
             } else {
-                var pkg = require('../../package.json');
+                var pkg = global.MetaMapPackage
                 message.text = 'Just deployed MetaMap v' + pkg.version + ' to https://www.metamap.co. ' + p;
 
                 client.deploy({

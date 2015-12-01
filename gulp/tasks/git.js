@@ -20,7 +20,7 @@ gulp.task('push', function () {
 
 // Tag the repo with a version
 gulp.task('tag', function () {
-    var pkg = require('../../package.json')
+    var pkg = global.MetaMapPackage
     var p = argv.message;
     git.tag('v' + pkg.version, p, function (err) {
         if (err) throw err;

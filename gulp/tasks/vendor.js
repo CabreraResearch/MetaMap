@@ -4,7 +4,6 @@ var notify = require('../util/notify');
 var gulp = require('gulp');
 var handleErrors = require('../util/handleErrors');
 var source = require('vinyl-source-stream');
-var pkg = require('../../package.json');
 var minify = require('minifyify')
 var concat = require('gulp-concat');
 var download = require("gulp-download")
@@ -26,7 +25,8 @@ var runbrowserify = function () {
             builtins: true,
             debug: true
     });
-
+    var pkg = global.MetaMapPackage
+    
     bundler.plugin('minifyify', {map: 'vendor.map.json', output: 'dist/vendor.map.json'});
 
     for (module in pkg['dependencies']) {
