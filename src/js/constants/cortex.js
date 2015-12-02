@@ -9,6 +9,8 @@ const CORTEX = {
         MORE: 'more',
         CANVAS: 'canvas',
         CANVAS_CONTINUOUS: 'canvas-continuous',
+        CANVAS_CONTINUOUS_FINISH: 'canvas-continuous-finish',
+        CANVAS_CONTINUOUS_NEXT: 'canvas-continuous-next',
         CANVAS_SAVE: 'canvas_save',
         CANVAS_SHARE: 'canvas_share',
         CANVAS_FINISH: 'canvas_finish',

@@ -177,6 +177,7 @@ class CortexMan {
                                     this.userTraining.isWaitingOnFeedback = true
                                     this.trainingTag.doNextStep(nextStep)
                                     break
+                                case CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS_CONTINUOUS_FINISH:
                                 case CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS_CONTINUOUS:
                                     this.userTraining.isWaitingOnFeedback = false
                                     this.trainingTag.doNextStep(nextStep)
@@ -242,6 +243,11 @@ class CortexMan {
                             this.userTraining.isWaitingOnFeedback = true
                             this.trainingTag.doNextStep(obj)
                             break
+                        case CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS_CONTINUOUS_NEXT:
+                            originalMessage.archived = true
+                            this.moveToNextMessage(obj)
+                            break
+                        case CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS_CONTINUOUS_FINISH:
                         case CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS_CONTINUOUS:
                             this.userTraining.isWaitingOnFeedback = false
                             this.trainingTag.doNextStep(obj)

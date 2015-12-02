@@ -175,8 +175,12 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS, html, function(
 
     this.onFinish = () => {
         let map = this.canvas.exportData()
+        let action = CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS_FINISH
+        if(this.data.action == CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS_CONTINUOUS) {
+            action = CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS_CONTINUOUS_NEXT
+        }
         this.cortex.processUserResponse({
-            action: CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS_FINISH,
+            action: action,
             data: {
                 map: map
             }

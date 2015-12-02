@@ -107,7 +107,11 @@ module.exports = riot.tag(CONSTANTS.TAGS.TRAINING, html, function(opts) {
     this.doNextStep = (message) => {
         if (message) {
             _.delay(() => {
-                this.unmountStep()
+                if (message.action != CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS_CONTINUOUS && message.action != CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS_CONTINUOUS_FINISH) {
+                    this.unmountStep()
+                } else {
+                    this.guaranteeStep()
+                }
                 this.update()
                 this.correctHeight()
                 let o = { message: message, cortex: this.cortex }

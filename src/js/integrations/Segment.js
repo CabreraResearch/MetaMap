@@ -27,28 +27,19 @@ class Segment extends IntegrationsBase {
     window.analytics.track('social', { network: network, targetUrl: targetUrl })
   }
 
-  sendEvent(label = '', category = '', action = '', val = 0) {
-    super.sendEvent(label, category, action);
+  sendEvent(label = '', data = {}) {
+    super.sendEvent(label);
     if (this.integration) {
         if (label) {
-          this.integration.track(label, {
-            hitType: 'event',
-            eventCategory: category,
-            eventAction: action,
-            eventLabel: label,
-            eventValue: val
-          })
+          this.integration.track(label, data)
       }
     }
   }
 
-  sendError(message, isFatal = false) {
-    super.sendEvent(message, isFatal);
+  sendError(message) {
+    super.sendEvent(message);
     if (this.integration) {
-        this.integration.track('exception', {
-            exDescription: message,
-            exFatal: isFatal
-        })
+        this.integration.track('exception', message)
     }
   }
 
