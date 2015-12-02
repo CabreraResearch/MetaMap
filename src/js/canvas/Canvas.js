@@ -108,11 +108,12 @@ class Canvas {
             let postData = {
                 data: data,
                 changed_by: {
-                    userId: this.metaMap.User.userId
+                    userId: this.metaMap.User.userId,
+                    userName: this.metaMap.User.fullName
                 }
             }
             this.metaMap.MetaFire.setDataInTransaction(postData, `maps/data/${this.mapId}`)
-            this.metaMap.Integrations.sendEvent(this.mapId, 'autosave', this.map.name)
+            this.metaMap.Integrations.sendEvent('autosave', { mapId: this.mapId, mapName: this.mapName, map: postData })
         }
     }
 
