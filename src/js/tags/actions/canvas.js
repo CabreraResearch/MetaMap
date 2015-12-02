@@ -124,13 +124,17 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS, html, function(
     })
 
     this.onSave = () => {
-        if (!this.data.map) {
+        if (!this.data.map || this.data.map.owner.userId != this.MetaMap.User.userId) {
             let newMap = require('../../actions/NewMap')
-            this.hasSave = false
             let map = this.canvas.exportData()
             let nuMap = newMap.createMap({ title: this.title, map: map, training: { name: this.cortex.training.name, id: this.cortex.trainingId } })
             this.data.map = nuMap.map
             this.data.mapId = nuMap.mapId
+            this.canvas.reInit({
+                map: this.data.map,
+                mapId: this.data.mapId,
+                doAutoSave: true
+            })
             this.cortex.processUserResponse({
                 action: CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS_SAVE,
                 is_ignored: true,
@@ -140,13 +144,10 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS, html, function(
                     title: this.title
                 }
             })
-            this.canvas.reInit({
-                map: this.data.map,
-                mapId: this.data.mapId,
-                doAutoSave: true
-            })
+            this.hasSave = false
             this.update()
         }
+
     }
 
     this.onShare = () => {
