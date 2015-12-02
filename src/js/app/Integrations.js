@@ -9,7 +9,8 @@ class Integrations {
 		this._features = {
 			google: require('../integrations/Google'),
 			usersnap: require('../integrations/UserSnap'),
-            youtube: require('../integrations/YouTube')
+            youtube: require('../integrations/YouTube'),
+            segment : require('../integrations/Segment')
 		};
 	}
 
