@@ -9,7 +9,28 @@
 /* on drag, put the current node above the others. make it a little transparent too. */
 .ideaNode.jsplumb-drag {
 	z-index:12;
-	opacity:0.9;
+	opacity:0.8;
+}
+
+.ideaNode.jsplumb-drag .node-selected {
+    stroke: #93C63D;
+}
+
+.ideaNode.jsplumb-dragged .node-rect {
+    opacity:1 !important;
+    visibility: visible !important;
+    display: block !important;
+}
+
+.ideaNode.jsplumb-drag-hover .green.segment {
+    opacity:1 !important;
+}
+.ideaNode.jsplumb-drag-hover .letter.S {
+    opacity:1 !important;
+}
+
+.ideaNode.jsplumb-drag-hover .node-rect {
+    opacity:0 !important;
 }
 
 .ideaNode .name {
