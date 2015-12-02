@@ -121,6 +121,10 @@ class DragDropHandler extends _CanvasBase {
         targetNode.data.children.push(sourceNode.id);
         sourceNode.data.parentId = targetNode.id;
 
+        if (targetNode.data.parts.class == 'none') {
+            targetNode.data.parts.class = 'open'
+        }
+
         // find new part size
         this.adjustType(targetNode, sourceNode)
 
