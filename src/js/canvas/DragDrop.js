@@ -100,6 +100,7 @@ class DragDropHandler extends _CanvasBase {
         child.data.w = newSize;
         child.data.h = newSize;
         child.data.type = this.node.getPartNodeType(child.data)
+        child.data.family = parent.data.family
         this.jsRenderer.getLayout().setSize(child.id, [newSize, newSize])
     }
 

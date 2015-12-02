@@ -1,4 +1,5 @@
 const jsPlumb = window.jsPlumb
+const jsPlumbUtil = window.jsPlumbUtil
 const _CanvasBase = require('./_CanvasBase')
 const $ = require('jquery')
 const _ = require('lodash')
@@ -28,7 +29,8 @@ class Node extends _CanvasBase {
             partAlign: 'left',
             parts: {
                 class: 'none'
-            }
+            },
+            family: jsPlumbUtil.uuid()
         }
         _.extend(ret, opts)
         return ret
@@ -95,7 +97,7 @@ class Node extends _CanvasBase {
                     let newNode = this.getNewNode()
                     this.jsToolkit.addNode(newNode)
                 },
-                green:(el, node) => {
+                green: _.throttle((el, node) => {
                     var newWidth = node.data.w * this.canvas.partSize
                     var newHeight = node.data.h * this.canvas.partSize
 
@@ -110,7 +112,8 @@ class Node extends _CanvasBase {
                         label: newLabel,
                         order: node.data.children.length,
                         partAlign: node.data.partAlign || 'left',
-                        type: type
+                        type: type,
+                        family: node.data.family
                     })
 
                     var newNode = this.jsToolkit.addNode(nodeData)
@@ -121,7 +124,7 @@ class Node extends _CanvasBase {
                         node.data.parts.class = 'open'
                     }
                     this.canvas.updateData({node: node})
-                },
+                },100),
                 orange:(el, node) => {
                     let data = this.getNewNode()
                     var newNode = this.jsToolkit.addNode(data)

@@ -13,7 +13,7 @@
 }
 
 .ideaNode.jsplumb-drag .node-selected {
-    stroke: #93C63D;
+    /*stroke: #93C63D;*/
 }
 
 .ideaNode.jsplumb-dragged .node-rect {
