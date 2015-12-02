@@ -94,6 +94,22 @@ class DragDropHandler extends _CanvasBase {
         }
     }
 
+    updateEdgeTypes(node) {
+        let edges = node.getAllEdges()
+        _.each(edges, (edge) => {
+            if (edge.data.type != 'relationshipPart' && edge.source.data.family == edge.target.data.family) {
+                edge.data.type = 'relationshipPart'
+                this.jsToolkit.updateEdge(edge)
+            }
+        })
+        if (node.data.children > 0) {
+            _.each(node.data.children, (c) => {
+                let child = this.jsToolkit.getNode(c)
+                this.updateEdgeTypes(child)
+            })
+        }
+    }
+
     adjustType(parent, child) {
         var depth = this.canvas.getDepth(child)
         var newSize = this.canvas.getPartSizeAtDepth(depth)
@@ -132,6 +148,8 @@ class DragDropHandler extends _CanvasBase {
         this.jsToolkit.updateNode(targetNode);
         // and source and its children
         this.updateNodeAndParts(sourceNode);
+        // and any edges which may now target family to family
+        this.updateEdgeTypes(sourceNode)
 
         return true;
     }
