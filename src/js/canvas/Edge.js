@@ -144,7 +144,7 @@ class Edge extends _CanvasBase {
                 parent: 'relationshipParent',
                 connector: ['StateMachine', {
                     margin: 0.00001, //This seems to be the most precision that has any effect. The Edge is as close as it's going to get.
-                    curviness: 50
+                    curviness: 40
                 }]
             },
             relationshipParent: {
