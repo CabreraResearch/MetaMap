@@ -93,7 +93,7 @@ class CortexMan {
         this._runCallbacks()
     }
 
-    buffer(time = 1000) {
+    buffer(time = 100) {
         this.isTimerOn = true
         this.runCallbacks()
         return new Promise((resolve) => {
@@ -152,15 +152,19 @@ class CortexMan {
         return Promise.resolve()
     }
 
-    moveToNextMessage(obj, feedback) {
+    processMessage(obj, feedback) {
         this.isTimerOn = true
-        let originalMessage = this.currentMessage
 
         if (feedback) {
             this.processFeedback(feedback)
         }
 
-        this.sendMessage(obj).then(() => {
+        return this.sendMessage(obj)
+    }
+
+    moveToNextMessage(obj, feedback) {
+        let originalMessage = this.currentMessage
+        this.processMessage(obj, feedback).then(() => {
             if (true != this.userTraining.isWaitingOnFeedback) {
                 let nextStep = this.getNextMessage()
                 if (nextStep) {
@@ -288,7 +292,7 @@ class CortexMan {
                         case CONSTANTS.CORTEX.RESPONSE_TYPE.MULTIPLE_CHOICE_ANSWER:
                             if (obj.data) {
                                 obj.message = obj.data.message
-                                this.moveToNextMessage(obj, { line: obj.data.feedback })
+                                this.processMessage(obj, { line: obj.data.feedback })
                             }
                             break
                         case CONSTANTS.CORTEX.RESPONSE_TYPE.MULTIPLE_CHOICE_FINISH:

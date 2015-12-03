@@ -92,9 +92,8 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.MULTIPLE_CHOICE, html, 
                             this.image = ''
                             if (o.questionNo >= 0) {
                                 let q = this.questions[o.questionNo]
-                                if (q.image) {
+                                if (q && q.image) {
                                     this.image = q.image
-
                                 }
                             }
                             this.update()
