@@ -50,6 +50,8 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS, html, function(
             }
             if (o.message.action == CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS_CONTINUOUS) {
                 this.finishText = 'Next'
+            } else {
+                this.finishText = 'Finish'
             }
             this.data = message
             this.archived = this.data.archived

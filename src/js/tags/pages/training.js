@@ -75,7 +75,7 @@ module.exports = riot.tag(CONSTANTS.TAGS.TRAINING, html, function(opts) {
 
     this.unmountStep = () => {
         if (this.step) {
-            this.step.unmount()
+            this.step.unmount(true)
             this.step = null
         }
         this.guaranteeStep()
@@ -107,10 +107,10 @@ module.exports = riot.tag(CONSTANTS.TAGS.TRAINING, html, function(opts) {
     this.doNextStep = (message) => {
         if (message) {
             _.delay(() => {
-                if (message.action != CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS_CONTINUOUS && message.action != CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS_CONTINUOUS_FINISH) {
-                    this.unmountStep()
-                } else {
+                if (message.action.startsWith(CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS_CONTINUOUS)) {
                     this.guaranteeStep()
+                } else {
+                    this.unmountStep()
                 }
                 this.update()
                 this.correctHeight()
@@ -126,7 +126,9 @@ module.exports = riot.tag(CONSTANTS.TAGS.TRAINING, html, function(opts) {
                         this.step = riot.mount(this.training_next_step, CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS)[0]
                         break
                     case CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS_CONTINUOUS:
-                        if (!this.step) {
+                    case CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS_CONTINUOUS_NEXT:
+                    case CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS_CONTINUOUS_FINISH:
+                        if (!this.step || !this.step.action.startsWith(CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS_CONTINUOUS)) {
                             this.step = riot.mount(this.training_next_step, CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS)[0]
                         }
                         break
@@ -137,14 +139,19 @@ module.exports = riot.tag(CONSTANTS.TAGS.TRAINING, html, function(opts) {
                         this.step = riot.mount(this.training_next_step, CONSTANTS.CORTEX.RESPONSE_TYPE.SHORT_ANSWER)[0]
                         break
                     default:
-                        this.step = riot.mount(this.training_next_step, CONSTANTS.CORTEX.RESPONSE_TYPE.DEFAULT)[0]
+                        this.mountDefault()
                         break
                 }
                 if (this.step) {
                     this.step.update(o)
                 }
-            }, 1500)
+            }, 250)
         }
+    }
+
+    this.mountDefault = () => {
+        this.unmountStep()
+        this.step = riot.mount(this.training_next_step, CONSTANTS.CORTEX.RESPONSE_TYPE.DEFAULT)[0]
     }
 
     this.playVideo = (message) => {

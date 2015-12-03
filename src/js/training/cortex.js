@@ -53,13 +53,14 @@ class CortexMan {
                 let p = _.find(ret, (s) => {
                     return s.section_no == parts[0]
                 })
-                p.submenu = p.submenu || []
-                if (!_.any(p.submenu, (s) => {
-                    return s.section_no == section.section_no
-                })) {
-                    p.submenu.push(section)
+                if (p) {
+                    p.submenu = p.submenu || []
+                    if (!_.any(p.submenu, (s) => {
+                        return s.section_no == section.section_no
+                    })) {
+                        p.submenu.push(section)
+                    }
                 }
-
             }
         })
         return ret
@@ -88,7 +89,7 @@ class CortexMan {
                 _.each(this._callbacks, (cb) => {
                     cb(this)
                 })
-            }, 2000)
+            }, 50)
         }
         this._runCallbacks()
     }

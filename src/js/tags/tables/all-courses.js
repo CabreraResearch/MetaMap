@@ -65,7 +65,7 @@ module.exports = riot.tag(CONSTANTS.TAGS.ALL_COURSES, html, function (opts) {
         {
             name: 'Action',
             orderable: false,
-            width: '120px'
+            width: '140px'
         },
         {
             name: 'Name',
