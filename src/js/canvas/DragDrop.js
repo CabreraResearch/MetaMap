@@ -193,6 +193,9 @@ class DragDropHandler extends _CanvasBase {
                         outcome = this.reorderChild(sourceInfo.obj, targetInfo.obj, params)
                     }
                 }
+                else if (sourceInfo.obj.data.family == targetInfo.obj.data.family) {
+                    outcome = this.reorderChild(sourceInfo.obj, targetInfo.obj, params)
+                }
                 else {
                     outcome = this.addAsChild(sourceInfo.obj, targetInfo.obj, params.e)
                 }
@@ -204,10 +207,10 @@ class DragDropHandler extends _CanvasBase {
                 return outcome;
             },
             over: (params) => {
-                console.log("drag over", params)
+                //console.log("drag over", params)
             },
             out: (params) => {
-                console.log("drag out", params)
+                //console.log("drag out", params)
             }
         };
     }

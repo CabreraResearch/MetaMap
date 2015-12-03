@@ -1,5 +1,6 @@
 const jsPlumb = window.jsPlumb
 const jsPlumbToolkit = window.jsPlumbToolkit
+const jsPlumbUtil = window.jsPlumbUtil
 
 const _CanvasBase = require('./_CanvasBase')
 const $ = require('jquery')
@@ -35,7 +36,8 @@ class Schema extends _CanvasBase {
                 },
                 left: (window.innerWidth/2) - 50,
                 top: (window.innerHeight/2) - 150,
-                id: "d38a397c-69b6-4b98-a8d5-665786848ffb"
+                id: jsPlumbUtil.uuid(),
+                family: jsPlumbUtil.uuid()
             }
             ],
             edges: [
@@ -68,7 +70,32 @@ class Schema extends _CanvasBase {
         return ret
     }
 
-    recurse(node) {
+    getRoot(node, map) {
+        let root = node
+        let parent = _.find(map.nodes, (n) => { return node.id == node.parentId })
+        if (parent && parent.id != root.id) {
+            root = this.getRoot(parent)
+        }
+        return root
+    }
+
+    recurse(node, map, callback) {
+        if (node) {
+            if (node && node.children) {
+                //break reference to array to handle mutations
+                let children = _.clone(node.children)
+                _.each(children, (id, i) => {
+                    let child = _.find(map.nodes, (n) => { return n.id == id })
+                    if (child) {
+                        this.recurse(child)
+                    }
+                })
+            }
+            callback(node)
+        }
+    }
+
+    recurseDelete(node) {
         if (node) {
             if (node.data && node.data.children) {
                 //break reference to array to handle mutations
@@ -77,7 +104,7 @@ class Schema extends _CanvasBase {
                     let child = this.jsToolkit.getNode(id)
                     //delete parentId before recursing for performance
                     delete child.data.parentId
-                    this.recurse(child)
+                    this.recurseDelete(child)
                 })
             }
             this.deleteRThing(node)
@@ -102,7 +129,7 @@ class Schema extends _CanvasBase {
             //Delete any r-things that are associated with the edges to be deleted
             if (edge.data.rthing && edge.data.rthing.nodeId) {
                 let child = this.jsToolkit.getNode(edge.data.rthing.nodeId)
-                this.recurse(child)
+                this.recurseDelete(child)
             }
             if (edge.data.perspective && edge.data.perspective.has && edge.data.perspective.nodeId) {
                 let child = this.jsToolkit.getNode(edge.data.perspective.nodeId)
@@ -125,7 +152,7 @@ class Schema extends _CanvasBase {
 
                 //Recurse over all children
                 selected.eachNode((i, n) => {
-                    this.recurse(n)
+                    this.recurseDelete(n)
                 });
                 this.jsToolkit.remove(selected)
             } catch (e) {
@@ -178,6 +205,17 @@ class Schema extends _CanvasBase {
                     class: 'none'
                 }
                 node.perspective.edges = node.perspective.edges || []
+                if (!node.family) {
+                    let root = this.getRoot(node, map)
+                    if (!root.family) {
+                        root.family = jsPlumbUtil.uuid()
+                    }
+                    if (root) {
+                        this.recurse(root, map, (child) => {
+                            child.family = root.family
+                        })
+                    }
+                }
             })
         }
     }
