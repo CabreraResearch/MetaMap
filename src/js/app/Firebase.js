@@ -162,15 +162,12 @@ class MetaFire {
         if (path) {
             child = this.getChild(path)
         }
-        try {
-            return child.set(data, (e) => {
-                if (e) {
-                    this.error(e, path)
-                }
-            })
-        } catch (e) {
-            this.error(e, path)
-        }
+
+        return child.set(data, (e) => {
+            if (e) {
+                this.error(e, path)
+            }
+        })
     }
 
     updateData(data, path) {
@@ -178,20 +175,16 @@ class MetaFire {
         if (path) {
             child = this.getChild(path)
         }
-        try {
-            return new Promise((resolve, reject) => {
-                child.update(data, (e) => {
-                    if (e) {
-                        this.error(e, path)
-                        reject(e)
-                    } else {
-                        resolve()
-                    }
-                })
+        return new Promise((resolve, reject) => {
+            child.update(data, (e) => {
+                if (e) {
+                    this.error(e, path)
+                    reject(e)
+                } else {
+                    resolve()
+                }
             })
-        } catch (e) {
-            this.error(e, path)
-        }
+        })
     }
 
     deleteData(path) {
@@ -203,15 +196,11 @@ class MetaFire {
         if (path) {
             child = this.getChild(path)
         }
-        try {
-            return child.push(data, (e) => {
-                if (e) {
-                    this.error(e, path)
-                }
-            })
-        } catch (e) {
-            this.error(e, path)
-        }
+        return child.push(data, (e) => {
+            if (e) {
+                this.error(e, path)
+            }
+        })
     }
 
     setDataInTransaction(data, path, callback) {
@@ -219,17 +208,18 @@ class MetaFire {
         if (path) {
             child = this.getChild(path)
         }
-        try {
-            return child.transaction((currentValue) => {
-                try {
-                    return data
-                } catch (e) {
+        return new Promise((resolve, reject) => {
+            child.transaction((currentValue) => {
+                return data
+            }, (e) => {
+                if (e) {
                     this.error(e, path)
+                    reject(e)
+                } else {
+                    resolve()
                 }
             })
-        } catch (e) {
-            this.error(e, path)
-        }
+        })
     }
 
     error(e, path) {

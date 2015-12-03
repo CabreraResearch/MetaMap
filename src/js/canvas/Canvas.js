@@ -112,7 +112,10 @@ class Canvas {
                     userName: this.metaMap.User.fullName
                 }
             }
-            this.metaMap.MetaFire.setDataInTransaction(postData, `maps/data/${this.mapId}`)
+            this.metaMap.MetaFire.setDataInTransaction(postData, `maps/data/${this.mapId}`).catch((err) => {
+                window.alert("Something went wrong. Your map is no longer be saved. Please refresh your browser and try again.")
+                this.metaMap.error(err)
+            })
             this.metaMap.Integrations.sendEvent('autosave', { mapId: this.mapId, mapName: this.mapName, map: postData })
         }
     }
