@@ -142,7 +142,7 @@ class Canvas {
 
     exportData(limitToSelected=false) {
         let ret = this.jsToolkit.exportData()
-        if (limitToSelected) {
+        if (limitToSelected && this._selection) {
             //getSelection rarely has the actual selection; use our own state
             // let selected = this.jsToolkit.getSelection()
             ret.edges = _.remove(ret.edges, (edge) => {

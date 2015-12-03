@@ -26,16 +26,11 @@ class CopyPaste extends _CanvasBase {
     }
 
     copy(event) {
-        event.preventDefault()
-
         this._copyData = null
         this.data = this.canvas.exportData(true)
-
-        console.log(this.data)
     }
 
     paste(event) {
-        event.preventDefault()
         if (this.data) {
 
             //It's possible to paste multiple times from the same copy. In case we do this, operate on the last mutation instead of the original
