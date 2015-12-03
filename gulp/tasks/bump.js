@@ -30,7 +30,7 @@ gulp.task('bumpDist', function () {
 */
 
 `
-    return gulp.src(['./dist/*.js', './dist/*.css'])
+    return gulp.src(['./dist/*.min.js', './dist/*.min.css'])
         .pipe(header(banner, false))
         .pipe(gulp.dest('./dist'))
 })
