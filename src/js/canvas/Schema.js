@@ -80,14 +80,14 @@ class Schema extends _CanvasBase {
     }
 
     recurse(node, map, callback) {
-        if (node) {
+        if (node && map && callback) {
             if (node && node.children) {
                 //break reference to array to handle mutations
                 let children = _.clone(node.children)
                 _.each(children, (id, i) => {
                     let child = _.find(map.nodes, (n) => { return n.id == id })
                     if (child) {
-                        this.recurse(child)
+                        this.recurse(child, map, callback)
                     }
                 })
             }

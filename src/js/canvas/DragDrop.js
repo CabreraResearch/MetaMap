@@ -157,24 +157,26 @@ class DragDropHandler extends _CanvasBase {
     reorderChild(sourceNode, targetNode, params) {
         jsPlumbUtil.consume(params.e);
         let layout = this.jsRenderer.getLayout();
-        var childPositions = layout.getChildPositions(params.drag.el._metamapParent.id), idx = null;
-        // here we map child positions to a list containing entries that have [ pos, delta, idx ], which we then
-        // sort by delta (where delta is the distance from that node's top edge from the dropped node's top edge).
-        // the first entry in this array, then, gives us the new index for the dropped node.
-        let mappedLocations = _.map(childPositions, (cp, i) => {
-            return [cp[1], Math.abs(cp[1] - params.drop.position[1]), i];
-        })
-        let sortedLocations = mappedLocations.sort((a, b) => {
-            return a[1] < b[1] ? -1 : a[1] > b[1] ? 1 : 0;
-        });
-        // move the dropped node
-        childPositions.splice(sortedLocations[0][2], 0, childPositions.splice(sourceNode.data.order, 1)[0]);
-        // iterate through and reassign order.
-        _.each(childPositions, (cp, i) => {
-            this.jsToolkit.updateNode(cp[2], {
-                order: i
+        if(params.drag.el._metamapParent) {
+            var childPositions = layout.getChildPositions(params.drag.el._metamapParent.id)
+            // here we map child positions to a list containing entries that have [ pos, delta, idx ], which we then
+            // sort by delta (where delta is the distance from that node's top edge from the dropped node's top edge).
+            // the first entry in this array, then, gives us the new index for the dropped node.
+            let mappedLocations = _.map(childPositions, (cp, i) => {
+                return [cp[1], Math.abs(cp[1] - params.drop.position[1]), i];
+            })
+            let sortedLocations = mappedLocations.sort((a, b) => {
+                return a[1] < b[1] ? -1 : a[1] > b[1] ? 1 : 0;
             });
-        });
+            // move the dropped node
+            childPositions.splice(sortedLocations[0][2], 0, childPositions.splice(sourceNode.data.order, 1)[0]);
+            // iterate through and reassign order.
+            _.each(childPositions, (cp, i) => {
+                this.jsToolkit.updateNode(cp[2], {
+                    order: i
+                });
+            });
+        }
         return true;
     }
 

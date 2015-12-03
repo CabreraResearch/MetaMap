@@ -20,7 +20,8 @@ const CORTEX = {
         MULTIPLE_CHOICE_ANSWER: 'multiple-choice-answer',
         MULTIPLE_CHOICE_FINISH: 'multiple-choice-finish',
         SHORT_ANSWER: 'short-answer',
-        SHORT_ANSWER_FINISH: 'short-answer-finish'
+        SHORT_ANSWER_FINISH: 'short-answer-finish',
+        FINISH: 'finish'
     }
 }
 

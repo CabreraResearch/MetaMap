@@ -205,6 +205,13 @@ class CortexMan {
                                     this.userTraining.isWaitingOnFeedback = true
                                     this.trainingTag.doNextStep(nextStep)
                                     break
+                                    break
+                                case CONSTANTS.CORTEX.RESPONSE_TYPE.FINISH:
+                                    this.userTraining.isWaitingOnFeedback = false
+                                    nextStep.archived = false
+                                    nextStep.text = nextStep.text || 'The End'
+                                    this.trainingTag.doNextStep(nextStep)
+                                    break
                                 default:
                                     this.MetaMap.log(`on buffer passed ${nextStep.action}`)
                                     nextStep.originalAction = nextStep.action
@@ -338,6 +345,10 @@ class CortexMan {
                                     this.trainingTag.playVideo(obj)
                                     break
                             }
+                            break
+                        case CONSTANTS.CORTEX.RESPONSE_TYPE.FINISH:
+                            obj.text = obj.text || 'The End'
+                            this.trainingTag.doNextStep(obj)
                             break
                         default:
                             this.MetaMap.log(`on action passed ${obj.action}`)
