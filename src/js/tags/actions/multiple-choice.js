@@ -89,13 +89,15 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.MULTIPLE_CHOICE, html, 
                     disableRanking: true,
                     animationCallbacks: {
                         nextQuestion: (o, answer, slick) => {
+                            this.image = ''
                             if (o.questionNo >= 0) {
                                 let q = this.questions[o.questionNo]
                                 if (q.image) {
                                     this.image = q.image
-                                    this.update()
+
                                 }
                             }
+                            this.update()
                         },
                         checkAnswer: (o, answer, slick) => {
                             let line = null

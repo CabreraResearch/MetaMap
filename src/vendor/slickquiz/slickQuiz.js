@@ -195,7 +195,7 @@
             turnKeyAndGo: function (key, go, ret = {}) { // key = [], go = function ()
                 // when all the notches of the key are accepted (resolved) then the key turns and the engine (callback/go) starts
                 $.when.apply (null, key). then (function () {
-                    if (!ret.questionNo >= 0) {
+                    if (!(ret.questionNo >= 0)) {
                         ret.questionNo = plugin.config._metamap.nextQuestion
                     }
                     go(ret, plugin.config._metamap.currentAnswer, plugin);
