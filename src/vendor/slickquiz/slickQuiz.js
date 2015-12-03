@@ -195,7 +195,10 @@
             turnKeyAndGo: function (key, go, ret = {}) { // key = [], go = function ()
                 // when all the notches of the key are accepted (resolved) then the key turns and the engine (callback/go) starts
                 $.when.apply (null, key). then (function () {
-                    go (ret, plugin.config._metamap.currentAnswer, plugin);
+                    if (!ret.questionNo >= 0) {
+                        ret.questionNo = plugin.config._metamap.nextQuestion
+                    }
+                    go(ret, plugin.config._metamap.currentAnswer, plugin);
                 });
             },
 
@@ -519,6 +522,8 @@
                     correctAnswers: trueAnswerVals
                 }
                 results[questionIndex] = ret
+
+                plugin.config._metamap.nextQuestion = questionIndex+1
 
                 internal.method.turnKeyAndGo (key, options && options.callback ? options.callback : function () {}, ret);
             },
