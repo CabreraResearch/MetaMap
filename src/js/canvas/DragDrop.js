@@ -161,7 +161,10 @@ class DragDropHandler extends _CanvasBase {
         // here we map child positions to a list containing entries that have [ pos, delta, idx ], which we then
         // sort by delta (where delta is the distance from that node's top edge from the dropped node's top edge).
         // the first entry in this array, then, gives us the new index for the dropped node.
-        let sortedLocations = (_.map(childPositions, (cp, i) => { return [cp[1], Math.abs(cp[1] - params.pos[1]), i]; })).sort((a, b) => {
+        let mappedLocations = _.map(childPositions, (cp, i) => {
+            return [cp[1], Math.abs(cp[1] - params.drop.position[1]), i];
+        })
+        let sortedLocations = mappedLocations.sort((a, b) => {
             return a[1] < b[1] ? -1 : a[1] > b[1] ? 1 : 0;
         });
         // move the dropped node
