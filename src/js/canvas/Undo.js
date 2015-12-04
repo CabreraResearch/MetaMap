@@ -74,14 +74,13 @@ class Undo extends _CanvasBase {
             }
             if(change.remove.edge) {
                 try {
-                    this.jsToolkit.removeEdge(change.edge.edge.data.id)
+                    this.jsToolkit.removeEdge(change.remove.edge.edge.data.id)
                 } catch(e) {
                     try {
-                        this.jsToolkit.removeEdge(change.edge.edge)
+                        this.jsToolkit.removeEdge(change.remove.edge.edge)
                     } catch(e) {
                         console.log(`Couldn't delete edge`, change.remove.edge)
                     }
-
                 }
             }
         }
@@ -93,14 +92,18 @@ class Undo extends _CanvasBase {
                 try {
                     this.jsToolkit.addNode(change.add.node.node.data)
                 } catch(e) {
-                    console.log(`Couldn't delete node`, change.add.node)
+                    console.log(`Couldn't add node`, change.add.node)
                 }
             }
             if(change.add.edge) {
                 try {
-                    this.jsToolkit.addEdge(change.edge.edge.data)
+                    this.jsToolkit.addEdge(change.add.edge.edge.data)
                 } catch(e) {
-                    console.log(`Couldn't delete edge`, change.add.edge)
+                    try {
+                        this.jsToolkit.connect({source:change.add.edge.edge.source, target:change.add.edge.edge.target, data: change.add.edge.edge.data })
+                    } catch(e) {
+                        console.log(`Couldn't add edge`, change.add.edge)
+                    }
                 }
             }
         }
