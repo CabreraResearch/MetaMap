@@ -31,7 +31,7 @@ class Integrations {
 
     _all(callback, ...params) {
         _.each(this._features, (Feature, name) => {
-            if (name && this[name]) {
+            if (name && this[name] && this[name][callback]) {
                 try {
                     this[name][callback](...params);
                 } catch (e) {

@@ -157,6 +157,25 @@ class Events extends _CanvasBase {
                     this.schema.deleteAll(selected)
                     break
                 case 17: //ctrl
+                    selected.eachNode((i, node) => {
+                        let info = toolkit.getObjectInfo(node)
+                        if (info.el) {
+                            $(info.el).find('.node.border').each(function () {
+                                this.setAttribute('class', 'node-selected')
+                            })
+                        }
+                        if (info.els) {
+                            _.each(info.els, (array) => {
+                                _.each(array, (el) => {
+                                    if (el.innerHTML) {
+                                        $(el).find('.node.border').each(function () {
+                                            this.setAttribute('class', 'node-selected')
+                                        })
+                                    }
+                                })
+                            })
+                        }
+                    })
                     break
             }
         })

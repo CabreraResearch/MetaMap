@@ -14,6 +14,7 @@ const Events = require('./Events')
 const Dialog = require('./Dialog')
 const Schema = require('./Schema')
 const CopyPaste = require('./CopyPaste')
+const Undo = require('./Undo')
 
 require('./layout')
 
@@ -50,13 +51,14 @@ class Canvas {
             this.schema = new Schema(this)
 
             //6: Load the data
-            this.loadData()
+            this.loadUpgradeData()
 
             //7: Bind the events
             this.tk.bindEvents()
             this.events.bindEvents()
 
             this.copyPaste = new CopyPaste(this)
+            this.undo = new Undo(this)
         })
     }
 
@@ -120,21 +122,26 @@ class Canvas {
         }
     }
 
+    loadData(map = this.map) {
+        this.jsToolkit.load({
+            type: 'json',
+            data: map
+        })
+    }
+
     // load the data.
-    loadData() {
+    loadUpgradeData(map = this.map) {
         const toolkit = this.jsToolkit
         const renderer = this.jsRenderer
 
-        if ((!this.map || !this.map.data) && this.doAutoSave && !this.isReadOnly) {
-            this.map = this.map || {}
-            this.map.data = this.schema.getDefaultMap()
+        if ((!map || !map.data) && this.doAutoSave && !this.isReadOnly) {
+            map = map || {}
+            map.data = this.schema.getDefaultMap()
+            this.map = map
         }
-        if (this.map && this.map.data) {
-            this.schema.upgrade(this.map.data)
-            toolkit.load({
-                type: 'json',
-                data: this.map.data
-            })
+        if (map && map.data) {
+            this.schema.upgrade(map.data)
+            this.loadData(map.data)
             let state = localStorage.getItem(`jtk-state-metaMapCanvas_${this.mapId || this.mapName}`)
             renderer.State.restore(state)
         }
