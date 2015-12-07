@@ -95,6 +95,8 @@ class Node extends _CanvasBase {
             dblclick: {
                 red: (el, node) => {
                     let newNode = this.getNewNode()
+                    newNode.top = node.data.top - 150
+                    newNode.left = node.data.left
                     this.jsToolkit.addNode(newNode)
                 },
                 green: _.throttle((el, node) => {
