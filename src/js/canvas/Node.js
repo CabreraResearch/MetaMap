@@ -147,14 +147,20 @@ class Node extends _CanvasBase {
                     data.top = node.data.top
                     data.left = node.data.left + 150
                     var newNode = this.jsToolkit.addNode(data)
-
-                    this.jsToolkit.connect({source:node, target:newNode, data:{
-                        type: 'relationship',
+                    let type = 'relationship'
+                    if (node.data.family == newNode.data.family) {
+                        type = 'relationshipPart'
+                    }
+                    let edge = this.jsToolkit.connect({source:node, target:newNode, data:{
+                        type: type,
                         direction: 'none',
                         leftSize: 0,
                         rightSize: 0,
                         visible: true
                     }})
+                    let conn = this.jsRenderer.getRenderedConnection(edge.getId())
+                    let overlay = conn.getOverlay("customOverlay")
+                    overlay.canvas.setAttribute("id", `${edge.getId()}_rthing`)
                 }
             }
         }
@@ -283,7 +289,8 @@ class Node extends _CanvasBase {
     }
 
     createRThing(obj) {
-        let dotEl = document.getElementById(obj.edge.data.id + '_rthing')
+        let edgeId = obj.edge.getId()
+        let dotEl = document.getElementById(edgeId + '_rthing')
         let left = this.jsRenderer.mapEventLocation(obj.e).left
         let top = this.jsRenderer.mapEventLocation(obj.e).top
         let size = obj.edge.source.data.w * this.canvas.partSize
@@ -304,7 +311,7 @@ class Node extends _CanvasBase {
 
         let rType = this.getPartNodeType(obj.edge.source.data)
         let nodeData = jsPlumb.extend(this.getNewNode({ type: rType, cssClass: 'donotdrag' }), d)
-        let edgeId = obj.edge.data.id || obj.edge.getId()
+
         nodeData.rthing = {
             edgeId: edgeId,
             rDot: edgeId + '_rthing'

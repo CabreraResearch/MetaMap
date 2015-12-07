@@ -52,8 +52,10 @@ class Schema extends _CanvasBase {
     deleteRThing(child) {
         if (child && child.data && child.data.rthing && child.data.rthing.edgeId) {
             let edge = this.jsToolkit.getEdge(child.data.rthing.edgeId)
-            edge.data.rthing = null
-            this.jsToolkit.updateEdge(edge)
+            if(edge) {
+                edge.data.rthing = null
+                this.jsToolkit.updateEdge(edge)
+            }
         }
     }
 
