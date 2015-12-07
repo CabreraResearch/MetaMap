@@ -54,7 +54,7 @@ class Router {
         return this.path;
     }
 
-    getPreviousPage(pageNo = 2) {
+    getPreviousPage(pageNo = 1) {
         let page = 'home';
         let pageCnt = this.user.history.length;
         if (pageCnt > 0) {
@@ -64,7 +64,7 @@ class Router {
     }
 
     get previousPage() {
-        return this.getPreviousPage(2);
+        return this.getPreviousPage(1);
     }
 
     track(path) {
@@ -100,12 +100,14 @@ class Router {
     back() {
         let path = 'home';
         let pageCnt = this.user.history.length;
-        if (pageCnt > 1 && (this.currentPage != 'mymaps' || this.currentPage != this.previousPage)) {
+        if (pageCnt > 1) {
             path = this.previousPage;
-            let backNo = 2;
-            while (!this.isTracked(path) && this.user.history[backNo]) {
-                backNo += 1;
+            let backNo = 1;
+            let valid = this.getPath(this.currentPage) == path && this.isTracked(path)
+            while (valid && this.user.history[backNo]) {
                 path = this.getPreviousPage(backNo);
+                backNo += 1;
+                valid = this.getPath(this.currentPage) == path && this.isTracked(path)
             }
         }
         return this.to(path);
@@ -113,7 +115,13 @@ class Router {
 
     get doNotTrack() {
         if (!this._doNotTrack) {
-            this._doNotTrack = [CONSTANTS.ACTIONS.DELETE_MAP, CONSTANTS.ACTIONS.COPY_MAP, CONSTANTS.ACTIONS.LOGOUT, CONSTANTS.ACTIONS.NEW_MAP, CONSTANTS.ACTIONS.FEEDBACK, CONSTANTS.ACTIONS.SHARE_MAP];
+            this._doNotTrack = [
+                CONSTANTS.ACTIONS.DELETE_MAP,
+                CONSTANTS.ACTIONS.COPY_MAP,
+                CONSTANTS.ACTIONS.LOGOUT,
+                CONSTANTS.ACTIONS.NEW_MAP,
+                CONSTANTS.ACTIONS.FEEDBACK,
+                CONSTANTS.ACTIONS.SHARE_MAP];
         }
         return this._doNotTrack;
     }

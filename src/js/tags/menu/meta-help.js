@@ -26,11 +26,6 @@ riot.tag('meta-help', html, function (opts) {
 
     const MetaMap = require('../../../MetaMap');
 
-    this.onClick = (event, params) => {
-        console.log(event, params);
-        return true;
-    }
-
     this.help = null;
     this.on('mount', () => {
         MetaMap.MetaFire.on('metamap/help', (data) => {
