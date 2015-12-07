@@ -23,26 +23,6 @@ class Dialog extends _CanvasBase {
         })
     }
 
-    initJsPlumbDialog() {
-        jsPlumbToolkit.Dialogs.initialize({
-            selector: ".dlg"
-        });
-    }
-
-    openJsPlumbDialog(label, node) {
-
-        // make the label editable via a dialog
-        jsPlumbToolkit.Dialogs.show({
-            id: 'dlgText',
-            title: 'Enter label:',
-            onOK: (d) => {
-                this.canvas.jsToolkit.updateNode(node, { label: d.text })
-            },
-            data: {
-                text: node.data.label
-            }
-        })
-    }
 }
 
 module.exports = Dialog

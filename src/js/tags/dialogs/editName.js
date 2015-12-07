@@ -32,15 +32,30 @@ module.exports = riot.tag(CONSTANTS.TAGS.EDIT_LABEL, html, function (opts) {
 
     this.labelText = ''
 
-    this.onDone = (e, opts) => {
-        this.opts.onDone(this.node_label.innerText)
-    }
+    this.close = _.once((e, opts) => {
+        this.labelText = this.node_label.value
+        this.opts.onDone(this.node_label.value)
+        $(this.edit_text_modal).modal('hide')
+        $(this.edit_text_modal).empty()
+    })
 
     this.on('update', (opts) => {
         if (opts) {
             _.extend(this.opts, opts)
             this.left = opts.node.data.left+'px'
-            this.top = opts.node.data.top+'px'
+            this.top = (opts.node.data.top-100)+'px'
+            if(opts.node.data.left < 300) {
+                this.left = 300
+            }
+            if(opts.node.data.top < 200) {
+                this.top = 200
+            }
+            if(opts.node.data.left > (window.innerWidth-400)) {
+                this.left = window.innerWidth - 500 +'px'
+            }
+            if(opts.node.data.top > (window.innerHeight-300)) {
+                this.top = window.innerHeight - 400 +'px'
+            }
             this.labelText = opts.label.innerText
             if (!this._onClose) {
                 this._onClose = {}
@@ -50,21 +65,27 @@ module.exports = riot.tag(CONSTANTS.TAGS.EDIT_LABEL, html, function (opts) {
                 })
 
                 $(this.edit_text_modal).on('hide.bs.modal', () => {
-                    this.labelText = this.node_label.value
-                    opts.onDone(this.node_label.value)
-                    $(this.edit_text_modal).empty()
+                    this.close()
                 })
             }
         }
     })
 
+    this.onClickOut = (e) => {
+        if(e.target.className == 'modal-backdrop fade in') {
+            this.close()
+        }
+    }
+
     this.on('mount', (e, opts) => {
         $(this.edit_text_modal).modal('show')
+        $(document).on('click', this.onClickOut)
     })
 
     this.on('unmount', () => {
         $(this.node_label).off('input propertychange')
         $(this.edit_text_modal).off('hide.bs.modal')
+        $(document).off('click', this.onClickOut)
     })
 
 });
