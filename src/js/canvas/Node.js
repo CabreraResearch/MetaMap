@@ -127,6 +127,8 @@ class Node extends _CanvasBase {
                 },100),
                 orange:(el, node) => {
                     let data = this.getNewNode()
+                    data.top = node.data.top
+                    data.left = node.data.left - 150
                     var newNode = this.jsToolkit.addNode(data)
 
                     let edge = this.jsToolkit.connect({source:node, target:newNode, data:{
@@ -140,6 +142,8 @@ class Node extends _CanvasBase {
                 },
                 blue:(el, node) => {
                     let data = this.getNewNode()
+                    data.top = node.data.top
+                    data.left = node.data.left + 150
                     var newNode = this.jsToolkit.addNode(data)
 
                     this.jsToolkit.connect({source:node, target:newNode, data:{
