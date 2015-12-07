@@ -207,6 +207,8 @@ class Schema extends _CanvasBase {
                     class: 'none'
                 }
                 node.perspective.edges = node.perspective.edges || []
+                node.isRThing = true == (node.rthing && null != node.rthing.edgeId)
+
                 if (!node.family) {
                     let root = this.getRoot(node, map)
                     if (!root.family) {

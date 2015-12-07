@@ -88,14 +88,14 @@
               <svg:path class="${cssClass} node border" fill="none" stroke="#B3C2C7" stroke-width="2.75" stroke-miterlimit="10" d="M44 48.5H6.1c-2.6 0-4.7-2.1-4.7-4.7V6c0-2.6 2.1-4.7 4.7-4.7H44c2.6 0 4.7 2.1 4.7 4.7v37.9C48.7 46.4 46.6 48.5 44 48.5z"/>
             </svg:svg>
 
-			<div data-align="${partAlign == 'freehand' ? partAlign : 'hide'}" class="name" style="left: $ labelPosition[0] ? labelPosition[0]+'px' : ''  }; top: ${ labelPosition[1] ? labelPosition[1]+'px' : '' };">
+			<div data-align="${(isRThing || partAlign == 'freehand') ? 'freehand' : 'hide'}" class="name" style="left: $ labelPosition[0] ? labelPosition[0]+'px' : ''  }; top: ${ labelPosition[1] ? labelPosition[1]+'px' : '' };">
 				${label}
 			</div>
-			<div data-align="${partAlign != 'freehand' ? partAlign : 'hide'}" class="name">
+			<div data-align="${(!isRThing && partAlign != 'freehand') ? partAlign : 'hide'}" class="name">
 				${label}
 			</div>
 		</div>
-		<jtk-source class="${id}" edge-type="relationship" filter=".edge-relationship" />
+		<jtk-source data-id="${id}" edge-type="relationship" filter=".edge-relationship" />
 		<jtk-source edge-type="perspective" filter=".edge-perspective" data-show="${perspective.class}"/>
 		<jtk-target />
 	</div>

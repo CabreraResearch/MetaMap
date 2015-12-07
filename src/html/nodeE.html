@@ -90,10 +90,10 @@
               </svg:g>
             </svg:svg>
 
-            <div data-align="${partAlign == 'freehand' ? partAlign : 'hide'}" class="name" style="left: $ labelPosition[0] ? labelPosition[0]+'px' : ''  }; top: ${ labelPosition[1] ? labelPosition[1]+'px' : '' };">
+            <div data-align="${(isRThing || partAlign == 'freehand') ? 'freehand' : 'hide'}" class="name" style="left: $ labelPosition[0] ? labelPosition[0]+'px' : ''  }; top: ${ labelPosition[1] ? labelPosition[1]+'px' : '' };">
 				${label}
 			</div>
-			<div data-align="${partAlign != 'freehand' ? partAlign : 'hide'}" class="name">
+			<div data-align="${(!isRThing && partAlign != 'freehand') ? partAlign : 'hide'}" class="name">
 				${label}
 			</div>
 		</div>

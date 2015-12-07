@@ -177,9 +177,6 @@ class Edge extends _CanvasBase {
                         location: 0.5,
                         id: "customOverlay",
                         events: {
-                            tap: function () {
-
-                            },
                             dblclick: _.throttle((params) => {
                                 this.node.createRThing(params)
                             }, 100)
@@ -226,9 +223,11 @@ class Edge extends _CanvasBase {
                         }
                         return true
                     },
-                    dblclick: (obj) => {
-                        return true
-                    },
+                    dblclick: _.throttle((obj) => {
+                        if(obj.edge && (!obj.edge.data.rthing || !obj.edge.data.rthing.edgeId) && _.contains(obj.e.target.className, 'relationship-rthing')) {
+                            this.node.createRThing(obj)
+                        }
+                    }, 100),
                     mouseover: (params) => {
                         this.hideRDots();
                         this.showRDot(params)

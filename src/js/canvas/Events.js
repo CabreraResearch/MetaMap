@@ -43,16 +43,6 @@ class Events extends _CanvasBase {
         return this.__clickHandlers
     }
 
-    clickLogger(type, event, el, node) {
-        console.log(event + ' ' + type)
-        console.dir(node.data)
-        if (event == 'dblclick') {
-            this.canvas.clearSelection()
-        } else {
-            this.canvas.clearSelection(node)
-        }
-    }
-
     _curryHandler(el, array, node) {
         let segment = array[0]
 

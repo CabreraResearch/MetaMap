@@ -30,6 +30,7 @@ class Node extends _CanvasBase {
             parts: {
                 class: 'none'
             },
+            isRThing: false,
             family: jsPlumbUtil.uuid()
         }
         _.extend(ret, opts)
@@ -311,7 +312,7 @@ class Node extends _CanvasBase {
 
         let rType = this.getPartNodeType(obj.edge.source.data)
         let nodeData = jsPlumb.extend(this.getNewNode({ type: rType, cssClass: 'donotdrag' }), d)
-
+        nodeData.isRThing = true
         nodeData.rthing = {
             edgeId: edgeId,
             rDot: edgeId + '_rthing'

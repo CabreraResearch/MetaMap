@@ -112,6 +112,9 @@ class DragDropHandler extends _CanvasBase {
 
     adjustType(parent, child) {
         var depth = this.canvas.getDepth(child)
+        if(parent.data.rthing && parent.data.rthing.edgeId) {
+            depth += 1
+        }
         var newSize = this.canvas.getPartSizeAtDepth(depth)
         child.data.w = newSize;
         child.data.h = newSize;
