@@ -22,15 +22,8 @@
     display: block !important;
 }
 
-.ideaNode.jsplumb-drag-hover .green.segment {
-    opacity:1 !important;
-}
-.ideaNode.jsplumb-drag-hover .letter.S {
-    opacity:1 !important;
-}
-
 .ideaNode.jsplumb-drag-hover .node-rect {
-    opacity:0 !important;
+    fill: #cccccc;
 }
 
 .ideaNode .name {
