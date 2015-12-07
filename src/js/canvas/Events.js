@@ -64,12 +64,12 @@ class Events extends _CanvasBase {
                     this._clickHandlers['click'][segment](el, node)
                 }
             })
-            jsPlumb.on(_el, 'dblclick', (e) => {
+            jsPlumb.on(_el, 'dblclick', _.throttle((e) => {
                 this.canvas.clearSelection({ e: e })
                 if (this._clickHandlers['dblclick'][segment]) {
                     this._clickHandlers['dblclick'][segment](el, node)
                 }
-            })
+            }, 200))
         })
     }
 

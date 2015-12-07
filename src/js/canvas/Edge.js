@@ -180,9 +180,9 @@ class Edge extends _CanvasBase {
                             tap: function () {
 
                             },
-                            dblclick: (params) => {
+                            dblclick: _.throttle((params) => {
                                 this.node.createRThing(params)
-                            }
+                            }, 100)
                         },
                         visible: true
                     }],
