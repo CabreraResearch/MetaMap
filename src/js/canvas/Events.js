@@ -124,6 +124,10 @@ class Events extends _CanvasBase {
         const toolkit = this.canvas.jsToolkit
         const renderer = this.canvas.jsRenderer
 
+        this.jsRenderer.getJsPlumb().bind('stopConnectionEdit', (aConnection) => {
+            this.canvas.onAutoSave()
+        })
+
         jsPlumb.on("relationshipEdgeDump", "click", () => { this.canvas.dumpEdgeCounts() });
 
         //CTRL + click enables the lasso

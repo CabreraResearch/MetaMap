@@ -15,10 +15,6 @@ class Edge extends _CanvasBase {
         this.relationshipOverlays = []
     }
 
-    bindHover() {
-
-    }
-
     getToolkitEvents() {
         return {
             beforeStartConnect: (fromNode, edgeType) => {
@@ -79,43 +75,6 @@ class Edge extends _CanvasBase {
                     }
                 }
                 return ret
-            }
-        }
-    }
-
-    getClickEvents() {
-        return {
-            click: {
-                eye_closed: (el, node) => {
-                    if (node.data.perspective.has) {
-                        node.data.perspective.class = 'open'
-                        this.canvas.updateData({ node: node })
-                        _.each(node.data.perspective.edges, (edgeId) => {
-                            let edge = this.jsToolkit.getEdge(edgeId)
-                            if (edge) {
-                                edge.data.visible = true
-                                this.canvas.updateData({ edge: edge })
-                                this.jsRenderer.setVisible(edge, true)
-                            }
-                        })
-                        this.canvas.clearSelection()
-                    }
-                },
-                eye_open: (el, node) => {
-                    if (node.data.perspective.has) {
-                        node.data.perspective.class = 'closed'
-                        this.canvas.updateData({ node: node })
-                        _.each(node.data.perspective.edges, (edgeId) => {
-                            let edge = this.jsToolkit.getEdge(edgeId)
-                            if (edge) {
-                                edge.data.visible = false
-                                this.canvas.updateData({ edge: edge })
-                                this.jsRenderer.setVisible(edge, false)
-                            }
-                        })
-                        this.canvas.clearSelection()
-                    }
-                }
             }
         }
     }
