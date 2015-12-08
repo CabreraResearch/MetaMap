@@ -219,6 +219,10 @@ class Edge extends _CanvasBase {
                             //Now set the selection
                             this.canvas.clearSelection(obj)
 
+                            // SP: for now, an edge click puts it into edit mode. we have various options
+                            // with this
+                            this.jsRenderer.startEditing(obj.edge, { mode:"dual" })
+
                             this.showRDot(obj)
                         }
                         return true
