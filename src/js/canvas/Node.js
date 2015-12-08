@@ -301,8 +301,8 @@ class Node extends _CanvasBase {
 
         if (dotEl) {
             let dot = $(dotEl)
-            left = dot.position().left - (size / 2)
-            top = dot.position().top - (size / 2)
+            left = dot.css('left').split('px')[0] - (size / 2)
+            top = dot.css('top').split('px')[0] - (size / 2)
         }
 
         let d = {
