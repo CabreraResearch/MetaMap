@@ -16,6 +16,40 @@ class DragDropHandler extends _CanvasBase {
         super(canvas)
     }
 
+    repositionRThing(node) {
+        if(node) {
+            let edges = node.getEdges()
+            if (edges.length > 0) {
+                let renderer = this.jsRenderer
+                _.each(edges, (edge) => {
+                    if (edge.data.rthing && edge.data.rthing.nodeId) {
+                        let rnode = this.jsToolkit.getNode(edge.data.rthing.nodeId),
+                            rnodeEl = renderer.getRenderedElement(rnode);
+                        let dotNode = document.getElementById(edge.data.rthing.rDot)
+                        if (dotNode) {
+                            let dot = $(dotNode),
+                                left = dot.css('left').split('px')[0] - (rnode.data.w / 2),
+                                top = dot.css('top').split('px')[0] - (rnode.data.h / 2);
+
+                            this.jsToolkit.updateNode(rnode, {
+                                left: left,
+                                top: top
+                            });
+                            renderer.setAbsolutePosition(rnodeEl, [left, top])
+                        }
+                    }
+                })
+            }
+            //If every member of the posse dragged together, it wouldn't be necessary to do this
+            if(node.data.children.length > 0) {
+                _.each(node.data.children, (id) => {
+                    let child = this.jsToolkit.getNode(id)
+                    this.repositionRThing(child)
+                })
+            }
+        }
+    }
+
     getDragOptions() {
         return {
             filter: '.donotdrag, .name',       // can't drag nodes by the color segments.
@@ -26,28 +60,7 @@ class DragDropHandler extends _CanvasBase {
                 let info = this.jsToolkit.getObjectInfo(params.el)
                 if (info && info.obj) {
                     let node = info.obj
-                    let edges = node.getEdges()
-                    if (edges.length > 0) {
-                        let renderer = this.jsRenderer
-                        _.each(edges, (edge) => {
-                            if (edge.data.rthing && edge.data.rthing.nodeId) {
-                                let rnode = this.jsToolkit.getNode(edge.data.rthing.nodeId),
-                                    rnodeEl = renderer.getRenderedElement(rnode);
-                                let dotNode = document.getElementById(edge.data.rthing.rDot)
-                                if (dotNode) {
-                                    let dot = $(dotNode),
-                                        left = dot.css('left').split('px')[0] - (rnode.data.w / 2),
-                                        top = dot.css('top').split('px')[0] - (rnode.data.h / 2);
-
-                                    this.jsToolkit.updateNode(rnode, {
-                                        left: left,
-                                        top: top
-                                    });
-                                    renderer.setAbsolutePosition(rnodeEl, [left, top])
-                                }
-                            }
-                        })
-                    }
+                    this.repositionRThing(node)
                 }
 
                 // when _any_ node stops dragging, run the layout again.
