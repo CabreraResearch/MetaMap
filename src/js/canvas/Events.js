@@ -59,7 +59,7 @@ class Events extends _CanvasBase {
                 if (this._clickHandlers['dblclick'][segment]) {
                     this._clickHandlers['dblclick'][segment](el, node)
                 }
-            }, 200))
+            }, 300))
         })
     }
 
