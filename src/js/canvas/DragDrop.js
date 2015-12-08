@@ -58,7 +58,15 @@ class DragDropHandler extends _CanvasBase {
                 // when any two nodes with a relationship and an r-thing between them move
                 // this should update the position of the r-thing to be the same as the r-dot overlay
                 let info = this.jsToolkit.getObjectInfo(params.el)
-                if (info && info.obj) {
+                let doRepo = (info && null != info.obj)
+
+                //If we're dragging a part that is not in freehand layout,
+                //and it's not being dropped onto anyone else,
+                //it will snap back immediately after this event fires
+                if(info.obj.data.type != 'idea_A' && info.obj.data.partAlign != 'freehand' && (!params.drop || !params.drop.el)) {
+                    doRepo = false
+                }
+                if (doRepo) {
                     let node = info.obj
                     this.repositionRThing(node)
                 }
@@ -112,7 +120,7 @@ class DragDropHandler extends _CanvasBase {
         _.each(edges, (edge) => {
             if (edge.data.type != 'relationshipPart' && edge.source.data.family == edge.target.data.family) {
                 edge.data.type = 'relationshipPart'
-                this.jsToolkit.updateEdge(edge)
+                this.canvas.updateData({ edge: edge })
             }
         })
         if (node.data.children > 0) {
@@ -133,6 +141,7 @@ class DragDropHandler extends _CanvasBase {
         child.data.h = newSize;
         child.data.type = this.node.getPartNodeType(child.data)
         child.data.family = parent.data.family
+        child.data.partAlign = parent.data.partAlign || 'left'
         this.jsRenderer.getLayout().setSize(child.id, [newSize, newSize])
     }
 
