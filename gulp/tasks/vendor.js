@@ -12,7 +12,7 @@ var rework = require('gulp-rework');
 var reworkUrl = require('rework-plugin-url')
 
 gulp.task('concatOthers', function () {
-    return gulp.src(['src/vendor/jsPlumb/jsPlumb-2.1.0.js', 'src/vendor/jsPlumb/jsPlumbToolkit-1.1.0.js', 'src/vendor/cdn/**/*.js'])
+    return gulp.src(['src/vendor/jsPlumb/jsPlumb-2.1.0.js','src/vendor/jsplumb/bezier-editor.js',  'src/vendor/jsPlumb/jsPlumbToolkit-1.1.0.js', 'src/vendor/cdn/**/*.js'])
         .pipe(concat('vendor2.js'))
         .pipe(gulp.dest('dist'))
 })
