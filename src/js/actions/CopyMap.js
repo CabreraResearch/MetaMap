@@ -10,7 +10,8 @@ class CopyMap extends ActionBase {
 
     act(id, ...params) {
         super.act(id, ...params);
-        CopyMap.copyMap(id, ...params)
+        MetaMap.Router.back()
+        CopyMap.copyMap(id, true)
         return true;
     }
 
@@ -66,7 +67,7 @@ class CopyMap extends ActionBase {
                         resolve(_.extend(oldMap, oldMapData))
                         if (openMap) {
                             MetaMap.Router.to(`map/${mapId}`);
-                        }
+                        } 
                     });
                 } else {
                     resolve(null)
