@@ -269,6 +269,7 @@ div[data-class="relationship-rthing"] {
 .jtk-surface-selected-connection.edge-relationship path {
     stroke:#4CBFC2;
     stroke-width:6;
+    cursor: pointer;
 }
 
 .edge-relationship:hover path {
