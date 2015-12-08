@@ -80,10 +80,36 @@ var sendToSlack = function(i) {
     return through.obj(i);
 };
 
-gulp.task('release', function (cb) {
+var pushAndNotify = function(p, error, cb) {
+    if (error) {
+        console.log(error.message);
+        if(cb) cb(error);
+    } else {
+        var pkg = global.MetaMapPackage
+        message.text = 'Just deployed MetaMap v' + pkg.version + ' to https://www.metamap.co. ' + p;
 
+        client.deploy({
+            message: p
+        }).then(function () {
+            sendToSlack(message)
+            setTimeout(function () {
+                console.log('RELEASE FINISHED SUCCESSFULLY');
+                cb();
+                process.nextTick(function () {
+                    process.exit(0);
+                });
+            }, 5000)
+        })
+    }
+}
+
+gulp.task('pushAndNotify', function(cb) {
     var p = argv.message;
+    pushAndNotify(p, error, cb)
+})
 
+gulp.task('release', function (cb) {
+    var p = argv.message;
     runSequence(
         'bump',
         'compile-all',
@@ -91,27 +117,7 @@ gulp.task('release', function (cb) {
         'commit',
         'tag',
         function (error) {
-            if (error) {
-                console.log(error.message);
-                cb(error);
-            } else {
-                var pkg = global.MetaMapPackage
-                message.text = 'Just deployed MetaMap v' + pkg.version + ' to https://www.metamap.co. ' + p;
-
-                client.deploy({
-                    message: p
-                }).then(function () {
-                    sendToSlack(message)
-                    setTimeout(function () {
-                        console.log('RELEASE FINISHED SUCCESSFULLY');
-                        cb();
-                        process.nextTick(function () {
-                            process.exit(0);
-                        });
-                    }, 5000)
-                })
-            }
-
+            pushAndNotify(p, error, cb)
         });
 })
 

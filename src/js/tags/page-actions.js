@@ -15,8 +15,8 @@ const html = `
             <i class="fa fa-angle-down"></i>
         </button>
         <ul class="dropdown-menu" role="menu">
-            <li each="{ val, i in data }" class="{ start: i == 0, active: i == 0 }">
-                <a if="{ parent.getLinkAllowed(val) }" href="{ parent.getActionLink(val) }">
+            <li if="{ parent.getLinkAllowed(val) }" each="{ val, i in data }" class="{ start: i == 0, active: i == 0 }">
+                <a href="{ parent.getActionLink(val) }">
                     <i class="{ val.icon }"></i> { val.title }
                 </a>
             </li>
