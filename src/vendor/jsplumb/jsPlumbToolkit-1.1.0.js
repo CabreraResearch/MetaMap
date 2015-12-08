@@ -1878,8 +1878,8 @@
 /*
  * AutoSaver
  *
- * Copyright 2014 jsPlumb
- * http://jsplumbtoolkit.com
+ * Copyright 2015 jsPlumb
+ * https://jsplumbtoolkit.com
  *
  * This software is not free.
  *
@@ -1898,7 +1898,16 @@
     var root = this;
 
     var prefixes = [ "node", "port", "edge" ],
-        suffixes = [ "Refreshed", "Added", "Removed", "Updated", "Moved" ];
+        suffixes = [ "Refreshed", "Added", "Removed", "Updated", "Moved" ],
+        p2 = [ "edge" ], s2 = [ "Source", "Target" ];
+
+    var _bind = function(p, s, instance, fn) {
+        for (var i = 0; i < p.length; i++) {
+            for (var j = 0; j < s.length; j++) {
+                instance.bind(p[i] + s[j], fn);
+            }
+        }
+    };
 
     root.jsPlumbToolkitUtil.AutoSaver = function (instance, url, success, error) {
 
@@ -1910,9 +1919,8 @@
             });
         };
 
-        for (var i = 0; i < prefixes.length; i++)
-            for (var j = 0; j < suffixes.length; j++)
-                instance.bind(prefixes[i] + suffixes[j], _save);
+        _bind(prefixes, suffixes, instance, _save);
+        _bind(p2, s2, instance, _save);
     };
 
     root.jsPlumbToolkitUtil.CatchAllEventHandler = function (instance) {
@@ -1920,9 +1928,8 @@
             instance.fire("dataUpdated");
         };
 
-        for (var i = 0; i < prefixes.length; i++)
-            for (var j = 0; j < suffixes.length; j++)
-                instance.bind(prefixes[i] + suffixes[j], _f);
+        _bind(prefixes, suffixes, instance, _f);
+        _bind(p2, s2, instance, _f);
     };
 
 }).call(this);
@@ -4527,7 +4534,11 @@
                 root.jsPlumbToolkitIO.manage("addEdge", _originalData, _originalDataType, edge, _edgeIdFunction || _graph.getIdFunction(), _currentInstance);
 
             if (!doNotFireEvent) {
-                _currentInstance.fire("edgeAdded", { edge: edge, source: source }, null);
+                _currentInstance.fire("edgeAdded", {
+                    edge: edge,
+                    source: source,
+                    geometry:params.geometry
+                }, null);
             }
 
             return edge;
@@ -6215,15 +6226,19 @@
             }
 
             for (var j = 0; j < edges.length; j++) {
-                var c = edges[j].cost || 1;
+                var edgePayload = {
+                        source: edges[j].source,
+                        target: edges[j].target,
+                        cost: edges[j].cost || 1,
+                        directed: edges[j].directed,
+                        data: edges[j].data
+                    };
 
-                toolkit.addEdge({
-                    source: edges[j].source,
-                    target: edges[j].target,
-                    cost: c,
-                    directed: edges[j].directed,
-                    data: edges[j].data
-                });
+                if (edges[j].geometry) {
+                    edgePayload.geometry = edges[j].geometry;
+                }
+
+                toolkit.addEdge(edgePayload);
             }
         },
         JSONGraphExporter = function (toolkit, parameters) {
@@ -8110,6 +8125,13 @@
             return _toolkit.beforeStartDetach(s, e);
         });
 
+        _jsPlumb.bind("connectionEdit", function(conn) {
+            if (conn.edge) {
+                conn.edge.geometry = conn.getConnector().getGeometry();
+                console.log("set geometry");
+            }
+        });
+
         JUTIL.EventGenerator.apply(this, arguments);
 
         // expose jsplumb mostly for testing
@@ -8238,7 +8260,9 @@
         // fired when the user moves a connection with the mouse. we advise the toolkit and it takes action.
         _jbind(_e.connectionMoved, function(info) {
             var o = info.index == 0 ? info.newSourceEndpoint : info.newTargetEndpoint;
+            _ignoreToolkitEvents = true;
             _toolkit.edgeMoved(info.connection.edge, (o.element.jtk.port || o.element.jtk.node), info.index);
+            _ignoreToolkitEvents = false;
         });
 
         // fired only when an edge was removed via the UI.
@@ -8345,6 +8369,17 @@
             if (thenRefresh) {
                 this.refresh();
             }
+        };
+
+        /**
+         * Wraps the underlying Toolkit's `batch` function with the added step of first suspending events being
+         * fired from this renderer.
+         * @param fn Function to run while rendering and events are both suspended.
+         */
+        this.batch = function(fn) {
+            this.setSuspendEvents(true);
+            _toolkit.batch(fn);
+            this.setSuspendEvents(false);
         };
 
         var _doAssignPosse = function(el, node) {
@@ -8466,10 +8501,11 @@
                 self.refresh(true);
             });
 
-            var directEdgeConnector = function (edge) {
+            var directEdgeConnector = function (edge, geometry) {
                 return function () {
                     var connectionParams = _prepareConnectionParams(edge);
                     connectionParams.doNotFireConnectionEvent = true;
+                    if (geometry) connectionParams.geometry = geometry;
                     if (_toolkit.isDebugEnabled()) console.log("Renderer", "adding edge with params", connectionParams);
                     var conn = _jsPlumb.connect(connectionParams);
                     conn.edge = edge;
@@ -8479,7 +8515,8 @@
                         source: edge.source,
                         target: edge.target,
                         connection: conn,
-                        edge: edge
+                        edge: edge,
+                        geometry:geometry
                     });
                     self.refresh(true);
                 };
@@ -8498,7 +8535,7 @@
                     // then we pass the function to it, along with the related edge, expecting that at some point the
                     // handler will execute the connect function (this is used, for instance, in Angular integration, in which
                     // template loading and painting is asynchronous
-                    var connectFunction = directEdgeConnector(edge);
+                    var connectFunction = directEdgeConnector(edge, data.geometry);
                     if (params.connectionHandler)
                         params.connectionHandler(edge, connectFunction);
                     else
@@ -8530,19 +8567,20 @@
                     var connection = connMap[edge.getId()];
                     var n = nodeMap[edge.target.getFullId()];
                     if (connection) {
-
-                        if (n != null) {
-                            if (_toolkit.isDebugEnabled()) console.log("target change", connection);
-                            _jsPlumb.setTarget(connection, n);
-                        }
-                        else {
-                            delete connMap[edge.getId()];
-                            _jsPlumb.detach({
-                                connection:connection,
-                                forceDetach:true,
-                                fireEvent:false
-                            });
-                        }
+                        _jsPlumb.silently(function() {
+                            if (n != null) {
+                                if (_toolkit.isDebugEnabled()) console.log("target change", connection);
+                                _jsPlumb.setTarget(connection, n);
+                            }
+                            else {
+                                delete connMap[edge.getId()];
+                                _jsPlumb.detach({
+                                    connection:connection,
+                                    forceDetach:true,
+                                    fireEvent:false
+                                });
+                            }
+                        });
                     }
                     else {
                         if (n != null) {
@@ -8562,17 +8600,19 @@
                     var connection = connMap[edge.getId()];
                     var n = nodeMap[edge.source.getFullId()];
                     if (connection) {
-                        if (n != null) {
-                            _jsPlumb.setSource(connection, n);
-                        }
-                        else {
-                            delete connMap[edge.getId()];
-                            _jsPlumb.detach({
-                                connection:connection,
-                                forceDetach:true,
-                                fireEvent:false
-                            });
-                        }
+                        _jsPlumb.silently(function() {
+                            if (n != null) {
+                                _jsPlumb.setSource(connection, n);
+                            }
+                            else {
+                                delete connMap[edge.getId()];
+                                _jsPlumb.detach({
+                                    connection: connection,
+                                    forceDetach: true,
+                                    fireEvent: false
+                                });
+                            }
+                        });
                     }
                     else {
                         if (n != null) {
@@ -9012,7 +9052,9 @@
          * @return {Element} DOM element for the given Node/Port, null if not found.
          */
         this.getRenderedElement = function (obj) {
-            return (obj.objectType === "Port" ? portMap : nodeMap)[obj.getFullId()];
+            if (obj == null) return null;
+            var fi = obj.getFullId();
+            return obj.objectType === "Port" ? portMaps.source[fi] || portMaps.target[fi] : nodeMap[fi];
         };
 
         /**
@@ -9411,8 +9453,9 @@
                                 // if  port id was provided, add a port to the node and save the mapping
                                 // to the element.
                                 portMaps.source[nodeId + "." + portParameters.portId] = el;
+                                el.jtk = el.jtk || {};
                                 // add a port to the node.
-                                _toolkit.addPort(node, {id: portParameters.portId}, true);
+                                el.jtk.port = _toolkit.addPort(node, {id: portParameters.portId}, true);
                             }
 
                             // if the user supplied a selector to the filter attribute, pass it over.
@@ -9473,8 +9516,9 @@
                                 // save target port mapping for element, unless depth == 0, in which
                                 // case the node itself is being made a target.
                                 portMaps.target[nodeId + "." + portParameters.portId] = el;
+                                el.jtk = el.jtk || {};
                                 // add a port to the node.
-                                _toolkit.addPort(node, {id: portParameters.portId}, true);
+                                el.jtk.port = _toolkit.addPort(node, {id: portParameters.portId}, true);
                             }
 
                             _jsPlumb.makeTarget(el, portParameters);
@@ -12837,6 +12881,63 @@
         this.setPan = panzoom.setPan;
 
 
+        //
+        // resolve an Edge or Connection or Edge ID into a Connection.
+        //
+        function _resolveConnection(edgeOrConnection) {
+            return edgeOrConnection == null ? null :
+                    typeof edgeOrConnection === "string" ? this.getRenderedConnection(edgeOrConnection) :
+                        edgeOrConnection.constructor == jsPlumb.Connection ? edgeOrConnection :
+                            self.getRenderedConnection(edgeOrConnection.getId());
+        }
+
+        //
+        // ensure the editors have been included. throw a TypeError if not.
+        //
+        function _ensureCanEdit() {
+            if (!_super.jsPlumb.startEditing) {
+                throw new TypeError("Connection editors not available.");
+            }
+        }
+
+        /**
+         * Starts editing of the given Edge, Connection, or Edge ID.
+         * @param {String|Edge|Connection} edgeOrConnection Either an Edge, or a Connection, or an Edge ID.
+         * @param {Object} [params] Optional params for the start edit call.
+         */
+        this.startEditing = function(edgeOrConnection, params) {
+            _ensureCanEdit();
+            var conn = _resolveConnection(edgeOrConnection);
+            if (conn != null) {
+                _super.jsPlumb.startEditing(conn, params);
+            }
+        };
+
+        /**
+         * Stops editing of the given Edge, Connection, or Edge ID.
+         * @param {String|Edge|Connection} edgeOrConnection Either an Edge, or a Connection, or an Edge ID.
+         */
+        this.stopEditing = function(edgeOrConnection) {
+            _ensureCanEdit();
+            var conn = _resolveConnection(edgeOrConnection);
+            if (conn != null) {
+                _super.jsPlumb.stopEditing(conn);
+            }
+        };
+
+        /**
+         * Clears edits for the given Edge, Connection, or Edge ID.
+         * @param {String|Edge|Connection} edgeOrConnection Either an Edge, or a Connection, or an Edge ID.
+         */
+        this.clearEdits = function(edgeOrConnection) {
+            _ensureCanEdit();
+            var conn = _resolveConnection(edgeOrConnection);
+            if (conn != null) {
+                _super.jsPlumb.clearEdits(conn);
+            }
+        };
+
+
         this.setPanAndZoom = function(x, y, zoom, doNotAnimate) {
             this.setPan(x, y, !doNotAnimate);
             this.setZoom(zoom, !doNotAnimate);
@@ -13215,9 +13316,9 @@
         this.setAbsolutePosition = function (el, xy, onComplete) {
             sap.call(this, el, xy);
             // inform layout the position has changed
-            var objInfo = this.getObjectInfo(el);
+            var objInfo = self.getObjectInfo(el);
             if (objInfo && objInfo.id) {
-                this.getLayout().setPosition(objInfo.id, xy[0], xy[1]);
+                self.getLayout().setPosition(objInfo.id, xy[0], xy[1]);
             }
             // inform panzoom the position has changed.
             panzoom.positionChanged(el, xy);
