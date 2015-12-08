@@ -39,7 +39,7 @@ class Renderer extends _CanvasBase {
                 // custom layout for this app. simple extension of the spring layout.
                 type:'metamap'
             },
-            zoomToFit:false,
+            zoomToFit:true,
             view: {
                 nodes: this.node.getView(),
                 edges: this.edge.getView()
