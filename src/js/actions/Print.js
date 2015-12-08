@@ -11,18 +11,21 @@ class Print extends ActionBase {
     act(id, ...params) {
         super.act(id, ...params)
 
-        var printContents = document.getElementById(CONSTANTS.ELEMENTS.CANVAS).innerHTML;
-        var originalContents = document.body.innerHTML;
-
-        document.body.innerHTML = printContents;
-
-        window.print();
-
-        document.body.innerHTML = originalContents;
-
+        Print.act()
         this.metaMap.Router.back()
 
         return true
+    }
+
+    static act() {
+        var printContents = document.getElementById(CONSTANTS.ELEMENTS.CANVAS).innerHTML
+        var originalContents = document.body.innerHTML
+
+        document.body.innerHTML = printContents
+
+        window.print()
+
+        document.body.innerHTML = originalContents
     }
 
 }

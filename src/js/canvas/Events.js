@@ -204,6 +204,15 @@ class Events extends _CanvasBase {
 
                         }
                         break
+                    case 80: //p
+                        if(event.ctrlKey || event.metaKey) {
+                            event.preventDefault()
+
+                            let Print = require('../actions/Print')
+                            Print.act()
+                        }
+
+                        break
                 }
             }
         })

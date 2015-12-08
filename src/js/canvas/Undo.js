@@ -25,7 +25,7 @@ class Undo extends _CanvasBase {
         })
 
         jsPlumb.on(document, 'keydown', (event) => {
-            if (event.ctrlKey) {
+            if (event.ctrlKey || event.metaKey) {
                 switch (event.keyCode) {
                     case 90: //z
                         this.undo(event)
