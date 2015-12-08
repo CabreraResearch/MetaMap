@@ -48,6 +48,10 @@ class PageFactory {
         //If we're on a page and execute a non-page action (Print, About, etc)
         //there's no need to run the action again
         let isActionNeeded = true
+        if(path == CONSTANTS.ACTIONS.PRINT_MAP) {
+            this.currentPath = ''
+            this.currentPageId = ''
+        }
         if(this.isActionPage(path)) {
             if(this.currentPageId == id && this.currentPath == path) {
                 isActionNeeded = false
