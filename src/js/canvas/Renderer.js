@@ -22,6 +22,8 @@ class Renderer extends _CanvasBase {
 			return renderer;
 		});
 
+        let zoomToFit = this.canvas.map.nodes >= 20 || this.canvas.map.edges >= 10
+
         // configure the renderer
         renderer = this.renderer = toolkit.render({
             container: this.opts.attachTo,
@@ -33,13 +35,12 @@ class Renderer extends _CanvasBase {
             stateHandle: 'metaMapCanvas_' + (canvas.mapId || canvas.mapName),
             saveState: function (...o) {
                 debugger
-                window.alert(`I'm a LIE. I will never be called.`)
             },
             layout:{
                 // custom layout for this app. simple extension of the spring layout.
                 type:'metamap'
             },
-            zoomToFit:true,
+            zoomToFit:zoomToFit,
             view: {
                 nodes: this.node.getView(),
                 edges: this.edge.getView()
