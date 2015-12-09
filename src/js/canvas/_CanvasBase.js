@@ -46,6 +46,10 @@ class _CanvasBase {
         return this.canvas.schema
     }
 
+    get copyPaste() {
+        return this.canvas.copyPaste
+    }
+
     init() {
 
     }

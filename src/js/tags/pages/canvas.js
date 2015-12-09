@@ -3,7 +3,6 @@ const _ = require('lodash')
 
 const Canvas = require('../../canvas/Canvas')
 const CONSTANTS = require('../../constants/constants')
-require('./node')
 const Permissions = require('../../app/Permissions')
 const AllTags = require('../mixins/all-tags')
 
@@ -15,7 +14,7 @@ const html = `
 </div>
 `
 
-module.exports = riot.tag('meta-canvas', html, function(opts) {
+module.exports = riot.tag('canvas', html, function(opts) {
 
     this.mixin(AllTags)
 
@@ -38,6 +37,10 @@ module.exports = riot.tag('meta-canvas', html, function(opts) {
                 })
                 this.update()
             })
+        } else {
+            if(map.changed_by && map.changed_by.userId != this.MetaMap.User.userId) {
+                this.canvas.loadData(map.data)
+            }
         }
         window.NProgress.done()
     }

@@ -227,12 +227,6 @@ class Node extends _CanvasBase {
                                                 }
                                             }
                                         }
-                                    },
-                                    copy: {
-                                        name: 'Copy',
-                                        callback: function(key, opt){
-                                            alert('Clicked on ' + key)
-                                        }
                                     }
                                 }
                             })
