@@ -12,7 +12,6 @@ class Print extends ActionBase {
         super.act(id, ...params)
 
         Print.act()
-        this.metaMap.Router.back()
 
         return true
     }
@@ -26,6 +25,8 @@ class Print extends ActionBase {
         window.print()
 
         document.body.innerHTML = originalContents
+
+        this.metaMap.Router.back()
     }
 
 }
