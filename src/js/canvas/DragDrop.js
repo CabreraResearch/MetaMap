@@ -16,30 +16,29 @@ class DragDropHandler extends _CanvasBase {
         super(canvas)
     }
 
+    static repositionRthingOnEdge(edge, canvas) {
+        if (edge && edge.data.rthing && edge.data.rthing.nodeId) {
+            let rnode = canvas.jsToolkit.getNode(edge.data.rthing.nodeId),
+                rnodeEl = canvas.jsRenderer.getRenderedElement(rnode);
+            let dotNode = document.getElementById(edge.data.rthing.rDot)
+            if (dotNode) {
+                let dot = $(dotNode),
+                    left = dot.css('left').split('px')[0] - (rnode.data.w / 2),
+                    top = dot.css('top').split('px')[0] - (rnode.data.h / 2);
+
+                canvas.jsToolkit.updateNode(rnode, {
+                    left: left,
+                    top: top
+                });
+                canvas.jsRenderer.setAbsolutePosition(rnodeEl, [left, top])
+            }
+        }
+    }
+
     repositionRThing(node) {
         if(node) {
             let edges = node.getEdges()
-            if (edges.length > 0) {
-                let renderer = this.jsRenderer
-                _.each(edges, (edge) => {
-                    if (edge.data.rthing && edge.data.rthing.nodeId) {
-                        let rnode = this.jsToolkit.getNode(edge.data.rthing.nodeId),
-                            rnodeEl = renderer.getRenderedElement(rnode);
-                        let dotNode = document.getElementById(edge.data.rthing.rDot)
-                        if (dotNode) {
-                            let dot = $(dotNode),
-                                left = dot.css('left').split('px')[0] - (rnode.data.w / 2),
-                                top = dot.css('top').split('px')[0] - (rnode.data.h / 2);
-
-                            this.jsToolkit.updateNode(rnode, {
-                                left: left,
-                                top: top
-                            });
-                            renderer.setAbsolutePosition(rnodeEl, [left, top])
-                        }
-                    }
-                })
-            }
+            _.each(edges, (edge) => { DragDropHandler.repositionRthingOnEdge(edge, this)  })
             //If every member of the posse dragged together, it wouldn't be necessary to do this
             if(node.data.children.length > 0) {
                 _.each(node.data.children, (id) => {

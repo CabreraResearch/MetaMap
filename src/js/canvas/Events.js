@@ -125,6 +125,8 @@ class Events extends _CanvasBase {
         const renderer = this.canvas.jsRenderer
 
         this.jsRenderer.getJsPlumb().bind('stopConnectionEdit', (aConnection) => {
+            let DragDropHandler = require('./DragDrop')
+            DragDropHandler.repositionRthingOnEdge(aConnection.edge, this)
             this.canvas.onAutoSave()
         })
 
