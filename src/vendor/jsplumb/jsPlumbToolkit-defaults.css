@@ -446,16 +446,18 @@ Assigned to tile images in a tiled background
     border-radius:50%;
     background-color:darkcyan;
     cursor:move;
-    z-index:10;
+    z-index:99;
 }
 
 .jsplumb-bezier-handle-secondary {
     cursor:default;
     background-color:lightgreen;
+    z-index:99;
 }
 
 .jsplumb-bezier-handle-secondary-source {
     background-color: lavenderblush;
+    z-index:99;
 }
 
 .jsplumb-bezier-guideline {
