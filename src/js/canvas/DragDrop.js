@@ -223,7 +223,9 @@ class DragDropHandler extends _CanvasBase {
                     }
                 }
                 else if (sourceInfo.obj.data.family == targetInfo.obj.data.family) {
-                    outcome = this.reorderChild(sourceInfo.obj, targetInfo.obj, params)
+                    if(sourceInfo.obj.data.type != 'idea_A') {
+                        outcome = this.reorderChild(sourceInfo.obj, targetInfo.obj, params)
+                    }
                 }
                 else {
                     outcome = this.addAsChild(sourceInfo.obj, targetInfo.obj, params.e)
@@ -236,10 +238,24 @@ class DragDropHandler extends _CanvasBase {
                 return outcome;
             },
             over: (params) => {
-                //console.log("drag over", params)
+                // let drag = this.jsToolkit.getObjectInfo(params.drag.el).obj
+                // let drop = this.jsToolkit.getObjectInfo(params.drop.el).obj
+                // if(drag.data.family == drop.data.family) {
+                //     $(params.drop.el).removeClass('jsplumb-drag-hover')
+                //     console.log('removed class')
+                // } else {
+                //     console.log('class not removed')
+                // }
             },
             out: (params) => {
-                //console.log("drag out", params)
+                // let drag = this.jsToolkit.getObjectInfo(params.drag.el).obj
+                // let drop = this.jsToolkit.getObjectInfo(params.drop.el).obj
+                // if(drag.data.family == drop.data.family) {
+                //     $(params.drop.el).removeClass('jsplumb-drag-hover')
+                //     console.log('removed class')
+                // } else {
+                //     console.log('class not removed')
+                // }
             }
         };
     }
