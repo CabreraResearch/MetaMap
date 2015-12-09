@@ -12,7 +12,7 @@ class CopyPaste extends _CanvasBase {
         super(canvas)
 
         jsPlumb.on(document, 'keydown', (event) => {
-            if (event.ctrlKey) {
+            if (event.ctrlKey || event.metaKey) {
                 switch (event.keyCode) {
                     case 67: //c
                         this.copy(event)

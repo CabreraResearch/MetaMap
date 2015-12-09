@@ -102,11 +102,9 @@ class Canvas {
         return this.rndrr.dragDropHandler
     }
 
-    onAutoSave(data) {
+    onAutoSave() {
         if (this.doAutoSave && this.permissions.canEdit()) {
-            //KLUDGE: looks like the exportData now includes invalid property values (Infinity) and types (methods)
-            //Parsing to/from string fixes for now
-            data = this.exportData()
+            let data = this.exportData()
             let postData = {
                 data: data,
                 changed_by: {
@@ -149,6 +147,12 @@ class Canvas {
 
     exportData(limitToSelected=false) {
         let ret = this.jsToolkit.exportData()
+        _.each(ret.edges, (e) => {
+            let edge = this.jsToolkit.getEdge(e.data.id)
+            if(edge.geometry) {
+                e.geometry = edge.geometry
+            }
+        })
         if (limitToSelected && this._selection) {
             //getSelection rarely has the actual selection; use our own state
             // let selected = this.jsToolkit.getSelection()
@@ -161,7 +165,6 @@ class Canvas {
                 return ret
             })
         }
-
         return ret
     }
 

@@ -59,7 +59,7 @@ class Events extends _CanvasBase {
                 if (this._clickHandlers['dblclick'][segment]) {
                     this._clickHandlers['dblclick'][segment](el, node)
                 }
-            }, 200))
+            }, 300))
         })
     }
 
@@ -123,6 +123,12 @@ class Events extends _CanvasBase {
     bindEvents() {
         const toolkit = this.canvas.jsToolkit
         const renderer = this.canvas.jsRenderer
+
+        this.jsRenderer.getJsPlumb().bind('stopConnectionEdit', (aConnection) => {
+            let DragDropHandler = require('./DragDrop')
+            DragDropHandler.repositionRthingOnEdge(aConnection.edge, this)
+            this.canvas.onAutoSave()
+        })
 
         jsPlumb.on("relationshipEdgeDump", "click", () => { this.canvas.dumpEdgeCounts() });
 
@@ -199,6 +205,15 @@ class Events extends _CanvasBase {
                             })
 
                         }
+                        break
+                    case 80: //p
+                        if(event.ctrlKey || event.metaKey) {
+                            event.preventDefault()
+
+                            let Print = require('../actions/Print')
+                            Print.act()
+                        }
+
                         break
                 }
             }

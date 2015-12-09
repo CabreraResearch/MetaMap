@@ -12,7 +12,8 @@ const ACTIONS = {
     FEEDBACK: 'feedback',
     SHARE_MAP: 'share_map',
     COURSE_LIST: 'course_list',
-    TRAININGS: 'trainings'
+    TRAININGS: 'trainings',
+    PRINT_MAP: 'print_map'
 };
 
 Object.freeze(ACTIONS);

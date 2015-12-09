@@ -118,7 +118,10 @@ class Node extends _CanvasBase {
                         type: type,
                         family: node.data.family
                     })
-
+                    if(node.data.isRThing && node.data.children.length == 0) {
+                        nodeData.partAlign = 'left'
+                        node.data.partAlign = 'left'
+                    }
                     var newNode = this.jsToolkit.addNode(nodeData)
 
                     node.data.children.push(newNode.id)
@@ -298,8 +301,8 @@ class Node extends _CanvasBase {
 
         if (dotEl) {
             let dot = $(dotEl)
-            left = dot.position().left - (size / 2)
-            top = dot.position().top - (size / 2)
+            left = dot.css('left').split('px')[0] - (size / 2)
+            top = dot.css('top').split('px')[0] - (size / 2)
         }
 
         let d = {
@@ -307,7 +310,7 @@ class Node extends _CanvasBase {
             h: size,
             left: left,
             top: top,
-            partAlign: 'freehand'
+            partAlign: 'left'
         }
 
         let rType = this.getPartNodeType(obj.edge.source.data)

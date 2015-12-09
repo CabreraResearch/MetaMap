@@ -1,4 +1,4 @@
-/* 
+/*
     Default styles for jsPlumb Toolkit
 
     Copyright 2015 https://jsplumbtoolkit.com
@@ -143,13 +143,6 @@ Assigned to tile images in a tiled background
 }
 
 /*
-    Assigned to some element that has been selected (either via lasso or programmatically).
-*/
-.jtk-surface-selected-element {
-    border: 2px dashed #f76258 !important;
-}
-
-/*
     Assigned to all pan buttons in a surface widget.
 */
 .jtk-surface-pan {
@@ -201,112 +194,7 @@ Assigned to tile images in a tiled background
     Assigned to a pan button when the user is pressing it.
 */
 .jtk-surface-pan-active, .jtk-surface-pan-active:hover {
-    background-color: #f76258;
-}
 
-/* --------------------------------------------------------------------------------------------- */
-/* --- MINIVIEW WIDGET ------------------------------------------------------------------------- */
-/* --------------------------------------------------------------------------------------------- */
-
-/*
-    Assigned to an element that is acting as a Miniview.
-    As with Surface, Miniview elements should have overflow:hidden set to prevent
-    libs from scrolling them during drag. This style also provides a default width/height for a miniview,
-    which you may wish to override.
-*/
-.jtk-miniview {
-    overflow: hidden !important;
-    width: 125px;
-    height: 125px;
-    position: relative;
-    background-color: #B2C9CD;
-    border: 1px solid #E2E6CD;
-    border-radius: 4px;
-    opacity: 0.8;
-}
-
-/* 
-    Assigned to the element that shows the size of the related viewport in a Miniview widget, and which can be dragged to
-    move the surface.
-*/
-.jtk-miniview-panner {
-    border: 5px dotted WhiteSmoke;
-    opacity: 0.4;
-    filter: alpha(opacity=40);
-    background-color: rgb(79, 111, 126);
-    cursor: move;
-    cursor: -moz-grab;
-    cursor: -webkit-grab;
-}
-
-/*
-    Assigned to the miniview's panner when it is being dragged.
-*/
-.jtk-miniview-panning {
-    cursor: -moz-grabbing;
-    cursor: -webkit-grabbing;
-}
-
-/*
-    Added to all elements displayed in a miniview.
-*/
-.jtk-miniview-element {
-    background-color: rgb(96, 122, 134);
-    position: absolute;
-}
-
-/*
-    Assigned to the collapse/expand miniview button
-*/
-.jtk-miniview-collapse {
-    color: whiteSmoke;
-    position: absolute;
-    font-size: 18px;
-    top: -1px;
-    right: 3px;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-/*
-    The '-' symbol when the miniview is expanded
-*/
-.jtk-miniview-collapse:before {
-    content: "\2012";
-}
-
-/*
-    Assigned to the miniview element when it is collapsed.
-*/
-.jtk-miniview-collapsed {
-    background-color: #449ea6;
-    border-radius: 4px;
-    height: 22px;
-    margin-right: 0;
-    padding: 4px;
-    width: 21px;
-}
-
-/*
-    Hide all children of the miniview (except the expand button) when it is collapsed so you don't see anything
-    poking through under the + icon.
-*/
-.jtk-miniview-collapsed .jtk-miniview-element, .jtk-miniview-collapsed .jtk-miniview-panner {
-    visibility: hidden;
-}
-
-/*
-    The '+' symbol when the miniview is collapsed.
-*/
-.jtk-miniview-collapsed .jtk-miniview-collapse:before {
-    content: "+";
-}
-
-/*
-    Hover state for the collapse/expand icon.
-*/
-.jtk-miniview-collapse:hover {
-    color: #E4F013;
 }
 
 /* ------------------------------------------------------------------------------------------- */
@@ -558,16 +446,18 @@ Assigned to tile images in a tiled background
     border-radius:50%;
     background-color:darkcyan;
     cursor:move;
-    z-index:10;
+    z-index:99;
 }
 
 .jsplumb-bezier-handle-secondary {
     cursor:default;
     background-color:lightgreen;
+    z-index:99;
 }
 
 .jsplumb-bezier-handle-secondary-source {
     background-color: lavenderblush;
+    z-index:99;
 }
 
 .jsplumb-bezier-guideline {
@@ -580,5 +470,5 @@ Assigned to tile images in a tiled background
 }
 
 .jsplumb-connection-edit path {
-    stroke-dasharray:2 2;
+
 }

@@ -16,6 +16,39 @@ class DragDropHandler extends _CanvasBase {
         super(canvas)
     }
 
+    static repositionRthingOnEdge(edge, canvas) {
+        if (edge && edge.data.rthing && edge.data.rthing.nodeId) {
+            let rnode = canvas.jsToolkit.getNode(edge.data.rthing.nodeId),
+                rnodeEl = canvas.jsRenderer.getRenderedElement(rnode);
+            let dotNode = document.getElementById(edge.data.rthing.rDot)
+            if (dotNode) {
+                let dot = $(dotNode),
+                    left = dot.css('left').split('px')[0] - (rnode.data.w / 2),
+                    top = dot.css('top').split('px')[0] - (rnode.data.h / 2);
+
+                canvas.jsToolkit.updateNode(rnode, {
+                    left: left,
+                    top: top
+                });
+                canvas.jsRenderer.setAbsolutePosition(rnodeEl, [left, top])
+            }
+        }
+    }
+
+    repositionRThing(node) {
+        if(node) {
+            let edges = node.getEdges()
+            _.each(edges, (edge) => { DragDropHandler.repositionRthingOnEdge(edge, this)  })
+            //If every member of the posse dragged together, it wouldn't be necessary to do this
+            if(node.data.children.length > 0) {
+                _.each(node.data.children, (id) => {
+                    let child = this.jsToolkit.getNode(id)
+                    this.repositionRThing(child)
+                })
+            }
+        }
+    }
+
     getDragOptions() {
         return {
             filter: '.donotdrag, .name',       // can't drag nodes by the color segments.
@@ -24,30 +57,17 @@ class DragDropHandler extends _CanvasBase {
                 // when any two nodes with a relationship and an r-thing between them move
                 // this should update the position of the r-thing to be the same as the r-dot overlay
                 let info = this.jsToolkit.getObjectInfo(params.el)
-                if (info && info.obj) {
-                    let node = info.obj
-                    let edges = node.getEdges()
-                    if (edges.length > 0) {
-                        let renderer = this.jsRenderer
-                        _.each(edges, (edge) => {
-                            if (edge.data.rthing && edge.data.rthing.nodeId) {
-                                let rnode = this.jsToolkit.getNode(edge.data.rthing.nodeId),
-                                    rnodeEl = renderer.getRenderedElement(rnode);
-                                let dotNode = document.getElementById(edge.data.rthing.rDot)
-                                if (dotNode) {
-                                    let dot = $(dotNode),
-                                        left = dot.css('left').split('px')[0] - (rnode.data.w / 2),
-                                        top = dot.css('top').split('px')[0] - (rnode.data.h / 2);
+                let doRepo = (info && null != info.obj)
 
-                                    this.jsToolkit.updateNode(rnode, {
-                                        left: left,
-                                        top: top
-                                    });
-                                    renderer.setAbsolutePosition(rnodeEl, [left, top])
-                                }
-                            }
-                        })
-                    }
+                //If we're dragging a part that is not in freehand layout,
+                //and it's not being dropped onto anyone else,
+                //it will snap back immediately after this event fires
+                if(info.obj.data.type != 'idea_A' && info.obj.data.partAlign != 'freehand' && (!params.drop || !params.drop.el)) {
+                    doRepo = false
+                }
+                if (doRepo) {
+                    let node = info.obj
+                    this.repositionRThing(node)
                 }
 
                 // when _any_ node stops dragging, run the layout again.
@@ -99,7 +119,7 @@ class DragDropHandler extends _CanvasBase {
         _.each(edges, (edge) => {
             if (edge.data.type != 'relationshipPart' && edge.source.data.family == edge.target.data.family) {
                 edge.data.type = 'relationshipPart'
-                this.jsToolkit.updateEdge(edge)
+                this.canvas.updateData({ edge: edge })
             }
         })
         if (node.data.children > 0) {
@@ -120,6 +140,7 @@ class DragDropHandler extends _CanvasBase {
         child.data.h = newSize;
         child.data.type = this.node.getPartNodeType(child.data)
         child.data.family = parent.data.family
+        child.data.partAlign = parent.data.partAlign || 'left'
         this.jsRenderer.getLayout().setSize(child.id, [newSize, newSize])
     }
 
