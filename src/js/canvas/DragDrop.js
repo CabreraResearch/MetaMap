@@ -88,7 +88,7 @@ class DragDropHandler extends _CanvasBase {
                 var node = params.el.jtk.node;
                 if (node.data.parentId != null) {
                     var parentNode = this.jsToolkit.getNode(node.data.parentId);
-                    if (!parentNode.data.suspendLayout) {
+                    if (parentNode && !parentNode.data.suspendLayout) {
                         params.el._metamapParent = parentNode;
                     }
                     else {
@@ -138,7 +138,7 @@ class DragDropHandler extends _CanvasBase {
         var newSize = this.canvas.getPartSizeAtDepth(depth)
         child.data.w = newSize;
         child.data.h = newSize;
-        child.data.type = this.node.getPartNodeType(child.data)
+        child.data.type = this.node.getNextPartNodeType(child.data)
         child.data.family = parent.data.family
         child.data.partAlign = parent.data.partAlign || 'left'
         this.jsRenderer.getLayout().setSize(child.id, [newSize, newSize])
@@ -186,20 +186,24 @@ class DragDropHandler extends _CanvasBase {
             // here we map child positions to a list containing entries that have [ pos, delta, idx ], which we then
             // sort by delta (where delta is the distance from that node's top edge from the dropped node's top edge).
             // the first entry in this array, then, gives us the new index for the dropped node.
-            let mappedLocations = _.map(childPositions, (cp, i) => {
-                return [cp[1], Math.abs(cp[1] - params.drop.position[1]), i];
-            })
-            let sortedLocations = mappedLocations.sort((a, b) => {
-                return a[1] < b[1] ? -1 : a[1] > b[1] ? 1 : 0;
-            });
-            // move the dropped node
-            childPositions.splice(sortedLocations[0][2], 0, childPositions.splice(sourceNode.data.order, 1)[0]);
-            // iterate through and reassign order.
-            _.each(childPositions, (cp, i) => {
-                this.jsToolkit.updateNode(cp[2], {
-                    order: i
+            if(!childPositions) {
+                console.log('No positions')
+            } else {
+                let mappedLocations = _.map(childPositions, (cp, i) => {
+                    return [cp[1], Math.abs(cp[1] - params.drop.position[1]), i];
+                })
+                let sortedLocations = mappedLocations.sort((a, b) => {
+                    return a[1] < b[1] ? -1 : a[1] > b[1] ? 1 : 0;
                 });
-            });
+                // move the dropped node
+                childPositions.splice(sortedLocations[0][2], 0, childPositions.splice(sourceNode.data.order, 1)[0]);
+                // iterate through and reassign order.
+                _.each(childPositions, (cp, i) => {
+                    this.jsToolkit.updateNode(cp[2], {
+                        order: i
+                    });
+                });
+            }
         }
         return true;
     }
@@ -223,7 +227,12 @@ class DragDropHandler extends _CanvasBase {
                     }
                 }
                 else if (sourceInfo.obj.data.family == targetInfo.obj.data.family) {
-                    if(sourceInfo.obj.data.type != 'idea_A') {
+                    //If the target is the root node, we're detaching the part
+                    if(targetInfo.obj.data.type == 'idea_A') {
+                        this.schema.detachPart(sourceInfo.obj, targetInfo.obj)
+                    }
+                    //If the source is the root node, then we're moving the system
+                    else if(sourceInfo.obj.data.type != 'idea_A') {
                         outcome = this.reorderChild(sourceInfo.obj, targetInfo.obj, params)
                     }
                 }

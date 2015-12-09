@@ -30,18 +30,13 @@ class CopyPaste extends _CanvasBase {
         this.data = this.canvas.exportData(true)
     }
 
-    paste(event) {
-        if (this.data) {
-
-            //It's possible to paste multiple times from the same copy. In case we do this, operate on the last mutation instead of the original
-            //To prevent writing over object references, this could include _.clone(obj, true) in the assignment
-            let data = (this._copyData) ? this._copyData : this.data
-
+    clone(data) {
+        let newData = {
+            nodes: [],
+            edges: []
+        }
+        if (data) {
             let idMap = {}
-            let newData = {
-                nodes: [],
-                edges: []
-            }
 
             //1. Match each existing node id to a new UUID
             _.each(data.nodes, (node) => {
@@ -65,6 +60,7 @@ class CopyPaste extends _CanvasBase {
                     partAlign: node.partAlign,
                     perspective: { edges: [], class: 'none', has: false },
                     suspendLayout: node.suspendLayout || false,
+                    family: node.family,
                     type: node.type,
                     w: node.w
                 }
@@ -130,13 +126,11 @@ class CopyPaste extends _CanvasBase {
                 return ret
             })
 
-            this._copyData = newData
-
             this.canvas.clearSelection({ e: {} })
             let newNodes = {}
             _.each(newData.nodes, (n) => {
                 newNodes[n.id] = this.jsToolkit.addNode(n)
-                this.canvas.addToSelection({node: newNodes[n.id]})
+                this.canvas.addToSelection({ node: newNodes[n.id] })
             })
             _.each(newData.edges, (e) => {
                 if (newNodes[e.source] && newNodes[e.target]) {
@@ -145,6 +139,20 @@ class CopyPaste extends _CanvasBase {
                 }
             })
             this.canvas.refresh()
+        }
+        return newData
+    }
+
+    paste(event) {
+        if (this.data) {
+
+            //It's possible to paste multiple times from the same copy. In case we do this, operate on the last mutation instead of the original
+            //To prevent writing over object references, this could include _.clone(obj, true) in the assignment
+            let data = (this._copyData) ? this._copyData : this.data
+
+            let newData = this.clone(data)
+
+            this._copyData = newData
         }
     }
 

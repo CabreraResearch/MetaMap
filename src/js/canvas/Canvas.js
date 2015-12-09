@@ -193,7 +193,7 @@ class Canvas {
             if (obj.node) {
                 //push selected nodes onto the state
                 this._selection.nodeIds.push(obj.node.id)
-                let children = this.schema.getAllChildren(obj.node)
+                let children = this.schema.getAllChildren(obj.node).ids
                 this._selection.nodeIds = _.union(this._selection.nodeIds, children)
                 this.jsToolkit.addToSelection(obj.node);
             }

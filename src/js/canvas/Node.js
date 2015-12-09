@@ -14,6 +14,7 @@ class Node extends _CanvasBase {
     // dummy for a new node.
     //
     getNewNode(opts) {
+        let id = jsPlumbUtil.uuid()
         let ret = {
             w:this.canvas.nodeSize,
             h:this.canvas.nodeSize,
@@ -31,7 +32,8 @@ class Node extends _CanvasBase {
                 class: 'none'
             },
             isRThing: false,
-            family: jsPlumbUtil.uuid()
+            id: id,
+            family: id
         }
         _.extend(ret, opts)
         return ret
@@ -107,7 +109,7 @@ class Node extends _CanvasBase {
                     node.data.children = node.data.children || []
                     var newLabel = 'Part'
 
-                    let type = this.getPartNodeType(node.data)
+                    let type = this.getNextPartNodeType(node.data)
                     let nodeData = this.getNewNode({
                         parentId:node.id,
                         w:newWidth,
@@ -261,19 +263,49 @@ class Node extends _CanvasBase {
 
     }
 
-    getPartNodeType(node) {
+    _getPartNodeType(node, inc = 1) {
         let ret = 'idea_A'
         if (node) {
             let types = ['A', 'B', 'C', 'D', 'E']
             let type = node.type.split('_')[1]
-            if (type != 'E') {
-                ret = `idea_${types[types.indexOf(type)+1]}`
+            if (inc == 1 && type != 'E') {
+                ret = `idea_${types[types.indexOf(type)+inc]}`
+            }
+            else if(inc == -1 && type != 'A'){
+                ret = `idea_${types[types.indexOf(type)+inc]}`
             } else {
                 ret = ''
             }
 
         }
         return ret;
+    }
+
+    getPrevPartNodeType(node) {
+        return this._getPartNodeType(node, -1)
+    }
+
+    getNextPartNodeType(node) {
+        return this._getPartNodeType(node, 1)
+    }
+
+    getSizeForPart(node) {
+        let ret = this.canvas.nodeSize
+        switch (node.type) {
+            case 'idea_B':
+                ret *= this.canvas.partSize
+                break;
+            case 'idea_C':
+                ret *= Math.pow(this.canvas.partSize,2)
+                break;
+            case 'idea_D':
+                ret *= Math.pow(this.canvas.partSize,3)
+                break;
+            case 'idea_E':
+                ret *= Math.pow(this.canvas.partSize,4)
+                break;
+        }
+        return ret
     }
 
     createNode(e) {
@@ -307,7 +339,7 @@ class Node extends _CanvasBase {
             partAlign: 'left'
         }
 
-        let rType = this.getPartNodeType(obj.edge.source.data)
+        let rType = this.getNextPartNodeType(obj.edge.source.data)
         let nodeData = jsPlumb.extend(this.getNewNode({ type: rType, cssClass: 'donotdrag' }), d)
         nodeData.isRThing = true
         nodeData.rthing = {

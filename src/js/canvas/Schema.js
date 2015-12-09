@@ -14,6 +14,7 @@ class Schema extends _CanvasBase {
     }
 
     getDefaultMap() {
+        let id = jsPlumbUtil.uuid()
         return {
             nodes: [{
                 w: this.canvas.nodeSize,
@@ -30,8 +31,8 @@ class Schema extends _CanvasBase {
                 },
                 left: (window.innerWidth/2) - 50,
                 top: (window.innerHeight/2) - 150,
-                id: jsPlumbUtil.uuid(),
-                family: jsPlumbUtil.uuid()
+                id: id,
+                family: id
             }],
             edges: [],
             ports: []
@@ -48,13 +49,18 @@ class Schema extends _CanvasBase {
         }
     }
 
-    getAllChildren(node, ret=[]) {
+    getAllChildren(node, ret={ids: [], nodes: []}) {
         if (node && node.data && node.data.children) {
             _.each(node.data.children, (id, i) => {
-                if (!_.contains(ret, id)) {
+                if (!_.contains(ret.ids, id)) {
                     let child = this.jsToolkit.getNode(id)
-                    ret.push(id)
-                    this.getAllChildren(child, ret)
+                    if (child) {
+                        ret.ids.push(id)
+                        ret.nodes.push(child.data)
+                        this.getAllChildren(child, ret)
+                    } else {
+                        //TODO: should probably delete the reference
+                    }
                 }
             })
         }
@@ -86,6 +92,45 @@ class Schema extends _CanvasBase {
         }
     }
 
+    detachPart(source, target) {
+        if (source && target) {
+            target.data.children = _.remove(target.data.children, (id) => {
+                return id != source.data.id
+            })
+            this.canvas.updateData({ node: target })
+
+            let children = this.getAllChildren(source).nodes
+            _.each(children, (child) => {
+                child.type = this.node.getPrevPartNodeType(child)
+                let size = this.node.getSizeForPart(child)
+                child.h = size
+                child.w = size
+                child.family = source.data.id
+            })
+            let nodes = [source.data].concat(children)
+            source.data.type = 'idea_A'
+            source.data.h = target.data.h
+            source.data.w = target.data.w
+            source.data.parentId = ''
+            source.data.family = source.data.id
+            this.copyPaste.clone({ nodes: nodes })
+            _.each(nodes, (node) => {
+                this.delete({ node: node })
+            })
+        }
+    }
+
+    delete(obj) {
+        if (obj) {
+            if (obj.node) {
+                this.jsToolkit.removeNode(obj.node)
+            }
+            if (obj.edge) {
+                this.deleteEdge(obj.edge)
+            }
+        }
+    }
+
     recurseDelete(node) {
         if (node) {
             if (node.data && node.data.children) {
@@ -108,10 +153,10 @@ class Schema extends _CanvasBase {
                 }
             }
             _.each(node.getAllEdges(), (edge) => {
-                this.deleteEdge(edge)
+                this.delete({ edge: edge })
             })
             //Delete children before parents
-            this.jsToolkit.removeNode(node)
+            this.delete({ node: node })
         }
     }
 
