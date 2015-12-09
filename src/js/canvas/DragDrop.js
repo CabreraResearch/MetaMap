@@ -250,13 +250,15 @@ class DragDropHandler extends _CanvasBase {
                 return node.id;
             }
             else {
-                var posses = [node.id], par = node.data.parentId;
-                if (this.jsToolkit.getNode(par)) {
+                let posses = [node.id]
+                let par = node.data.parentId
+                let parent = this.jsToolkit.getNode(par)
+                if (parent) {
                     while (par != null) {
-                        posses.push({ id: par, active: false });
-                        let parent = this.jsToolkit.getNode(par)
-                        if (parent && par != node.data.parentId) {
-                            par = node.data.parentId;
+                        posses.push({ id: parent.data.id, active: false });
+                        parent = this.jsToolkit.getNode(parent.data.parentId)
+                        if (parent && parent.data.id != node.data.parentId) {
+                            par = parent.data.id;
                         } else {
                             par = null
                         }

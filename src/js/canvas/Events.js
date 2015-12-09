@@ -33,9 +33,7 @@ class Events extends _CanvasBase {
 
                 }
             }
-            let edgeEvents = this.edge.getClickEvents()
             let nodeEvents = this.node.getClickEvents()
-            _.extend(events, edgeEvents)
             _.extend(events, nodeEvents)
 
             this.__clickHandlers = events
@@ -101,21 +99,12 @@ class Events extends _CanvasBase {
             canvasDblClick: (e) => {
                 this.node.createNode(e)
             },
-            contextmenu: (node, port, el, e) => {
-                debugger
-            },
             nodeAdded: (params) => {
                 this.registerHandlers(params)
                 this.node.onAdded(params)
             },
             edgeAdded: (obj) => {
                 this.edge.onAdded(obj)
-            },
-            onComplete: () => {
-
-            },
-            relayout: () => {
-                // not necessary now, as we handle all this in mouseover events on edges.
             }
         }
     }
