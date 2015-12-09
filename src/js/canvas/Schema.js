@@ -20,32 +20,21 @@ class Schema extends _CanvasBase {
                 h: this.canvas.nodeSize,
                 label: "idea",
                 type: "idea_A",
-                children: [
-
-                ],
-                labelPosition: [
-
-                ],
+                children: [],
+                labelPosition: [],
                 cssClass: "",
                 perspective: {
                     has: false,
-                    edges: [
-
-                    ],
+                    edges: [],
                     class: "none"
                 },
                 left: (window.innerWidth/2) - 50,
                 top: (window.innerHeight/2) - 150,
                 id: jsPlumbUtil.uuid(),
                 family: jsPlumbUtil.uuid()
-            }
-            ],
-            edges: [
-
-            ],
-            ports: [
-
-            ]
+            }],
+            edges: [],
+            ports: []
         }
     }
 

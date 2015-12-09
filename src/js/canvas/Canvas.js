@@ -109,7 +109,8 @@ class Canvas {
                 data: data,
                 changed_by: {
                     userId: this.metaMap.User.userId,
-                    userName: this.metaMap.User.fullName
+                    userName: this.metaMap.User.fullName,
+                    userKey: this.metaMap.User.userKey
                 }
             }
             this.metaMap.MetaFire.setDataInTransaction(postData, `maps/data/${this.mapId}`).catch((err) => {
@@ -120,11 +121,25 @@ class Canvas {
         }
     }
 
-    loadData(map = this.map) {
+    reloadData(map) {
+        let old = this.doAutoSave
+        this.doAutoSave = false
+        this.jsToolkit.clear()
         this.jsToolkit.load({
             type: 'json',
             data: map
         })
+        this.doAutoSave = old
+    }
+
+    loadData(map = this.map) {
+        let old = this.doAutoSave
+        this.doAutoSave = false
+        this.jsToolkit.load({
+            type: 'json',
+            data: map
+        })
+        this.doAutoSave = old
     }
 
     // load the data.
