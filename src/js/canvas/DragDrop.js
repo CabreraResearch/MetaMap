@@ -228,7 +228,7 @@ class DragDropHandler extends _CanvasBase {
                 }
                 else if (sourceInfo.obj.data.family == targetInfo.obj.data.family) {
                     //If the target is the root node, we're detaching the part
-                    if(targetInfo.obj.data.type == 'idea_A') {
+                    if(targetInfo.obj.data.type == 'idea_A' || (targetInfo.obj.data.type == 'idea_B' && targetInfo.obj.data.isRThing)) {
                         this.schema.detachPart(sourceInfo.obj, targetInfo.obj)
                     }
                     //If the source is the root node, then we're moving the system

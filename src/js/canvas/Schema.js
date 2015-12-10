@@ -113,7 +113,11 @@ class Schema extends _CanvasBase {
             source.data.w = target.data.w
             source.data.parentId = ''
             source.data.family = source.data.id
-            this.copyPaste.clone({ nodes: nodes })
+            if (!target.data.isRThing) {
+                source.data.top = target.data.top
+                source.data.left = target.data.left+100
+            }
+            this.copyPaste.clone({ nodes: nodes, edges: [] })
             _.each(nodes, (node) => {
                 this.delete({ node: node })
             })

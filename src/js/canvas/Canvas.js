@@ -74,10 +74,14 @@ class Canvas {
     }
 
     getDepth(node, d = 0) {
-        if (node.data.parentId == null) return d;
-        else {
-            return this.getDepth(this.jsToolkit.getNode(node.data.parentId), ++d);
+        let ret = d
+        if (node) {
+            if (node.data.parentId == null) ret = d;
+            else {
+                ret = this.getDepth(this.jsToolkit.getNode(node.data.parentId), ++d);
+            }
         }
+        return ret
     }
 
     _init(opts) {
