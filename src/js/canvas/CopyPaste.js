@@ -62,7 +62,10 @@ class CopyPaste extends _CanvasBase {
                     suspendLayout: node.suspendLayout || false,
                     family: node.family,
                     type: node.type,
-                    w: node.w
+                    w: node.w,
+                    parts: {
+                        class: 'none'
+                    }
                 }
 
                 //update parent keys
@@ -75,6 +78,10 @@ class CopyPaste extends _CanvasBase {
                     ret.children.push(idMap[childId])
                 })
 
+                if (ret.children.length > 0) {
+                    ret.parts.class = 'open'
+                }
+                
                 //update perspective edges
                 _.each(node.perspective.edges, (edgeId) => {
                     ret.perspective.edges.push(idMap[edgeId])
@@ -84,10 +91,10 @@ class CopyPaste extends _CanvasBase {
 
                 if (node.left) {
                     //position the new node just to the right of the copied node
-                    ret.left = node.left + 100
+                    ret.left = node.left + 200
                     let topMove = 0
                     //If copying edges, move down as well
-                    if (data.edges.length > 0) topMove = 100
+                    if (data.edges.length > 0) topMove = 200
                     ret.top = node.top + topMove
                 }
 
