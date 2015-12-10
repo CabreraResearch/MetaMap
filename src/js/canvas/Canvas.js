@@ -117,6 +117,7 @@ class Canvas {
                     userKey: this.metaMap.User.userKey
                 }
             }
+            this.jsRenderer.State.save()
             this.metaMap.MetaFire.setDataInTransaction(postData, `maps/data/${this.mapId}`).catch((err) => {
                 window.alert("Something went wrong. Your map is no longer be saved. Please refresh your browser and try again.")
                 this.metaMap.error(err)
@@ -148,9 +149,6 @@ class Canvas {
 
     // load the data.
     loadUpgradeData(map = this.map) {
-        const toolkit = this.jsToolkit
-        const renderer = this.jsRenderer
-
         if ((!map || !map.data) && this.doAutoSave && !this.isReadOnly) {
             map = map || {}
             map.data = this.schema.getDefaultMap()
@@ -159,8 +157,8 @@ class Canvas {
         if (map && map.data) {
             this.schema.upgrade(map.data)
             this.loadData(map.data)
-            let state = localStorage.getItem(`jtk-state-metaMapCanvas_${this.mapId || this.mapName}`)
-            renderer.State.restore(state)
+            //let state = localStorage.getItem(`jtk-state)
+            this.jsRenderer.State.restore(`metaMapCanvas_${this.mapId || this.mapName}`)
         }
     }
 
