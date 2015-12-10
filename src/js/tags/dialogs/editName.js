@@ -64,6 +64,10 @@ module.exports = riot.tag(CONSTANTS.TAGS.EDIT_LABEL, html, function (opts) {
                     opts.onDone(this.node_label.value)
                 })
 
+                $(this.edit_text_modal).on('shown.bs.modal', () => {
+                    this.node_label.focus()
+                })
+
                 $(this.edit_text_modal).on('hide.bs.modal', () => {
                     this.close()
                 })
