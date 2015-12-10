@@ -22,7 +22,7 @@ class Renderer extends _CanvasBase {
 			return renderer;
 		});
 
-        let zoomToFit = this.canvas.map.data.nodes.length >= 20 || this.canvas.map.data.edges.length >= 10
+        let zoomToFit = this.canvas.map && this.canvas.map.data && (this.canvas.map.data.nodes.length >= 20 || this.canvas.map.data.edges.length >= 10)
 
         // configure the renderer
         renderer = this.renderer = toolkit.render({
