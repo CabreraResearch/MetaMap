@@ -106,13 +106,13 @@ class DragDropHandler extends _CanvasBase {
     // fires update events to the toolkit for the given node and all of its children and their children
     // etc
     //
-    updateNodeAndParts(node) {
+    updateNodeAndParts(node, isRthing=false) {
         this.jsToolkit.updateNode(node);
         if (node.data.children) {
             _.each(node.data.children, (c) => {
                 let child = this.jsToolkit.getNode(c)
-                this.adjustType(node, child)
-                this.updateNodeAndParts(child);
+                this.adjustType(node, child, isRthing)
+                this.updateNodeAndParts(child, isRthing);
             });
         }
     }
@@ -133,10 +133,11 @@ class DragDropHandler extends _CanvasBase {
         }
     }
 
-    adjustType(parent, child) {
+    adjustType(parent, child, isRthing=false) {
         var depth = this.canvas.getDepth(child)
-        if(parent.data.rthing && parent.data.rthing.edgeId) {
+        if(isRthing) {
             depth += 1
+            child.data.type = this.node.getNextPartNodeType(child.data)
         }
         var newSize = this.canvas.getPartSizeAtDepth(depth)
         child.data.w = newSize;
@@ -169,12 +170,12 @@ class DragDropHandler extends _CanvasBase {
         }
 
         // find new part size
-        this.adjustType(targetNode, sourceNode)
+        this.adjustType(targetNode, sourceNode, targetNode.data.isRThing)
 
         // update target
         this.jsToolkit.updateNode(targetNode);
         // and source and its children
-        this.updateNodeAndParts(sourceNode);
+        this.updateNodeAndParts(sourceNode, targetNode.data.isRThing);
         // and any edges which may now target family to family
         this.updateEdgeTypes(sourceNode)
 
