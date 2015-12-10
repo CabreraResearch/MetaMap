@@ -24,56 +24,65 @@ class Schema extends _CanvasBase {
      */
     detachPart(source, target) {
         if (source && target) {
-            target.data.children = _.remove(target.data.children, (id) => {
-                return id != source.data.id
-            })
-            this.canvas.updateData({ node: target })
+            jsPlumb.batch(() => {
+                target.data.children = _.remove(target.data.children, (id) => {
+                    return id != source.data.id
+                })
+                this.canvas.updateData({ node: target })
 
-            let children = this.getAllChildren(source).nodes
-            _.each(children, (child) => {
-                child.type = this.node.getPrevPartNodeType(child)
-                let size = this.node.getSizeForPart(child)
-                child.h = size
-                child.w = size
-                child.family = source.data.id
-            })
-            let nodes = [source.data].concat(children)
-            source.data.type = 'idea_A'
-            source.data.h = target.data.h
-            source.data.w = target.data.w
-            source.data.parentId = ''
-            source.data.family = source.data.id
-            if (!target.data.isRThing) {
-                source.data.top = target.data.top
-                source.data.left = target.data.left+100
-            }
+                let children = this.getAllChildren(source).nodes
+                _.each(children, (child) => {
+                    child.type = this.node.getPrevPartNodeType(child)
+                    //If detaching from an R-thing, we need to go back two
+                    if(target.data.isRThing) {
+                        child.type = this.node.getPrevPartNodeType(child)
+                    }
+                    let size = this.node.getSizeForPart(child)
+                    child.h = size
+                    child.w = size
+                    child.family = source.data.id
+                })
+                let nodes = [source.data].concat(children)
+                source.data.type = 'idea_A'
+                source.data.h = this.canvas.nodeSize
+                source.data.w = this.canvas.nodeSize
+                source.data.parentId = ''
+                source.data.family = source.data.id
+                if (!target.data.isRThing) {
+                    source.data.top = target.data.top
+                    source.data.left = target.data.left+100
+                } else {
+                    source.data.top = target.data.top+150
+                    source.data.left = target.data.left
+                }
 
-            let allEdges = this.getAllEdges()
-            let nodeIds = _.map(nodes, (n) => { return n.id })
-            let edges = _.map(_.filter(allEdges, (e) => {
-                return _.contains(nodeIds, e.source) || _.contains(nodeIds, e.target)
-            }, (e) => {
-                return e.data
-            }))
-            // let onSuccess = (oldData, idMap, newData) => {
-            //     let allEdges = this.getAllEdges()
-            //     let nodeIds = _.map(nodes, (n) => { return n.id })
-            //     _.each(allEdges, (e) => {
-            //         if (_.contains(nodeIds, e.source)) {
-            //             let edge = this.jsToolkit.getEdge(e.data.id)
-            //             edge.source = this.jsToolkit.getNode(idMap[e.source])
-            //             this.jsToolkit.updateEdge(edge)
-            //         } else if (_.contains(nodeIds, e.target)) {
-            //             let edge = this.jsToolkit.getEdge(e.data.id)
-            //             edge.target = this.jsToolkit.getNode(idMap[e.target])
-            //             this.jsToolkit.updateEdge(edge)
-            //         }
-            //     })
-            // }
+                let allEdges = this.getAllEdges()
+                let nodeIds = _.map(nodes, (n) => { return n.id })
+                let edges = _.map(_.filter(allEdges, (e) => {
+                    return _.contains(nodeIds, e.source) || _.contains(nodeIds, e.target)
+                }, (e) => {
+                    return e.data
+                }))
+                // let onSuccess = (oldData, idMap, newData) => {
+                //     let allEdges = this.getAllEdges()
+                //     let nodeIds = _.map(nodes, (n) => { return n.id })
+                //     _.each(allEdges, (e) => {
+                //         if (_.contains(nodeIds, e.source)) {
+                //             let edge = this.jsToolkit.getEdge(e.data.id)
+                //             edge.source = this.jsToolkit.getNode(idMap[e.source])
+                //             this.jsToolkit.updateEdge(edge)
+                //         } else if (_.contains(nodeIds, e.target)) {
+                //             let edge = this.jsToolkit.getEdge(e.data.id)
+                //             edge.target = this.jsToolkit.getNode(idMap[e.target])
+                //             this.jsToolkit.updateEdge(edge)
+                //         }
+                //     })
+                // }
 
-            this.copyPaste.clone({ nodes: nodes, edges: edges })
-            _.each(nodes, (node) => {
-                this.delete({ node: node })
+                this.copyPaste.clone({ nodes: nodes, edges: edges })
+                _.each(nodes, (node) => {
+                    this.delete({ node: node })
+                })
             })
         }
     }

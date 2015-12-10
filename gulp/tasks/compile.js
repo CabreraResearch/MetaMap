@@ -105,7 +105,7 @@ var pushAndNotify = function(p, error, cb) {
 
 gulp.task('pushAndNotify', function(cb) {
     var p = argv.message;
-    pushAndNotify(p, error, cb)
+    pushAndNotify(p, null, cb)
 })
 
 gulp.task('release', function (cb) {

@@ -167,7 +167,7 @@ class Canvas {
         let ret = this.jsToolkit.exportData()
         _.each(ret.edges, (e) => {
             let edge = this.jsToolkit.getEdge(e.data.id)
-            if(edge.geometry) {
+            if(edge && edge.geometry) {
                 e.geometry = edge.geometry
             }
         })
