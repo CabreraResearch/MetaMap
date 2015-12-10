@@ -2,7 +2,7 @@
   "main": "dist/MetaMap.js",
   "name": "metamap",
   "title": "MetaMap",
-  "version": "0.5.39",
+  "version": "0.5.40",
   "author": {
     "email": "christopher@crlab.us",
     "name": "Christopher Froehlich"
