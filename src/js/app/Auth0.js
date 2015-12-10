@@ -29,6 +29,12 @@ class Auth0 {
             this._login = new Promise((fulfill, reject) => {
                 let showLogin = () => {
                     this.lock.show({
+                        icon: 'src/images/crl_new_logo.png',
+                        dict: {
+                          signin: {
+                              title: 'Login to MetaMap'
+                          }
+                        },
                         closable: false,
                         loginAfterSignup: true,
                         authParams: {
@@ -68,6 +74,7 @@ class Auth0 {
 
     linkAccount() {
         this.lock.show({
+            icon: 'src/images/crl_new_logo.png',
             callbackURL: location.href.replace(location.hash, ''),
             dict: {
                 signin: {

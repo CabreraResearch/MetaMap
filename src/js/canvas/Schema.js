@@ -6,49 +6,151 @@ const _CanvasBase = require('./_CanvasBase')
 const $ = require('jquery')
 const _ = require('lodash')
 
+/**
+ * @extends _CanvasBase
+ */
 class Schema extends _CanvasBase {
-
+    /**
+     * @param  {Canvas} canvas
+     */
     constructor(canvas) {
         super(canvas)
 
     }
+    /**
+     * Promote a part to an identity. Safely clones the part (and any children) to a new structure.
+     * @param  {any} source
+     * @param  {any} target
+     */
+    detachPart(source, target) {
+        if (source && target) {
+            jsPlumb.batch(() => {
+                target.data.children = _.remove(target.data.children, (id) => {
+                    return id != source.data.id
+                })
+                this.canvas.updateData({ node: target })
 
-    getDefaultMap() {
-        return {
-            nodes: [{
-                w: this.canvas.nodeSize,
-                h: this.canvas.nodeSize,
-                label: "idea",
-                type: "idea_A",
-                children: [
+                let children = this.getAllChildren(source).nodes
+                _.each(children, (child) => {
+                    child.type = this.node.getPrevPartNodeType(child)
+                    //If detaching from an R-thing, we need to go back two
+                    if(target.data.isRThing) {
+                        child.type = this.node.getPrevPartNodeType(child)
+                    }
+                    let size = this.node.getSizeForPart(child)
+                    child.h = size
+                    child.w = size
+                    child.family = source.data.id
+                })
+                let nodes = [source.data].concat(children)
+                source.data.type = 'idea_A'
+                source.data.h = this.canvas.nodeSize
+                source.data.w = this.canvas.nodeSize
+                source.data.parentId = ''
+                source.data.family = source.data.id
+                if (!target.data.isRThing) {
+                    source.data.top = target.data.top
+                    source.data.left = target.data.left+100
+                } else {
+                    source.data.top = target.data.top+150
+                    source.data.left = target.data.left
+                }
 
-                ],
-                labelPosition: [
+                let allEdges = this.getAllEdges()
+                let nodeIds = _.map(nodes, (n) => { return n.id })
+                let edges = _.map(_.filter(allEdges, (e) => {
+                    return _.contains(nodeIds, e.source) || _.contains(nodeIds, e.target)
+                }, (e) => {
+                    return e.data
+                }))
+                // let onSuccess = (oldData, idMap, newData) => {
+                //     let allEdges = this.getAllEdges()
+                //     let nodeIds = _.map(nodes, (n) => { return n.id })
+                //     _.each(allEdges, (e) => {
+                //         if (_.contains(nodeIds, e.source)) {
+                //             let edge = this.jsToolkit.getEdge(e.data.id)
+                //             edge.source = this.jsToolkit.getNode(idMap[e.source])
+                //             this.jsToolkit.updateEdge(edge)
+                //         } else if (_.contains(nodeIds, e.target)) {
+                //             let edge = this.jsToolkit.getEdge(e.data.id)
+                //             edge.target = this.jsToolkit.getNode(idMap[e.target])
+                //             this.jsToolkit.updateEdge(edge)
+                //         }
+                //     })
+                // }
 
-                ],
-                cssClass: "",
-                perspective: {
-                    has: false,
-                    edges: [
-
-                    ],
-                    class: "none"
-                },
-                left: (window.innerWidth/2) - 50,
-                top: (window.innerHeight/2) - 150,
-                id: jsPlumbUtil.uuid(),
-                family: jsPlumbUtil.uuid()
-            }
-            ],
-            edges: [
-
-            ],
-            ports: [
-
-            ]
+                this.copyPaste.clone({ nodes: nodes, edges: edges })
+                _.each(nodes, (node) => {
+                    this.delete({ node: node })
+                })
+            })
         }
     }
 
+    /**
+     * Delete an object (edge or node)
+     * @param  {any} obj
+     */
+    delete(obj) {
+        if (obj) {
+            if (obj.node) {
+                this.jsToolkit.removeNode(obj.node)
+            }
+            if (obj.edge) {
+                this.deleteEdge(obj.edge)
+            }
+        }
+    }
+    /**
+     * Delete everything in the current selection
+     * @param  {any} selected
+     */
+    deleteAll(selected) {
+        jsPlumb.batch(() => {
+            selected = selected || this.jsToolkit.getSelection()
+            try {
+                selected.eachEdge((i, edge) => {
+                    this.deleteEdge(edge)
+                });
+
+                //Recurse over all children
+                selected.eachNode((i, n) => {
+                    this.recurseDelete(n)
+                });
+                this.jsToolkit.remove(selected)
+            } catch (e) {
+                this.metaMap.error(e)
+            }
+        })
+    }
+
+
+    /**
+     * Safely delete an edge. Handles R-things and perspectives.
+     * @param  {any} edge
+     */
+    deleteEdge(edge) {
+        if (edge && edge.data) {
+            //Delete any r-things that are associated with the edges to be deleted
+            if (edge.data.rthing && edge.data.rthing.nodeId) {
+                let child = this.jsToolkit.getNode(edge.data.rthing.nodeId)
+                this.recurseDelete(child)
+            }
+            if (edge.data.perspective && edge.data.perspective.has && edge.data.perspective.nodeId) {
+                let child = this.jsToolkit.getNode(edge.data.perspective.nodeId)
+                child.data.perspective.edges = _.remove(child.data.perspective.edges, (id) => { return id != edge.data.id })
+                child.data.perspective.has = child.data.perspective.edges.length > 0
+                child.data.perspective.class = (child.data.perspective.has) ? child.data.perspective.class : 'none'
+                this.jsToolkit.updateNode(child)
+            }
+            this.jsToolkit.removeEdge(edge)
+        }
+    }
+
+    /**
+     * Safely delete an R-thing from an edge
+     * @param  {object} child
+     */
     deleteRThing(child) {
         if (child && child.data && child.data.rthing && child.data.rthing.edgeId) {
             let edge = this.jsToolkit.getEdge(child.data.rthing.edgeId)
@@ -59,19 +161,70 @@ class Schema extends _CanvasBase {
         }
     }
 
-    getAllChildren(node, ret=[]) {
+    /**
+     * For a given node, get all its children
+     * @param  {object} node
+     * @param  {object} ret
+     */
+    getAllChildren(node, ret={ids: [], nodes: []}) {
         if (node && node.data && node.data.children) {
             _.each(node.data.children, (id, i) => {
-                if (!_.contains(ret, id)) {
+                if (!_.contains(ret.ids, id)) {
                     let child = this.jsToolkit.getNode(id)
-                    ret.push(id)
-                    this.getAllChildren(child, ret)
+                    if (child) {
+                        ret.ids.push(id)
+                        ret.nodes.push(child.data)
+                        this.getAllChildren(child, ret)
+                    } else {
+                        //TODO: should probably delete the reference
+                    }
                 }
             })
         }
         return ret
     }
 
+    /**
+     * Get all edges
+     */
+    getAllEdges() {
+        let data = this.canvas.exportData()
+        return data.edges
+    }
+
+    /**
+     * Get an map with a single node to start with
+     */
+    getDefaultMap() {
+        let id = jsPlumbUtil.uuid()
+        return {
+            nodes: [{
+                w: this.canvas.nodeSize,
+                h: this.canvas.nodeSize,
+                label: "idea",
+                type: "idea_A",
+                children: [],
+                labelPosition: [],
+                cssClass: "",
+                perspective: {
+                    has: false,
+                    edges: [],
+                    class: "none"
+                },
+                left: (window.innerWidth/2) - 50,
+                top: (window.innerHeight/2) - 150,
+                id: id,
+                family: id
+            }],
+            edges: [],
+            ports: []
+        }
+    }
+    /**
+     * For any given node, return the root
+     * @param  {any} node
+     * @param  {any} map
+     */
     getRoot(node, map) {
         let root = node
         let parent = _.find(map.nodes, (n) => { return node.id == node.parentId })
@@ -80,7 +233,12 @@ class Schema extends _CanvasBase {
         }
         return root
     }
-
+    /**
+     * Recurse over the hierarchy, executing a callback for each child
+     * @param  {any} node
+     * @param  {any} map
+     * @param  {any} callback
+     */
     recurse(node, map, callback) {
         if (node && map && callback) {
             if (node && node.children) {
@@ -97,6 +255,10 @@ class Schema extends _CanvasBase {
         }
     }
 
+    /**
+     * Recursively delete a node and all of its children
+     * @param  {any} node
+     */
     recurseDelete(node) {
         if (node) {
             if (node.data && node.data.children) {
@@ -119,50 +281,18 @@ class Schema extends _CanvasBase {
                 }
             }
             _.each(node.getAllEdges(), (edge) => {
-                this.deleteEdge(edge)
+                this.delete({ edge: edge })
             })
             //Delete children before parents
-            this.jsToolkit.removeNode(node)
+            this.delete({ node: node })
         }
     }
 
-    deleteEdge(edge) {
-        if (edge && edge.data) {
-            //Delete any r-things that are associated with the edges to be deleted
-            if (edge.data.rthing && edge.data.rthing.nodeId) {
-                let child = this.jsToolkit.getNode(edge.data.rthing.nodeId)
-                this.recurseDelete(child)
-            }
-            if (edge.data.perspective && edge.data.perspective.has && edge.data.perspective.nodeId) {
-                let child = this.jsToolkit.getNode(edge.data.perspective.nodeId)
-                child.data.perspective.edges = _.remove(child.data.perspective.edges, (id) => { return id != edge.data.id })
-                child.data.perspective.has = child.data.perspective.edges.length > 0
-                child.data.perspective.class = (child.data.perspective.has) ? child.data.perspective.class : 'none'
-                this.jsToolkit.updateNode(child)
-            }
-            this.jsToolkit.removeEdge(edge)
-        }
-    }
 
-    deleteAll(selected) {
-        jsPlumb.batch(() => {
-            selected = selected || this.jsToolkit.getSelection()
-            try {
-                selected.eachEdge((i, edge) => {
-                    this.deleteEdge(edge)
-                });
-
-                //Recurse over all children
-                selected.eachNode((i, n) => {
-                    this.recurseDelete(n)
-                });
-                this.jsToolkit.remove(selected)
-            } catch (e) {
-                this.metaMap.error(e)
-            }
-        })
-    }
-
+    /**
+     * Update a node or an edge
+     * @param  {any} obj={}
+     */
     updateData(obj={}) {
         if (obj.edge) {
             this.jsToolkit.updateEdge(obj.edge)
@@ -171,8 +301,11 @@ class Schema extends _CanvasBase {
             this.jsToolkit.updateNode(obj.node)
         }
     }
-
-    //Ensure that all changes to the data structure get populated on all objects
+    /**
+     * Ensure that all changes to the data structure get populated on all objects.
+     * Whenever the data model is updated, checks should be added here to guarantee backwards compatibility
+     * @param  {any} map
+     */
     upgrade(map) {
         if (map) {
             _.each(map.edges, (edge) => {

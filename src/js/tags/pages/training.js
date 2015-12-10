@@ -4,7 +4,7 @@ const _ = require('lodash')
 const VideoPlayer = require('../../tools/VideoPlayer')
 const AllTags = require('../mixins/all-tags')
 const CONSTANTS = require('../../constants/constants')
-require('../components/quick-sidebar')
+require('../components/cortex')
 require('../actions/likert')
 
 const html = `
@@ -62,7 +62,7 @@ module.exports = riot.tag(CONSTANTS.TAGS.TRAINING, html, function(opts) {
             this.config = o
             if (!this.cortex) {
                 this.cortex = this.getCortex(this.config.id, this)
-                this.sidebar = this.sidebar || riot.mount(this.quick_sidebar_container, 'quick-sidebar')[0]
+                this.sidebar = this.sidebar || riot.mount(this.quick_sidebar_container, 'cortex')[0]
                 this.cortex.getData().then(() => {
                     this.update()
                     this.sidebar.update()

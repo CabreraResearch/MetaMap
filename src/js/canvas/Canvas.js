@@ -74,10 +74,14 @@ class Canvas {
     }
 
     getDepth(node, d = 0) {
-        if (node.data.parentId == null) return d;
-        else {
-            return this.getDepth(this.jsToolkit.getNode(node.data.parentId), ++d);
+        let ret = d
+        if (node) {
+            if (node.data.parentId == null) ret = d;
+            else {
+                ret = this.getDepth(this.jsToolkit.getNode(node.data.parentId), ++d);
+            }
         }
+        return ret
     }
 
     _init(opts) {
@@ -104,12 +108,13 @@ class Canvas {
 
     onAutoSave() {
         if (this.doAutoSave && this.permissions.canEdit()) {
-            let data = this.exportData()
+            this._data = this._exportData()
             let postData = {
-                data: data,
+                data: this._data,
                 changed_by: {
                     userId: this.metaMap.User.userId,
-                    userName: this.metaMap.User.fullName
+                    userName: this.metaMap.User.fullName,
+                    userKey: this.metaMap.User.userKey
                 }
             }
             this.metaMap.MetaFire.setDataInTransaction(postData, `maps/data/${this.mapId}`).catch((err) => {
@@ -120,18 +125,31 @@ class Canvas {
         }
     }
 
-    loadData(map = this.map) {
+    reloadData(map) {
+        this._data = map
+        let old = this.doAutoSave
+        this.doAutoSave = false
+        this.jsToolkit.clear()
         this.jsToolkit.load({
             type: 'json',
             data: map
         })
+        this.doAutoSave = old
+    }
+
+    loadData(map = this.map) {
+        this._data = map
+        let old = this.doAutoSave
+        this.doAutoSave = false
+        this.jsToolkit.load({
+            type: 'json',
+            data: map
+        })
+        this.doAutoSave = old
     }
 
     // load the data.
     loadUpgradeData(map = this.map) {
-        const toolkit = this.jsToolkit
-        const renderer = this.jsRenderer
-
         if ((!map || !map.data) && this.doAutoSave && !this.isReadOnly) {
             map = map || {}
             map.data = this.schema.getDefaultMap()
@@ -140,20 +158,26 @@ class Canvas {
         if (map && map.data) {
             this.schema.upgrade(map.data)
             this.loadData(map.data)
-            let state = localStorage.getItem(`jtk-state-metaMapCanvas_${this.mapId || this.mapName}`)
-            renderer.State.restore(state)
+            //let state = localStorage.getItem(`jtk-state)
+            this.jsRenderer.State.restore(`metaMapCanvas_${this.mapId || this.mapName}`)
         }
     }
 
-    exportData(limitToSelected=false) {
+    _exportData() {
         let ret = this.jsToolkit.exportData()
         _.each(ret.edges, (e) => {
             let edge = this.jsToolkit.getEdge(e.data.id)
-            if(edge.geometry) {
+            if(edge && edge.geometry) {
                 e.geometry = edge.geometry
             }
         })
+        return ret
+    }
+
+    exportData(limitToSelected = false) {
+        let ret = this._data
         if (limitToSelected && this._selection) {
+            ret = _.clone(ret)
             //getSelection rarely has the actual selection; use our own state
             // let selected = this.jsToolkit.getSelection()
             ret.edges = _.remove(ret.edges, (edge) => {
@@ -178,7 +202,7 @@ class Canvas {
             if (obj.node) {
                 //push selected nodes onto the state
                 this._selection.nodeIds.push(obj.node.id)
-                let children = this.schema.getAllChildren(obj.node)
+                let children = this.schema.getAllChildren(obj.node).ids
                 this._selection.nodeIds = _.union(this._selection.nodeIds, children)
                 this.jsToolkit.addToSelection(obj.node);
             }

@@ -1,7 +1,9 @@
 const StackTrace = require('stacktrace-js')
 
 class _CanvasBase {
-
+    /**
+     * @param  {Canvas} canvas
+     */
     constructor(canvas) {
         this.canvas = canvas
         this.stackTrace = StackTrace
@@ -44,6 +46,10 @@ class _CanvasBase {
 
     get schema() {
         return this.canvas.schema
+    }
+
+    get copyPaste() {
+        return this.canvas.copyPaste
     }
 
     init() {

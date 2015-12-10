@@ -25,7 +25,7 @@ const html = `
                 <form role="form">
                     <div class="row">
                         <div id="share_typeahead" class="col-md-8">
-                            <input style="height: 35px;" id="share_input" class="typeahead form-control" type="text" placeholder="Enter names or email addresses..." />
+                            <input style="height: 35px; width: 370px;" id="share_input" class="typeahead form-control" type="text" placeholder="Enter names or email addresses..." />
                         </div>
                         <div class="col-md-4">
                             <div class="row">

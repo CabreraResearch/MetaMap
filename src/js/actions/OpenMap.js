@@ -1,7 +1,7 @@
 const riot = require('riot');
 const ActionBase = require('./ActionBase.js');
 const CONSTANTS = require('../constants/constants');
-const metaCanvas = require('../tags/canvas/meta-canvas.js');
+const metaCanvas = require('../tags/pages/canvas');
 
 class OpenMap extends ActionBase {
     constructor(...params) {

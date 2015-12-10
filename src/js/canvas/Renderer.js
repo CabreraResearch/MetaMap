@@ -7,6 +7,9 @@ const _CanvasBase = require('./_CanvasBase')
 
 class Renderer extends _CanvasBase {
 
+    /**
+     * @param  {any} canvas
+     */
     constructor(canvas) {
         super(canvas)
 
@@ -22,6 +25,8 @@ class Renderer extends _CanvasBase {
 			return renderer;
 		});
 
+        let zoomToFit = this.canvas.map && this.canvas.map.data && (this.canvas.map.data.nodes.length >= 20 || (this.canvas.map.data.edges && this.canvas.map.data.edges.length >= 10))
+
         // configure the renderer
         renderer = this.renderer = toolkit.render({
             container: this.opts.attachTo,
@@ -31,21 +36,18 @@ class Renderer extends _CanvasBase {
             saveStateOnExit:true,              // setting these has no effect; investigate later
             saveStateOnDrag:true,              //
             stateHandle: 'metaMapCanvas_' + (canvas.mapId || canvas.mapName),
-            saveState: function (...o) {
-                debugger
-                window.alert(`I'm a LIE. I will never be called.`)
-            },
             layout:{
                 // custom layout for this app. simple extension of the spring layout.
                 type:'metamap'
             },
-            zoomToFit:true,
+            zoomToFit: zoomToFit,
+            zoomToFitIfNecessary: true,
             view: {
                 nodes: this.node.getView(),
                 edges: this.edge.getView()
             },
             events: this.canvas.events.getRenderEvents(),
-            elementsDroppable:true,
+            elementsDroppable:!canvas.isReadOnly,
 			assignPosse:dragDropHandler.getPosseAssigner(),
             dragOptions:dragDropHandler.getDragOptions(),
 			dropOptions:dragDropHandler.getDropOptions()

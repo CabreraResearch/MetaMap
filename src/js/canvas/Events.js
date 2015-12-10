@@ -33,9 +33,7 @@ class Events extends _CanvasBase {
 
                 }
             }
-            let edgeEvents = this.edge.getClickEvents()
             let nodeEvents = this.node.getClickEvents()
-            _.extend(events, edgeEvents)
             _.extend(events, nodeEvents)
 
             this.__clickHandlers = events
@@ -47,20 +45,20 @@ class Events extends _CanvasBase {
         let segment = array[0]
 
         //Using an array allows multiple, separate objects to be bound to the same segment logic
-        _.each(array, (selector) => {
-            let _el = el.querySelectorAll('.' + selector)
-            jsPlumb.on(_el, 'click', (e) => {
-                if (this._clickHandlers['click'][segment]) {
-                    this._clickHandlers['click'][segment](el, node)
-                }
-            })
-            jsPlumb.on(_el, 'dblclick', _.throttle((e) => {
-                this.canvas.clearSelection({ e: e })
-                if (this._clickHandlers['dblclick'][segment]) {
-                    this._clickHandlers['dblclick'][segment](el, node)
-                }
-            }, 300))
+        let selector = '.' + array.join(', .')
+        let _el = el.querySelectorAll(selector)
+        jsPlumb.on(_el, 'click', (e) => {
+            if (this._clickHandlers['click'][segment]) {
+                this._clickHandlers['click'][segment](el, node)
+            }
         })
+        jsPlumb.on(_el, 'dblclick', (e) => {
+            this.canvas.clearSelection({ e: e })
+            if (this._clickHandlers['dblclick'][segment]) {
+                this._clickHandlers['dblclick'][segment](el, node)
+            }
+        })
+
     }
 
     registerHandlers(params) {
@@ -101,21 +99,12 @@ class Events extends _CanvasBase {
             canvasDblClick: (e) => {
                 this.node.createNode(e)
             },
-            contextmenu: (node, port, el, e) => {
-                debugger
-            },
             nodeAdded: (params) => {
                 this.registerHandlers(params)
                 this.node.onAdded(params)
             },
             edgeAdded: (obj) => {
                 this.edge.onAdded(obj)
-            },
-            onComplete: () => {
-
-            },
-            relayout: () => {
-                // not necessary now, as we handle all this in mouseover events on edges.
             }
         }
     }

@@ -1,6 +1,6 @@
 const TAGS = {
     ABOUT: 'about',
-    META_CANVAS: 'meta-canvas',
+    META_CANVAS: 'canvas',
     HOME: 'home',
     TERMS: 'terms',
     MY_MAPS: 'my-maps',
@@ -9,7 +9,7 @@ const TAGS = {
     TRAINING: 'training',
     ALL_COURSES: 'all-courses',
     MY_COURSES: 'my-courses',
-    SIDEBAR: 'quick-sidebar',
+    SIDEBAR: 'cortex',
     EDIT_LABEL: 'edit-label'
 };
 

@@ -3,7 +3,6 @@ const _ = require('lodash')
 
 const Canvas = require('../../canvas/Canvas')
 const CONSTANTS = require('../../constants/constants')
-require('./node')
 const Permissions = require('../../app/Permissions')
 const AllTags = require('../mixins/all-tags')
 
@@ -15,7 +14,7 @@ const html = `
 </div>
 `
 
-module.exports = riot.tag('meta-canvas', html, function(opts) {
+module.exports = riot.tag('canvas', html, function(opts) {
 
     this.mixin(AllTags)
 
@@ -38,6 +37,11 @@ module.exports = riot.tag('meta-canvas', html, function(opts) {
                 })
                 this.update()
             })
+        } else {
+            //If someone else (another user or the same user in a different browser) edits the map, reload it
+            if(map.changed_by && (map.changed_by.userId != this.MetaMap.User.userId || map.changed_by.userKey != this.MetaMap.User.userKey )) {
+                this.canvas.reloadData(map.data)
+            }
         }
         window.NProgress.done()
     }
@@ -66,6 +70,10 @@ module.exports = riot.tag('meta-canvas', html, function(opts) {
 
     this.on('update', () => {
         this.correctHeight()
+    })
+
+    this.on('unmount', () => {
+        this.MetaMap.MetaFire.off(`maps/data/${opts.id}`, this.buildCanvas)
     })
 
     $(window).resize(() => {

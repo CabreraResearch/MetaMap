@@ -8,6 +8,9 @@ const LEFT = "left"
 const RIGHT = "right"
 const BOTH = "left-right"
 
+/**
+ * @extends _CanvasBase
+ */
 class Edge extends _CanvasBase {
 
     constructor(canvas) {
