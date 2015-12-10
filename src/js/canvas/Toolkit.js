@@ -10,10 +10,7 @@ class Toolkit extends _CanvasBase {
         let config = {
             saveStateOnExit:true,              // serialize state on page unload automatically. defaults to false.
             saveStateOnDrag:true,              // serialize state after each drag. defaults to false.
-            stateHandle: 'metaMapCanvas_' + (canvas.mapId || canvas.mapName),
-            saveState: function (...o) {
-                debugger
-            }
+            stateHandle: 'metaMapCanvas_' + (canvas.mapId || canvas.mapName)
         }
         let edgeEvents = this.edge.getToolkitEvents()
         _.extend(config, edgeEvents)
@@ -25,7 +22,6 @@ class Toolkit extends _CanvasBase {
     bindEvents() {
         this.toolkit.bind("dataUpdated", () => {
             this.canvas.update()
-            //this.canvas.dumpEdgeCounts();
             this.canvas.jsRenderer.State.save()
             this.canvas.onAutoSave()
         })

@@ -108,16 +108,15 @@ class Canvas {
 
     onAutoSave() {
         if (this.doAutoSave && this.permissions.canEdit()) {
-            let data = this.exportData()
+            this._data = this._exportData()
             let postData = {
-                data: data,
+                data: this._data,
                 changed_by: {
                     userId: this.metaMap.User.userId,
                     userName: this.metaMap.User.fullName,
                     userKey: this.metaMap.User.userKey
                 }
             }
-            this.jsRenderer.State.save()
             this.metaMap.MetaFire.setDataInTransaction(postData, `maps/data/${this.mapId}`).catch((err) => {
                 window.alert("Something went wrong. Your map is no longer be saved. Please refresh your browser and try again.")
                 this.metaMap.error(err)
@@ -127,6 +126,7 @@ class Canvas {
     }
 
     reloadData(map) {
+        this._data = map
         let old = this.doAutoSave
         this.doAutoSave = false
         this.jsToolkit.clear()
@@ -138,6 +138,7 @@ class Canvas {
     }
 
     loadData(map = this.map) {
+        this._data = map
         let old = this.doAutoSave
         this.doAutoSave = false
         this.jsToolkit.load({
@@ -162,7 +163,7 @@ class Canvas {
         }
     }
 
-    exportData(limitToSelected=false) {
+    _exportData() {
         let ret = this.jsToolkit.exportData()
         _.each(ret.edges, (e) => {
             let edge = this.jsToolkit.getEdge(e.data.id)
@@ -170,7 +171,13 @@ class Canvas {
                 e.geometry = edge.geometry
             }
         })
+        return ret
+    }
+
+    exportData(limitToSelected = false) {
+        let ret = this._data
         if (limitToSelected && this._selection) {
+            ret = _.clone(ret)
             //getSelection rarely has the actual selection; use our own state
             // let selected = this.jsToolkit.getSelection()
             ret.edges = _.remove(ret.edges, (edge) => {

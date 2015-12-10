@@ -10,6 +10,9 @@ const $ = require('jquery');
 
 const _CanvasBase = require('./_CanvasBase')
 
+/**
+ * @extends _CanvasBase
+ */
 class DragDropHandler extends _CanvasBase {
 
     constructor(canvas, toolkit, getRenderer) {

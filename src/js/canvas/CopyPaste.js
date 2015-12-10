@@ -6,8 +6,13 @@ const _CanvasBase = require('./_CanvasBase')
 const $ = require('jquery')
 const _ = require('lodash')
 
+/**
+ * @extends _CanvasBase
+ */
 class CopyPaste extends _CanvasBase {
-
+    /**
+     * @param  {Canvas} canvas
+     */
     constructor(canvas) {
         super(canvas)
 
@@ -24,13 +29,21 @@ class CopyPaste extends _CanvasBase {
             }
         })
     }
-
+    /**
+     * Copy the current selection
+     * @param  {any} event
+     */
     copy(event) {
         this._copyData = null
         this.data = this.canvas.exportData(true)
     }
 
-    clone(data) {
+    /**
+     * Take a collection of nodes and edges and create an exact copy of them
+     * @param  {any} data
+     * @param  {function} edgeCallback
+     */
+    clone(data, callback) {
         let newData = {
             nodes: [],
             edges: []
@@ -81,7 +94,7 @@ class CopyPaste extends _CanvasBase {
                 if (ret.children.length > 0) {
                     ret.parts.class = 'open'
                 }
-                
+
                 //update perspective edges
                 _.each(node.perspective.edges, (edgeId) => {
                     ret.perspective.edges.push(idMap[edgeId])
@@ -114,8 +127,8 @@ class CopyPaste extends _CanvasBase {
                         rthing: {},
                         perspective: {}
                     },
-                    source: idMap[edge.source],
-                    target: idMap[edge.target]
+                    source: idMap[edge.source] || edge.source,
+                    target: idMap[edge.target] || edge.target
                 }
 
                 if (edge.data.rthing && edge.data.rthing.nodeId) {
@@ -143,13 +156,28 @@ class CopyPaste extends _CanvasBase {
                 if (newNodes[e.source] && newNodes[e.target]) {
                     let edge = this.jsToolkit.addEdge(e)
                     this.canvas.addToSelection({ edge: edge })
+                } else {
+                    let target = this.jsToolkit.getNode(e.target)
+                    let source = this.jsToolkit.getNode(e.source)
+                    if (source && target) {
+                        let edge = this.jsToolkit.addEdge(e)
+                        this.canvas.addToSelection({ edge: edge })
+                    }
                 }
             })
+
+            if (callback) {
+                callback(data, idMap, newData)
+            }
+
             this.canvas.refresh()
         }
         return newData
     }
-
+    /**
+     * Clone the current selection and insert it as a copy into the map
+     * @param  {any} event
+     */
     paste(event) {
         if (this.data) {
 

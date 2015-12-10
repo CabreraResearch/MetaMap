@@ -6,8 +6,13 @@ const CONSTANTS = require('../constants/constants')
 const _CanvasBase = require('./_CanvasBase')
 require('../tags/dialogs/editName')
 
+/**
+ * @extends _CanvasBase
+ */
 class Dialog extends _CanvasBase {
-
+    /**
+     * @param  {Canvas} canvas
+     */
     constructor(canvas) {
         super(canvas)
     }
