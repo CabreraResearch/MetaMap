@@ -123,8 +123,8 @@ class DragDropHandler extends _CanvasBase {
             if (edge.data.type != 'relationshipPart' && edge.source.data.family == edge.target.data.family) {
 
                 //edge.data.type = 'relationshipPart'
-                //this.canvas.updateData({ edge: edge })
                 this.jsToolkit.setType(edge, "relationshipPart")
+                this.canvas.updateData({ edge: edge })
             }
         })
         if (node.data.children > 0) {
