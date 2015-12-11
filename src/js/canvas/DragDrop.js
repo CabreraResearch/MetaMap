@@ -151,38 +151,15 @@ class DragDropHandler extends _CanvasBase {
     addAsChild(sourceNode, targetNode, event) {
         jsPlumbUtil.consume(event);
 
-        this.schema.attachPart(sourceNode, targetNode)
-//         // remove from current parent, if exists
-//         if (sourceNode.data.parentId) {
-//             var sourceParent = this.jsToolkit.getNode(sourceNode.data.parentId);
-//             _.remove(sourceParent.data.children, (c) => {
-//                 return c === sourceNode.id;
-//             });
-//             this.jsToolkit.updateNode(sourceParent)
-//         }
-//
-//
-//         // add to new parent, change parent ref in child
-//         targetNode.data.children = targetNode.data.children || [];
-//         targetNode.data.children.push(sourceNode.id);
-//
-//         let children = this.schema.getAllChildren(sourceNode).nodes
-//
-//         sourceNode.data.parentId = targetNode.id;
-//
-//         if (targetNode.data.parts.class == 'none') {
-//             targetNode.data.parts.class = 'open'
-//         }
-//
-//         // find new part size
-//         this.adjustType(targetNode, sourceNode, targetNode.data.isRThing)
-//
-//         // update target
-//         this.jsToolkit.updateNode(targetNode);
-//         // and source and its children
-//         this.updateNodeAndParts(sourceNode, targetNode.data.isRThing);
-//         // and any edges which may now target family to family
-//         this.updateEdgeTypes(sourceNode)
+        let selection = this.canvas.getSelection()
+        if(selection.nodeIds.length <= 1) {
+            this.schema.attachPart(sourceNode, targetNode)
+        } else {
+            _.each(selection.nodeIds, (id) => {
+                let node = this.jsToolkit.getNode(id)
+                this.schema.attachPart(node, targetNode)
+            })
+        }
 
         return true;
     }
