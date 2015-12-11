@@ -3887,6 +3887,10 @@
     var JUTIL = jsPlumbUtil;
     var UTIL = jsPlumbToolkitUtil;
 
+    var DEFAULT_TYPE_PROPERTY = "type";
+    var DEFAULT_TYPE = "default";
+    var DEFAULT_ID_PROPERTY = "id";
+
     var // This is the default function the jsPlumb Toolkit will use to derive an ID for some piece of JSON representing a node.  It looks
     //for an 'id' member in the JSON.
         _defaultGetId = function (data) {
@@ -3927,9 +3931,15 @@
      * @param {Function} [params.idFunction] Optional function to use to extract an id from a Node's data. The default
      * is to retrieve the `id` property.
      * @param {Function} [params.typeFunction] Optional function to use to extract a type identifier from a Node's data.
-     * The default is to retrieve the `type` property.
+     * The default is to retrieve the property defined by `typeProperty`.
+     * @param {Function} [params.typeProperty="type"] Optional name of the property that identifies a Node's type from its data.
+     * The default is `type`.
      * @param {Function} [params.edgeIdFunction] Optional function to use to extract an id from an Edge's data. The
      * default is to retrieve the `id` property.
+     * @param {Function} [params.edgeTypeFunction] Optional function to use to extract a type identifier from an Edge's data.
+     * The default is to retrieve the property defined by `edgeTypeProperty`.
+     * @param {Function} [params.edgeTypeProperty="type"] Optional name of the property that identifies an Edge's type from its data.
+     * The default is `type`.
      * @param {Function} [params.portIdFunction] Optional function to use to extract an id from a Port's data. The
      * default is to retrieve the `id` property.
      * @param {Function} [params.portTypeFunction] Optional function to use to extract a type identifier from a Port's
@@ -3983,11 +3993,14 @@
         params = params || {};
 
         var _idFunction = params.idFunction || _defaultGetId,
-            _typeFunction = params.typeFunction || _defaultGetType,
+            _typeProperty = params.typeProperty || DEFAULT_TYPE_PROPERTY,
+            _edgeTypeProperty = params.edgeTypeProperty || DEFAULT_TYPE_PROPERTY,
+            _portTypeProperty = params.portTypeProperty || DEFAULT_TYPE_PROPERTY,
+            _typeFunction = params.typeFunction || function(d) { return d[_typeProperty] || DEFAULT_TYPE; },
             _edgeIdFunction = params.edgeIdFunction || _idFunction,
-            _edgeTypeFunction = params.edgeTypeFunction || _typeFunction,
+            _edgeTypeFunction = params.edgeTypeFunction || function(d) { return d[_edgeTypeProperty] || DEFAULT_TYPE; },
             _portIdFunction = params.portIdFunction || _idFunction,
-            _portTypeFunction = params.portTypeFunction || _typeFunction,
+            _portTypeFunction = params.portTypeFunction || function(d) { return d[_portTypeProperty] || DEFAULT_TYPE; },
             _portExtractor = params.portExtractor,
             _currentInstance = this,
             _suspendGraph = false,
@@ -4322,11 +4335,12 @@
          * Gets the type of the Node represented by the given JS object. We first try for a return value from the current typeFunction,
          * but if that returns nothing we just return 'default'.
          * @method getNodeType
-         * @param {Object} node Object from which to derive type.
+         * @param {Object} nodeData  Node's data. Note: this is NOT a Node object, it is the backing data. You can use
+         * `getType` to get the type for some Toolkit object.
          * @return {String} Either the object's type, or `default`.
          */
-        this.getNodeType = function (node) {
-            return _typeFunction(node) || "default";
+        this.getNodeType = function (nodeData) {
+            return _typeFunction(nodeData) || "default";
         };
 
         /**
@@ -4343,10 +4357,12 @@
         /**
          * Gets the type of the Edge represented by the given JS object.
          * @method getEdgeType
+         * @param {Object} edgeData Edge's data. Note: this is NOT an Edge object, it is the backing data. You can use
+         * `getType` to get the type for some Toolkit object.
          * @return {String} Either the Edge's type, if set, or "default".
          */
-        this.getEdgeType = function (edge) {
-            return _edgeTypeFunction(edge) || "default";
+        this.getEdgeType = function (edgeData) {
+            return _edgeTypeFunction(edgeData) || "default";
         };
 
         /**
@@ -4370,13 +4386,35 @@
 
         /**
          * Gets the type of the given Object. This is not a type such as `Node`, `Port` or `Edge` - this is the type of the
-         * object as defined by your system to identify types; these are the types used to lookup objects in the model.
+         * object as defined by your system to identify types; these are the types used to lookup objects in the view.
          * @param obj
          * @returns {String} The object's type.
          */
         this.getType = function(obj) {
             var m = obj.objectType === "Node" ? _typeFunction : obj.objectType === "Port" ? _portTypeFunction : _edgeTypeFunction;
             return m(obj.data) || "default";
+        };
+
+        /**
+         * Sets the type of the given object. This will do two things:
+         * 1. update the appropriate propprty in the object's data to this new value. You can set what properties define
+         * types, but by default each of Node, Edge and Port use `type` as the property that indicates their type.
+         * 2. attempt to apply a type definition for the new type, if one is found. NB this only applies to Edge objects,
+         * as at version 1.1.0. Support for Nodes (including switching node templates) is a possible future enhancement.
+         * @param obj
+         * @param type
+         */
+        this.setType = function(obj, type) {
+            var currentType = this.getType(obj);
+            if (currentType === type) return;
+            var m = obj.objectType === "Node" ? _typeProperty: obj.objectType === "Port" ? _portTypeProperty : _edgeTypeProperty,
+                evt = obj.objectType.charAt(0).toLowerCase() + obj.objectType.substring(1) + "TypeChanged";
+            obj.data[m] = type;
+            this.fire(evt, {
+                obj:obj,
+                previousType:currentType,
+                newType:type
+            });
         };
 
         /**
@@ -5790,6 +5828,7 @@
         dragend:"dragend",
         edgeAdded: "edgeAdded",
         edgeRemoved: "edgeRemoved",
+        edgeTypeChanged:"edgeTypeChanged",
         elementDragged: "elementDragged",
         elementAdded: "elementAdded",
         elementRemoved: "elementRemoved",
@@ -5809,11 +5848,13 @@
         nodeMoveEnd: "nodeMoveEnd",
         nodeRemoved: "nodeRemoved",
         edgeTarget: "edgeTarget",
+        nodeTypeChanged:"nodeTypeChanged",
         edgeSource: "edgeSource",
         objectRepainted: "objectRepainted",
         pan: "pan",
         portAdded: "portAdded",
         portRemoved: "portRemoved",
+        portTypeChanged:"portTypeChanged",
         redraw:"redraw",
         start: "start",
         startOverlayAnimation:"startOverlayAnimation",
@@ -8146,6 +8187,7 @@
                 _e.nodeRemoved, _e.nodeRendered,
                 _e.nodeMoveStart, _e.nodeMoveEnd, _e.portAdded,
                 _e.portRemoved, _e.edgeAdded, _e.edgeRemoved,
+                _e.edgeTypeChanged, _e.nodeTypeChanged, _e.portTypeChanged,
                 _e.dataLoadEnd, _e.anchorChanged, _e.objectRepainted,
                 _e.modeChanged,
                 _e.pan, _e.zoom, _e.relayout, _e.click, _e.tap, _e.stateRestored, _e.startOverlayAnimation, _e.endOverlayAnimation ],
@@ -8556,6 +8598,22 @@
                         _fireEdgeRemoved(connection, edge);
                         _jsPlumb.detach({connection: connMap[edge.getId()], fireEvent: false});
                         delete connMap[edge.getId()];
+                    }
+                }
+            });
+
+            _toolkit.bind(_e.edgeTypeChanged, function(data) {
+                if (!_ignoreToolkitEvents && data.source !== self) {
+                    var edge = data.obj;
+                    var connection = connMap[edge.getId()];
+                    if (connection) {
+                        var def = view.getEdgeDefinition(data.newType);
+                        if (def && def.ignore === true) return;
+                        connection.setType(data.newType); // this will set anchors etc. paint styles. endpoints.
+                        // but NOT connector.
+                        if (def.connector) {
+                            connection.setConnector(def.connector);
+                        }
                     }
                 }
             });
