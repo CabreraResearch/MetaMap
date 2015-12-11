@@ -169,6 +169,7 @@ class Events extends _CanvasBase {
             event.preventDefault()
         })
 
+
         jsPlumb.on(document, 'keydown', (event) => {
             if (event.ctrlKey && event.keyCode == 17) {
                 if (this.canvas.mode != 'select') {

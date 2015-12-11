@@ -151,6 +151,9 @@ class Canvas {
         let ret = this._data
         if (limitToSelected && this._selection) {
             ret = _.clone(ret)
+
+            //In case of a lasso, the selection needs to be updated
+            this.getSelection()
             //getSelection rarely has the actual selection; use our own state
             // let selected = this.jsToolkit.getSelection()
             ret.edges = _.remove(ret.edges, (edge) => {
@@ -187,6 +190,22 @@ class Canvas {
         return s;
     }
 
+    getSelection() {
+        let sel = this.jsToolkit.getSelection()
+        sel.eachNode((i,node) => {
+            if(!_.contains(this._selection.nodeIds, node.id)) {
+                this.addToSelection({node: node})
+            }
+        })
+        sel.eachEdge((i,edge) => {
+            if(!_.contains(this._selection.edgeIds, edge.getId())) {
+                this.addToSelection({edge: edge})
+            }
+        })
+
+        return this._selection
+    }
+
     loadData(map = this.map) {
         this._data = map
         let old = this.doAutoSave
@@ -208,14 +227,12 @@ class Canvas {
         if (map && map.data) {
             this.schema.upgrade(map.data)
             this.loadData(map.data)
-            //let state = localStorage.getItem(`jtk-state)
-            this.jsRenderer.State.restore(`metaMapCanvas_${this.mapId || this.mapName}`)
         }
     }
 
     onAutoSave() {
+        this._data = this._exportData()
         if (this.doAutoSave && this.permissions.canEdit()) {
-            this._data = this._exportData()
             let postData = {
                 data: this._data,
                 changed_by: {
@@ -225,8 +242,12 @@ class Canvas {
                 }
             }
             this.metaMap.MetaFire.setDataInTransaction(postData, `maps/data/${this.mapId}`).catch((err) => {
-                window.alert("Something went wrong. Your map is no longer be saved. Please refresh your browser and try again.")
-                this.metaMap.error(err)
+                //Only show 1 warning
+                if(this.doAutoSave) {
+                    window.alert("Something went wrong. Your map is no longer be saved. Please refresh your browser and try again.")
+                    this.metaMap.error(err)
+                }
+                this.doAutoSave = false
             })
             this.metaMap.Integrations.sendEvent('autosave', { mapId: this.mapId, mapName: this.mapName, map: postData })
         }

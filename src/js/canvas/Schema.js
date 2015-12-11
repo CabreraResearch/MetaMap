@@ -17,6 +17,73 @@ class Schema extends _CanvasBase {
         super(canvas)
 
     }
+
+    /**
+     * Demote an identity to a part. Safely clones the identity (and any children) to a new structure.
+     * @param  {any} source
+     * @param  {any} target
+     */
+    attachPart(source, target) {
+        if (source && target) {
+            jsPlumb.batch(() => {
+                // remove from current parent, if exists
+                if (source.data.parentId) {
+                    var sourceParent = this.jsToolkit.getNode(source.data.parentId);
+                    _.remove(sourceParent.data.children, (c) => {
+                        return c === source.id;
+                    });
+                    this.jsToolkit.updateNode(sourceParent)
+                }
+
+                let children = this.getAllChildren(source).nodes
+                _.each(children, (child) => {
+                    child.type = this.node.getNextPartNodeType(child)
+                    //If attaching to an R-thing, we need to go back two
+                    if(target.data.isRThing) {
+                        child.type = this.node.getNextPartNodeType(child)
+                    }
+                    let size = this.node.getSizeForPart(child)
+                    child.h = size
+                    child.w = size
+                    child.family = target.data.id
+                    child.left = ''
+                    child.top = ''
+                    child.partAlign = target.data.partAlign || 'left'
+                })
+                let nodes = [source.data].concat(children)
+                source.data.type = this.node.getNextPartNodeType(target.data)
+                let size = this.node.getSizeForPart(source.data)
+                source.data.h = this.canvas.nodeSize
+                source.data.w = this.canvas.nodeSize
+                source.data.parentId = target.data.id
+                source.data.family = target.data.family
+                source.data.w = size
+                source.data.h = size
+                source.data.left = ''
+                source.data.top = ''
+                source.data.partAlign = target.data.partAlign || 'left'
+
+                let allEdges = this.getAllEdges()
+                let nodeIds = _.map(nodes, (n) => { return n.id })
+                let edges = _.map(_.filter(allEdges, (e) => {
+                    return _.contains(nodeIds, e.source) || _.contains(nodeIds, e.target)
+                }, (e) => {
+                    return e.data
+                }))
+
+                let parts = this.copyPaste.clone({ nodes: nodes, edges: edges })
+                this.deleteNode(source)
+                let root = this.getRoot(parts.nodes[0], this.canvas.exportData())
+
+                target.data.children.push(root.id)
+                this.canvas.updateData({ node: target })
+
+                let node = this.jsToolkit.getNode(root.id)
+                this.updateEdgeTypes(node)
+            })
+        }
+    }
+
     /**
      * Promote a part to an identity. Safely clones the part (and any children) to a new structure.
      * @param  {any} source
@@ -30,6 +97,7 @@ class Schema extends _CanvasBase {
                 })
                 this.canvas.updateData({ node: target })
 
+                source.children = _.compact(source.children)
                 let children = this.getAllChildren(source).nodes
                 _.each(children, (child) => {
                     child.type = this.node.getPrevPartNodeType(child)
@@ -40,7 +108,11 @@ class Schema extends _CanvasBase {
                     let size = this.node.getSizeForPart(child)
                     child.h = size
                     child.w = size
+                    child.left = ''
+                    child.top = ''
                     child.family = source.data.id
+                    child.labelPosition = []
+                    child.children = _.compact(child.children)
                 })
                 let nodes = [source.data].concat(children)
                 source.data.type = 'idea_A'
@@ -48,6 +120,8 @@ class Schema extends _CanvasBase {
                 source.data.w = this.canvas.nodeSize
                 source.data.parentId = ''
                 source.data.family = source.data.id
+                source.data.labelPosition = []
+
                 if (!target.data.isRThing) {
                     source.data.top = target.data.top
                     source.data.left = target.data.left+100
@@ -63,21 +137,6 @@ class Schema extends _CanvasBase {
                 }, (e) => {
                     return e.data
                 }))
-                // let onSuccess = (oldData, idMap, newData) => {
-                //     let allEdges = this.getAllEdges()
-                //     let nodeIds = _.map(nodes, (n) => { return n.id })
-                //     _.each(allEdges, (e) => {
-                //         if (_.contains(nodeIds, e.source)) {
-                //             let edge = this.jsToolkit.getEdge(e.data.id)
-                //             edge.source = this.jsToolkit.getNode(idMap[e.source])
-                //             this.jsToolkit.updateEdge(edge)
-                //         } else if (_.contains(nodeIds, e.target)) {
-                //             let edge = this.jsToolkit.getEdge(e.data.id)
-                //             edge.target = this.jsToolkit.getNode(idMap[e.target])
-                //             this.jsToolkit.updateEdge(edge)
-                //         }
-                //     })
-                // }
 
                 this.copyPaste.clone({ nodes: nodes, edges: edges })
                 _.each(nodes, (node) => {
@@ -144,6 +203,17 @@ class Schema extends _CanvasBase {
                 this.jsToolkit.updateNode(child)
             }
             this.jsToolkit.removeEdge(edge)
+        }
+    }
+
+
+    /**
+     * Safely delete a node and it's descendants
+     * @param  {any} node
+     */
+    deleteNode(node) {
+        if(node && node.data) {
+            this.recurseDelete(node)
         }
     }
 
@@ -267,8 +337,10 @@ class Schema extends _CanvasBase {
                 _.each(children, (id, i) => {
                     let child = this.jsToolkit.getNode(id)
                     //delete parentId before recursing for performance
-                    delete child.data.parentId
-                    this.recurseDelete(child)
+                    if(child) {
+                        delete child.data.parentId
+                        this.recurseDelete(child)
+                    }
                 })
             }
             this.deleteRThing(node)
@@ -301,6 +373,25 @@ class Schema extends _CanvasBase {
             this.jsToolkit.updateNode(obj.node)
         }
     }
+
+    updateEdgeTypes(node) {
+        if(node) {
+            let edges = node.getAllEdges()
+            _.each(edges, (edge) => {
+                if (edge.data.type != 'relationshipPart' && edge.source.data.family == edge.target.data.family) {
+                    this.jsToolkit.setType(edge, "relationshipPart")
+                    this.canvas.updateData({ edge: edge })
+                }
+            })
+            if (node.data.children > 0) {
+                _.each(node.data.children, (c) => {
+                    let child = this.jsToolkit.getNode(c)
+                    this.updateEdgeTypes(child)
+                })
+            }
+        }
+    }
+
     /**
      * Ensure that all changes to the data structure get populated on all objects.
      * Whenever the data model is updated, checks should be added here to guarantee backwards compatibility
@@ -321,14 +412,14 @@ class Schema extends _CanvasBase {
                 if (edge.data.visible !== true || edge.data.visible !== false) {
                     edge.data.visible = true
                 }
-
+                delete edge.data.geometry
             })
             _.each(map.nodes, (node) => {
                 node.w = node.w || this.canvas.nodeSize
                 node.h = node.h || this.canvas.nodeSize
                 node.label = node.label || 'idea'
                 node.type = node.type || 'idea'
-                node.children = node.children || []
+                node.children = _.compact(node.children || [])
                 node.labelPosition = node.labelPosition || []
                 node.cssClass = node.cssClass || ''
                 node.partAlign = node.partAlign || 'left'
@@ -339,7 +430,7 @@ class Schema extends _CanvasBase {
                     edges: [],
                     class: 'none'
                 }
-                node.perspective.edges = node.perspective.edges || []
+                node.perspective.edges = _.compact(node.perspective.edges || [])
                 node.isRThing = true == (node.rthing && null != node.rthing.edgeId)
 
                 if (!node.family) {

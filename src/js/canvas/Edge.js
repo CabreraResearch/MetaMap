@@ -106,7 +106,7 @@ class Edge extends _CanvasBase {
                 parent: 'relationshipParent',
                 connector: ['StateMachine', {
                     margin: 0.00001, //This seems to be the most precision that has any effect. The Edge is as close as it's going to get.
-                    curviness: 40
+                    curviness: -100
                 }]
             },
             relationshipParent: {
@@ -183,7 +183,7 @@ class Edge extends _CanvasBase {
 
                             // SP: for now, an edge click puts it into edit mode. we have various options
                             // with this
-                            this.jsRenderer.startEditing(obj.edge, { mode:"dual" })
+                            //this.jsRenderer.startEditing(obj.edge, { mode:"dual" })
 
                             this.showRDot(obj)
                         }

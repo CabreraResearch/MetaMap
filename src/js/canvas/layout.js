@@ -16,8 +16,8 @@ const _ = require('lodash')
 ;(function() {
 
 	function childNodeComparator(c1, c2) {
-		if (c2.data.order == null) return -1;
-		if (c1.data.order == null) return 1;
+		if (!c1 || c2.data.order == null) return -1;
+		if (!c1 || c1.data.order == null) return 1;
 		return c1.data.order < c2.data.order ? -1 : 1;
 	}
 

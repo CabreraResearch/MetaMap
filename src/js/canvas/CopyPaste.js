@@ -86,14 +86,17 @@ class CopyPaste extends _CanvasBase {
 
                     //update parent keys
                     if (node.parentId) {
-                        ret.parentId = idMap[node.parentId]
+                        ret.parentId = idMap[node.parentId] || node.parentId
                     }
 
                     //update child keys
                     _.each(node.children, (childId) => {
-                        ret.children.push(idMap[childId])
+                        if(childId && idMap[childId]) {
+                            ret.children.push(idMap[childId])
+                        }
                     })
 
+                    ret.children = _.compact(ret.children)
                     if (ret.children.length > 0) {
                         ret.parts.class = 'open'
                     }
@@ -105,9 +108,11 @@ class CopyPaste extends _CanvasBase {
 
                     //update perspective edges
                     _.each(node.perspective.edges, (edgeId) => {
-                        ret.perspective.edges.push(idMap[edgeId])
-                        ret.perspective.has = node.perspective.has
-                        ret.perspective.class = node.perspective.class
+                        if(edgeId && idMap[edgeId]) {
+                            ret.perspective.edges.push(idMap[edgeId])
+                            ret.perspective.has = node.perspective.has
+                            ret.perspective.class = node.perspective.class
+                        }
                     })
 
                     if (node.left) {
