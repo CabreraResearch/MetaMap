@@ -1,4 +1,3 @@
-///<reference path="./typings/jsplumb/jsPlumb.d.ts" />
 const jsPlumb = window.jsPlumb;
 const jsPlumbToolkit = window.jsPlumbToolkit;
 const $ = require('jquery')
@@ -62,25 +61,14 @@ class Canvas {
         })
     }
 
-    /**
-    *
-    */
-    getPartSizeAtDepth(depth) {
-        var s = this.nodeSize, ps = this.partSize;
-        for (var i = 1; i <= depth; i++) {
-            s *= ps;
-        }
-        return s;
-    }
-
-    getDepth(node, d = 0) {
-        let ret = d
-        if (node) {
-            if (node.data.parentId == null) ret = d;
-            else {
-                ret = this.getDepth(this.jsToolkit.getNode(node.data.parentId), ++d);
+    _exportData() {
+        let ret = this.jsToolkit.exportData()
+        _.each(ret.edges, (e) => {
+            let edge = this.jsToolkit.getEdge(e.data.id)
+            if(edge && edge.geometry) {
+                e.geometry = edge.geometry
             }
-        }
+        })
         return ret
     }
 
@@ -96,100 +84,21 @@ class Canvas {
         }
     }
 
-    reInit(opts) {
-        this._init(opts)
-    }
-
     //Convenience getters
+    get arrowSize() {
+        return this.config.shapes.arrow.size || 5
+    }
 
     get dragDropHandler() {
         return this.rndrr.dragDropHandler
     }
 
-    onAutoSave() {
-        if (this.doAutoSave && this.permissions.canEdit()) {
-            this._data = this._exportData()
-            let postData = {
-                data: this._data,
-                changed_by: {
-                    userId: this.metaMap.User.userId,
-                    userName: this.metaMap.User.fullName,
-                    userKey: this.metaMap.User.userKey
-                }
-            }
-            this.metaMap.MetaFire.setDataInTransaction(postData, `maps/data/${this.mapId}`).catch((err) => {
-                window.alert("Something went wrong. Your map is no longer be saved. Please refresh your browser and try again.")
-                this.metaMap.error(err)
-            })
-            this.metaMap.Integrations.sendEvent('autosave', { mapId: this.mapId, mapName: this.mapName, map: postData })
-        }
+    get nodeSize() {
+        return this.config.shapes.node.size || 50
     }
 
-    reloadData(map) {
-        this._data = map
-        let old = this.doAutoSave
-        this.doAutoSave = false
-        this.jsToolkit.clear()
-        this.jsToolkit.load({
-            type: 'json',
-            data: map
-        })
-        this.doAutoSave = old
-    }
-
-    loadData(map = this.map) {
-        this._data = map
-        let old = this.doAutoSave
-        this.doAutoSave = false
-        this.jsToolkit.load({
-            type: 'json',
-            data: map
-        })
-        this.doAutoSave = old
-    }
-
-    // load the data.
-    loadUpgradeData(map = this.map) {
-        if ((!map || !map.data) && this.doAutoSave && !this.isReadOnly) {
-            map = map || {}
-            map.data = this.schema.getDefaultMap()
-            this.map = map
-        }
-        if (map && map.data) {
-            this.schema.upgrade(map.data)
-            this.loadData(map.data)
-            //let state = localStorage.getItem(`jtk-state)
-            this.jsRenderer.State.restore(`metaMapCanvas_${this.mapId || this.mapName}`)
-        }
-    }
-
-    _exportData() {
-        let ret = this.jsToolkit.exportData()
-        _.each(ret.edges, (e) => {
-            let edge = this.jsToolkit.getEdge(e.data.id)
-            if(edge && edge.geometry) {
-                e.geometry = edge.geometry
-            }
-        })
-        return ret
-    }
-
-    exportData(limitToSelected = false) {
-        let ret = this._data
-        if (limitToSelected && this._selection) {
-            ret = _.clone(ret)
-            //getSelection rarely has the actual selection; use our own state
-            // let selected = this.jsToolkit.getSelection()
-            ret.edges = _.remove(ret.edges, (edge) => {
-                let ret = _.contains(this._selection.edgeIds, edge.data.id)
-                return ret
-            })
-            ret.nodes = _.remove(ret.nodes, (node) => {
-                let ret = _.contains(this._selection.nodeIds, node.id)
-                return ret
-            })
-        }
-        return ret
+    get partSize() {
+        return this.config.shapes.part.size || 0.667
     }
 
     addToSelection(obj) {
@@ -231,10 +140,125 @@ class Canvas {
         this.addToSelection(obj)
     }
 
+    // --------------------------------------------------------------------------------------------------------
+    // a couple of random examples of the filter function, allowing you to query your data
+    // --------------------------------------------------------------------------------------------------------
+    countEdgesOfType(type) {
+        return this.jsToolkit.filter(function (obj) { return obj.objectType == "Edge" && obj.data.type === type; }).getEdgeCount()
+    }
+
+    exportData(limitToSelected = false) {
+        let ret = this._data
+        if (limitToSelected && this._selection) {
+            ret = _.clone(ret)
+            //getSelection rarely has the actual selection; use our own state
+            // let selected = this.jsToolkit.getSelection()
+            ret.edges = _.remove(ret.edges, (edge) => {
+                let ret = _.contains(this._selection.edgeIds, edge.data.id)
+                return ret
+            })
+            ret.nodes = _.remove(ret.nodes, (node) => {
+                let ret = _.contains(this._selection.nodeIds, node.id)
+                return ret
+            })
+        }
+        return ret
+    }
+
+    getDepth(node, d = 0) {
+        let ret = d
+        if (node) {
+            if (node.data.parentId == null) ret = d;
+            else {
+                ret = this.getDepth(this.jsToolkit.getNode(node.data.parentId), ++d);
+            }
+        }
+        return ret
+    }
+
+    /**
+    *
+    */
+    getPartSizeAtDepth(depth) {
+        var s = this.nodeSize, ps = this.partSize;
+        for (var i = 1; i <= depth; i++) {
+            s *= ps;
+        }
+        return s;
+    }
+
+    loadData(map = this.map) {
+        this._data = map
+        let old = this.doAutoSave
+        this.doAutoSave = false
+        this.jsToolkit.load({
+            type: 'json',
+            data: map
+        })
+        this.doAutoSave = old
+    }
+
+    // load the data.
+    loadUpgradeData(map = this.map) {
+        if ((!map || !map.data) && this.doAutoSave && !this.isReadOnly) {
+            map = map || {}
+            map.data = this.schema.getDefaultMap()
+            this.map = map
+        }
+        if (map && map.data) {
+            this.schema.upgrade(map.data)
+            this.loadData(map.data)
+            //let state = localStorage.getItem(`jtk-state)
+            this.jsRenderer.State.restore(`metaMapCanvas_${this.mapId || this.mapName}`)
+        }
+    }
+
+    onAutoSave() {
+        if (this.doAutoSave && this.permissions.canEdit()) {
+            this._data = this._exportData()
+            let postData = {
+                data: this._data,
+                changed_by: {
+                    userId: this.metaMap.User.userId,
+                    userName: this.metaMap.User.fullName,
+                    userKey: this.metaMap.User.userKey
+                }
+            }
+            this.metaMap.MetaFire.setDataInTransaction(postData, `maps/data/${this.mapId}`).catch((err) => {
+                window.alert("Something went wrong. Your map is no longer be saved. Please refresh your browser and try again.")
+                this.metaMap.error(err)
+            })
+            this.metaMap.Integrations.sendEvent('autosave', { mapId: this.mapId, mapName: this.mapName, map: postData })
+        }
+    }
+
+    reInit(opts) {
+        this._init(opts)
+    }
+
+    reloadData(map) {
+        this._data = map
+        let old = this.doAutoSave
+        this.doAutoSave = false
+        this.jsToolkit.clear()
+        this.jsToolkit.load({
+            type: 'json',
+            data: map
+        })
+        this.doAutoSave = old
+    }
+
     refresh() {
         //I don't think these should be required, but they seem to be
         this.jsRenderer.relayout()
         this.jsRenderer.refresh()
+    }
+
+    update() {
+        this.tk.update()
+        this.events.update()
+        this.rndrr.update()
+        this.dialog.update()
     }
 
     updateData(obj, doRefresh = true) {
@@ -246,37 +270,6 @@ class Canvas {
             this.jsToolkit.fire('dataUpdated')
         }
         this.update()
-    }
-
-    update() {
-        this.tk.update()
-        this.events.update()
-        this.rndrr.update()
-        this.dialog.update()
-    }
-
-    get partSize() {
-        return this.config.shapes.part.size || 0.667
-    }
-
-    get nodeSize() {
-        return this.config.shapes.node.size || 50
-    }
-
-    get arrowSize() {
-        return this.config.shapes.arrow.size || 5
-    }
-
-    // --------------------------------------------------------------------------------------------------------
-    // a couple of random examples of the filter function, allowing you to query your data
-    // --------------------------------------------------------------------------------------------------------
-    countEdgesOfType(type) {
-        return this.jsToolkit.filter(function (obj) { return obj.objectType == "Edge" && obj.data.type === type; }).getEdgeCount()
-    }
-
-    dumpEdgeCounts() {
-        console.log("There are " + this.countEdgesOfType("relationship") + " relationship edges");
-        console.log("There are " + this.countEdgesOfType("perspective") + " perspective edges");
     }
 
 }
