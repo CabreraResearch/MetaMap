@@ -152,7 +152,7 @@ class Events extends _CanvasBase {
                         if (info.els) {
                             _.each(info.els, (array) => {
                                 _.each(array, (el) => {
-                                    if (el.innerHTML) {
+                                    if (el && el.innerHTML) {
                                         $(el).find('.node.border').each(function () {
                                             this.setAttribute('class', 'node-selected')
                                         })

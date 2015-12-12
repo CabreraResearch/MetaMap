@@ -225,7 +225,7 @@ class Schema extends _CanvasBase {
         if (child && child.data && child.data.rthing && child.data.rthing.edgeId) {
             let edge = this.jsToolkit.getEdge(child.data.rthing.edgeId)
             if(edge) {
-                edge.data.rthing = null
+                edge.data.rthing = {}
                 this.jsToolkit.updateEdge(edge)
             }
         }
@@ -378,9 +378,16 @@ class Schema extends _CanvasBase {
         if(node) {
             let edges = node.getAllEdges()
             _.each(edges, (edge) => {
-                if (edge.data.type != 'relationshipPart' && edge.source.data.family == edge.target.data.family) {
-                    this.jsToolkit.setType(edge, "relationshipPart")
-                    this.canvas.updateData({ edge: edge })
+                if (edge.source.data.family == edge.target.data.family) {
+                    if(edge.data.type != 'relationshipPart')  {
+                        this.jsToolkit.setType(edge, "relationshipPart")
+                        this.canvas.updateData({ edge: edge })
+                    }
+                } else {
+                    if(edge.data.type != 'relationship')  {
+                        this.jsToolkit.setType(edge, "relationship")
+                        this.canvas.updateData({ edge: edge })
+                    }
                 }
             })
             if (node.data.children > 0) {
@@ -400,7 +407,7 @@ class Schema extends _CanvasBase {
     upgrade(map) {
         if (map) {
             _.each(map.edges, (edge) => {
-                if (edge.data.type == 'relationship') {
+                if (edge.data.type == 'relationship' || edge.data.type == 'relationshipPart') {
                     edge.data.direction = edge.data.direction || 'none'
                     edge.data.leftSize = edge.data.leftSize || 0
                     edge.data.rightSize = edge.data.rightSize || 0

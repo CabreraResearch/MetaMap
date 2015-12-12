@@ -41,9 +41,9 @@ class CopyPaste extends _CanvasBase {
     /**
      * Take a collection of nodes and edges and create an exact copy of them
      * @param  {any} data
-     * @param  {function} edgeCallback
+     * @param  {object} callbacks
      */
-    clone(data, callback) {
+    clone(data, opts={ nodeCallback: null, edgeCallback: null, preprocess: null, postprocess: null }) {
         let newData = {
             nodes: [],
             edges: []
@@ -55,11 +55,15 @@ class CopyPaste extends _CanvasBase {
                 //1. Match each existing node id to a new UUID
                 _.each(data.nodes, (node) => {
                     idMap[node.id] = jsPlumbUtil.uuid()
+                    if(opts.nodeCallback) opts.nodeCallback(node, idMap, data)
                 })
                 //2. Match each existing edge id to a new UUID
                 _.each(data.edges, (edge) => {
                     idMap[edge.data.id] = jsPlumbUtil.uuid()
+                    if(opts.edgeCallback) opts.edgeCallback(edge, idMap, data)
                 })
+
+                if(opts.preprocess) opts.preprocess(idMap, data)
 
                 //3: Map the selected nodes to new objects
                 newData.nodes = _.map(data.nodes, (node) => {
@@ -102,8 +106,9 @@ class CopyPaste extends _CanvasBase {
                     }
 
                     if(ret.isRThing) {
-                        ret.rthing.edgeId = idMap[ret.rthing.edgeId]
-                        ret.rthing.eDot = idMap[ret.rthing.edgeId]+'_rthing'
+                        let id = idMap[ret.rthing.edgeId] || node.rthing.edgeId
+                        ret.rthing.edgeId = id
+                        ret.rthing.rDot = id+'_rthing'
                     }
 
                     //update perspective edges
@@ -145,15 +150,16 @@ class CopyPaste extends _CanvasBase {
                     }
 
                     if (edge.data.rthing && edge.data.rthing.nodeId) {
+                        let id = idMap[edge.data.rthing.nodeId] || edge.data.rthing.nodeId
                         ret.data.rthing = {
-                            nodeId: idMap[edge.data.rthing.nodeId],
-                            rDot: ret.data.id + '_rthing'
+                            nodeId: id,
+                            rDot: id + '_rthing'
                         }
                     }
 
                     if (edge.data.perspective && edge.data.perspective.nodeId) {
                         ret.data.perspective = {
-                            nodeId: idMap[edge.data.perspective.nodeId]
+                            nodeId: idMap[edge.data.perspective.nodeId] || edge.data.perspective.nodeId
                         }
                     }
                     return ret
@@ -179,14 +185,15 @@ class CopyPaste extends _CanvasBase {
                     }
                 })
 
-                if (callback) {
-                    callback(data, idMap, newData)
+                if (opts.postprocess) {
+                    opts.postprocess(data, idMap, newData)
                 }
             });
             this.canvas.refresh()
         }
         return newData
     }
+
     /**
      * Clone the current selection and insert it as a copy into the map
      * @param  {any} event
@@ -197,6 +204,54 @@ class CopyPaste extends _CanvasBase {
             //It's possible to paste multiple times from the same copy. In case we do this, operate on the last mutation instead of the original
             //To prevent writing over object references, this could include _.clone(obj, true) in the assignment
             let data = (this._copyData) ? this._copyData : this.data
+
+            let callbacks = {
+                nodeCallback: (node, idMap, data) => {
+                    let isRthing = node.isRThing
+                    if(isRthing) {
+                        let edge = _.find(data.edges, (e) => { return e.id == node.rthing.edgeId })
+                        if(!edge) {
+                            let e = this.jsToolkit.getEdge(node.rthing.edgeId)
+                            edge = {
+                                data: e.data,
+                                source: e.source.data.id,
+                                target: e.target.data.id
+                            }
+                            if(e) data.edges.push(edge)
+                        }
+                        let target, source
+                        if(!idMap[edge.target]) {
+                            target = this.jsToolkit.getNode(edge.target)
+                        }
+                        if(!idMap[edge.source]) {
+                            source = this.jsToolkit.getNode(edge.source)
+                        }
+                        if(target && source) {
+                            data.nodes.push(target)
+                            data.nodes.push(source)
+                        }
+                    }
+                },
+                edgeCallback: (edge, idMap, data) => {
+                    if(edge.rthing && edge.rthing.nodeId) {
+                        if(!idMap[edge.rthing.nodeId]) {
+                            let node = this.jsToolkit.getNode(edge.rthing.nodeId)
+                            if(node) {
+                                callbacks.nodeCallback(node, idMap, data)
+                                data.nodes.push(node.data)
+                                idMap[node.id] = jsPlumbUtil.uuid()
+                                let children = this.schema.getAllChildren(node).nodes
+                                _.each(children, (c) => {
+                                    if(!_.any(data.nodes), (n) => { return n.id == c.id }) {
+                                        data.nodes.push(c)
+                                        idMap[c.id] = jsPlumbUtil.uuid()
+                                    }
+                                })
+                            }
+                        }
+                    }
+                }
+            }
 
             let newData = this.clone(data)
 

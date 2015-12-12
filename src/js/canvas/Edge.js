@@ -128,7 +128,17 @@ class Edge extends _CanvasBase {
                         create: (component) => {
                             let id = ''
                             if (component.edge) {
-                                id = `${component.edge.data.id}_rthing`
+                                id = component.edge.data.rthing.nodeId
+                            }
+                            else if(component.getData) {
+                                let rthing = component.getData().rthing
+                                if(rthing) {
+                                    id = rthing.nodeId
+                                }
+                            }
+
+                            if(id) {
+                                id = `${id}_rthing`
                                 let data = component.getData()
                                 if (!data.nodeId && component.edge) {
                                     this.relationshipOverlays.push(id)
