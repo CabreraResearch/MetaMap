@@ -148,7 +148,7 @@ class Canvas {
     }
 
     exportData(limitToSelected = false) {
-        let ret = this._data
+        let ret = this._exportData()
         if (limitToSelected && this._selection) {
             ret = _.clone(ret)
 

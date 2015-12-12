@@ -67,26 +67,17 @@ class CopyPaste extends _CanvasBase {
 
                 //3: Map the selected nodes to new objects
                 newData.nodes = _.map(data.nodes, (node) => {
-                    let ret = {
-                        children: [],
-                        cssClass: node.cssClass,
-                        h: node.h,
-                        id: idMap[node.id],
-                        label: node.label,
-                        labelPosition: [],
-                        order: node.order || 0,
-                        partAlign: node.partAlign,
-                        isRThing: node.isRThing,
-                        rthing: node.rthing || {},
-                        perspective: { edges: [], class: 'none', has: false },
-                        suspendLayout: node.suspendLayout || false,
-                        family: node.family,
-                        type: node.type,
-                        w: node.w,
-                        parts: {
-                            class: 'none'
-                        }
-                    }
+                    let ret = _.clone(node, true)
+                    ret.children = []
+                    ret.left = ''
+                    ret.top = ''
+                    ret.id = idMap[node.id]
+                    ret.labelPosition = []
+                    ret.order = ret.order || 0
+                    ret.rthing = ret.rthing || {}
+                    ret.perspective = { edges: [], class: 'none', has: false },
+                    ret.suspendLayout = ret.suspendLayout || false,
+                    ret.parts = { class: 'none' }
 
                     //update parent keys
                     if (node.parentId) {
@@ -112,14 +103,15 @@ class CopyPaste extends _CanvasBase {
                     }
 
                     //update perspective edges
-                    _.each(node.perspective.edges, (edgeId) => {
-                        if(edgeId && idMap[edgeId]) {
-                            ret.perspective.edges.push(idMap[edgeId])
-                            ret.perspective.has = node.perspective.has
-                            ret.perspective.class = node.perspective.class
-                        }
-                    })
-
+                    if(node.perspective) {
+                        _.each(node.perspective.edges, (edgeId) => {
+                            if(edgeId && idMap[edgeId]) {
+                                ret.perspective.edges.push(idMap[edgeId])
+                                ret.perspective.has = node.perspective.has
+                                ret.perspective.class = node.perspective.class
+                            }
+                        })
+                    }
                     if (node.left) {
                         //position the new node just to the right of the copied node
                         ret.left = node.left + 200
@@ -212,23 +204,27 @@ class CopyPaste extends _CanvasBase {
                         let edge = _.find(data.edges, (e) => { return e.id == node.rthing.edgeId })
                         if(!edge) {
                             let e = this.jsToolkit.getEdge(node.rthing.edgeId)
-                            edge = {
-                                data: e.data,
-                                source: e.source.data.id,
-                                target: e.target.data.id
+                            if(e) {
+                                edge = {
+                                    data: e.data,
+                                    source: e.source.data.id,
+                                    target: e.target.data.id
+                                }
+                                data.edges.push(edge)
                             }
-                            if(e) data.edges.push(edge)
                         }
-                        let target, source
-                        if(!idMap[edge.target]) {
-                            target = this.jsToolkit.getNode(edge.target)
-                        }
-                        if(!idMap[edge.source]) {
-                            source = this.jsToolkit.getNode(edge.source)
-                        }
-                        if(target && source) {
-                            data.nodes.push(target)
-                            data.nodes.push(source)
+                        if(edge) {
+                            let target, source
+                            if(!idMap[edge.target]) {
+                                target = this.jsToolkit.getNode(edge.target)
+                            }
+                            if(!idMap[edge.source]) {
+                                source = this.jsToolkit.getNode(edge.source)
+                            }
+                            if(target && source) {
+                                data.nodes.push(target.data)
+                                data.nodes.push(source.data)
+                            }
                         }
                     }
                 },
@@ -253,7 +249,7 @@ class CopyPaste extends _CanvasBase {
                 }
             }
 
-            let newData = this.clone(data)
+            let newData = this.clone(data, callbacks)
 
             this._copyData = newData
         }
