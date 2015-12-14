@@ -161,9 +161,6 @@ class Node extends _CanvasBase {
                     data.left = node.data.left + 150
                     var newNode = this.jsToolkit.addNode(data)
                     let type = 'relationship'
-                    if (node.data.family == newNode.data.family) {
-                        type = 'relationshipPart'
-                    }
                     let edge = this.jsToolkit.connect({source:node, target:newNode, data:{
                         type: type,
                         direction: 'none',

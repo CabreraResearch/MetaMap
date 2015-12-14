@@ -102,7 +102,6 @@ class Schema extends _CanvasBase {
                 this.canvas.updateData({ node: target })
 
                 let node = this.jsToolkit.getNode(root.id)
-                this.updateEdgeTypes(node)
             })
         }
     }
@@ -161,7 +160,7 @@ class Schema extends _CanvasBase {
                     return e.data
                 }))
 
-                this.copyPaste.clone({ nodes: nodes, edges: edges })
+                let newData = this.copyPaste.clone({ nodes: nodes, edges: edges })
                 _.each(nodes, (node) => {
                     this.delete({ node: node })
                 })
@@ -400,31 +399,6 @@ class Schema extends _CanvasBase {
         }
     }
 
-    updateEdgeTypes(node) {
-        if(node) {
-            let edges = node.getAllEdges()
-            _.each(edges, (edge) => {
-                if (edge.source.data.family == edge.target.data.family) {
-                    if(edge.data.type != 'relationshipPart')  {
-                        this.jsToolkit.setType(edge, "relationshipPart")
-                        this.canvas.updateData({ edge: edge })
-                    }
-                } else {
-                    if(edge.data.type != 'relationship')  {
-                        this.jsToolkit.setType(edge, "relationship")
-                        this.canvas.updateData({ edge: edge })
-                    }
-                }
-            })
-            if (node.data.children > 0) {
-                _.each(node.data.children, (c) => {
-                    let child = this.jsToolkit.getNode(c)
-                    this.updateEdgeTypes(child)
-                })
-            }
-        }
-    }
-
     /**
      * Ensure that all changes to the data structure get populated on all objects.
      * Whenever the data model is updated, checks should be added here to guarantee backwards compatibility
@@ -434,6 +408,7 @@ class Schema extends _CanvasBase {
         if (map) {
             _.each(map.edges, (edge) => {
                 if (edge.data.type == 'relationship' || edge.data.type == 'relationshipPart') {
+                    edge.data.type = 'relationship'
                     edge.data.direction = edge.data.direction || 'none'
                     edge.data.leftSize = edge.data.leftSize || 0
                     edge.data.rightSize = edge.data.rightSize || 0

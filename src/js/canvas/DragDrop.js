@@ -117,22 +117,6 @@ class DragDropHandler extends _CanvasBase {
         }
     }
 
-    updateEdgeTypes(node) {
-        let edges = node.getAllEdges()
-        _.each(edges, (edge) => {
-            if (edge.data.type != 'relationshipPart' && edge.source.data.family == edge.target.data.family) {
-                this.jsToolkit.setType(edge, "relationshipPart")
-                this.canvas.updateData({ edge: edge })
-            }
-        })
-        if (node.data.children > 0) {
-            _.each(node.data.children, (c) => {
-                let child = this.jsToolkit.getNode(c)
-                this.updateEdgeTypes(child)
-            })
-        }
-    }
-
     adjustType(parent, child, isRthing=false) {
         var depth = this.canvas.getDepth(child)
         if(isRthing) {
@@ -233,24 +217,30 @@ class DragDropHandler extends _CanvasBase {
                 return outcome;
             },
             over: (params) => {
-                // let drag = this.jsToolkit.getObjectInfo(params.drag.el).obj
-                // let drop = this.jsToolkit.getObjectInfo(params.drop.el).obj
-                // if(drag.data.family == drop.data.family) {
-                //     $(params.drop.el).removeClass('jsplumb-drag-hover')
-                //     console.log('removed class')
-                // } else {
-                //     console.log('class not removed')
-                // }
+                let drag = this.jsToolkit.getObjectInfo(params.drag.el).obj
+                let drop = this.jsToolkit.getObjectInfo(params.drop.el).obj
+                if(drag.data.family == drop.data.family) {
+                    if(!drop.data.parentId) {
+                        $(params.drop.el).addClass('jsplumb-drag-hover-detach')
+                    } else {
+                        $(params.drop.el).addClass('jsplumb-drag-hover-none')
+                    }
+                } else {
+                    $(params.drop.el).addClass('jsplumb-drag-hover-attach')
+                }
             },
             out: (params) => {
-                // let drag = this.jsToolkit.getObjectInfo(params.drag.el).obj
-                // let drop = this.jsToolkit.getObjectInfo(params.drop.el).obj
-                // if(drag.data.family == drop.data.family) {
-                //     $(params.drop.el).removeClass('jsplumb-drag-hover')
-                //     console.log('removed class')
-                // } else {
-                //     console.log('class not removed')
-                // }
+                let drag = this.jsToolkit.getObjectInfo(params.drag.el).obj
+                let drop = this.jsToolkit.getObjectInfo(params.drop.el).obj
+                if(drag.data.family == drop.data.family) {
+                    if (!drop.data.parentId) {
+                        $(params.drop.el).removeClass('jsplumb-drag-hover-detach')
+                    } else {
+                        $(params.drop.el).removeClass('jsplumb-drag-hover-none')
+                    }
+                } else {
+                    $(params.drop.el).removeClass('jsplumb-drag-hover-attach')
+                }
             }
         };
     }
