@@ -372,6 +372,9 @@ class Schema extends _CanvasBase {
                 let parent = this.jsToolkit.getNode(node.data.parentId)
                 if (parent) {
                     parent.data.children = _.remove(parent.data.children, (id) => { return id != node.data.id })
+                    if (parent.data.children.length == 0) {
+                        parent.data.parts.class = 'none'
+                    }
                     this.jsToolkit.updateNode(parent)
                 }
             }
@@ -455,6 +458,9 @@ class Schema extends _CanvasBase {
                 node.partAlign = node.partAlign || 'left'
                 node.suspendLayout = node.suspendLayout || false
                 node.parts = node.parts || { class: 'none' }
+                if (node.children.length == 0) {
+                    node.parts.class = 'none'
+                }
                 node.perspective = node.perspective || {
                     has: false,
                     edges: [],
