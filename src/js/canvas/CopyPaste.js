@@ -223,8 +223,10 @@ class CopyPaste extends _CanvasBase {
                             if(!idMap[edge.source]) {
                                 source = this.jsToolkit.getNode(edge.source)
                             }
-                            if(target && source) {
+                            if ((target || idMap[edge.target]) && (source || idMap[edge.source])) {
                                 data.edges.push(edge)
+                            }
+                            if(target && source) {
                                 idMap[target.data.id] = jsPlumbUtil.uuid()
                                 data.nodes.push(target.data)
                                 idMap[source.data.id] = jsPlumbUtil.uuid()

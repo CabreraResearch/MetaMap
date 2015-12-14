@@ -127,7 +127,7 @@ class Edge extends _CanvasBase {
                     ['Custom', {
                         create: (component) => {
                             let id = ''
-                            if (component.edge) {
+                            if (component.edge && component.edge.data.rthing) {
                                 id = component.edge.data.rthing.nodeId
                             }
                             else if(component.getData) {
