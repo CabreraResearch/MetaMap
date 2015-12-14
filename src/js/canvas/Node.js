@@ -102,37 +102,44 @@ class Node extends _CanvasBase {
                     newNode.left = node.data.left
                     this.jsToolkit.addNode(newNode)
                 },
-                green: _.throttle((el, node) => {
-                    var newWidth = node.data.w * this.canvas.partSize
-                    var newHeight = node.data.h * this.canvas.partSize
+                green: (el, node) => {
+                    if(node.data.type != 'idea_E') {
+                        var newWidth = node.data.w * this.canvas.partSize
+                        var newHeight = node.data.h * this.canvas.partSize
 
-                    node.data.children = node.data.children || []
-                    var newLabel = 'Part'
+                        node.data.children = node.data.children || []
+                        var newLabel = 'Part'
 
-                    let type = this.getNextPartNodeType(node.data)
-                    let nodeData = this.getNewNode({
-                        parentId:node.id,
-                        w:newWidth,
-                        h:newHeight,
-                        label: newLabel,
-                        order: node.data.children.length,
-                        partAlign: node.data.partAlign || 'left',
-                        type: type,
-                        family: node.data.family
-                    })
-                    if(node.data.isRThing && node.data.children.length == 0) {
-                        nodeData.partAlign = 'left'
-                        node.data.partAlign = 'left'
+                        let type = this.getNextPartNodeType(node.data)
+                        let nodeData = this.getNewNode({
+                            parentId:node.id,
+                            w:newWidth,
+                            h:newHeight,
+                            label: newLabel,
+                            order: node.data.children.length,
+                            partAlign: node.data.partAlign || 'left',
+                            type: type,
+                            family: node.data.family
+                        })
+                        if(node.data.isRThing && node.data.children.length == 0) {
+                            nodeData.partAlign = 'left'
+                            node.data.partAlign = 'left'
+                        }
+                        if(node.data.partAlign == 'freehand') {
+                            nodeData.left = node.data.left+(this.getSizeForPart(nodeData)*2)
+                            nodeData.top = node.data.top+(this.getSizeForPart(nodeData)*2)
+                        }
+
+                        var newNode = this.jsToolkit.addNode(nodeData)
+
+                        node.data.children.push(newNode.id)
+                        node.data.parts = node.data.parts || { class: 'open' }
+                        if (node.data.parts.class == 'none') {
+                            node.data.parts.class = 'open'
+                        }
+                        this.canvas.updateData({node: node})
                     }
-                    var newNode = this.jsToolkit.addNode(nodeData)
-
-                    node.data.children.push(newNode.id)
-                    node.data.parts = node.data.parts || { class: 'open' }
-                    if (node.data.parts.class == 'none') {
-                        node.data.parts.class = 'open'
-                    }
-                    this.canvas.updateData({node: node})
-                },100),
+                },
                 orange:(el, node) => {
                     let data = this.getNewNode()
                     data.top = node.data.top
@@ -176,6 +183,11 @@ class Node extends _CanvasBase {
         if (node && align) {
             node.data.suspendLayout = align == 'freehand'
             node.data.partAlign = align
+            if(!node.data.left || !node.data.top) {
+                let el = $(this.jsRenderer.getRenderedElement(node))
+                node.data.left = el.css('left').split('px')[0]
+                node.data.top = el.css('top').split('px')[0]
+            }
             _.each(node.data.children, (childId) => {
                 let child = this.jsToolkit.getNode(childId)
                 this.changeAlignment(child, align, false)
@@ -275,9 +287,8 @@ class Node extends _CanvasBase {
             else if(inc == -1 && type != 'A'){
                 ret = `idea_${types[types.indexOf(type)+inc]}`
             } else {
-                ret = ''
+                ret = node.type
             }
-
         }
         return ret;
     }
