@@ -25,6 +25,27 @@
 .ideaNode.jsplumb-drag-hover .node-rect {
     fill: #cccccc;
 }
+.jsplumb-drag-hover-attach .letter.S {
+    opacity:1 !important;
+}
+.jsplumb-drag-hover-attach .green.segment {
+    opacity:1 !important;
+}
+.jsplumb-drag-hover-detach .letter.D {
+    opacity:1 !important;
+}
+.jsplumb-drag-hover-detach .red.segment {
+    opacity:1 !important;
+}
+.jsplumb-drag-hover-attach .node-rect {
+    opacity:0 !important;
+}
+.jsplumb-drag-hover-detach .node-rect {
+    opacity:0 !important;
+}
+.jsplumb-drag-hover-none .node-rect {
+    fill: #fff !important;
+}
 
 .ideaNode .name {
     color: black;
