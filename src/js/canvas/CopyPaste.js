@@ -164,6 +164,7 @@ class CopyPaste extends _CanvasBase {
                     newNodes[n.id] = this.jsToolkit.addNode(n)
                     this.canvas.addToSelection({ node: newNodes[n.id] })
                 })
+                newData.jsNodes = newNodes
                 _.each(newData.edges, (e) => {
                     if(opts.afterEdgeCallback) opts.afterEdgeCallback(e, idMap, newData)
                     if (newNodes[e.source] && newNodes[e.target]) {
