@@ -181,6 +181,7 @@ class Node extends _CanvasBase {
                 this.changeAlignment(child, align, false)
             })
             this.canvas.updateData({ node: node }, doRefresh)
+            this.dragDropHandler.repositionRThing(node)
         }
     }
 

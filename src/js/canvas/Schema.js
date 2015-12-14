@@ -5,6 +5,7 @@ const jsPlumbUtil = window.jsPlumbUtil
 const _CanvasBase = require('./_CanvasBase')
 const $ = require('jquery')
 const _ = require('lodash')
+const DragDrop = require('./DragDrop')
 
 /**
  * @extends _CanvasBase
@@ -71,7 +72,29 @@ class Schema extends _CanvasBase {
                     return e.data
                 }))
 
-                let parts = this.copyPaste.clone({ nodes: nodes, edges: edges })
+                let callbacks = {
+                    beforeNodeCallback: _.noop,
+                    beforeEdgeCallback: (edge, idMap, data) => {
+                        if (edge && edge.data.rthing && edge.data.rthing.nodeId && !idMap[edge.data.rthing.nodeId]) {
+                            let node = this.jsToolkit.getNode(edge.data.rthing.nodeId)
+                            if (node) {
+                                idMap[edge.data.rthing.nodeId] = jsPlumbUtil.uuid()
+                                data.nodes.push(node.data)
+                            }
+                        }
+                    },
+                    postprocess: (oldData, idMap, newData) => {
+                        _.each(newData.edges, (edge) => {
+                            if (edge && edge.data.rthing && edge.data.rthing.nodeId) {
+                                _.delay(() => {
+                                    DragDrop.repositionRthingOnEdge(edge, this.canvas)
+                                }, 250)
+                            }
+                        })
+                    }
+                }
+
+                let parts = this.copyPaste.clone({ nodes: nodes, edges: edges }, callbacks)
                 this.deleteNode(source)
                 let root = this.getRoot(parts.nodes[0], this.canvas.exportData())
 

@@ -43,7 +43,7 @@ class CopyPaste extends _CanvasBase {
      * @param  {any} data
      * @param  {object} callbacks
      */
-    clone(data, opts={ nodeCallback: null, edgeCallback: null, preprocess: null, postprocess: null }) {
+    clone(data, opts={ beforeNodeCallback: null, beforeEdgeCallback: null, preprocess: null, postprocess: null }) {
         let newData = {
             nodes: [],
             edges: []
@@ -55,12 +55,12 @@ class CopyPaste extends _CanvasBase {
                 //1. Match each existing node id to a new UUID
                 _.each(data.nodes, (node) => {
                     idMap[node.id] = jsPlumbUtil.uuid()
-                    if(opts.nodeCallback) opts.nodeCallback(node, idMap, data)
+                    if(opts.beforeNodeCallback) opts.beforeNodeCallback(node, idMap, data)
                 })
                 //2. Match each existing edge id to a new UUID
                 _.each(data.edges, (edge) => {
                     idMap[edge.data.id] = jsPlumbUtil.uuid()
-                    if(opts.edgeCallback) opts.edgeCallback(edge, idMap, data)
+                    if(opts.beforeEdgeCallback) opts.beforeEdgeCallback(edge, idMap, data)
                 })
 
                 if(opts.preprocess) opts.preprocess(idMap, data)
@@ -160,10 +160,12 @@ class CopyPaste extends _CanvasBase {
                 this.canvas.clearSelection({ e: {} })
                 let newNodes = {}
                 _.each(newData.nodes, (n) => {
+                    if(opts.afterNodeCallback) opts.afterNodeCallback(n, idMap, newData)
                     newNodes[n.id] = this.jsToolkit.addNode(n)
                     this.canvas.addToSelection({ node: newNodes[n.id] })
                 })
                 _.each(newData.edges, (e) => {
+                    if(opts.afterEdgeCallback) opts.afterEdgeCallback(e, idMap, newData)
                     if (newNodes[e.source] && newNodes[e.target]) {
                         let edge = this.jsToolkit.addEdge(e)
                         this.canvas.addToSelection({ edge: edge })
@@ -198,19 +200,19 @@ class CopyPaste extends _CanvasBase {
             let data = (this._copyData) ? this._copyData : this.data
 
             let callbacks = {
-                nodeCallback: (node, idMap, data) => {
+                beforeNodeCallback: (node, idMap, data) => {
                     let isRthing = node.isRThing
                     if(isRthing) {
                         let edge = _.find(data.edges, (e) => { return e.id == node.rthing.edgeId })
+                        let e = null
                         if(!edge) {
-                            let e = this.jsToolkit.getEdge(node.rthing.edgeId)
+                            e = this.jsToolkit.getEdge(node.rthing.edgeId)
                             if(e) {
                                 edge = {
                                     data: e.data,
                                     source: e.source.data.id,
                                     target: e.target.data.id
                                 }
-                                data.edges.push(edge)
                             }
                         }
                         if(edge) {
@@ -222,18 +224,31 @@ class CopyPaste extends _CanvasBase {
                                 source = this.jsToolkit.getNode(edge.source)
                             }
                             if(target && source) {
+                                data.edges.push(edge)
+                                idMap[target.data.id] = jsPlumbUtil.uuid()
                                 data.nodes.push(target.data)
+                                idMap[source.data.id] = jsPlumbUtil.uuid()
                                 data.nodes.push(source.data)
                             }
                         }
                     }
                 },
-                edgeCallback: (edge, idMap, data) => {
+                afterNodeCallback: (node, idMap, data) => {
+                    if (!node.parentId) {
+                        node.family = node.id
+                        if (node.children.length > 0) {
+                            this.schema.recurse(node, data, (child) => {
+                                child.family = node.id
+                            })
+                        }
+                    }
+                },
+                beforeEdgeCallback: (edge, idMap, data) => {
                     if(edge.rthing && edge.rthing.nodeId) {
                         if(!idMap[edge.rthing.nodeId]) {
                             let node = this.jsToolkit.getNode(edge.rthing.nodeId)
                             if(node) {
-                                callbacks.nodeCallback(node, idMap, data)
+                                callbacks.beforeNodeCallback(node, idMap, data)
                                 data.nodes.push(node.data)
                                 idMap[node.id] = jsPlumbUtil.uuid()
                                 let children = this.schema.getAllChildren(node).nodes
