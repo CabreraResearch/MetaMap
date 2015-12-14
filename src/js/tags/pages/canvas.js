@@ -73,7 +73,7 @@ module.exports = riot.tag('canvas', html, function(opts) {
     })
 
     this.on('unmount', () => {
-        this.MetaMap.MetaFire.off(`maps/data/${opts.id}`, this.buildCanvas)
+        this.MetaMap.MetaFire.off(`maps/data/${opts.id}`, 'value', this.buildCanvas)
     })
 
     $(window).resize(() => {
