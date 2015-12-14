@@ -142,6 +142,8 @@ class Events extends _CanvasBase {
                     this.schema.deleteAll(selected)
                     break
                 case 17: //ctrl
+                    let edges = {}
+                    let map = this.canvas.exportData()
                     selected.eachNode((i, node) => {
                         let info = toolkit.getObjectInfo(node)
                         if (info.el) {
@@ -160,6 +162,22 @@ class Events extends _CanvasBase {
                                 })
                             })
                         }
+                        _.each(map.edges, (e) => {
+                            if (e.source == node.data.id) {
+                                edges[e.data.id] = edges[e.data.id] || {}
+                                edges[e.data.id].source = e.source
+                            }
+                            if (e.target == node.data.id) {
+                                edges[e.data.id] = edges[e.data.id] || {}
+                                edges[e.data.id].target = e.target
+                            }
+                        })
+                        _.each(edges, (e, id) => {
+                            if (e.source && e.target) {
+                                let edge = this.jsToolkit.getEdge(id)
+                                this.canvas.addToSelection({ edge: edge })
+                            }
+                        })
                     })
                     break
             }
