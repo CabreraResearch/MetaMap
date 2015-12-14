@@ -446,6 +446,7 @@ class Schema extends _CanvasBase {
                     edge.data.visible = true
                 }
                 delete edge.data.geometry
+                delete edge.geometry
             })
             _.each(map.nodes, (node) => {
                 node.w = node.w || this.canvas.nodeSize
