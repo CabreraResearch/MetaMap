@@ -429,6 +429,13 @@ class Schema extends _CanvasBase {
                 node.label = node.label || 'idea'
                 node.type = node.type || 'idea'
                 node.children = _.compact(node.children || [])
+                _.each(node.children, (id) => {
+                    if (!_.any(map.nodes, (n) => {
+                        return n.id == id
+                    })) {
+                        node.children = _.remove(node.children, id)
+                    }
+                })
                 node.labelPosition = node.labelPosition || []
                 node.cssClass = node.cssClass || ''
                 node.partAlign = node.partAlign || 'left'
