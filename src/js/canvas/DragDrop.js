@@ -200,6 +200,7 @@ class DragDropHandler extends _CanvasBase {
                     //If the target is the root node, we're detaching the part
                     if(targetInfo.obj.data.type == 'idea_A' || (targetInfo.obj.data.type == 'idea_B' && targetInfo.obj.data.isRThing)) {
                         this.schema.detachPart(sourceInfo.obj, targetInfo.obj)
+                        $(params.drop.el).removeClass('jsplumb-drag-hover-detach')
                     }
                     //If the source is the root node, then we're moving the system
                     else if(sourceInfo.obj.data.type != 'idea_A') {
@@ -222,7 +223,7 @@ class DragDropHandler extends _CanvasBase {
                 if(drag.data.family == drop.data.family) {
                     if(!drop.data.parentId) {
                         $(params.drop.el).addClass('jsplumb-drag-hover-detach')
-                    } else {
+                    } else if(drag.data.type != drop.data.type) {
                         $(params.drop.el).addClass('jsplumb-drag-hover-none')
                     }
                 } else {

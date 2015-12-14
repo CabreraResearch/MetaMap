@@ -121,6 +121,7 @@ class Node extends _CanvasBase {
                             type: type,
                             family: node.data.family
                         })
+
                         if(node.data.isRThing && node.data.children.length == 0) {
                             nodeData.partAlign = 'left'
                             node.data.partAlign = 'left'
@@ -278,24 +279,51 @@ class Node extends _CanvasBase {
         if (node) {
             let types = ['A', 'B', 'C', 'D', 'E']
             let type = node.type.split('_')[1]
-            if (inc == 1 && type != 'E') {
+            if (inc >= 1 && type != 'E') {
                 ret = `idea_${types[types.indexOf(type)+inc]}`
             }
-            else if(inc == -1 && type != 'A'){
+            else if(inc <= -1 && type != 'A'){
                 ret = `idea_${types[types.indexOf(type)+inc]}`
             } else {
                 ret = node.type
             }
+            if(!ret) ret = node.type
         }
         return ret;
     }
 
-    getPrevPartNodeType(node) {
-        return this._getPartNodeType(node, -1)
+    getPrevPartNodeType(node, parent) {
+        let inc = -1
+        if (parent) {
+            let pSize = this.getSizeForPart(parent)
+            let cSize = this.getSizeForPart(node)
+            let ret = this._getPartNodeType(node, inc)
+            while (cSize <= pSize && ret != 'idea_A') {
+                inc -= 1
+                ret = this._getPartNodeType(node, inc)
+                cSize = this.getSizeForPart({ type: ret })
+            }
+            return ret
+
+        } else {
+            return this._getPartNodeType(node, inc)
+        }
     }
 
-    getNextPartNodeType(node) {
-        return this._getPartNodeType(node, 1)
+    getNextPartNodeType(node, parent) {
+        let inc = 1
+
+        let ret = this._getPartNodeType(node, inc)
+        if (parent) {
+            let pSize = this.getSizeForPart(parent)
+            let cSize = this.getSizeForPart(node)
+            while (cSize >= pSize && ret != 'idea_E') {
+                inc += 1
+                ret = this._getPartNodeType(node, inc)
+                cSize = this.getSizeForPart({ type: ret })
+            }
+        }
+        return ret
     }
 
     getSizeForPart(node) {

@@ -36,9 +36,23 @@ class Schema extends _CanvasBase {
                     this.jsToolkit.updateNode(sourceParent)
                 }
 
+                source.data.type = this.node.getNextPartNodeType(target.data)
+                let size = this.node.getSizeForPart(source.data)
+                source.data.h = this.canvas.nodeSize
+                source.data.w = this.canvas.nodeSize
+                source.data.parentId = target.data.id
+                source.data.family = target.data.family
+                source.data.w = size
+                source.data.h = size
+                source.data.left = ''
+                source.data.top = ''
+                source.data.partAlign = target.data.partAlign || 'left'
+
                 let children = this.getAllChildren(source).nodes
                 _.each(children, (child) => {
-                    child.type = this.node.getNextPartNodeType(child)
+                    let parent = _.filter(children, (c) => { return c.id == child.parentId })[0] || source.data
+                    child.originalType = child.type
+                    child.type = this.node.getNextPartNodeType(child, parent)
                     //If attaching to an R-thing, we need to go back two
                     if(target.data.isRThing) {
                         child.type = this.node.getNextPartNodeType(child)
@@ -51,18 +65,8 @@ class Schema extends _CanvasBase {
                     child.top = ''
                     child.partAlign = target.data.partAlign || 'left'
                 })
+
                 let nodes = [source.data].concat(children)
-                source.data.type = this.node.getNextPartNodeType(target.data)
-                let size = this.node.getSizeForPart(source.data)
-                source.data.h = this.canvas.nodeSize
-                source.data.w = this.canvas.nodeSize
-                source.data.parentId = target.data.id
-                source.data.family = target.data.family
-                source.data.w = size
-                source.data.h = size
-                source.data.left = ''
-                source.data.top = ''
-                source.data.partAlign = target.data.partAlign || 'left'
 
                 let allEdges = this.getAllEdges()
                 let nodeIds = _.map(nodes, (n) => { return n.id })
@@ -122,7 +126,7 @@ class Schema extends _CanvasBase {
                 source.children = _.compact(source.children)
                 let children = this.getAllChildren(source).nodes
                 _.each(children, (child) => {
-                    child.type = this.node.getPrevPartNodeType(child)
+                    child.type = child.originalType || this.node.getPrevPartNodeType(child)
                     //If detaching from an R-thing, we need to go back two
                     if(target.data.isRThing) {
                         child.type = this.node.getPrevPartNodeType(child)
