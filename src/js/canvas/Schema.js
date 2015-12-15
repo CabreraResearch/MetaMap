@@ -106,6 +106,7 @@ class Schema extends _CanvasBase {
                 let root = this.getRoot(parts.nodes[0], this.canvas.exportData())
 
                 target.data.children.push(root.id)
+                target.data.parts.class = 'open'
                 this.canvas.updateData({ node: target })
 
                 let node = this.jsToolkit.getNode(root.id)
@@ -462,6 +463,10 @@ class Schema extends _CanvasBase {
                 node.parts = node.parts || { class: 'none' }
                 if (node.children.length == 0) {
                     node.parts.class = 'none'
+                } else {
+                    if (node.parts.class != 'open' || node.parts.class != 'closed') {
+                        node.parts.class = 'open'
+                    }
                 }
                 node.perspective = node.perspective || {
                     has: false,

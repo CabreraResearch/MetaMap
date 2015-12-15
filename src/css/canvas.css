@@ -210,6 +210,12 @@ div[data-class="relationship-rthing"] {
 .ideaNode:hover .parts {
     fill: #fff
 }
+.ideaNode:hover .eye-open {
+    fill: #fff
+}
+.ideaNode:hover .eye-closed {
+    fill: #fff
+}
 
 .letter {
     opacity: 0;
