@@ -8,8 +8,6 @@ class Events extends _CanvasBase {
 
     constructor(canvas) {
         super(canvas)
-
-        this.labelDragHandler = jsPlumb.getInstance()
     }
 
     get _types() {
@@ -64,26 +62,13 @@ class Events extends _CanvasBase {
     registerHandlers(params) {
         // here you have params.el, the DOM element
         // and params.node, the underlying node. it has a `data` member with the node's payload.
-        var el = params.el, node = params.node, label = el.querySelector('.name[data-align="freehand"]')
+        var el = params.el, node = params.node
         for (var i = 0; i < this._types.length; i++) {
             this._curryHandler(el, this._types[i], node)
         }
 
-        if (label) {
-            // make the label draggable (see note above).
-            this.labelDragHandler.draggable(label, {
-                start: () => {
-                    this.labelDragHandler.setZoom(this.canvas.jsRenderer.getZoom())
-                },
-                stop: (e) => {
-                    node.data.labelPosition = [
-                        parseInt(label.style.left, 10),
-                        parseInt(label.style.top, 10)
-                    ]
-                    this.canvas.onAutoSave(this.canvas.jsToolkit.exportData())
-                }
-            })
-        }
+        this.node.bindLabelDrag(el, node)
+
         let editLabel = el.querySelectorAll('.name')
         jsPlumb.on(editLabel, 'dblclick', (e) => {
             e.preventDefault()

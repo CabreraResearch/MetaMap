@@ -8,6 +8,7 @@ class Node extends _CanvasBase {
 
     constructor(canvas) {
         super(canvas)
+        this.labelDragHandler = jsPlumb.getInstance()
     }
 
     //
@@ -37,6 +38,26 @@ class Node extends _CanvasBase {
         }
         _.extend(ret, opts)
         return ret
+    }
+
+    bindLabelDrag(el, node) {
+        let label = el.querySelector('.name[data-align="freehand"]')
+
+        if (label) {
+            // make the label draggable (see note above).
+            this.labelDragHandler.draggable(label, {
+                start: () => {
+                    this.labelDragHandler.setZoom(this.canvas.jsRenderer.getZoom())
+                },
+                stop: (e) => {
+                    node.data.labelPosition = [
+                        parseInt(label.style.left, 10),
+                        parseInt(label.style.top, 10)
+                    ]
+                    this.canvas.onAutoSave(this.canvas.jsToolkit.exportData())
+                }
+            })
+        }
     }
 
     getClickEvents() {
@@ -177,7 +198,7 @@ class Node extends _CanvasBase {
         }
     }
 
-    changeAlignment(node, align, doRefresh) {
+    changeAlignment(node, align, doRefresh, el) {
         if (node && align) {
             node.data.suspendLayout = align == 'freehand'
             node.data.partAlign = align
@@ -190,6 +211,9 @@ class Node extends _CanvasBase {
                 let child = this.jsToolkit.getNode(childId)
                 this.changeAlignment(child, align, false)
             })
+            if(el) {
+                this.bindLabelDrag(el, node)
+            }
             this.canvas.updateData({ node: node }, doRefresh)
             this.dragDropHandler.repositionRThing(node)
         }
@@ -236,7 +260,7 @@ class Node extends _CanvasBase {
                                                 name: 'Free Hand',
                                                 icon: ' icn-Sfreehand',
                                                 callback: () => {
-                                                    this.changeAlignment(node, 'freehand', true)
+                                                    this.changeAlignment(node, 'freehand', true, obj.el)
                                                 }
                                             }
                                         }
