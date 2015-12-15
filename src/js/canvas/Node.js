@@ -317,10 +317,10 @@ class Node extends _CanvasBase {
         let ret = this._getPartNodeType(node, inc)
         if (parent) {
             let pSize = this.getSizeForPart(parent)
-            let cSize = this.getSizeForPart(node)
+            let cSize = this.getSizeForPart({type: ret})
             while (cSize >= pSize && ret != 'idea_E') {
                 inc += 1
-                ret = this._getPartNodeType(node, inc)
+                ret = this._getPartNodeType({type: ret}, inc)
                 cSize = this.getSizeForPart({ type: ret })
             }
         }
