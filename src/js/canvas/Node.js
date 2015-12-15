@@ -418,6 +418,7 @@ class Node extends _CanvasBase {
         this.hideRDots()
 
         this.canvas.updateData({ node: newNode, edge: obj.edge })
+        this.dragDropHandler.repositionRThing(newNode)
     }
 }
 

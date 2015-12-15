@@ -99,7 +99,7 @@ class CopyPaste extends _CanvasBase {
                     if(ret.isRThing) {
                         let id = idMap[ret.rthing.edgeId] || node.rthing.edgeId
                         ret.rthing.edgeId = id
-                        ret.rthing.rDot = id+'_rthing'
+                        ret.rthing.rDot = ret.id+'_rthing'
                     }
 
                     //update perspective edges
