@@ -49,14 +49,7 @@ class Edge extends _CanvasBase {
                     //Between the same two nodes, only one perspective connection may exist
                     switch (edgeData.type) {
                         case 'perspective':
-                            var edges = fromNode.getEdges({ filter: function (e) { return e.data.type == 'perspective' } })
-                            for (var i = 0; i < edges.length; i += 1) {
-                                var ed = edges[i]
-                                if ((ed.source == fromNode && ed.target == toNode) || (ed.target == fromNode && ed.source == toNode)) {
-                                    ret = false
-                                    break
-                                }
-                            }
+                            ret = !fromNode.data.perspective || !fromNode.data.perspective.edges || fromNode.data.perspective.edges.length == 0
                             if (ret) {
                                 fromNode.data.perspective = fromNode.data.perspective || {
                                     has: true,
