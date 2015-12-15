@@ -126,6 +126,7 @@ class MetaMap {
 
     error(val) {
         window.console.error(val)
+        window.console.error(val.stack)
         if (!this.debug && this.Integrations) {
             this.Integrations.sendError(val)
         }

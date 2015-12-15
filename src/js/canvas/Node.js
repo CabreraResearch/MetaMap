@@ -209,7 +209,8 @@ class Node extends _CanvasBase {
             }
             _.each(node.data.children, (childId) => {
                 let child = this.jsToolkit.getNode(childId)
-                this.changeAlignment(child, align, false)
+                let el = this.jsRenderer.getRenderedElement(node)
+                this.changeAlignment(child, align, false, el)
             })
             if(el) {
                 this.bindLabelDrag(el, node)
