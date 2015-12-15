@@ -237,7 +237,7 @@ class Schema extends _CanvasBase {
                 let child = this.jsToolkit.getNode(edge.data.rthing.nodeId)
                 this.recurseDelete(child)
             }
-            if (edge.data.perspective && edge.data.perspective.has && edge.data.perspective.nodeId) {
+            if (edge.data.perspective && edge.data.perspective.nodeId) {
                 let child = this.jsToolkit.getNode(edge.data.perspective.nodeId)
                 child.data.perspective.edges = _.remove(child.data.perspective.edges, (id) => { return id != edge.data.id })
                 child.data.perspective.has = child.data.perspective.edges.length > 0
