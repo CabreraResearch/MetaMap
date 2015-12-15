@@ -159,10 +159,18 @@ class CopyPaste extends _CanvasBase {
 
                 this.canvas.clearSelection({ e: {} })
                 let newNodes = {}
-                _.each(newData.nodes, (n) => {
-                    if(opts.afterNodeCallback) opts.afterNodeCallback(n, idMap, newData)
-                    newNodes[n.id] = this.jsToolkit.addNode(n)
-                    this.canvas.addToSelection({ node: newNodes[n.id] })
+                _.each(newData.nodes, (node) => {
+                    if(opts.afterNodeCallback) opts.afterNodeCallback(node, idMap, newData)
+                    if (!node.parentId) {
+                        node.family = node.id
+                        if (node.children.length > 0) {
+                            this.schema.recurse(node, data, (child) => {
+                                child.family = node.id
+                            })
+                        }
+                    }
+                    newNodes[node.id] = this.jsToolkit.addNode(node)
+                    this.canvas.addToSelection({ node: newNodes[node.id] })
                 })
                 newData.jsNodes = newNodes
                 _.each(newData.edges, (e) => {
@@ -233,16 +241,6 @@ class CopyPaste extends _CanvasBase {
                                 idMap[source.data.id] = jsPlumbUtil.uuid()
                                 data.nodes.push(source.data)
                             }
-                        }
-                    }
-                },
-                afterNodeCallback: (node, idMap, data) => {
-                    if (!node.parentId) {
-                        node.family = node.id
-                        if (node.children.length > 0) {
-                            this.schema.recurse(node, data, (child) => {
-                                child.family = node.id
-                            })
                         }
                     }
                 },

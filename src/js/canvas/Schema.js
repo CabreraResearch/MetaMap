@@ -33,6 +33,9 @@ class Schema extends _CanvasBase {
                     _.remove(sourceParent.data.children, (c) => {
                         return c === source.id;
                     });
+                    if (sourceParent.data.children.length == 0) {
+                        sourceParent.data.parts.class = 'none'
+                    }
                     this.jsToolkit.updateNode(sourceParent)
                 }
 
@@ -121,32 +124,18 @@ class Schema extends _CanvasBase {
                 target.data.children = _.remove(target.data.children, (id) => {
                     return id != source.data.id
                 })
+                if (target.data.children.length == 0) {
+                    target.data.parts.class = 'none'
+                }
                 this.canvas.updateData({ node: target })
 
-                source.children = _.compact(source.children)
-                let children = this.getAllChildren(source).nodes
-                _.each(children, (child) => {
-                    child.type = child.originalType || this.node.getPrevPartNodeType(child)
-                    //If detaching from an R-thing, we need to go back two
-                    if(target.data.isRThing) {
-                        child.type = this.node.getPrevPartNodeType(child)
-                    }
-                    let size = this.node.getSizeForPart(child)
-                    child.h = size
-                    child.w = size
-                    child.left = ''
-                    child.top = ''
-                    child.family = source.data.id
-                    child.labelPosition = []
-                    child.children = _.compact(child.children)
-                })
-                let nodes = [source.data].concat(children)
                 source.data.type = 'idea_A'
                 source.data.h = this.canvas.nodeSize
                 source.data.w = this.canvas.nodeSize
                 source.data.parentId = ''
                 source.data.family = source.data.id
                 source.data.labelPosition = []
+                source.data.partAlign = 'left'
 
                 if (!target.data.isRThing) {
                     source.data.top = target.data.top
@@ -155,6 +144,32 @@ class Schema extends _CanvasBase {
                     source.data.top = target.data.top+150
                     source.data.left = target.data.left
                 }
+
+                source.children = _.compact(source.children)
+                let children = this.getAllChildren(source).nodes
+                _.each(children, (child) => {
+                    let parent = _.filter(children, (c) => { return c.id == child.parentId })[0] || source.data
+                    child.type = this.node.getPrevPartNodeType(child,parent)
+                    //If detaching from an R-thing, we need to go back two
+                    if(target.data.isRThing) {
+                        child.type = this.node.getPrevPartNodeType(child)
+                    }
+
+                    if (source.data.originalType && ((source.data.originalType == 'idea_A')||(source.data.originalType == 'idea_B' && source.data.isRThing))) {
+                        child.type = child.originalType
+                    }
+                    let size = this.node.getSizeForPart(child)
+                    child.h = size
+                    child.w = size
+                    delete child.left
+                    delete child.top
+                    child.partAlign = 'left'
+                    child.family = source.data.id
+                    child.labelPosition = []
+                    child.children = _.compact(child.children)
+                })
+                let nodes = [source.data].concat(children)
+
 
                 let allEdges = this.getAllEdges()
                 let nodeIds = _.map(nodes, (n) => { return n.id })
