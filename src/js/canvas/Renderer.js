@@ -41,7 +41,6 @@ class Renderer extends _CanvasBase {
                 type:'metamap'
             },
             zoomToFit: zoomToFit,
-            zoomToFitIfNecessary: true,
             view: {
                 nodes: this.node.getView(),
                 edges: this.edge.getView()
