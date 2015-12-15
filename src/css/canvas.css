@@ -78,23 +78,23 @@
     visibility: hidden;
 }
 
-.ideaNode.A .name {
+.A.name {
     top: 30%;
 }
 
-.ideaNode.B .name {
+.B.name {
     top: 20%;
 }
 
-.ideaNode.C .name {
+.C.name {
     top: 5%;
 }
 
-.ideaNode.D .name {
+.D.name {
     top: -5%;
 }
 
-.ideaNode.E .name {
+.E.name {
     top: -5px;
 }
 

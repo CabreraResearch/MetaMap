@@ -20,7 +20,8 @@ class Node extends _CanvasBase {
             w:this.canvas.nodeSize,
             h:this.canvas.nodeSize,
             label:'Idea',
-            type: 'idea_A',
+            type: 'idea',
+            displayType: 'A',
             children: [],
             labelPosition: [],
             cssClass: '',
@@ -124,14 +125,14 @@ class Node extends _CanvasBase {
                     this.jsToolkit.addNode(newNode)
                 },
                 green: (el, node) => {
-                    if(node.data.type != 'idea_E') {
+                    if(node.data.displayType != 'idea_E') {
                         var newWidth = node.data.w * this.canvas.partSize
                         var newHeight = node.data.h * this.canvas.partSize
 
                         node.data.children = node.data.children || []
                         var newLabel = 'Part'
 
-                        let type = this.getNextPartNodeType(node.data)
+                        let displayType = this.getNextPartNodeType(node.data)
                         let nodeData = this.getNewNode({
                             parentId:node.id,
                             w:newWidth,
@@ -139,7 +140,7 @@ class Node extends _CanvasBase {
                             label: newLabel,
                             order: node.data.children.length,
                             partAlign: node.data.partAlign || 'left',
-                            type: type,
+                            displayType: displayType,
                             family: node.data.family
                         })
 
@@ -153,7 +154,7 @@ class Node extends _CanvasBase {
                         }
 
                         var newNode = this.jsToolkit.addNode(nodeData)
-
+                        console.log(newNode)
                         node.data.children.push(newNode.id)
                         node.data.parts = node.data.parts || { class: 'open' }
                         if (node.data.parts.class == 'none') {
@@ -272,25 +273,9 @@ class Node extends _CanvasBase {
                     }
                 }
             },
-            idea_A: {
+            idea: {
                 parent: 'all',
-                template:'nodeA'
-            },
-            idea_B: {
-                parent: 'all',
-                template:'nodeB'
-            },
-            idea_C: {
-                parent: 'all',
-                template:'nodeC'
-            },
-            idea_D: {
-                parent: 'all',
-                template:'nodeD'
-            },
-            idea_E: {
-                parent: 'all',
-                template:'nodeE'
+                template:'node'
             }
         }
     }
@@ -300,19 +285,19 @@ class Node extends _CanvasBase {
     }
 
     _getPartNodeType(node, inc = 1) {
-        let ret = 'idea_A'
+        let ret = 'A'
         if (node) {
             let types = ['A', 'B', 'C', 'D', 'E']
-            let type = node.type.split('_')[1]
-            if (inc >= 1 && type != 'E') {
-                ret = `idea_${types[types.indexOf(type)+inc]}`
+            let displayType = node.displayType
+            if (inc >= 1 && displayType != 'E') {
+                ret = types[types.indexOf(displayType)+inc]
             }
-            else if(inc <= -1 && type != 'A'){
-                ret = `idea_${types[types.indexOf(type)+inc]}`
+            else if(inc <= -1 && displayType != 'A'){
+                ret = types[types.indexOf(displayType)+inc]
             } else {
-                ret = node.type
+                ret = node.displayType
             }
-            if(!ret) ret = node.type
+            if(!ret) ret = node.displayType
         }
         return ret;
     }
@@ -327,9 +312,9 @@ class Node extends _CanvasBase {
 
             if(cSize==pSize) ret = this._getPartNodeType(node, inc)
             else {
-                while (cSize >= pSize && ret != 'idea_A') {
-                    ret = this._getPartNodeType({ type: ret }, inc)
-                    cSize = this.getSizeForPart({ type: ret })
+                while (cSize >= pSize && ret != 'A') {
+                    ret = this._getPartNodeType({ displayType: ret }, inc)
+                    cSize = this.getSizeForPart({ displayType: ret })
                 }
             }
         }
@@ -342,11 +327,11 @@ class Node extends _CanvasBase {
         let ret = this._getPartNodeType(node, inc)
         if (parent) {
             let pSize = this.getSizeForPart(parent)
-            let cSize = this.getSizeForPart({type: ret})
-            while (cSize >= pSize && ret != 'idea_E') {
+            let cSize = this.getSizeForPart({displayType: ret})
+            while (cSize >= pSize && ret != 'E') {
                 inc += 1
-                ret = this._getPartNodeType({type: ret}, inc)
-                cSize = this.getSizeForPart({ type: ret })
+                ret = this._getPartNodeType({displayType: ret}, inc)
+                cSize = this.getSizeForPart({ displayType: ret })
             }
         }
         return ret
@@ -354,17 +339,17 @@ class Node extends _CanvasBase {
 
     getSizeForPart(node) {
         let ret = this.canvas.nodeSize
-        switch (node.type) {
-            case 'idea_B':
+        switch (node.displayType) {
+            case 'B':
                 ret *= this.canvas.partSize
                 break;
-            case 'idea_C':
+            case 'C':
                 ret *= Math.pow(this.canvas.partSize,2)
                 break;
-            case 'idea_D':
+            case 'D':
                 ret *= Math.pow(this.canvas.partSize,3)
                 break;
-            case 'idea_E':
+            case 'E':
                 ret *= Math.pow(this.canvas.partSize,4)
                 break;
         }
@@ -403,7 +388,7 @@ class Node extends _CanvasBase {
         }
 
         let rType = this.getNextPartNodeType(obj.edge.source.data)
-        let nodeData = jsPlumb.extend(this.getNewNode({ type: rType, cssClass: 'donotdrag' }), d)
+        let nodeData = jsPlumb.extend(this.getNewNode({ displayType: rType, cssClass: 'donotdrag' }), d)
         nodeData.isRThing = true
         nodeData.rthing = {
             edgeId: edgeId,

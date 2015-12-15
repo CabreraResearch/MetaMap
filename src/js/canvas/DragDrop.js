@@ -65,7 +65,7 @@ class DragDropHandler extends _CanvasBase {
                 //If we're dragging a part that is not in freehand layout,
                 //and it's not being dropped onto anyone else,
                 //it will snap back immediately after this event fires
-                if(info.obj.data.type != 'idea_A' && info.obj.data.partAlign != 'freehand' && (!params.drop || !params.drop.el)) {
+                if(info.obj.data.displayType != 'A' && info.obj.data.partAlign != 'freehand' && (!params.drop || !params.drop.el)) {
                     doRepo = false
                 }
                 if (doRepo) {
@@ -117,33 +117,70 @@ class DragDropHandler extends _CanvasBase {
         }
     }
 
+    updateEdgeTypes(node) {
+        let edges = node.getAllEdges()
+        _.each(edges, (edge) => {
+            if (edge.data.type != 'relationshipPart' && edge.source.data.family == edge.target.data.family) {
+
+                //edge.data.type = 'relationshipPart'
+                //this.canvas.updateData({ edge: edge })
+                this.jsToolkit.setType(edge, "relationshipPart")
+            }
+        })
+        if (node.data.children > 0) {
+            _.each(node.data.children, (c) => {
+                let child = this.jsToolkit.getNode(c)
+                this.updateEdgeTypes(child)
+            })
+        }
+    }
+
     adjustType(parent, child, isRthing=false) {
         var depth = this.canvas.getDepth(child)
         if(isRthing) {
             depth += 1
-            child.data.type = this.node.getNextPartNodeType(child.data)
+            child.data.displayType = this.node.getNextPartNodeType(child.data)
         }
         var newSize = this.canvas.getPartSizeAtDepth(depth)
         child.data.w = newSize;
         child.data.h = newSize;
-        child.data.type = this.node.getNextPartNodeType(child.data)
+        child.data.displayType = this.node.getNextPartNodeType(child.data)
         child.data.family = parent.data.family
         child.data.partAlign = parent.data.partAlign || 'left'
+        this.canvas.updateData({node: child})
         this.jsRenderer.getLayout().setSize(child.id, [newSize, newSize])
     }
 
     addAsChild(sourceNode, targetNode, event) {
         jsPlumbUtil.consume(event);
 
-        let selection = this.canvas.getSelection()
-        if(selection.nodeIds.length <= 1) {
-            this.schema.attachPart(sourceNode, targetNode)
-        } else {
-            _.each(selection.nodeIds, (id) => {
-                let node = this.jsToolkit.getNode(id)
-                this.schema.attachPart(node, targetNode)
-            })
+        // remove from current parent, if exists
+        if (sourceNode.data.parentId) {
+            var sourceParent = this.jsToolkit.getNode(sourceNode.data.parentId);
+            _.remove(sourceParent.data.children, (c) => {
+                return c === sourceNode.id;
+            });
+            this.jsToolkit.updateNode(sourceParent)
         }
+
+        // add to new parent, change parent ref in child
+        targetNode.data.children = targetNode.data.children || [];
+        targetNode.data.children.push(sourceNode.id);
+        sourceNode.data.parentId = targetNode.id;
+
+        if (targetNode.data.parts.class == 'none') {
+            targetNode.data.parts.class = 'open'
+        }
+
+        // find new part size
+        this.adjustType(targetNode, sourceNode, targetNode.data.isRThing)
+
+        // update target
+        this.jsToolkit.updateNode(targetNode);
+        // and source and its children
+        this.updateNodeAndParts(sourceNode, targetNode.data.isRThing);
+        // and any edges which may now target family to family
+        this.updateEdgeTypes(sourceNode)
 
         return true;
     }
@@ -198,12 +235,11 @@ class DragDropHandler extends _CanvasBase {
                 }
                 else if (sourceInfo.obj.data.family == targetInfo.obj.data.family) {
                     //If the target is the root node, we're detaching the part
-                    if(targetInfo.obj.data.type == 'idea_A' || (targetInfo.obj.data.type == 'idea_B' && targetInfo.obj.data.isRThing)) {
+                    if(targetInfo.obj.data.displayType == 'A' || (targetInfo.obj.data.displayType == 'B' && targetInfo.obj.data.isRThing)) {
                         this.schema.detachPart(sourceInfo.obj, targetInfo.obj)
-                        $(params.drop.el).removeClass('jsplumb-drag-hover-detach')
                     }
                     //If the source is the root node, then we're moving the system
-                    else if(sourceInfo.obj.data.type != 'idea_A') {
+                    else if(sourceInfo.obj.data.displayType != 'A') {
                         outcome = this.reorderChild(sourceInfo.obj, targetInfo.obj, params)
                     }
                 }
@@ -218,30 +254,24 @@ class DragDropHandler extends _CanvasBase {
                 return outcome;
             },
             over: (params) => {
-                let drag = this.jsToolkit.getObjectInfo(params.drag.el).obj
-                let drop = this.jsToolkit.getObjectInfo(params.drop.el).obj
-                if(drag.data.family == drop.data.family) {
-                    if(!drop.data.parentId) {
-                        $(params.drop.el).addClass('jsplumb-drag-hover-detach')
-                    } else if(drag.data.type != drop.data.type) {
-                        $(params.drop.el).addClass('jsplumb-drag-hover-none')
-                    }
-                } else {
-                    $(params.drop.el).addClass('jsplumb-drag-hover-attach')
-                }
+                // let drag = this.jsToolkit.getObjectInfo(params.drag.el).obj
+                // let drop = this.jsToolkit.getObjectInfo(params.drop.el).obj
+                // if(drag.data.family == drop.data.family) {
+                //     $(params.drop.el).removeClass('jsplumb-drag-hover')
+                //     console.log('removed class')
+                // } else {
+                //     console.log('class not removed')
+                // }
             },
             out: (params) => {
-                let drag = this.jsToolkit.getObjectInfo(params.drag.el).obj
-                let drop = this.jsToolkit.getObjectInfo(params.drop.el).obj
-                if(drag.data.family == drop.data.family) {
-                    if (!drop.data.parentId) {
-                        $(params.drop.el).removeClass('jsplumb-drag-hover-detach')
-                    } else {
-                        $(params.drop.el).removeClass('jsplumb-drag-hover-none')
-                    }
-                } else {
-                    $(params.drop.el).removeClass('jsplumb-drag-hover-attach')
-                }
+                // let drag = this.jsToolkit.getObjectInfo(params.drag.el).obj
+                // let drop = this.jsToolkit.getObjectInfo(params.drop.el).obj
+                // if(drag.data.family == drop.data.family) {
+                //     $(params.drop.el).removeClass('jsplumb-drag-hover')
+                //     console.log('removed class')
+                // } else {
+                //     console.log('class not removed')
+                // }
             }
         };
     }

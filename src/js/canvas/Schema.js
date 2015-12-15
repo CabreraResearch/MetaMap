@@ -39,7 +39,7 @@ class Schema extends _CanvasBase {
                     this.jsToolkit.updateNode(sourceParent)
                 }
 
-                source.data.type = this.node.getNextPartNodeType(target.data)
+                source.data.displayType = this.node.getNextPartNodeType(target.data)
                 let size = this.node.getSizeForPart(source.data)
                 source.data.h = this.canvas.nodeSize
                 source.data.w = this.canvas.nodeSize
@@ -54,11 +54,11 @@ class Schema extends _CanvasBase {
                 let children = this.getAllChildren(source).nodes
                 _.each(children, (child) => {
                     let parent = _.filter(children, (c) => { return c.id == child.parentId })[0] || source.data
-                    child.originalType = child.type
-                    child.type = this.node.getNextPartNodeType(child, parent)
+                    child.originalType = child.displayType
+                    child.displayType = this.node.getNextPartNodeType(child, parent)
                     //If attaching to an R-thing, we need to go back two
                     if(target.data.isRThing) {
-                        child.type = this.node.getNextPartNodeType(child)
+                        child.displayType = this.node.getNextPartNodeType(child)
                     }
                     let size = this.node.getSizeForPart(child)
                     child.h = size
@@ -130,7 +130,7 @@ class Schema extends _CanvasBase {
                 }
                 this.canvas.updateData({ node: target })
 
-                source.data.type = 'idea_A'
+                source.data.displayType = 'idea_A'
                 source.data.h = this.canvas.nodeSize
                 source.data.w = this.canvas.nodeSize
                 source.data.parentId = ''
@@ -150,14 +150,14 @@ class Schema extends _CanvasBase {
                 let children = this.getAllChildren(source).nodes
                 _.each(children, (child) => {
                     let parent = _.filter(children, (c) => { return c.id == child.parentId })[0] || source.data
-                    child.type = this.node.getPrevPartNodeType(child,parent)
+                    child.displayType = this.node.getPrevPartNodeType(child,parent)
                     //If detaching from an R-thing, we need to go back two
                     if(target.data.isRThing) {
-                        child.type = this.node.getPrevPartNodeType(child)
+                        child.displayType = this.node.getPrevPartNodeType(child)
                     }
 
                     if (source.data.originalType && ((source.data.originalType == 'idea_A')||(source.data.originalType == 'idea_B' && source.data.isRThing))) {
-                        child.type = child.originalType
+                        child.displayType = child.originalType
                     }
                     let size = this.node.getSizeForPart(child)
                     child.h = size
@@ -314,7 +314,7 @@ class Schema extends _CanvasBase {
                 w: this.canvas.nodeSize,
                 h: this.canvas.nodeSize,
                 label: "idea",
-                type: "idea_A",
+                displayType: "idea_A",
                 children: [],
                 labelPosition: [],
                 cssClass: "",
@@ -447,7 +447,12 @@ class Schema extends _CanvasBase {
                 node.w = node.w || this.canvas.nodeSize
                 node.h = node.h || this.canvas.nodeSize
                 node.label = node.label || 'idea'
-                node.type = node.type || 'idea'
+                let oldType = node.type.split('_')[1]
+                if (oldType) {
+                    node.displayType = oldType
+                    node.type = 'idea'
+                }
+                node.displayType = node.displayType || 'A'
                 node.children = _.compact(node.children || [])
                 _.each(node.children, (id) => {
                     if (!_.any(map.nodes, (n) => {
