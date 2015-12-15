@@ -307,7 +307,9 @@ class Edge extends _CanvasBase {
             let overlay = conn.getOverlay("customOverlay")
             overlay.canvas.setAttribute("id", `${obj.edge.data.id}_rthing`)
         }
-
+        if (!obj.edge.data.family && obj.edge.source.data.family == obj.edge.target.data.family) {
+            obj.edge.data.family = obj.edge.source.data.family
+        }
         //Kludge: this seems like a bit of a hack, but there isn't another way AFAIK to persist visibility on an edge
         if (obj.edge.data.visible === false) {
             this.jsRenderer.setVisible(obj.edge, false)

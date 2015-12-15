@@ -113,7 +113,15 @@ class Canvas {
                 this._selection.nodeIds.push(obj.node.id)
                 let children = this.schema.getAllChildren(obj.node).ids
                 this._selection.nodeIds = _.union(this._selection.nodeIds, children)
-                this.jsToolkit.addToSelection(obj.node);
+                this.jsToolkit.addToSelection(obj.node)
+                let edges = this.exportData().edges
+                _.each(edges, (e) => {
+                    if (e.data.family && e.data.family == obj.node.data.family) {
+                        if (!_.contains(this._selection.edgeIds, e.data.id)) {
+                            this._selection.edgeIds.push(e.data.id)
+                        }
+                    }
+                })
             }
             if (obj.edge) {
                 //push selected edges onto the state
