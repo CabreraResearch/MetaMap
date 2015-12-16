@@ -82,10 +82,22 @@ class DragDropHandler extends _CanvasBase {
             },
             start: (params) => {
 
-                if (this.canvas.mode != 'select' || !_.contains(params.el.className, 'jtk-surface-selected-element')) {
+                if (this.canvas.mode != 'select' || ($(params.el).find('.node-selected').length == 0)) {
                     this.canvas.clearSelection({ el: params.el, node: params.el.jtk.node, e: params.e || {} })
                 }
-
+                if (this.canvas.mode == 'select') {
+                    if(this.jsToolkit.getSelection().getNodeCount() == 0) {
+                        let selected = $('.node-selected')
+                        selected.each((idx, el) => {
+                            let nodeEl = el.parentElement.parentElement.parentElement
+                            $(nodeEl).addClass('jsplumb-drag-select')
+                            jsPlumb.addToDragSelection(nodeEl)
+                            let nodeId = nodeEl.dataset.jtkNodeId
+                            let node = this.jsToolkit.getNode(nodeId)
+                            this.canvas.addToSelection({node: node, el: nodeEl})
+                        })
+                    }
+                }
                 // on start, if there is a parent, find it and stash it on the element, for us to
                 // look at on stop.
                 var node = params.el.jtk.node;

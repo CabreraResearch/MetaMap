@@ -51,10 +51,19 @@ class CopyPaste extends _CanvasBase {
         if (data) {
             jsPlumb.batch(() => {
                 let idMap = {}
-
+                let bounds = {}
                 //1. Match each existing node id to a new UUID
                 _.each(data.nodes, (node) => {
                     idMap[node.id] = jsPlumbUtil.uuid()
+                    if(!bounds.left) bounds.left = node.left
+                    if(!bounds.right) bounds.right = node.left
+                    if(!bounds.top) bounds.top = node.top
+                    if(!bounds.bottom) bounds.bottom = node.top
+
+                    if(node.left < bounds.left) bounds.left = node.left
+                    if(node.left > bounds.right) bounds.right = node.left
+                    if(node.top < bounds.top) bounds.top = node.top
+                    if(node.top > bounds.bottom) bounds.bottom = node.top
                     if(opts.beforeNodeCallback) opts.beforeNodeCallback(node, idMap, data)
                 })
                 //2. Match each existing edge id to a new UUID
@@ -113,12 +122,16 @@ class CopyPaste extends _CanvasBase {
                         })
                     }
                     if (node.left) {
-                        //position the new node just to the right of the copied node
-                        ret.left = node.left + 200
-                        let topMove = 0
-                        //If copying edges, move down as well
-                        if (data.edges.length > 0) topMove = 200
-                        ret.top = node.top + topMove
+
+                        let leftAdjust = Math.abs(bounds.left-bounds.right)+(node.w*2)
+                        let topAdjust = Math.abs(bounds.top-bounds.bottom)+(node.w*2)
+                        if(leftAdjust <= topAdjust) {
+                            ret.top = node.top
+                            ret.left = node.left + leftAdjust
+                        } else {
+                            ret.left = node.left
+                            ret.top = node.top + topAdjust
+                        }
                     }
 
                     if (node.labelPosition[0]) {
@@ -170,7 +183,10 @@ class CopyPaste extends _CanvasBase {
                         }
                     }
                     newNodes[node.id] = this.jsToolkit.addNode(node)
-                    this.canvas.addToSelection({ node: newNodes[node.id] })
+                    this.canvas.addToSelection({ node: newNodes[node.id], el: this.jsRenderer.getRenderedElement(newNodes[node.id]) })
+                    _.delay(()=>{
+                        this.canvas.addToSelection({ node: newNodes[node.id], el: this.jsRenderer.getRenderedElement(newNodes[node.id]) })
+                    }, 250)
                 })
                 newData.jsNodes = newNodes
                 _.each(newData.edges, (e) => {
@@ -183,7 +199,7 @@ class CopyPaste extends _CanvasBase {
                         let source = this.jsToolkit.getNode(e.source)
                         if (source && target) {
                             let edge = this.jsToolkit.addEdge(e)
-                            this.canvas.addToSelection({ edge: edge })
+                            this.canvas.addToSelection({ edge: edge, el: this.jsRenderer.getRenderedElement(edge) })
                         }
                     }
                 })
@@ -266,7 +282,7 @@ class CopyPaste extends _CanvasBase {
             }
 
             let newData = this.clone(data, callbacks)
-
+            this.canvas.mode = 'select'
             this._copyData = newData
         }
     }

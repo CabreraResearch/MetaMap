@@ -93,6 +93,18 @@ class Canvas {
         return this.rndrr.dragDropHandler
     }
 
+    get mode() {
+        if(!this._mode) {
+            this._mode = 'pan'
+        }
+        return this._mode
+    }
+
+    set mode(val) {
+        this._mode = val
+        this.jsRenderer.setMode(val)
+    }
+
     get nodeSize() {
         return this.config.shapes.node.size || 50
     }
@@ -136,7 +148,6 @@ class Canvas {
         const toolkit = this.jsToolkit
         if (!obj || !obj.e || !obj.e.ctrlKey) {
             this.mode = 'pan'
-            this.jsRenderer.setMode('pan')
             toolkit.clearSelection();
             //clear our internal state
             this._selection = { nodeIds: [], edgeIds: [] }

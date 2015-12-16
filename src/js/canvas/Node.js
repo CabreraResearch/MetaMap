@@ -171,7 +171,8 @@ class Node extends _CanvasBase {
 
                     let edge = this.jsToolkit.connect({source:node, target:newNode, data:{
                         type: 'perspective',
-                        visible: true
+                        visible: true,
+                        id: jsPlumbUtil.uuid()
                     }})
                     node.data.perspective = node.data.perspective || {}
                     node.data.perspective.has = true
@@ -189,7 +190,8 @@ class Node extends _CanvasBase {
                         direction: 'none',
                         leftSize: 0,
                         rightSize: 0,
-                        visible: true
+                        visible: true,
+                        id: jsPlumbUtil.uuid()
                     }})
                     let conn = this.jsRenderer.getRenderedConnection(edge.getId())
                     let overlay = conn.getOverlay("customOverlay")

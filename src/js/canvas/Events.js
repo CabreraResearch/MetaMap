@@ -177,7 +177,6 @@ class Events extends _CanvasBase {
             if (event.ctrlKey && event.keyCode == 17) {
                 if (this.canvas.mode != 'select') {
                     this.canvas.mode = 'select'
-                    renderer.setMode('select')
                 }
             } else {
                 switch (event.keyCode) {
