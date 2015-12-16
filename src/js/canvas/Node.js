@@ -42,7 +42,7 @@ class Node extends _CanvasBase {
     }
 
     bindLabelDrag(el, node) {
-        let label = el.querySelector('.name[data-align="freehand"]')
+        let label = el.querySelectorAll('.name[data-align="freehand"]')
 
         if (label) {
             // make the label draggable (see note above).
@@ -52,8 +52,8 @@ class Node extends _CanvasBase {
                 },
                 stop: (e) => {
                     node.data.labelPosition = [
-                        parseInt(label.style.left, 10),
-                        parseInt(label.style.top, 10)
+                        parseInt(e.el.style.left, 10),
+                        parseInt(e.el.style.top, 10)
                     ]
                     this.canvas.onAutoSave(this.canvas.jsToolkit.exportData())
                 }
