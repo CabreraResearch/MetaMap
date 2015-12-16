@@ -19,173 +19,131 @@ class Schema extends _CanvasBase {
 
     }
 
-    /**
-     * Demote an identity to a part. Safely clones the identity (and any children) to a new structure.
-     * @param  {any} source
-     * @param  {any} target
-     */
-    attachPart(source, target) {
-        if (source && target) {
-            jsPlumb.batch(() => {
-                // remove from current parent, if exists
-                if (source.data.parentId) {
-                    var sourceParent = this.jsToolkit.getNode(source.data.parentId);
-                    _.remove(sourceParent.data.children, (c) => {
-                        return c === source.id;
-                    });
-                    if (sourceParent.data.children.length == 0) {
-                        sourceParent.data.parts.class = 'none'
-                    }
-                    this.jsToolkit.updateNode(sourceParent)
-                }
-
-                source.data.displayType = this.node.getNextPartNodeType(target.data)
-                let size = this.node.getSizeForPart(source.data)
-                source.data.h = this.canvas.nodeSize
-                source.data.w = this.canvas.nodeSize
-                source.data.parentId = target.data.id
-                source.data.family = target.data.family
-                source.data.w = size
-                source.data.h = size
-                source.data.left = ''
-                source.data.top = ''
-                source.data.partAlign = target.data.partAlign || 'left'
-
-                let children = this.getAllChildren(source).nodes
-                _.each(children, (child) => {
-                    let parent = _.filter(children, (c) => { return c.id == child.parentId })[0] || source.data
-                    child.originalType = child.displayType
-                    child.displayType = this.node.getNextPartNodeType(child, parent)
-                    //If attaching to an R-thing, we need to go back two
-                    if(target.data.isRThing) {
-                        child.displayType = this.node.getNextPartNodeType(child)
-                    }
-                    let size = this.node.getSizeForPart(child)
-                    child.h = size
-                    child.w = size
-                    child.family = target.data.id
-                    child.left = ''
-                    child.top = ''
-                    child.partAlign = target.data.partAlign || 'left'
-                })
-
-                let nodes = [source.data].concat(children)
-
-                let allEdges = this.getAllEdges()
-                let nodeIds = _.map(nodes, (n) => { return n.id })
-                let edges = _.map(_.filter(allEdges, (e) => {
-                    return _.contains(nodeIds, e.source) || _.contains(nodeIds, e.target)
-                }, (e) => {
-                    return e.data
-                }))
-
-                let callbacks = {
-                    beforeNodeCallback: _.noop,
-                    beforeEdgeCallback: (edge, idMap, data) => {
-                        if (edge && edge.data.rthing && edge.data.rthing.nodeId && !idMap[edge.data.rthing.nodeId]) {
-                            let node = this.jsToolkit.getNode(edge.data.rthing.nodeId)
-                            if (node) {
-                                idMap[edge.data.rthing.nodeId] = jsPlumbUtil.uuid()
-                                data.nodes.push(node.data)
-                            }
-                        }
-                    },
-                    postprocess: (oldData, idMap, newData) => {
-                        _.each(newData.edges, (edge) => {
-                            if (edge && edge.data.rthing && edge.data.rthing.nodeId) {
-                                _.delay(() => {
-                                    DragDrop.repositionRthingOnEdge(edge, this.canvas)
-                                }, 250)
-                            }
-                        })
-                    }
-                }
-
-                let parts = this.copyPaste.clone({ nodes: nodes, edges: edges }, callbacks)
-                this.deleteNode(source)
-                let root = this.getRoot(parts.nodes[0], this.canvas.exportData())
-
-                target.data.children.push(root.id)
-                target.data.parts.class = 'open'
-                this.canvas.updateData({ node: target })
-
-                let node = this.jsToolkit.getNode(root.id)
-            })
+    //
+    // fires update events to the toolkit for the given node and all of its children and their children
+    // etc
+    //
+    updateNodeAndParts(node, isRthing=false) {
+        this.jsToolkit.updateNode(node);
+        if (node.data.children) {
+            _.each(node.data.children, (c) => {
+                let child = this.jsToolkit.getNode(c)
+                this.adjustType(node, child, isRthing)
+                this.updateNodeAndParts(child, isRthing);
+            });
         }
     }
 
+    adjustType(parent, child, isRthing=false) {
+        var depth = this.canvas.getDepth(child)
+        if(isRthing) {
+            depth += 1
+            child.data.displayType = this.node.getNextPartNodeType(child.data)
+        }
+        var newSize = this.canvas.getPartSizeAtDepth(depth)
+        child.data.w = newSize;
+        child.data.h = newSize;
+        child.data.displayType = this.node.getNextPartNodeType(child.data)
+        child.data.family = parent.data.family
+        child.data.partAlign = parent.data.partAlign || 'left'
+        this.canvas.updateData({node: child})
+        this.jsRenderer.getLayout().setSize(child.id, [newSize, newSize])
+    }
+
     /**
-     * Promote a part to an identity. Safely clones the part (and any children) to a new structure.
+     * Demote an identity to a part.
      * @param  {any} source
      * @param  {any} target
      */
-    detachPart(source, target) {
-        if (source && target) {
-            jsPlumb.batch(() => {
-                target.data.children = _.remove(target.data.children, (id) => {
-                    return id != source.data.id
-                })
-                if (target.data.children.length == 0) {
-                    target.data.parts.class = 'none'
-                }
-                this.canvas.updateData({ node: target })
+    attachPart(sourceNode, targetNode, event) {
+        jsPlumbUtil.consume(event);
+        jsPlumb.batch(() => {
+            // remove from current parent, if exists
+            if (sourceNode.data.parentId) {
+                var sourceParent = this.jsToolkit.getNode(sourceNode.data.parentId);
+                _.remove(sourceParent.data.children, (c) => {
+                    return c === sourceNode.id;
+                });
+                this.jsToolkit.updateNode(sourceParent)
+            }
 
-                source.data.displayType = 'idea_A'
-                source.data.h = this.canvas.nodeSize
-                source.data.w = this.canvas.nodeSize
-                source.data.parentId = ''
-                source.data.family = source.data.id
-                source.data.labelPosition = []
-                source.data.partAlign = 'left'
+            // add to new parent, change parent ref in child
+            targetNode.data.children = targetNode.data.children || [];
+            targetNode.data.children.push(sourceNode.id);
+            sourceNode.data.parentId = targetNode.id;
 
-                if (!target.data.isRThing) {
-                    source.data.top = target.data.top
-                    source.data.left = target.data.left+100
-                } else {
-                    source.data.top = target.data.top+150
-                    source.data.left = target.data.left
-                }
+            if (targetNode.data.parts.class == 'none') {
+                targetNode.data.parts.class = 'open'
+            }
 
-                source.children = _.compact(source.children)
-                let children = this.getAllChildren(source).nodes
-                _.each(children, (child) => {
-                    let parent = _.filter(children, (c) => { return c.id == child.parentId })[0] || source.data
-                    child.displayType = this.node.getPrevPartNodeType(child,parent)
-                    //If detaching from an R-thing, we need to go back two
-                    if(target.data.isRThing) {
-                        child.displayType = this.node.getPrevPartNodeType(child)
-                    }
+            // find new part size
+            this.adjustType(targetNode, sourceNode, targetNode.data.isRThing)
 
-                    if (source.data.originalType && ((source.data.originalType == 'idea_A')||(source.data.originalType == 'idea_B' && source.data.isRThing))) {
-                        child.displayType = child.originalType
-                    }
-                    let size = this.node.getSizeForPart(child)
-                    child.h = size
-                    child.w = size
-                    delete child.left
-                    delete child.top
-                    child.partAlign = 'left'
-                    child.family = source.data.id
-                    child.labelPosition = []
-                    child.children = _.compact(child.children)
-                })
-                let nodes = [source.data].concat(children)
+            // update target
+            this.jsToolkit.updateNode(targetNode);
+            // and source and its children
+            this.updateNodeAndParts(sourceNode, targetNode.data.isRThing);
+        })
+        return true;
+    }
 
-
-                let allEdges = this.getAllEdges()
-                let nodeIds = _.map(nodes, (n) => { return n.id })
-                let edges = _.map(_.filter(allEdges, (e) => {
-                    return _.contains(nodeIds, e.source) || _.contains(nodeIds, e.target)
-                }, (e) => {
-                    return e.data
-                }))
-
-                let newData = this.copyPaste.clone({ nodes: nodes, edges: edges })
-                _.each(nodes, (node) => {
-                    this.delete({ node: node })
-                })
+    /**
+     * Promote a part to an identity.
+     * @param  {any} source
+     * @param  {any} target
+     */
+    detachPart(source, target, event) {
+        jsPlumbUtil.consume(event);
+        jsPlumb.batch(() => {
+            target.data.children = _.remove(target.data.children, (id) => {
+                return id != source.data.id
             })
-        }
+            if (target.data.children.length == 0) {
+                target.data.parts.class = 'none'
+            }
+            this.canvas.updateData({ node: target })
+
+            source.data.displayType = 'A'
+            source.data.h = this.canvas.nodeSize
+            source.data.w = this.canvas.nodeSize
+            source.data.parentId = ''
+            source.data.family = source.data.id
+            source.data.labelPosition = []
+            source.data.partAlign = 'left'
+
+            if (!target.data.isRThing) {
+                source.data.top = target.data.top
+                source.data.left = target.data.left+100
+            } else {
+                source.data.top = target.data.top+150
+                source.data.left = target.data.left
+            }
+
+            this.canvas.updateData({ node: source })
+
+            source.data.children = _.compact(source.data.children)
+            let children = this.getAllChildren(source).jNodes
+            _.each(children, (child) => {
+                let parent = _.filter(children, (c) => { return c.id == child.data.parentId })[0] || source
+                child.data.displayType = this.node.getPrevPartNodeType(child.data,parent.data)
+                //If detaching from an R-thing, we need to go back two
+                if(target.data.isRThing) {
+                    child.data.displayType = this.node.getPrevPartNodeType(child.data)
+                }
+
+                let size = this.node.getSizeForPart(child.data)
+                child.data.h = size
+                child.data.w = size
+                delete child.data.left
+                delete child.data.top
+                child.data.partAlign = 'left'
+                child.data.family = source.data.id
+                child.data.labelPosition = []
+                child.data.children = _.compact(child.data.children)
+                this.canvas.updateData({ node: child })
+            })
+        })
+        return true;
     }
 
     /**
@@ -278,7 +236,7 @@ class Schema extends _CanvasBase {
      * @param  {object} node
      * @param  {object} ret
      */
-    getAllChildren(node, ret={ids: [], nodes: []}) {
+    getAllChildren(node, ret={ids: [], nodes: [], jNodes: []}) {
         if (node && node.data && node.data.children) {
             _.each(node.data.children, (id, i) => {
                 if (!_.contains(ret.ids, id)) {
@@ -286,6 +244,7 @@ class Schema extends _CanvasBase {
                     if (child) {
                         ret.ids.push(id)
                         ret.nodes.push(child.data)
+                        ret.jNodes.push(child)
                         this.getAllChildren(child, ret)
                     } else {
                         //TODO: should probably delete the reference

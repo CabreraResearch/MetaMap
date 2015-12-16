@@ -13,7 +13,7 @@
 <script type="jtk" id="node">
 	<div class="ideaNode ${cssClass displayType}">
 		<div style="position:relative;width:${w}px;height:${h}px;">
-            <r-if test="displayType == 'A'">
+            <div data-display-type="${ (displayType == 'A') ? 'show' : 'hide' }" class="displayType">
                 <svg:svg data-display-type="${displayType}" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="${cssClass} node" x="0" y="0" viewBox="0 0 75 75" enable-background="new 0 0 75 75" xml:space="preserve">
                 <svg:g class="${cssClass} buttons group">
                     <svg:g class="${cssClass} relationship blue-button donotdrag">
@@ -92,8 +92,8 @@
                 <div data-align="freehand" class="A name" style="left: ${labelPosition[0] ? labelPosition[0]+'px' : '120%' }; top: ${ labelPosition[1] ? labelPosition[1]+'px' : '30%' };">
                     ${label}
                 </div>
-            </r-if>
-            <r-if test="displayType == 'B'">
+            </div>
+            <div data-display-type="${ (displayType == 'B') ? 'show' : 'hide' }" class="displayType">
                 <svg:svg data-display-type="${displayType}" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="${cssClass} node B" x="0" y="0" viewBox="0 0 50 50" enable-background="new 0 0 50 50" xml:space="preserve">
                 <svg:g class="${cssClass} buttons group">
                     <svg:g class="${cssClass} relationship blue-button donotdrag">
@@ -175,9 +175,9 @@
                 <div data-align="${(displayType != 'A' && !isRThing && partAlign != 'freehand') ? partAlign : 'hide'}" class="B name">
                     ${label}
                 </div>
-            </r-if>
+            </div>
 
-            <r-if test="displayType == 'C'">
+            <div data-display-type="${ (displayType == 'C') ? 'show' : 'hide' }" class="displayType">
                 <svg:svg data-display-type="${displayType}" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="${cssClass} node" x="0" y="0" viewBox="0 0 33.1 33" enable-background="new 0 0 33.1 33" xml:space="preserve">
                     <svg:g class="${cssClass} buttons group">
                         <svg:g class="${cssClass} relationship blue-button donotdrag">
@@ -258,8 +258,8 @@
                     ${label}
                 </div>
 
-            </r-if>
-            <r-if test="displayType == 'D'">
+            </div>
+            <div data-display-type="${ (displayType == 'D') ? 'show' : 'hide' }" class="displayType">
                 <svg:svg data-display-type="${displayType}" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="${cssClass} node" x="0px" y="0px" viewBox="0 0 22 22" enable-background="new 0 0 22 22" xml:space="preserve">
                     <svg:g class="${cssClass} buttons group 2 ">
                         <svg:g class="${cssClass} relationship blue-button donotdrag 2 ">
@@ -345,8 +345,8 @@
                     ${label}
                 </div>
 
-            </r-if>
-            <r-if test="displayType == 'E'">
+            </div>
+            <div data-display-type="${ (displayType == 'E') ? 'show' : 'hide' }" class="displayType">
                 <svg:svg data-display-type="${displayType}" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0" y="0" viewBox="0 0 15 15" enable-background="new 0 0 15 15" xml:space="preserve">
                     <svg:g class="${cssClass} node">
                         <svg:g class="${cssClass} buttons group">
@@ -429,10 +429,7 @@
                 <div data-align="${(!isRThing && partAlign != 'freehand') ? partAlign : 'hide'}" class="name E">
                     ${label}
                 </div>
-
-            </r-if>
-
-
+            </div>
 		</div>
 		<jtk-source class="${id}" edge-type="relationship" filter=".edge-relationship" />
 		<jtk-source edge-type="perspective" filter=".edge-perspective" data-show="${perspective.class}"/>

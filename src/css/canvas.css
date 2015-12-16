@@ -78,6 +78,15 @@
     visibility: hidden;
 }
 
+.displayType {
+    display: none;
+    visibility: hidden;
+}
+div[data-display-type="show"] {
+    display: block;
+    visibility: visible;
+}
+
 .A.name {
     top: 30%;
 }

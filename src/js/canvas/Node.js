@@ -154,7 +154,6 @@ class Node extends _CanvasBase {
                         }
 
                         var newNode = this.jsToolkit.addNode(nodeData)
-                        console.log(newNode)
                         node.data.children.push(newNode.id)
                         node.data.parts = node.data.parts || { class: 'open' }
                         if (node.data.parts.class == 'none') {
@@ -286,18 +285,39 @@ class Node extends _CanvasBase {
 
     }
 
+    get displayTypeMap() {
+        if(!this._displayTypeMap) {
+            this._displayTypeMap = {
+                '1': 'A',
+                '2': 'B',
+                '3': 'C',
+                '4': 'D',
+                '5': 'E'
+            }
+        }
+        return this._displayTypeMap
+    }
+
+    get displayType() {
+        if(!this._displayType) {
+            this._displayType = {
+                A: 1,
+                B: 2,
+                C: 3,
+                D: 4,
+                E: 5
+            }
+        }
+        return this._displayType
+    }
+
     _getPartNodeType(node, inc = 1) {
         let ret = 'A'
         if (node) {
-            let types = ['A', 'B', 'C', 'D', 'E']
-            let displayType = node.displayType
-            if (inc >= 1 && displayType != 'E') {
-                ret = types[types.indexOf(displayType)+inc]
-            }
-            else if(inc <= -1 && displayType != 'A'){
-                ret = types[types.indexOf(displayType)+inc]
-            } else {
-                ret = node.displayType
+            let displayInt = this.displayType[node.displayType]
+            if(displayInt) {
+                displayInt += inc
+                ret = this.displayTypeMap[displayInt]
             }
             if(!ret) ret = node.displayType
         }
@@ -341,19 +361,10 @@ class Node extends _CanvasBase {
 
     getSizeForPart(node) {
         let ret = this.canvas.nodeSize
-        switch (node.displayType) {
-            case 'B':
-                ret *= this.canvas.partSize
-                break;
-            case 'C':
-                ret *= Math.pow(this.canvas.partSize,2)
-                break;
-            case 'D':
-                ret *= Math.pow(this.canvas.partSize,3)
-                break;
-            case 'E':
-                ret *= Math.pow(this.canvas.partSize,4)
-                break;
+        let displayInt = this.displayType[node.displayType]
+        if(displayInt > 1) {
+            let exp = displayInt-1
+            ret *= Math.pow(this.canvas.partSize,exp)
         }
         return ret
     }
