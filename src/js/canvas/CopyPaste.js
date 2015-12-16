@@ -55,15 +55,6 @@ class CopyPaste extends _CanvasBase {
                 //1. Match each existing node id to a new UUID
                 _.each(data.nodes, (node) => {
                     idMap[node.id] = jsPlumbUtil.uuid()
-                    if(!bounds.left) bounds.left = node.left
-                    if(!bounds.right) bounds.right = node.left
-                    if(!bounds.top) bounds.top = node.top
-                    if(!bounds.bottom) bounds.bottom = node.top
-
-                    if(node.left < bounds.left) bounds.left = node.left
-                    if(node.left > bounds.right) bounds.right = node.left
-                    if(node.top < bounds.top) bounds.top = node.top
-                    if(node.top > bounds.bottom) bounds.bottom = node.top
                     if(opts.beforeNodeCallback) opts.beforeNodeCallback(node, idMap, data)
                 })
                 //2. Match each existing edge id to a new UUID
@@ -88,6 +79,16 @@ class CopyPaste extends _CanvasBase {
                     ret.suspendLayout = ret.suspendLayout || false,
                     ret.parts = { class: 'none' }
 
+                    if(!bounds.left) bounds.left = node.left
+                    if(!bounds.right) bounds.right = node.left
+                    if(!bounds.top) bounds.top = node.top
+                    if(!bounds.bottom) bounds.bottom = node.top
+
+                    if(node.left < bounds.left) bounds.left = node.left
+                    if(node.left > bounds.right) bounds.right = node.left
+                    if(node.top < bounds.top) bounds.top = node.top
+                    if(node.top > bounds.bottom) bounds.bottom = node.top
+
                     //update parent keys
                     if (node.parentId) {
                         ret.parentId = idMap[node.parentId] || node.parentId
@@ -108,7 +109,7 @@ class CopyPaste extends _CanvasBase {
                     if(ret.isRThing) {
                         let id = idMap[ret.rthing.edgeId] || node.rthing.edgeId
                         ret.rthing.edgeId = id
-                        ret.rthing.rDot = ret.id+'_rthing'
+                        ret.rthing.rDot = id+'_rthing'
                     }
 
                     //update perspective edges
@@ -155,10 +156,10 @@ class CopyPaste extends _CanvasBase {
                     }
 
                     if (edge.data.rthing && edge.data.rthing.nodeId) {
-                        let id = idMap[edge.data.rthing.nodeId] || edge.data.rthing.nodeId
+                        let nodeId = idMap[edge.data.rthing.nodeId] || edge.data.rthing.nodeId
                         ret.data.rthing = {
-                            nodeId: id,
-                            rDot: id + '_rthing'
+                            nodeId: nodeId,
+                            rDot: ret.data.id + '_rthing'
                         }
                     }
 

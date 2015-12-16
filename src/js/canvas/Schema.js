@@ -273,7 +273,7 @@ class Schema extends _CanvasBase {
                 w: this.canvas.nodeSize,
                 h: this.canvas.nodeSize,
                 label: "idea",
-                displayType: "idea_A",
+                displayType: "A",
                 children: [],
                 labelPosition: [],
                 cssClass: "",

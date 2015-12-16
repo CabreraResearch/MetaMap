@@ -125,7 +125,7 @@ class Node extends _CanvasBase {
                     this.jsToolkit.addNode(newNode)
                 },
                 green: (el, node) => {
-                    if(node.data.displayType != 'idea_E') {
+                    if(node.data.displayType != 'E') {
                         var newWidth = node.data.w * this.canvas.partSize
                         var newHeight = node.data.h * this.canvas.partSize
 

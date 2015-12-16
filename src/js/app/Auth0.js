@@ -138,7 +138,7 @@ class Auth0 {
             this.refresh_token = null
             this._login = null
             this._getSession = null
-            this.metaMap.Router.to('home')
+            if(this.metaMap.Router) this.metaMap.Router.to('home')
             window.location.reload()
         })
     }
