@@ -274,6 +274,7 @@ class Schema extends _CanvasBase {
                 h: this.canvas.nodeSize,
                 label: "idea",
                 displayType: "A",
+                type: 'idea',
                 children: [],
                 labelPosition: [],
                 cssClass: "",
@@ -406,10 +407,14 @@ class Schema extends _CanvasBase {
                 node.w = node.w || this.canvas.nodeSize
                 node.h = node.h || this.canvas.nodeSize
                 node.label = node.label || 'idea'
-                let oldType = node.type.split('_')[1]
-                if (oldType) {
-                    node.displayType = oldType
+                if(!node.type) {
                     node.type = 'idea'
+                } else {
+                    let oldType = node.type.split('_')[1]
+                    if (oldType) {
+                        node.displayType = oldType
+                        node.type = 'idea'
+                    }
                 }
                 node.displayType = node.displayType || 'A'
                 node.children = _.compact(node.children || [])

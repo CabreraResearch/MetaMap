@@ -39,8 +39,13 @@ module.exports = riot.tag('canvas', html, function(opts) {
             })
         } else {
             //If someone else (another user or the same user in a different browser) edits the map, reload it
-            if(map.changed_by && (map.changed_by.userId != this.MetaMap.User.userId || map.changed_by.userKey != this.MetaMap.User.userKey )) {
+            if(map && map.changed_by && ((map.changed_by.userId != this.MetaMap.User.userId || map.changed_by.userKey != this.MetaMap.User.userKey ) && map.changed_by.changeId != this.map.changed_by.changeId)) {
+                this.map = map
                 this.canvas.reloadData(map.data)
+                this.MetaMap.MetaFire.off(`maps/data/${this.mapId}`)
+                _.delay(() => {
+                    this.MetaMap.MetaFire.on(`maps/data/${this.mapId}`, this.buildCanvas)
+                },1000)
             }
         }
         window.NProgress.done()
@@ -55,7 +60,7 @@ module.exports = riot.tag('canvas', html, function(opts) {
             this.mapId = opts.id
             NProgress.start()
 
-            this.MetaMap.MetaFire.on(`maps/data/${opts.id}`, this.buildCanvas)
+            this.MetaMap.MetaFire.on(`maps/data/${this.mapId}`, this.buildCanvas)
             this.MetaMap.Eventer.forget(CONSTANTS.EVENTS.MAP, this.build)
         }
     }
@@ -73,7 +78,7 @@ module.exports = riot.tag('canvas', html, function(opts) {
     })
 
     this.on('unmount', () => {
-        this.MetaMap.MetaFire.off(`maps/data/${opts.id}`, 'value', this.buildCanvas)
+        this.MetaMap.MetaFire.off(`maps/data/${this.mapId}`, 'value', this.buildCanvas)
     })
 
     $(window).resize(() => {

@@ -43,6 +43,7 @@ class DragDropHandler extends _CanvasBase {
             let edges = node.getEdges()
             _.each(edges, (edge) => { DragDropHandler.repositionRthingOnEdge(edge, this)  })
             //If every member of the posse dragged together, it wouldn't be necessary to do this
+            node.data.children = node.data.children || []
             if(node.data.children.length > 0) {
                 _.each(node.data.children, (id) => {
                     let child = this.jsToolkit.getNode(id)
