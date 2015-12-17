@@ -63,9 +63,23 @@ class CopyPaste extends _CanvasBase {
                     if(opts.beforeEdgeCallback) opts.beforeEdgeCallback(edge, idMap, data)
                 })
 
+                //3. Allow the caller to massage the results
                 if(opts.preprocess) opts.preprocess(idMap, data)
 
-                //3: Map the selected nodes to new objects
+                //4. Once all manipulations are done, get the bounds
+                _.each(data.nodes, (node) => {
+                    if(!bounds.left) bounds.left = node.left
+                    if(!bounds.right) bounds.right = node.left
+                    if(!bounds.top) bounds.top = node.top
+                    if(!bounds.bottom) bounds.bottom = node.top
+
+                    if(node.left < bounds.left) bounds.left = node.left
+                    if(node.left > bounds.right) bounds.right = node.left
+                    if(node.top < bounds.top) bounds.top = node.top
+                    if(node.top > bounds.bottom) bounds.bottom = node.top
+                })
+
+                //5: Map the selected nodes to new objects
                 newData.nodes = _.map(data.nodes, (node) => {
                     let ret = _.clone(node, true)
                     ret.children = []
@@ -78,16 +92,6 @@ class CopyPaste extends _CanvasBase {
                     ret.perspective = { edges: [], class: 'none', has: false },
                     ret.suspendLayout = ret.suspendLayout || false,
                     ret.parts = { class: 'none' }
-
-                    if(!bounds.left) bounds.left = node.left
-                    if(!bounds.right) bounds.right = node.left
-                    if(!bounds.top) bounds.top = node.top
-                    if(!bounds.bottom) bounds.bottom = node.top
-
-                    if(node.left < bounds.left) bounds.left = node.left
-                    if(node.left > bounds.right) bounds.right = node.left
-                    if(node.top < bounds.top) bounds.top = node.top
-                    if(node.top > bounds.bottom) bounds.bottom = node.top
 
                     //update parent keys
                     if (node.parentId) {
@@ -141,7 +145,7 @@ class CopyPaste extends _CanvasBase {
                     return ret
                 })
 
-                //4: map over the edges and return new objects
+                //6: map over the edges and return new objects
                 newData.edges = _.map(data.edges, (edge) => {
                     let ret = {
                         data: {
@@ -171,8 +175,11 @@ class CopyPaste extends _CanvasBase {
                     return ret
                 })
 
+                //7: clear the current selection
                 this.canvas.clearSelection({ e: {} })
                 let newNodes = {}
+
+                //8: Inject the new nodes
                 _.each(newData.nodes, (node) => {
                     if(opts.afterNodeCallback) opts.afterNodeCallback(node, idMap, newData)
                     if (!node.parentId) {
@@ -190,6 +197,8 @@ class CopyPaste extends _CanvasBase {
                     }, 250)
                 })
                 newData.jsNodes = newNodes
+
+                //9: inject the new edges
                 _.each(newData.edges, (e) => {
                     if(opts.afterEdgeCallback) opts.afterEdgeCallback(e, idMap, newData)
                     if (newNodes[e.source] && newNodes[e.target]) {

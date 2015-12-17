@@ -157,7 +157,39 @@ class DragDropHandler extends _CanvasBase {
                 // if parent IDs are the same...(note '==' compare here; we dont want to get caught by a null vs undefined comparison on this one)
                 if (sourceParentId == targetParentId) {
                     if (sourceParentId == null) {
-                        outcome = this.schema.attachPart(sourceInfo.obj, targetInfo.obj, params.e)
+                        let selection = this.canvas.getSelection()
+                        let totalHeight = targetInfo.obj.data.h+10
+                        let targetChildren = this.schema.getAllChildren(targetInfo.obj).jNodes
+                        _.each(targetChildren, (child) => {
+                            totalHeight += 10 + child.data.h
+                        })
+                        let count = selection.nodeIds.length
+                        let originalAlign = targetInfo.obj.data.partAlign
+
+                        if(count > 1) {
+                            this.node.changeAlignment(targetInfo.obj, 'freehand', true)
+                        }
+                        _.each(selection.nodeIds, (id) => {
+                            let node = this.jsToolkit.getNode(id)
+                            if(count > 1) {
+                                let el = this.jsRenderer.getRenderedElement(node)
+                                let bounds = el.getBoundingClientRect()
+                                let left = (bounds.right) + (node.data.w*2)
+                                let top = (bounds.top) + totalHeight
+                                console.log(left, top)
+                                node.data.left = left
+                                node.data.top = top
+                            }
+                        })
+                        _.each(selection.nodeIds, (id) => {
+                            let node = this.jsToolkit.getNode(id)
+                            if(!node.data.parentId || node.data.family == node.data.id) {
+                                outcome = this.schema.attachPart(node, targetInfo.obj, params.e)
+                            }
+                        })
+                        if(originalAlign != targetInfo.obj.data.partAlign) {
+                            //this.node.changeAlignment(targetInfo.obj, originalAlign, true)
+                        }
                         $(params.drop.el).removeClass('jsplumb-drag-hover-attach')
                     }
                     else {
@@ -200,17 +232,9 @@ class DragDropHandler extends _CanvasBase {
                 }
             },
             out: (params) => {
-                let drag = this.jsToolkit.getObjectInfo(params.drag.el).obj
-                let drop = this.jsToolkit.getObjectInfo(params.drop.el).obj
-                if(drag.data.family == drop.data.family) {
-                    if (!drop.data.parentId) {
-                        $(params.drop.el).removeClass('jsplumb-drag-hover-detach')
-                    } else {
-                        $(params.drop.el).removeClass('jsplumb-drag-hover-none')
-                    }
-                } else {
-                    $(params.drop.el).removeClass('jsplumb-drag-hover-attach')
-                }
+                $(params.drop.el).removeClass('jsplumb-drag-hover-detach')
+                $(params.drop.el).removeClass('jsplumb-drag-hover-none')
+                $(params.drop.el).removeClass('jsplumb-drag-hover-attach')
             }
         };
     }

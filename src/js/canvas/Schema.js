@@ -23,20 +23,20 @@ class Schema extends _CanvasBase {
     // fires update events to the toolkit for the given node and all of its children and their children
     // etc
     //
-    updateNodeAndParts(node, isRthing=false) {
+    updateNodeAndParts(node, opts) {
         this.jsToolkit.updateNode(node);
         if (node.data.children) {
             _.each(node.data.children, (c) => {
                 let child = this.jsToolkit.getNode(c)
-                this.adjustType(node, child, isRthing)
-                this.updateNodeAndParts(child, isRthing);
+                this.adjustType(node, child, opts)
+                this.updateNodeAndParts(child, opts);
             });
         }
     }
 
-    adjustType(parent, child, isRthing=false) {
+    adjustType(parent, child, opts) {
         var depth = this.canvas.getDepth(child)
-        if(isRthing) {
+        if(opts.isRthing) {
             depth += 1
             child.data.displayType = this.node.getNextPartNodeType(child.data)
         }
@@ -77,12 +77,12 @@ class Schema extends _CanvasBase {
             }
 
             // find new part size
-            this.adjustType(targetNode, sourceNode, targetNode.data.isRThing)
+            this.adjustType(targetNode, sourceNode, { isRthing: targetNode.data.isRThing, target: targetNode })
 
             // update target
             this.jsToolkit.updateNode(targetNode);
             // and source and its children
-            this.updateNodeAndParts(sourceNode, targetNode.data.isRThing);
+            this.updateNodeAndParts(sourceNode, { isRthing: targetNode.data.isRThing, target: targetNode });
         })
         return true;
     }
@@ -120,6 +120,7 @@ class Schema extends _CanvasBase {
             }
 
             this.canvas.updateData({ node: source })
+            this.jsRenderer.getLayout().setSize(source.data.id, [this.canvas.nodeSize, this.canvas.nodeSize])
 
             source.data.children = _.compact(source.data.children)
             let children = this.getAllChildren(source).jNodes
@@ -134,13 +135,13 @@ class Schema extends _CanvasBase {
                 let size = this.node.getSizeForPart(child.data)
                 child.data.h = size
                 child.data.w = size
-                delete child.data.left
-                delete child.data.top
+
                 child.data.partAlign = 'left'
                 child.data.family = source.data.id
                 child.data.labelPosition = []
                 child.data.children = _.compact(child.data.children)
                 this.canvas.updateData({ node: child })
+                this.jsRenderer.getLayout().setSize(child.data.id, [size, size])
             })
         })
         return true;

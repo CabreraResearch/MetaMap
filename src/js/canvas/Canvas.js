@@ -251,31 +251,27 @@ class Canvas {
     }
 
     onAutoSave() {
-        this._onAutoSave = this._onAutoSave || _.debounce(() => {
-            this._data = this._exportData()
-            console.log('Autosave')
-            if (this.doAutoSave && this.permissions.canEdit()) {
-                let postData = {
-                    data: this._data,
-                    changed_by: {
-                        userId: this.metaMap.User.userId,
-                        userName: this.metaMap.User.fullName,
-                        userKey: this.metaMap.User.userKey,
-                        changeId: uuid()
-                    }
+        this._data = this._exportData()
+        if (this.doAutoSave && this.permissions.canEdit()) {
+            let postData = {
+                data: this._data,
+                changed_by: {
+                    userId: this.metaMap.User.userId,
+                    userName: this.metaMap.User.fullName,
+                    userKey: this.metaMap.User.userKey,
+                    changeId: uuid()
                 }
-                this.metaMap.MetaFire.setDataInTransaction(postData, `maps/data/${this.mapId}`).catch((err) => {
-                    //Only show 1 warning
-                    if(this.doAutoSave) {
-                        window.alert("Something went wrong. Your map is no longer be saved. Please refresh your browser and try again.")
-                        this.metaMap.error(err)
-                    }
-                    this.doAutoSave = false
-                })
-                this.metaMap.Integrations.sendEvent('autosave', { mapId: this.mapId, mapName: this.mapName, map: postData })
             }
-        },250)
-        this._onAutoSave()
+            this.metaMap.MetaFire.setDataInTransaction(postData, `maps/data/${this.mapId}`).catch((err) => {
+                //Only show 1 warning
+                if(this.doAutoSave) {
+                    window.alert("Something went wrong. Your map is no longer be saved. Please refresh your browser and try again.")
+                    this.metaMap.error(err)
+                }
+                this.doAutoSave = false
+            })
+            this.metaMap.Integrations.sendEvent('autosave', { mapId: this.mapId, mapName: this.mapName, map: postData })
+        }
     }
 
     reInit(opts) {
@@ -283,20 +279,17 @@ class Canvas {
     }
 
     reloadData(map) {
-        this._reloadData = this._reloadData || _.debounce(() => {
-            this._data = map
-            let old = this.doAutoSave
-            this.doAutoSave = false
-            this.jsToolkit.clear()
-            this.jsToolkit.load({
-                type: 'json',
-                data: map
-            })
-            _.delay(() => {
-                this.doAutoSave = old
-            },500)
-        },250)
-        this._reloadData()
+        this._data = map
+        let old = this.doAutoSave
+        this.doAutoSave = false
+        this.jsToolkit.clear()
+        this.jsToolkit.load({
+            type: 'json',
+            data: map
+        })
+        _.delay(() => {
+            this.doAutoSave = old
+        },500)
     }
 
     refresh() {
