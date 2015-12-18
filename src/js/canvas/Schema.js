@@ -371,12 +371,12 @@ class Schema extends _CanvasBase {
      * Update a node or an edge
      * @param  {any} obj={}
      */
-    updateData(obj={}) {
+    updateData(obj={}, opts={}) {
         if (obj.edge) {
-            this.jsToolkit.updateEdge(obj.edge)
+            this.jsToolkit.updateEdge(obj.edge, opts)
         }
         if (obj.node) {
-            this.jsToolkit.updateNode(obj.node)
+            this.jsToolkit.updateNode(obj.node, opts)
         }
     }
 
