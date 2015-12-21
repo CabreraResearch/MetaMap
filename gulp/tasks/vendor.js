@@ -97,6 +97,7 @@ gulp.task('cdn', function () {
     downloadAndParse('https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.js')
     downloadAndParse('https://cdnjs.cloudflare.com/ajax/libs/jquery-contextmenu/2.0.0/jquery.contextMenu.min.js')
     downloadAndParse('https://cdnjs.cloudflare.com/ajax/libs/jquery-contextmenu/2.0.0/jquery.contextMenu.css', true)
+    downloadAndParse('https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/8.2.1/nouislider.min.css', true)
     downloadAndParse('https://cdnjs.cloudflare.com/ajax/libs/jquery-contextmenu/2.0.0/jquery.ui.position.min.js')
 })
 

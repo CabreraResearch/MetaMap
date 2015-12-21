@@ -11,6 +11,7 @@ const html = `
     <div class="jtk-demo-canvas canvas-wide" id="diagram">
 
     </div>
+    <div class="zoom-widget" id="zoom-widget"></div>
 </div>
 `
 

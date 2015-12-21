@@ -346,3 +346,10 @@ div[data-class="relationship-rthing"] {
     opacity: 0;
     visibility: hidden;
 }
+
+.zoom-widget {
+    position: absolute;
+    right: 30px;
+    bottom: 35px;
+    height: 100px;
+}

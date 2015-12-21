@@ -14,6 +14,7 @@ const Dialog = require('./Dialog')
 const Schema = require('./Schema')
 const CopyPaste = require('./CopyPaste')
 const Undo = require('./Undo')
+const Zoom = require('./Zoom')
 const uuid = require('../tools/uuid')
 
 require('./layout')
@@ -59,6 +60,7 @@ class Canvas {
 
             this.copyPaste = new CopyPaste(this)
             this.undo = new Undo(this)
+            this.zoom = new Zoom(this)
         })
     }
 
