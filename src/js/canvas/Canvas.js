@@ -144,6 +144,34 @@ class Canvas {
         }
     }
 
+    batch(cb) {
+        if(cb) {
+            NProgress.start()
+            let autoSave = this.doAutoSave
+            this.doAutoSave = false
+            jsPlumb.setSuspendDrawing(true);
+            let then = () => {
+                jsPlumb.setSuspendDrawing(false, true);
+                this.doAutoSave = autoSave
+                this.onAutoSave()
+                NProgress.done()
+            }
+            try {
+                if(!cb.then) {
+                    cb()
+                }
+            } catch(e) {
+                console.log(e.stack)
+            } finally {
+                if(cb.then) {
+                    cb.then(then)
+                } else {
+                    then()
+                }
+            }
+        }
+    }
+
     //Whenever changing the selection, clear what was previously selected
     clearSelection(obj) {
         const toolkit = this.jsToolkit

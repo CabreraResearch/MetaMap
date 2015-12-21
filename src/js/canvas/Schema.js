@@ -6,6 +6,7 @@ const _CanvasBase = require('./_CanvasBase')
 const $ = require('jquery')
 const _ = require('lodash')
 const DragDrop = require('./DragDrop')
+const Promise = require('bluebird')
 
 /**
  * @extends _CanvasBase
@@ -57,33 +58,39 @@ class Schema extends _CanvasBase {
      */
     attachPart(sourceNode, targetNode, event) {
         jsPlumbUtil.consume(event);
-        jsPlumb.batch(() => {
-            // remove from current parent, if exists
-            if (sourceNode.data.parentId) {
-                var sourceParent = this.jsToolkit.getNode(sourceNode.data.parentId);
-                _.remove(sourceParent.data.children, (c) => {
-                    return c === sourceNode.id;
-                });
-                this.jsToolkit.updateNode(sourceParent)
+        this.canvas.batch(new Promise((resolve, reject) => {
+            try {
+                // remove from current parent, if exists
+                if (sourceNode.data.parentId) {
+                    var sourceParent = this.jsToolkit.getNode(sourceNode.data.parentId);
+                    _.remove(sourceParent.data.children, (c) => {
+                        return c === sourceNode.id;
+                    });
+                    this.jsToolkit.updateNode(sourceParent)
+                }
+
+                // add to new parent, change parent ref in child
+                targetNode.data.children = targetNode.data.children || [];
+                targetNode.data.children.push(sourceNode.id);
+                sourceNode.data.parentId = targetNode.id;
+
+                if (targetNode.data.parts.class == 'none') {
+                    targetNode.data.parts.class = 'open'
+                }
+
+                // find new part size
+                this.adjustType(targetNode, sourceNode, { isRthing: targetNode.data.isRThing, target: targetNode })
+
+                // update target
+                this.jsToolkit.updateNode(targetNode);
+                // and source and its children
+                this.updateNodeAndParts(sourceNode, { isRthing: targetNode.data.isRThing, target: targetNode });
+                resolve()
+            } catch(e) {
+                this.metaMap.error(e)
+                reject(e)
             }
-
-            // add to new parent, change parent ref in child
-            targetNode.data.children = targetNode.data.children || [];
-            targetNode.data.children.push(sourceNode.id);
-            sourceNode.data.parentId = targetNode.id;
-
-            if (targetNode.data.parts.class == 'none') {
-                targetNode.data.parts.class = 'open'
-            }
-
-            // find new part size
-            this.adjustType(targetNode, sourceNode, { isRthing: targetNode.data.isRThing, target: targetNode })
-
-            // update target
-            this.jsToolkit.updateNode(targetNode);
-            // and source and its children
-            this.updateNodeAndParts(sourceNode, { isRthing: targetNode.data.isRThing, target: targetNode });
-        })
+        }))
         return true;
     }
 
@@ -94,56 +101,62 @@ class Schema extends _CanvasBase {
      */
     detachPart(source, target, event) {
         jsPlumbUtil.consume(event);
-        jsPlumb.batch(() => {
-            target.data.children = _.remove(target.data.children, (id) => {
-                return id != source.data.id
-            })
-            if (target.data.children.length == 0) {
-                target.data.parts.class = 'none'
-            }
-            this.canvas.updateData({ node: target })
+        this.canvas.batch(new Promise((resolve, reject) => {
+            try {
+                target.data.children = _.remove(target.data.children, (id) => {
+                    return id != source.data.id
+                })
+                if (target.data.children.length == 0) {
+                    target.data.parts.class = 'none'
+                }
+                this.canvas.updateData({ node: target })
 
-            source.data.displayType = 'A'
-            source.data.h = this.canvas.nodeSize
-            source.data.w = this.canvas.nodeSize
-            source.data.parentId = ''
-            source.data.family = source.data.id
-            source.data.labelPosition = []
-            source.data.partAlign = 'left'
+                source.data.displayType = 'A'
+                source.data.h = this.canvas.nodeSize
+                source.data.w = this.canvas.nodeSize
+                source.data.parentId = ''
+                source.data.family = source.data.id
+                source.data.labelPosition = []
+                source.data.partAlign = 'left'
 
-            if (!target.data.isRThing) {
-                source.data.top = target.data.top
-                source.data.left = target.data.left+100
-            } else {
-                source.data.top = target.data.top+150
-                source.data.left = target.data.left
-            }
-
-            this.canvas.updateData({ node: source })
-            this.jsRenderer.getLayout().setSize(source.data.id, [this.canvas.nodeSize, this.canvas.nodeSize])
-
-            source.data.children = _.compact(source.data.children)
-            let children = this.getAllChildren(source).jNodes
-            _.each(children, (child) => {
-                let parent = _.filter(children, (c) => { return c.id == child.data.parentId })[0] || source
-                child.data.displayType = this.node.getPrevPartNodeType(child.data,parent.data)
-                //If detaching from an R-thing, we need to go back two
-                if(target.data.isRThing) {
-                    child.data.displayType = this.node.getPrevPartNodeType(child.data)
+                if (!target.data.isRThing) {
+                    source.data.top = target.data.top
+                    source.data.left = target.data.left+100
+                } else {
+                    source.data.top = target.data.top+150
+                    source.data.left = target.data.left
                 }
 
-                let size = this.node.getSizeForPart(child.data)
-                child.data.h = size
-                child.data.w = size
+                this.canvas.updateData({ node: source })
+                this.jsRenderer.getLayout().setSize(source.data.id, [this.canvas.nodeSize, this.canvas.nodeSize])
 
-                child.data.partAlign = 'left'
-                child.data.family = source.data.id
-                child.data.labelPosition = []
-                child.data.children = _.compact(child.data.children)
-                this.canvas.updateData({ node: child })
-                this.jsRenderer.getLayout().setSize(child.data.id, [size, size])
-            })
-        })
+                source.data.children = _.compact(source.data.children)
+                let children = this.getAllChildren(source).jNodes
+                _.each(children, (child) => {
+                    let parent = _.filter(children, (c) => { return c.id == child.data.parentId })[0] || source
+                    child.data.displayType = this.node.getPrevPartNodeType(child.data,parent.data)
+                    //If detaching from an R-thing, we need to go back two
+                    if(target.data.isRThing) {
+                        child.data.displayType = this.node.getPrevPartNodeType(child.data)
+                    }
+
+                    let size = this.node.getSizeForPart(child.data)
+                    child.data.h = size
+                    child.data.w = size
+
+                    child.data.partAlign = 'left'
+                    child.data.family = source.data.id
+                    child.data.labelPosition = []
+                    child.data.children = _.compact(child.data.children)
+                    this.canvas.updateData({ node: child })
+                    this.jsRenderer.getLayout().setSize(child.data.id, [size, size])
+                })
+                resolve()
+            } catch(e) {
+                this.metaMap.error(e)
+                reject(e)
+            }
+        }))
         return true;
     }
 
@@ -166,7 +179,7 @@ class Schema extends _CanvasBase {
      * @param  {any} selected
      */
     deleteAll(selected) {
-        jsPlumb.batch(() => {
+        this.canvas.batch(new Promise((resolve, reject) => {
             selected = selected || this.jsToolkit.getSelection()
             try {
                 selected.eachEdge((i, edge) => {
@@ -178,10 +191,12 @@ class Schema extends _CanvasBase {
                     this.recurseDelete(n)
                 });
                 this.jsToolkit.remove(selected)
+                resolve()
             } catch (e) {
                 this.metaMap.error(e)
+                reject(e)
             }
-        })
+        }))
     }
 
 

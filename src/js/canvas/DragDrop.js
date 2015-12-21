@@ -152,12 +152,32 @@ class DragDropHandler extends _CanvasBase {
                     targetInfo = this.jsToolkit.getObjectInfo(params.drop.el),
                     sourceParentId = sourceInfo.obj.data.parentId,
                     targetParentId = targetInfo.obj.data.parentId,
-                    outcome = false;
+                    outcome = false
+
+                let selection = this.canvas.getSelection()
+                //Prevent unintended attach/detach/reorder by evaluating source/target
+                //in the context of the current selection
+                let isGroupDragging = _.any(selection.nodeIds, (id) => {
+                    return sourceInfo.obj.data.id == id || targetInfo.obj.data.id == id
+                })
+                if(!isGroupDragging) {
+                    let targetChildren = this.schema.getAllChildren(targetInfo.obj).ids
+                    let sourceChildren = this.schema.getAllChildren(sourceInfo.obj).ids
+                    isGroupDragging = _.any(targetChildren, (id) => {
+                        return sourceInfo.obj.data.id == id || targetInfo.obj.data.id == id
+                    })
+                    isGroupDragging = isGroupDragging || _.any(sourceChildren, (id) => {
+                        return sourceInfo.obj.data.id == id || targetInfo.obj.data.id == id
+                    })
+
+                }
+                if(isGroupDragging) {
+                    return
+                }
 
                 // if parent IDs are the same...(note '==' compare here; we dont want to get caught by a null vs undefined comparison on this one)
                 if (sourceParentId == targetParentId) {
-                    if (sourceParentId == null) {
-                        let selection = this.canvas.getSelection()
+                    if (!sourceParentId) {
                         let totalHeight = targetInfo.obj.data.h+10
                         let targetChildren = this.schema.getAllChildren(targetInfo.obj).jNodes
                         _.each(targetChildren, (child) => {
