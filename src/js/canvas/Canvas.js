@@ -147,28 +147,33 @@ class Canvas {
     batch(cb) {
         if(cb) {
             NProgress.start()
+            console.log('progress started')
             let autoSave = this.doAutoSave
             this.doAutoSave = false
             jsPlumb.setSuspendDrawing(true);
-            let then = () => {
-                jsPlumb.setSuspendDrawing(false, true);
-                this.doAutoSave = autoSave
-                this.onAutoSave()
-                NProgress.done()
-            }
-            try {
-                if(!cb.then) {
-                    cb()
+            _.delay(() => {
+                let then = () => {
+                    jsPlumb.setSuspendDrawing(false, true);
+                    this.doAutoSave = autoSave
+                    this.onAutoSave()
+                    NProgress.done()
                 }
-            } catch(e) {
-                console.log(e.stack)
-            } finally {
-                if(cb.then) {
-                    cb.then(then)
-                } else {
-                    then()
+                NProgress.inc()
+                let promise = null
+                try {
+                    promise = cb()
+                    NProgress.inc()
+                } catch(e) {
+                    console.log(e.stack)
+                } finally {
+                    NProgress.inc()
+                    if(promise) {
+                        promise.then(then)
+                    } else {
+                        then()
+                    }
                 }
-            }
+            }, 50)
         }
     }
 
