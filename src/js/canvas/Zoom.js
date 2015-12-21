@@ -14,9 +14,9 @@ class Zoom extends _CanvasBase {
 
         this.el = document.getElementById('zoom-widget')
 
-
+        this.currentZoom = Math.round(this.jsRenderer.getZoom())
         this.slider = noUiSlider.create(this.el, {
-            start: [Math.round(this.jsRenderer.getZoom())],
+            start: [this.currentZoom],
             orientation: 'vertical',
             snap: true,
             direction: 'rtl',
@@ -36,8 +36,24 @@ class Zoom extends _CanvasBase {
                 max: 3
             }
         })
+
         this.slider.on('update', ( values, handle, unencoded, tap ) => {
-            this.jsRenderer.setZoom(values[0])
+            let val = 0.1
+            let zoom = values[0]
+            if(zoom != this.currentZoom) {
+                if(zoom < this.currentZoom) {
+                    val = -val
+                    if(zoom > 1) {
+                        val = -1
+                    }
+                } else {
+                    if(zoom >= 1) {
+                        val = 1
+                    }
+                }
+                this.currentZoom = zoom
+                this.jsRenderer.nudgeZoom(val)
+            }
         })
         /*
 
