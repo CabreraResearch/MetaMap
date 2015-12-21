@@ -48,7 +48,7 @@ const html = `
                 <table class="table table-striped table-bordered table-hover" id="mymaps_table_{ i }">
                     <thead>
                         <tr>
-                            <th class="table-checkbox">
+                            <th class="table-checkbox sorting_disabled">
                                 <input if="{ val.title == 'My Maps' }" type="checkbox" class="group-checkable" data-set="#mymaps_table_{ i } .checkboxes"/>
                             </th>
                             <th>
@@ -241,7 +241,8 @@ module.exports = riot.tag('my-maps', html, function (opts) {
                     'columns': [
                         {
                             name: 'ChckBx',
-                            orderable: false
+                            orderable: false,
+                            width: '13px'
                         }, {
                             name: 'Action',
                             orderable: false,
@@ -282,6 +283,8 @@ module.exports = riot.tag('my-maps', html, function (opts) {
                 });
 
                 tableWrapper.find('.dataTables_length select').addClass('form-control input-xsmall input-inline'); // modify table per page dropdown
+
+                 this[`table${idx}`].find('.table-checkbox').removeClass('sorting_asc')
 
                 $(`.meta_editable_${idx}`).editable({ unsavedclass: null }).on('save', function (event, params) {
                     if (this.dataset && this.dataset.pk) {

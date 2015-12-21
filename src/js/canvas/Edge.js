@@ -101,9 +101,7 @@ class Edge extends _CanvasBase {
                 connector: ['StateMachine', {
                     margin: 0.00001, //This seems to be the most precision that has any effect. The Edge is as close as it's going to get.
                     curviness: -1
-                }]
-            },
-            relationshipParent: {
+                }],
                 cssClass: 'edge-relationship ${id}',
                 parent: 'all',
                 endpoint: 'Blank', //[ [ 'Dot', { radius:2, cssClass:'grey' }], [ 'Dot', { radius:2, cssClass:'grey' }]],
@@ -244,6 +242,8 @@ class Edge extends _CanvasBase {
         _.each(edge.data.direction.match(/left|right/g), function (oid) {
             connection.showOverlay(oid);
         });
+        let dot = connection.getOverlay('customOverlay')
+        dot.show()
     }
 
     showRDot(params) {

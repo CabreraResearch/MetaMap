@@ -51,7 +51,10 @@ class Renderer extends _CanvasBase {
             dragOptions:dragDropHandler.getDragOptions(),
 			dropOptions:dragDropHandler.getDropOptions()
         });
-
+        
+        if (this.canvas.metaMap.debug) {
+            window.renderer = renderer
+        }
     }
 
     update() {
