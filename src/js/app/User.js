@@ -4,12 +4,12 @@ const _ = require('lodash')
 
 class User {
     constructor(profile, auth, eventer, metaFire) {
-        this.auth = auth
+        this.auth = profile
         this.eventer = eventer
         this.metaFire = metaFire
         this.userKey = uuid()
         this.onReady()
-        this.metaMap = require('../../MetaMap')
+        this.Homunculus = require('../../Homunculus')
     }
 
     onReady() {
@@ -32,7 +32,7 @@ class User {
                             this.profile = user
                             trackHistory()
                         } catch (e) {
-                            this.metaMap.error(e)
+                            this.Homunculus.error(e)
                         }
                         fulfill(user)
                     }

@@ -1,0 +1,473 @@
+{
+  "CONSTANTS" : {
+    "ACTIONS" : {
+      "COPY_MAP" : "copy_map",
+      "DELETE_MAP" : "delete_map",
+      "HOME" : "home",
+      "MAP" : "map",
+      "NEW_MAP" : "new_map"
+    }
+  },
+  "actions" : {
+    "copy-map" : {
+      "allowed-on" : {
+        "*" : false,
+        "faq" : false,
+        "home" : false,
+        "map" : true,
+        "terms" : false
+      },
+      "icon" : "fa fa-clone",
+      "link" : "#copy_map/{0}",
+      "order" : 2,
+      "title" : "Copy Map",
+      "url_params" : {
+        "mapid" : {
+          "name" : "mapId"
+        }
+      }
+    },
+    "delete-map" : {
+      "allowed-on" : {
+        "*" : false,
+        "faq" : false,
+        "home" : false,
+        "map" : true,
+        "terms" : false
+      },
+      "icon" : "fa fa-trash",
+      "link" : "#delete_map/{0}",
+      "order" : 4,
+      "title" : "Delete Map",
+      "url_params" : {
+        "mapid" : {
+          "name" : "mapId"
+        }
+      }
+    },
+    "my-maps" : {
+      "allowed-on" : {
+        "*" : true
+      },
+      "icon" : "fa fa-folder-open",
+      "link" : "#mymaps",
+      "order" : 0,
+      "title" : "My Maps"
+    },
+    "new-map" : {
+      "allowed-on" : {
+        "*" : true
+      },
+      "icon" : "fa fa-file-text",
+      "link" : "#new_map",
+      "order" : 1,
+      "title" : "New Map"
+    },
+    "share-map" : {
+      "allowed-on" : {
+        "*" : false,
+        "faq" : false,
+        "home" : false,
+        "map" : true,
+        "terms" : false
+      },
+      "icon" : "fa fa-share",
+      "link" : "#share_map/{0}",
+      "order" : 3,
+      "title" : "Share Map",
+      "url_params" : {
+        "mapId" : {
+          "name" : "mapId"
+        }
+      }
+    }
+  },
+  "canvas" : {
+    "colors" : {
+      "D" : {
+        "dark" : "#B54C3C"
+      },
+      "DSRP" : {
+        "D" : "#f2624c",
+        "P" : "#fbaa36",
+        "R" : "#4cbfc2",
+        "S" : "#96c93d"
+      },
+      "P" : {
+        "dark" : "#C9882B",
+        "light" : "#FDDDAF"
+      },
+      "R" : {
+        "dark" : "#3E9EA0"
+      },
+      "S" : {
+        "dark" : "#759C30"
+      },
+      "black" : "#000",
+      "darkGrey" : "#333"
+    },
+    "shapes" : {
+      "node" : {
+        "size" : 50
+      },
+      "part" : {
+        "size" : 0.667
+      }
+    }
+  },
+  "help" : {
+    "about" : {
+      "icon" : "fa fa-info-circle",
+      "link" : "#about",
+      "order" : 99,
+      "title" : "About"
+    },
+    "faq" : {
+      "icon" : "fa fa-question",
+      "link" : "#faq",
+      "order" : 0,
+      "title" : "Support/FAQ"
+    },
+    "feedback" : {
+      "icon" : "fa fa-frown-o",
+      "link" : "#feedback",
+      "order" : 1,
+      "title" : "Report an Error"
+    },
+    "online-training" : {
+      "icon" : "fa fa-laptop",
+      "link" : "#course_list",
+      "order" : 2,
+      "title" : "Online Trainings"
+    },
+    "tutorial" : {
+      "icon" : "fa fa-lightbulb-o",
+      "link" : "#tutorial",
+      "order" : 3,
+      "title" : "Tutorial"
+    }
+  },
+  "home" : {
+    "areas" : {
+      "learn" : {
+        "icon" : "fa fa-check icon-default",
+        "order" : 1,
+        "text" : "Learn more about using MetaMap platform or developing your meta-thinking, a skill that will transform every aspect of your life. ",
+        "title" : "Learn"
+      },
+      "my-maps" : {
+        "icon" : "fa fa-check icon-default",
+        "order" : 0,
+        "text" : "is a dashboard (like Google docs for MetaMaps) with all of your personal, shared, and organizational MetaMaps. ",
+        "title" : "My MetaMaps"
+      },
+      "public" : {
+        "icon" : "fa fa-check icon-default",
+        "order" : 2,
+        "text" : "is a social feed (like Facebook for MetaMaps) where you share and find maps, lessons, and ideas shared by others.",
+        "title" : "Public"
+      }
+    },
+    "header" : {
+      "text" : "The foundation for MetaMap platform is the visual mapping canvas that allows you to visualize, share, and present your ideas using MetaMaps. Click Create New MetaMap to go to the canvas. The three areas of the platform are to the left:",
+      "title" : "Think and Thrive..",
+      "youtubeid" : "-sfiReUu3o0"
+    },
+    "quote" : {
+      "by" : "Albert Einstein",
+      "text" : "We can not solve our problems with the same level of thinking that created them"
+    },
+    "vision" : {
+      "text" : "Some lorem ipsum",
+      "title" : "'s vision is to create:"
+    }
+  },
+  "mymaps" : {
+    "buttons" : {
+      "add" : {
+        "icon" : "fa fa-pencil",
+        "link" : "#new_map",
+        "order" : 0,
+        "title" : "Add"
+      }
+    },
+    "menu" : {
+      "delete" : {
+        "icon" : "fa fa-trash-o",
+        "link" : "#delete_map",
+        "order" : 2,
+        "title" : "Delete"
+      },
+      "edit" : {
+        "icon" : "fa fa-pencil",
+        "link" : "#edit-map",
+        "order" : 0,
+        "title" : "Edit"
+      },
+      "share" : {
+        "icon" : "fa fa-share",
+        "link" : "#share-map",
+        "order" : 1,
+        "title" : "Share"
+      }
+    },
+    "tabs" : {
+      "my-maps" : {
+        "order" : 0,
+        "title" : "My Maps"
+      },
+      "shared-with-me" : {
+        "order" : 1,
+        "title" : "Shared with Me"
+      }
+    }
+  },
+  "navbar" : {
+    "home" : {
+      "order" : 0,
+      "title" : "home"
+    }
+  },
+  "notifications" : [ {
+    "event" : "none"
+  } ],
+  "sidebar" : {
+    "analytics" : {
+      "archive" : false,
+      "color" : "",
+      "hasMenu" : true,
+      "icon" : "fa fa-flask",
+      "menu" : {
+        "map" : {
+          "archive" : false,
+          "icon" : "fa fa-bar-chart-o",
+          "order" : 6,
+          "title" : "Map"
+        },
+        "relationship" : {
+          "archive" : false,
+          "icon" : "fa fa-share-alt-square",
+          "order" : 6,
+          "title" : "Relationship"
+        },
+        "thing" : {
+          "archive" : false,
+          "icon" : "fa fa-square",
+          "order" : 6,
+          "title" : "Thing"
+        }
+      },
+      "order" : 6,
+      "title" : "Analytics"
+    },
+    "distinctions-layout" : {
+      "archive" : false,
+      "color" : "eb4a3b",
+      "hasMenu" : true,
+      "icon" : "fa fa-adjust",
+      "menu" : {
+        "advanced-d-editor" : {
+          "archive" : false,
+          "icon" : "fa fa-cubes",
+          "order" : 0,
+          "title" : "Advanced D-Editor"
+        },
+        "clone" : {
+          "archive" : false,
+          "icon" : "icon-Dclone",
+          "order" : 0,
+          "title" : "Clone"
+        },
+        "d-tag" : {
+          "archive" : false,
+          "icon" : "icon-Dtag",
+          "order" : 0,
+          "title" : "D-Tag"
+        }
+      },
+      "order" : 0,
+      "title" : "Distinctions Layout"
+    },
+    "insert-attachments" : {
+      "archive" : false,
+      "color" : "",
+      "hasMenu" : false,
+      "icon" : "fa fa-picture-o",
+      "order" : 4,
+      "title" : "Insert Attachments"
+    },
+    "perspectives-layout" : {
+      "archive" : false,
+      "color" : "faaa35",
+      "hasMenu" : true,
+      "icon" : "icon-Pmain",
+      "menu" : {
+        "both" : {
+          "archive" : false,
+          "icon" : "icon-Pboth",
+          "order" : 3,
+          "title" : "Both"
+        },
+        "left" : {
+          "archive" : false,
+          "icon" : "icon-Plines",
+          "order" : 3,
+          "title" : "Left"
+        },
+        "lines" : {
+          "archive" : false,
+          "icon" : "fa fa-long-arrow-right",
+          "order" : 3,
+          "title" : "Lines"
+        },
+        "p-editor" : {
+          "archive" : false,
+          "icon" : "fa fa-eye",
+          "order" : 3,
+          "title" : "P-editor"
+        },
+        "spotlight" : {
+          "archive" : false,
+          "icon" : "icon-Pspotlight",
+          "order" : 3,
+          "title" : "Spotlight"
+        }
+      },
+      "order" : 3,
+      "title" : "Perspectives Layout"
+    },
+    "system-layout" : {
+      "archive" : false,
+      "color" : "95c83d",
+      "hasMenu" : true,
+      "icon" : "icon-Smain",
+      "menu" : {
+        "freehand" : {
+          "archive" : false,
+          "icon" : "icon-Sfreehand",
+          "order" : 1,
+          "title" : "Freehand"
+        },
+        "left" : {
+          "archive" : false,
+          "icon" : "icon-Sleft",
+          "order" : 1,
+          "title" : "Left"
+        },
+        "right" : {
+          "archive" : false,
+          "icon" : "icon-Sright",
+          "order" : 1,
+          "title" : "Right"
+        },
+        "stack" : {
+          "archive" : false,
+          "icon" : "icon-Sstack",
+          "order" : 1,
+          "title" : "Stack"
+        }
+      },
+      "order" : 1,
+      "title" : "System Layout"
+    },
+    "tools" : {
+      "archive" : false,
+      "color" : "",
+      "hasMenu" : true,
+      "icon" : "fa fa-wrench",
+      "menu" : {
+        "comments" : {
+          "archive" : false,
+          "icon" : "fa fa-comments",
+          "order" : 5,
+          "title" : "Comments"
+        },
+        "course-builder" : {
+          "archive" : false,
+          "icon" : "fa fa-magic",
+          "order" : 5,
+          "title" : "Course Builder"
+        },
+        "jig-creator" : {
+          "archive" : false,
+          "icon" : "icon-jig",
+          "order" : 5,
+          "title" : "Jig Creator"
+        },
+        "k-12" : {
+          "archive" : false,
+          "icon" : "fa fa-tags",
+          "order" : 5,
+          "title" : "K-12"
+        },
+        "presenter" : {
+          "archive" : false,
+          "icon" : "fa fa-desktop",
+          "order" : 5,
+          "title" : "Presenter"
+        },
+        "think-query" : {
+          "archive" : false,
+          "icon" : "fa fa-question-circle",
+          "order" : 5,
+          "title" : "ThinkQuery"
+        }
+      },
+      "order" : 5,
+      "title" : "Tools"
+    }
+  },
+  "terms-and-conditions" : {
+    "header" : {
+      "text" : "Some lorem ipsum",
+      "title" : "Terms and Conditions"
+    },
+    "sections" : {
+      "section-1" : {
+        "items" : {
+          "item-1" : {
+            "icon" : "fa fa-ban",
+            "order" : 0,
+            "text" : "Something you can't do",
+            "title" : "A title"
+          },
+          "item-2" : {
+            "icon" : "fa fa-check icon-success",
+            "order" : 1,
+            "text" : "Something you can do",
+            "title" : "Another title"
+          },
+          "item-3" : {
+            "icon" : "fa fa-exclamation-triangle",
+            "order" : 2,
+            "text" : "Something we do that you should know",
+            "title" : "Pay attention to this"
+          }
+        },
+        "order" : 0,
+        "text" : "Some high level explanation over this section",
+        "title" : "This would be a conceptual section title"
+      }
+    }
+  },
+  "user" : {
+    "link-social-accounts" : {
+      "icon" : "fa fa-compress",
+      "link" : "#link-social-accounts",
+      "order" : 1,
+      "title" : "Link Social Accounts"
+    },
+    "logout" : {
+      "icon" : "fa fa-sign-out",
+      "link" : "#logout",
+      "order" : 2,
+      "title" : "Logout"
+    },
+    "my-profile" : {
+      "icon" : "fa fa-user",
+      "link" : "#my-profile",
+      "order" : 0,
+      "title" : "My Profile"
+    }
+  }
+}

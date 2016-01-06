@@ -25,7 +25,7 @@ const html = `
 
 module.exports = riot.tag('meta-dialog', html, function(opts) {
 
-    const MetaMap = require('../../../MetaMap.js');
+    const Homunculus = require('../../../Homunculus.js');
 
     this.title = ''
     this.visible = false;
@@ -35,8 +35,8 @@ module.exports = riot.tag('meta-dialog', html, function(opts) {
 
     $(this.full).on('hide.bs.modal', () => {
         this.visible = false;
-        if (MetaMap.Router.currentPage == 'mymaps') {
-            MetaMap.Router.back();
+        if (Homunculus.Router.currentPage == 'mymaps') {
+            Homunculus.Router.back();
         }
     });
 
@@ -64,7 +64,7 @@ module.exports = riot.tag('meta-dialog', html, function(opts) {
     }
 
 
-    MetaMap.Eventer.every('nav mymaps', (event) => {
+    Homunculus.Eventer.every('nav mymaps', (event) => {
         if (event == 'nav') {
             this.hide();
         } else {

@@ -88,7 +88,7 @@ class Schema extends _CanvasBase {
                     this.updateNodeAndParts(sourceNode, { isRthing: targetNode.data.isRThing, target: targetNode });
                     resolve()
                 } catch(e) {
-                    this.metaMap.error(e)
+                    this.Homunculus.error(e)
                     reject(e)
                 }
             })
@@ -156,7 +156,7 @@ class Schema extends _CanvasBase {
                     })
                     resolve()
                 } catch(e) {
-                    this.metaMap.error(e)
+                    this.Homunculus.error(e)
                     reject(e)
                 }
             })
@@ -198,7 +198,7 @@ class Schema extends _CanvasBase {
                     this.jsToolkit.remove(selected)
                     resolve()
                 } catch (e) {
-                    this.metaMap.error(e)
+                    this.Homunculus.error(e)
                     reject(e)
                 }
             })

@@ -11,11 +11,10 @@ const html = `
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                <h4 class="modal-title">About MetaMap</h4>
+                <h4 class="modal-title">About Homunculus</h4>
             </div>
             <div class="modal-body">
                 <p>Version: {version}</p>
-                <p>Copyright (2015) Cabrera Research Lab</p>
             </div>
         </div>
     </div>

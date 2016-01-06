@@ -13,7 +13,7 @@ const html = `
 <div id="{tableId}" class="portlet box grey-cascade">
     <div class="portlet-title">
         <div class="caption">
-            <i class="fa fa-icon-th-large"></i>MetaMaps
+            <i class="fa fa-icon-th-large"></i>Homunculuss
         </div>
         <div if="{ menu }" class="actions">
             <a each="{ menu.buttons }" href="{ link }" onclick="{ parent.onActionClick }" class="btn btn-default btn-sm">

@@ -53,9 +53,9 @@ module.exports = riot.tag(CONSTANTS.TAGS.ALL_COURSES, html, function (opts) {
 
     this.mixin(TrainingMix)
 
-    const MetaMap = require('../../../MetaMap.js')
+    const Homunculus = require('../../../Homunculus.js')
 
-    this.user = MetaMap.User
+    this.user = Homunculus.User
     this.data = []
     this.editable = false
     this.tableId = 'all_courses'
@@ -87,7 +87,7 @@ module.exports = riot.tag(CONSTANTS.TAGS.ALL_COURSES, html, function (opts) {
 
     //Events
     this.onStart = (event, ...o) => {
-        MetaMap.Router.to(`trainings/${event.item.id}`)
+        Homunculus.Router.to(`trainings/${event.item.id}`)
     }
 
     this.onDownload = (event, ...o) => {
@@ -144,8 +144,8 @@ module.exports = riot.tag(CONSTANTS.TAGS.ALL_COURSES, html, function (opts) {
                                         } catch (e) {
                                             ret.action_data = line['Action Data']
                                             window.alert(`Couldn't import Action Data for line number ${lineNo+1}: "${ret.action_data}"`)
-                                            MetaMap.error(e)
-                                            MetaMap.error({message: ret.action_data })
+                                            Homunculus.error(e)
+                                            Homunculus.error({message: ret.action_data })
                                         }
                                         return ret;
                                     })
@@ -213,7 +213,7 @@ module.exports = riot.tag(CONSTANTS.TAGS.ALL_COURSES, html, function (opts) {
     })
 
     const once = _.once(() => {
-        MetaMap.MetaFire.on(CONSTANTS.ROUTES.COURSE_LIST, (list) => {
+        Homunculus.MetaFire.on(CONSTANTS.ROUTES.COURSE_LIST, (list) => {
             this._data = list
             this.data = _.map(this._data, (obj, key) => {
                 obj.id = key

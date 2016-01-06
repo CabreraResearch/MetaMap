@@ -3,7 +3,7 @@ const moment = require('moment')
 
 let AllTags = {
     init: function() {
-        this.MetaMap = require('../../../MetaMap.js')
+        this.Homunculus = require('../../../Homunculus.js')
         this.CONSTANTS = CONSTANTS
         this.NProgress = window.NProgress
         this.moment = moment
@@ -11,7 +11,7 @@ let AllTags = {
     },
 
     getCortex: function(trainingId, trainingTag) {
-        this.cortex = this.cortex || this.MetaMap.getCortex(trainingId, trainingTag)
+        this.cortex = this.cortex || this.Homunculus.getCortex(trainingId, trainingTag)
         return this.cortex
     },
 

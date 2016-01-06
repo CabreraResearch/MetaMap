@@ -19,10 +19,10 @@ gulp.task('css', function (cb) {
 // create task
 gulp.task('meta-css', function(){
     return gulp.src('src/css/**/*.css')
-        .pipe(concat('MetaMap.css'))
+        .pipe(concat('Homunculus.css'))
         .pipe(gulp.dest('dist'))
         .pipe(minifyCSS())
-        .pipe(concat('MetaMap.min.css'))
+        .pipe(concat('Homunculus.min.css'))
         .pipe(gulp.dest('dist'))
 });
 

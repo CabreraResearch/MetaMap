@@ -10,7 +10,7 @@ class CopyMap extends ActionBase {
 
     act(id, ...params) {
         super.act(id, ...params);
-        MetaMap.Router.back()
+        Homunculus.Router.back()
         CopyMap.copyMap(id, true)
         return true;
     }
@@ -40,15 +40,15 @@ class CopyMap extends ActionBase {
             return new Error('Must have a map in order to copy.');
         }
         return new Promise((resolve, reject) => {
-            let MetaMap = require('../../MetaMap')
-            MetaMap.MetaFire.getData(`${CONSTANTS.ROUTES.MAPS_LIST}${id}`).then((oldMap) => {
+            let Homunculus = require('../../Homunculus')
+            Homunculus.MetaFire.getData(`${CONSTANTS.ROUTES.MAPS_LIST}${id}`).then((oldMap) => {
                 if(oldMap) {
                     let newMap = {
                         created_at: `${new Date()}`,
                         owner: {
-                            userId: MetaMap.User.userId,
-                            name: MetaMap.User.displayName,
-                            picture: MetaMap.User.picture
+                            userId: Homunculus.User.userId,
+                            name: Homunculus.User.displayName,
+                            picture: Homunculus.User.picture
                         },
                         name: CopyMap.appendCopy(oldMap.name),
                         shared_with: {
@@ -60,13 +60,13 @@ class CopyMap extends ActionBase {
                                 write: false }
                         }
                     }
-                    MetaMap.MetaFire.getData(`${CONSTANTS.ROUTES.MAPS_DATA}${id}`).then((oldMapData) => {
-                        let pushState = MetaMap.MetaFire.pushData(newMap, `${CONSTANTS.ROUTES.MAPS_LIST}`);
+                    Homunculus.MetaFire.getData(`${CONSTANTS.ROUTES.MAPS_DATA}${id}`).then((oldMapData) => {
+                        let pushState = Homunculus.MetaFire.pushData(newMap, `${CONSTANTS.ROUTES.MAPS_LIST}`);
                         let mapId = pushState.key();
-                        MetaMap.MetaFire.setData(oldMapData, `${CONSTANTS.ROUTES.MAPS_DATA}${mapId}`);
+                        Homunculus.MetaFire.setData(oldMapData, `${CONSTANTS.ROUTES.MAPS_DATA}${mapId}`);
                         resolve(_.extend(oldMap, oldMapData))
                         if (openMap) {
-                            MetaMap.Router.to(`map/${mapId}`);
+                            Homunculus.Router.to(`map/${mapId}`);
                         } 
                     });
                 } else {

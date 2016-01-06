@@ -26,7 +26,7 @@ class Print extends ActionBase {
 
         document.body.innerHTML = originalContents
 
-        this.metaMap.Router.back()
+        this.Homunculus.Router.back()
     }
 
 }

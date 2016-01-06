@@ -47,18 +47,18 @@ const html = `<a href="javascript:;"
 
 riot.tag('meta-notifications', html, function (opts) {
 
-    const MetaMap = require('../../../MetaMap.js');
-    const fbPath = CONSTANTS.ROUTES.NOTIFICATIONS.format(MetaMap.User.userId)
+    const Homunculus = require('../../../Homunculus.js');
+    const fbPath = CONSTANTS.ROUTES.NOTIFICATIONS.format(Homunculus.User.userId)
 
     this.notifications = [];
     this.allNotifications = [];
 
     this.onClick = (event, params) => {
         let item = event.item.val
-        MetaMap.MetaFire.setData(true, `${fbPath}/${item.id}/archive`)
+        Homunculus.MetaFire.setData(true, `${fbPath}/${item.id}/archive`)
         switch (item.type) {
             case CONSTANTS.NOTIFICATION.MAP:
-                MetaMap.Router.to(`map/${item.mapId}`);
+                Homunculus.Router.to(`map/${item.mapId}`);
                 break;
         }
         return true;
@@ -69,16 +69,16 @@ riot.tag('meta-notifications', html, function (opts) {
     }
 
     this.on('mount', () => {
-        MetaMap.MetaFire.getData(fbPath)
+        Homunculus.MetaFire.getData(fbPath)
             .then((data) => {
                 if (!data) {
-                    MetaMap.MetaFire.pushData({
-                        event: 'You signed up for MetaMap!',
+                    Homunculus.MetaFire.pushData({
+                        event: 'You signed up for Homunculus!',
                         time: `${new Date() }`,
                         archive: false
                     }, fbPath)
                 }
-                MetaMap.MetaFire.on(CONSTANTS.ROUTES.NOTIFICATIONS.format(MetaMap.User.userId), (data) => {
+                Homunculus.MetaFire.on(CONSTANTS.ROUTES.NOTIFICATIONS.format(Homunculus.User.userId), (data) => {
                     this.allNotifications = _.map(data, (n, id) => { n.id = id; return n;  });
                     this.notifications = _.filter(_.sortBy(this.allNotifications, 'date'), (d) => {
                         var include = d.archive != true;

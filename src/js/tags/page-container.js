@@ -10,7 +10,7 @@ const html = `
 
 module.exports = riot.tag('page-container', html, function(opts) {
 
-    const MetaMap = require('../../MetaMap');
+    const Homunculus = require('../../Homunculus');
 
     this.on('update', () => {
         this.content = this.content || riot.mount(this.meta_page_content, 'page-content')[0];

@@ -38,7 +38,7 @@ const html = `<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdo
 
 riot.tag('meta-points', html, function (opts) {
 
-    const MetaMap = require('../../../MetaMap.js');
+    const Homunculus = require('../../../Homunculus.js');
     this.points = [];
 
     this.onClick = (event, params) => {
@@ -47,7 +47,7 @@ riot.tag('meta-points', html, function (opts) {
     }
 
     this.on('mount', () => {
-        MetaMap.MetaFire.on(`users/${MetaMap.User.userId}/points`, (data) => {
+        Homunculus.MetaFire.on(`users/${Homunculus.User.userId}/points`, (data) => {
             this.points = _.filter(_.sortBy(data, 'order'), (d) => {
                 var include = d.archive != true;
                 return include;

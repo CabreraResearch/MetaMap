@@ -26,7 +26,7 @@ const html = `
 
 module.exports = riot.tag('page-header', html, function(opts) {
 
-    const MetaMap = require('../../MetaMap');
+    const Homunculus = require('../../Homunculus');
 
     this.on('update', () => {
         this.logo = this.logo || riot.mount(this.meta_page_logo, 'page-logo')[0];

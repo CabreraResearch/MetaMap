@@ -16,7 +16,7 @@ const html = `
 
 module.exports = riot.tag('page-search', html, function(opts) {
 
-    const MetaMap = require('../../MetaMap');
+    const Homunculus = require('../../Homunculus');
 
     
 });

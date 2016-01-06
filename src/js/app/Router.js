@@ -3,11 +3,11 @@ const CONSTANTS = require('../constants/constants');
 const _ = require('lodash')
 
 class Router {
-    constructor(metaMap) {
-        this.integrations = metaMap.Integrations;
-        this.user = metaMap.User;
-        this.PageFactory = metaMap.PageFactory;
-        this.eventer = metaMap.Eventer;
+    constructor(Homunculus) {
+        this.integrations = Homunculus.Integrations;
+        this.user = Homunculus.User;
+        this.PageFactory = Homunculus.PageFactory;
+        this.eventer = Homunculus.Eventer;
         this.isHidden = false;
     }
 

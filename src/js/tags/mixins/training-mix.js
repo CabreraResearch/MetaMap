@@ -4,7 +4,7 @@ const Cortex = require('../../training/cortex')
 
 let TrainingMix = {
     init: function() {
-        this.MetaMap = require('../../../MetaMap.js')
+        this.Homunculus = require('../../../Homunculus.js')
     },
 
     getDate: function (date) {

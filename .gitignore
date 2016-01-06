@@ -3,10 +3,10 @@ bower_components/
 bin/
 obj/
 .vs/
-MetaMap.csproj
-MetaMap.csproj.user
-MetaMap.sln
-MetaMap.v12.suo
+Homunculus.csproj
+Homunculus.csproj.user
+Homunculus.sln
+Homunculus.v12.suo
 Properties/AssemblyInfo.cs
 Web.Debug.config
 Web.Release.config
@@ -19,7 +19,7 @@ typings/
 dist/
 report/
 src/vendor/cdn/
-MetaMap.iml
+Homunculus.iml
 dev.html
 index.html
 .vscode/

@@ -13,7 +13,7 @@ class ShareMap extends ActionBase {
         this.metaFire.getData(`${CONSTANTS.ROUTES.MAPS_LIST}${id}`).then((map) => {
             map.id = id
             ShareMap.act({ map: map })
-            this.metaMap.Router.back()
+            this.Homunculus.Router.back()
         });
         return true;
     }

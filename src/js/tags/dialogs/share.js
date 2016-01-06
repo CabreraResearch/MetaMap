@@ -76,8 +76,8 @@ const html = `
 
 module.exports = riot.tag('share', html, function (opts) {
 
-    const MetaMap = require('../../../MetaMap')
-    const share = new Sharing(MetaMap.User)
+    const Homunculus = require('../../../Homunculus')
+    const share = new Sharing(Homunculus.User)
 
     this.data = [];
 
@@ -133,10 +133,10 @@ module.exports = riot.tag('share', html, function (opts) {
             source: (query, syncMethod, asyncMethod) => {
                 return $.ajax({
                     type: 'post',
-                    url: 'https://api.metamap.co/users/find',
+                    url: 'https://api.Homunculus.co/users/find',
                     data: JSON.stringify( {
-                        currentUserId: MetaMap.User.userId,
-                        sessionId: MetaMap.MetaFire.firebase_token,
+                        currentUserId: Homunculus.User.userId,
+                        sessionId: Homunculus.MetaFire.firebase_token,
                         excludedUsers: _.keys(this.opts.map.shared_with),
                         search: query
                     }),

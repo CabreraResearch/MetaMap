@@ -14,16 +14,16 @@ class DeleteMap extends ActionBase {
     }
 
     static deleteAll(ids, path = CONSTANTS.PAGES.HOME) {
-        const metaMap = require('../../MetaMap.js');
+        const Homunculus = require('../../Homunculus.js');
         try {
             _.each(ids, (id) => {
-                metaMap.MetaFire.deleteData(`${CONSTANTS.ROUTES.MAPS_DATA}${id}`);
-                metaMap.MetaFire.deleteData(`${CONSTANTS.ROUTES.MAPS_LIST}${id}`);
+                Homunculus.MetaFire.deleteData(`${CONSTANTS.ROUTES.MAPS_DATA}${id}`);
+                Homunculus.MetaFire.deleteData(`${CONSTANTS.ROUTES.MAPS_LIST}${id}`);
             });
         } catch(e) {
             
         } finally {
-            metaMap.Router.to(path);
+            Homunculus.Router.to(path);
         }        
     }
 }

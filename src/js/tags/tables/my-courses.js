@@ -29,9 +29,9 @@ const html = `
 
 module.exports = riot.tag(CONSTANTS.TAGS.MY_COURSES, html, function (opts) {
 
-    const MetaMap = require('../../../MetaMap.js')
+    const Homunculus = require('../../../Homunculus.js')
 
-    this.user = MetaMap.User
+    this.user = Homunculus.User
     this.data = []
     this.editable = false
     this.tableId = 'my_courses'
@@ -53,7 +53,7 @@ module.exports = riot.tag(CONSTANTS.TAGS.MY_COURSES, html, function (opts) {
 
     //Events
     this.onStart = (event, ...o) => {
-        MetaMap.Router.to(`trainings/${event.item.id}`)
+        Homunculus.Router.to(`trainings/${event.item.id}`)
     }
 
     this.buildTable = () => {
@@ -91,7 +91,7 @@ module.exports = riot.tag(CONSTANTS.TAGS.MY_COURSES, html, function (opts) {
     })
 
     const once = _.once(() => {
-        MetaMap.MetaFire.on(CONSTANTS.ROUTES.TRAININGS.format(this.user.userId), (list) => {
+        Homunculus.MetaFire.on(CONSTANTS.ROUTES.TRAININGS.format(this.user.userId), (list) => {
             this.data = _.map(list, (obj, key) => {
                 obj.id = key
                 obj.created_at = moment(new Date(obj.created_at)).format('YYYY-MM-DD')

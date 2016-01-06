@@ -105,10 +105,10 @@ class DragDropHandler extends _CanvasBase {
                 if (node.data.parentId != null) {
                     var parentNode = this.jsToolkit.getNode(node.data.parentId);
                     if (parentNode && !parentNode.data.suspendLayout) {
-                        params.el._metamapParent = parentNode;
+                        params.el._HomunculusParent = parentNode;
                     }
                     else {
-                        params.el._metamapParent = null;
+                        params.el._HomunculusParent = null;
                     }
                 }
             }
@@ -118,8 +118,8 @@ class DragDropHandler extends _CanvasBase {
     reorderChild(sourceNode, targetNode, params) {
         jsPlumbUtil.consume(params.e);
         let layout = this.jsRenderer.getLayout();
-        if(params.drag.el._metamapParent) {
-            var childPositions = layout.getChildPositions(params.drag.el._metamapParent.id)
+        if(params.drag.el._HomunculusParent) {
+            var childPositions = layout.getChildPositions(params.drag.el._HomunculusParent.id)
             // here we map child positions to a list containing entries that have [ pos, delta, idx ], which we then
             // sort by delta (where delta is the distance from that node's top edge from the dropped node's top edge).
             // the first entry in this array, then, gives us the new index for the dropped node.

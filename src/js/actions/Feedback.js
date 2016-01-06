@@ -11,7 +11,7 @@ class Feedback extends ActionBase {
         if(this.userSnap) {
             this.userSnap.openReportWindow();
         }
-        this.metaMap.Router.back()
+        this.Homunculus.Router.back()
         return true;
     }
 }

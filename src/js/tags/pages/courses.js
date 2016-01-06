@@ -55,9 +55,9 @@ const html = `
 
 module.exports = riot.tag(CONSTANTS.TAGS.COURSE_LIST, html, function (opts) {
 
-    const MetaMap = require('../../../MetaMap.js');
+    const Homunculus = require('../../../Homunculus.js');
 
-    this.user = MetaMap.User;
+    this.user = Homunculus.User;
     this.data = [];
     this.menu = null;
     let tabs = [
@@ -70,7 +70,7 @@ module.exports = riot.tag(CONSTANTS.TAGS.COURSE_LIST, html, function (opts) {
 
     //Events
     this.onOpen = (event, ...o) => {
-        MetaMap.Router.to(`map/${event.item.id}`);
+        Homunculus.Router.to(`map/${event.item.id}`);
     }
 
     this.onTabSwitch = (event, ...o) => {
@@ -94,7 +94,7 @@ module.exports = riot.tag(CONSTANTS.TAGS.COURSE_LIST, html, function (opts) {
                 this[title].update();
             }
         } catch (e) {
-            MetaMap.error(e)
+            Homunculus.error(e)
         }
     }
 

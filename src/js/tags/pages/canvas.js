@@ -26,7 +26,7 @@ module.exports = riot.tag('canvas', html, function(opts) {
         if (!this.canvas) {
             $(this.diagram).empty()
 
-            this.MetaMap.MetaFire.getData(`${CONSTANTS.ROUTES.MAPS_LIST}/${this.mapId}`).then((mapInfo) => {
+            this.Homunculus.MetaFire.getData(`${CONSTANTS.ROUTES.MAPS_LIST}/${this.mapId}`).then((mapInfo) => {
                 this.map = _.extend(map, mapInfo)
                 this.permissions = new Permissions(this.map)
                 this.canvas = new Canvas({
@@ -40,12 +40,12 @@ module.exports = riot.tag('canvas', html, function(opts) {
             })
         } else {
             //If someone else (another user or the same user in a different browser) edits the map, reload it
-            if(map && map.changed_by && ((map.changed_by.userId != this.MetaMap.User.userId || map.changed_by.userKey != this.MetaMap.User.userKey ) && map.changed_by.changeId != this.map.changed_by.changeId)) {
+            if(map && map.changed_by && ((map.changed_by.userId != this.Homunculus.User.userId || map.changed_by.userKey != this.Homunculus.User.userKey ) && map.changed_by.changeId != this.map.changed_by.changeId)) {
                 this.map = map
                 this.canvas.reloadData(map.data)
-                this.MetaMap.MetaFire.off(`maps/data/${this.mapId}`)
+                this.Homunculus.MetaFire.off(`maps/data/${this.mapId}`)
                 _.delay(() => {
-                    this.MetaMap.MetaFire.on(`maps/data/${this.mapId}`, this.buildCanvas)
+                    this.Homunculus.MetaFire.on(`maps/data/${this.mapId}`, this.buildCanvas)
                 },1000)
             }
         }
@@ -56,17 +56,17 @@ module.exports = riot.tag('canvas', html, function(opts) {
         if (opts.id != this.mapId) {
             this.canvas = null
             if (this.mapId) {
-                this.MetaMap.MetaFire.off(`maps/data/${this.mapId}`)
+                this.Homunculus.MetaFire.off(`maps/data/${this.mapId}`)
             }
             this.mapId = opts.id
             NProgress.start()
 
-            this.MetaMap.MetaFire.on(`maps/data/${this.mapId}`, this.buildCanvas)
-            this.MetaMap.Eventer.forget(CONSTANTS.EVENTS.MAP, this.build)
+            this.Homunculus.MetaFire.on(`maps/data/${this.mapId}`, this.buildCanvas)
+            this.Homunculus.Eventer.forget(CONSTANTS.EVENTS.MAP, this.build)
         }
     }
 
-    this.MetaMap.Eventer.every(CONSTANTS.EVENTS.MAP, this.build)
+    this.Homunculus.Eventer.every(CONSTANTS.EVENTS.MAP, this.build)
 
     this.correctHeight = () => {
         $(this.diagram).css({
@@ -79,7 +79,7 @@ module.exports = riot.tag('canvas', html, function(opts) {
     })
 
     this.on('unmount', () => {
-        this.MetaMap.MetaFire.off(`maps/data/${this.mapId}`, 'value', this.buildCanvas)
+        this.Homunculus.MetaFire.off(`maps/data/${this.mapId}`, 'value', this.buildCanvas)
     })
 
     $(window).resize(() => {

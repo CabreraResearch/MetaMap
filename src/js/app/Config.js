@@ -7,8 +7,8 @@ class Config {
         this.tags = tags
         this.config = {
             host: window.location.host,
-            db: 'https://meta-map-staging.firebaseio.com',
-            site: `meta-map-staging.firebaseio.com`
+            db: 'https://homunculus.firebaseio.com',
+            site: `homunculus.firebaseio.com`
         }
         this.MetaFire = new MetaFire(this.config)
     }

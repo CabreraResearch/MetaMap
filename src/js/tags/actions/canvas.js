@@ -92,9 +92,9 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS, html, function(
                     })
                 }
                 else if (this.data.mapId) {
-                    this.MetaMap.MetaFire.getData(`maps/list/${this.data.mapId}`).then((info) => {
+                    this.Homunculus.MetaFire.getData(`maps/list/${this.data.mapId}`).then((info) => {
                         if (info) {
-                            this.MetaMap.MetaFire.getData(`maps/data/${this.data.mapId}`).then((map) => {
+                            this.Homunculus.MetaFire.getData(`maps/data/${this.data.mapId}`).then((map) => {
                                 if (map) {
                                     this.data.map = _.extend(map, info)
                                     param = _.extend(param, {
@@ -126,7 +126,7 @@ module.exports = riot.tag(CONSTANTS.CORTEX.RESPONSE_TYPE.CANVAS, html, function(
     })
 
     this.onSave = () => {
-        if (!this.data.map || this.data.map.owner.userId != this.MetaMap.User.userId) {
+        if (!this.data.map || this.data.map.owner.userId != this.Homunculus.User.userId) {
             let newMap = require('../../actions/NewMap')
             let map = this.canvas.exportData()
             let nuMap = newMap.createMap({ title: this.title, map: map, training: { name: this.cortex.training.name, id: this.cortex.trainingId } })

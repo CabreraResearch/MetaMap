@@ -98,13 +98,13 @@ riot.tag(CONSTANTS.TAGS.SIDEBAR, html, function(opts) {
     this.picture = ''
 
     this.on('mount', () => {
-        this.userPicture = this.MetaMap.User.picture
+        this.userPicture = this.Homunculus.User.picture
         this.setHeight()
         this.updateHeight()
     })
 
     this.setCortex = (o) => {
-        if (o.cortex && o.cortex.MetaMap) {
+        if (o.cortex && o.cortex.Homunculus) {
             this.cortex = o.cortex
             this.actionFactory = this.actionFactory || new ActionFactory(this.cortex)
             this.messages = this.cortex.userTraining.messages
@@ -195,7 +195,7 @@ riot.tag(CONSTANTS.TAGS.SIDEBAR, html, function(opts) {
 		this.update()
 	}
 
-    this.MetaMap.Eventer.on(CONSTANTS.EVENTS.SIDEBAR_EVENT, () => {
+    this.Homunculus.Eventer.on(CONSTANTS.EVENTS.SIDEBAR_EVENT, () => {
         this.updateHeight()
     })
 

@@ -4,7 +4,7 @@ const $ = require('jquery')
 const _ = require('lodash')
 
 /**
-* Custom layout for metamap. Extends the Spring layout. After Spring runs, this
+* Custom layout for Homunculus. Extends the Spring layout. After Spring runs, this
 * layout finds 'part' nodes and aligns them underneath their parents. The alignment
 * - left or right - is set in the parent node's data, as `partAlign`.
 *
@@ -28,7 +28,7 @@ const _ = require('lodash')
         bounds.ymax = Math.max(bounds.ymax, y, y2);
     }
 
-  jsPlumbToolkit.Layouts["metamap"] = function() {
+  jsPlumbToolkit.Layouts["Homunculus"] = function() {
     jsPlumbToolkit.Layouts.Spring.apply(this, arguments);
 
     var originalLocationMap = {}, self = this, magnetizeNodes = [],

@@ -5,7 +5,7 @@ class ActionBase {
         this.metaFire = metaFire;
         this.eventer = eventer;
         this.pageFactory = pageFactory;
-        this.metaMap = require('../../MetaMap.js');
+        this.Homunculus = require('../../Homunculus.js');
     }
 
     act(id, ...params) {

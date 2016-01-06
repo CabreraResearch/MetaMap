@@ -31,12 +31,12 @@ const html = `
 
 module.exports = riot.tag('terms', html, function(opts) {
 
-    const MetaMap = require('../../../MetaMap.js');
+    const Homunculus = require('../../../Homunculus.js');
 
     this.areas = []
     this.header = {}
 
-    MetaMap.MetaFire.on(CONSTANTS.ROUTES.TERMS_AND_CONDITIONS, (data) => {
+    Homunculus.MetaFire.on(CONSTANTS.ROUTES.TERMS_AND_CONDITIONS, (data) => {
         this.areas = _.filter(_.sortBy(data.sections, 'order'), (d) => {
             let include = d.archive != true;
             if(include) {
@@ -49,7 +49,7 @@ module.exports = riot.tag('terms', html, function(opts) {
         });
 
         this.header = data.header;
-        this.userName = MetaMap.User.fullName;
+        this.userName = Homunculus.User.fullName;
 
         this.update();
 

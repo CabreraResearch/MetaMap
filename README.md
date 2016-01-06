@@ -1,8 +1,8 @@
-[![Stories in Ready](https://badge.waffle.io/CabreraResearch/MetaMap.png?label=ready&title=Ready)](https://waffle.io/CabreraResearch/MetaMap)
-[![bitHound Score](https://www.bithound.io/projects/badges/36fa6ec0-7ddb-11e5-aabb-393b598b5c14/score.svg)](https://www.bithound.io/github/CabreraResearch/MetaMap)
-[![bitHound Dependencies](https://www.bithound.io/projects/badges/36fa6ec0-7ddb-11e5-aabb-393b598b5c14/dependencies.svg)](https://www.bithound.io/github/CabreraResearch/MetaMap/master/dependencies/npm)
+[![Stories in Ready](https://badge.waffle.io/LudditeTech/Homunculus.png?label=ready&title=Ready)](https://waffle.io/LudditeTech/Homunculus)
+[![bitHound Score](https://www.bithound.io/projects/badges/36fa6ec0-7ddb-11e5-aabb-393b598b5c14/score.svg)](https://www.bithound.io/github/LudditeTech/Homunculus)
+[![bitHound Dependencies](https://www.bithound.io/projects/badges/36fa6ec0-7ddb-11e5-aabb-393b598b5c14/dependencies.svg)](https://www.bithound.io/github/LudditeTech/Homunculus/master/dependencies/npm)
 
-# MetaMap
+# Homunculus
 
 ## Objectives
 

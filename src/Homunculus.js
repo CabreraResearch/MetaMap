@@ -18,7 +18,7 @@ const shims = require('./js/tools/shims.js')
 const Integrations = require('./js/app/Integrations')
 const Cortex = require('./js/training/cortex')
 
-class MetaMap {
+class Homunculus {
 
     constructor() {
         const that = this
@@ -138,5 +138,5 @@ class MetaMap {
     }
 }
 
-const mm = new MetaMap()
+const mm = new Homunculus()
 module.exports = mm

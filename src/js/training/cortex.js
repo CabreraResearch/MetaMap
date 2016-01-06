@@ -7,7 +7,7 @@ class CortexMan {
 
     constructor(trainingId, trainingTag) {
         this._cortex_id = uuid()
-        this.MetaMap = require('../../MetaMap')
+        this.Homunculus = require('../../Homunculus')
         this.messages = []
         this.trainingId = trainingId
         this.userTraining = { messages: [] }
@@ -18,7 +18,7 @@ class CortexMan {
     }
 
     restart() {
-        this.MetaMap.MetaFire.deleteData(`${CONSTANTS.ROUTES.TRAININGS.format(this.MetaMap.User.userId) }${this.trainingId}`)
+        this.Homunculus.MetaFire.deleteData(`${CONSTANTS.ROUTES.TRAININGS.format(this.Homunculus.User.userId) }${this.trainingId}`)
         this.destroy()
         // this.runCallbacks()
         // this.trainingTag.doBeforeNextStep({action: CONSTANTS.CORTEX.RESPONSE_TYPE.RESTART})
@@ -27,8 +27,8 @@ class CortexMan {
     }
 
     destroy() {
-        this.MetaMap.MetaFire.off(`${CONSTANTS.ROUTES.TRAININGS.format(this.MetaMap.User.userId) }${this.trainingId}`)
-        this.MetaMap.MetaFire.off(`${CONSTANTS.ROUTES.COURSE_LIST}${this.trainingId}`)
+        this.Homunculus.MetaFire.off(`${CONSTANTS.ROUTES.TRAININGS.format(this.Homunculus.User.userId) }${this.trainingId}`)
+        this.Homunculus.MetaFire.off(`${CONSTANTS.ROUTES.COURSE_LIST}${this.trainingId}`)
         this.messages = []
         this.userTraining = { messages: [] }
         this.currentMessageKey = 0
@@ -107,22 +107,22 @@ class CortexMan {
     }
 
     saveUserTraining() {
-        let ret = this.MetaMap.MetaFire.updateData(this.userTraining, `${CONSTANTS.ROUTES.TRAININGS.format(this.MetaMap.User.userId) }${this.trainingId}`)
+        let ret = this.Homunculus.MetaFire.updateData(this.userTraining, `${CONSTANTS.ROUTES.TRAININGS.format(this.Homunculus.User.userId) }${this.trainingId}`)
         return ret
     }
 
     static saveTraining(id, data) {
-        let MetaMap = require('../../MetaMap')
+        let Homunculus = require('../../Homunculus')
         let updateObj = {
             updated_date: `${new Date() }`,
             updated_by: {
-                user_id: MetaMap.User.userId,
-                name: MetaMap.User.displayName,
-                picture: MetaMap.User.picture
+                user_id: Homunculus.User.userId,
+                name: Homunculus.User.displayName,
+                picture: Homunculus.User.picture
             }
         }
         _.extend(updateObj, data)
-        MetaMap.MetaFire.updateData(updateObj, `${CONSTANTS.ROUTES.COURSE_LIST}${id}`)
+        Homunculus.MetaFire.updateData(updateObj, `${CONSTANTS.ROUTES.COURSE_LIST}${id}`)
     }
 
     saveTraining(data) {
@@ -213,7 +213,7 @@ class CortexMan {
                                     this.trainingTag.doNextStep(nextStep)
                                     break
                                 default:
-                                    this.MetaMap.log(`on buffer passed ${nextStep.action}`)
+                                    this.Homunculus.log(`on buffer passed ${nextStep.action}`)
                                     nextStep.originalAction = nextStep.action
                                     nextStep.action = CONSTANTS.CORTEX.RESPONSE_TYPE.MORE
                                     this.moveToNextMessage(nextStep, { line: `<span>I don't supprt this <code>${nextStep.originalAction}</code> action yet, so I'm moving you to the next line.` }, 0)
@@ -351,7 +351,7 @@ class CortexMan {
                             this.trainingTag.doNextStep(obj)
                             break
                         default:
-                            this.MetaMap.log(`on action passed ${obj.action}`)
+                            this.Homunculus.log(`on action passed ${obj.action}`)
                             originalMessage.archived = true
                             this.moveToNextMessage(obj, { line: `<span>I don't supprt this <code>${obj.action}</code> action yet, so I'm moving you to the next line.` })
                             break
@@ -399,7 +399,7 @@ class CortexMan {
 
             this.trainingTag.doBeforeNextStep(originalMessage)
             this.runCallbacks()
-            this.MetaMap.Integrations.sendEvent(obj.message, 'cortex', 'chat')
+            this.Homunculus.Integrations.sendEvent(obj.message, 'cortex', 'chat')
         }
     }
 
@@ -417,7 +417,7 @@ class CortexMan {
 
                 this.isTimerOn = true
                 var once = _.once(() => {
-                    this.MetaMap.MetaFire.getData(`${CONSTANTS.ROUTES.TRAININGS.format(this.MetaMap.User.userId) }${this.trainingId}`).then((data) => {
+                    this.Homunculus.MetaFire.getData(`${CONSTANTS.ROUTES.TRAININGS.format(this.Homunculus.User.userId) }${this.trainingId}`).then((data) => {
                         this.userTraining = data
                         if (!data) {
                             this.userTraining = this.training
@@ -457,9 +457,9 @@ class CortexMan {
                     })
                 })
 
-                this.MetaMap.MetaFire.getData(`${CONSTANTS.ROUTES.COURSE_LIST}${this.trainingId}`).then((data) => {
+                this.Homunculus.MetaFire.getData(`${CONSTANTS.ROUTES.COURSE_LIST}${this.trainingId}`).then((data) => {
                     this.training = data
-                    this.MetaMap.Eventer.do(CONSTANTS.EVENTS.PAGE_NAME, data)
+                    this.Homunculus.Eventer.do(CONSTANTS.EVENTS.PAGE_NAME, data)
                     once()
                     once = _.noop
                 })

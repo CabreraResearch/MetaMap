@@ -2,7 +2,7 @@ class IntegrationsBase {
 	constructor(config, user) {
 		this.config = config;
         this.user = user;
-        this.metaMap = require('../../MetaMap')
+        this.Homunculus = require('../../Homunculus')
 	}
 
 	init() {

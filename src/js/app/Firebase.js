@@ -8,11 +8,11 @@ class MetaFire {
         this.fb = new window.Firebase(`${this.config.db}`)
     }
 
-    get metaMap() {
-        if (!this._metaMap) {
-            this._metaMap = require('../../MetaMap.js')
+    get Homunculus() {
+        if (!this._Homunculus) {
+            this._Homunculus = require('../../Homunculus.js')
         }
-        return this._metaMap
+        return this._Homunculus
     }
 
     doCustomLogin(fbToken, userId) {
@@ -44,14 +44,14 @@ class MetaFire {
     login() {
         if (!this._login) {
             this._login = new Promise((resolve, reject) => {
-                this.metaMap.Auth0.getSession()
+                this.Homunculus.Auth0.getSession()
                     .then((profile) => {
 
                         if (profile.firebase && profile.profile) {
                             this.fb = profile.firebase
                             resolve(profile.authData)
                         } else {
-                            this.metaMap.Auth0.lock.getClient().getDelegationToken({
+                            this.Homunculus.Auth0.lock.getClient().getDelegationToken({
                                 target: this.config.auth0.api,
                                 id_token: profile.id_token,
                                 api_type: 'firebase'
@@ -64,7 +64,7 @@ class MetaFire {
                                     localforage.setItem('firebase_token', this.firebase_token)
                                     this.fb.authWithCustomToken(this.firebase_token, (error, authData, ...params) => {
                                         if (error) {
-                                            this.metaMap.error(error)
+                                            this.Homunculus.error(error)
                                             reject(error)
                                         } else {
                                             resolve(authData)
@@ -111,7 +111,7 @@ class MetaFire {
                         try {
                             resolve(data)
                         } catch (e) {
-                            this.metaMap.error(e)
+                            this.Homunculus.error(e)
                         }
                     },
                     (error) => {
@@ -224,10 +224,10 @@ class MetaFire {
 
     error(e, path) {
         if (e) {
-            this.metaMap.error(e)
+            this.Homunculus.error(e)
         }
         if (path) {
-            this.metaMap.error({ message: `Permission denied to ${path}` })
+            this.Homunculus.error({ message: `Permission denied to ${path}` })
         }
     }
 

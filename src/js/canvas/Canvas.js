@@ -22,10 +22,10 @@ require('./layout')
 class Canvas {
 
     constructor(opts) {
-        this.metaMap = require('../../MetaMap')
+        this.Homunculus = require('../../Homunculus')
         this.opts = opts
         this._init(opts)
-        this.config = this.metaMap.config.metamap.canvas
+        this.config = this.Homunculus.config.Homunculus.canvas
 
         jsPlumbToolkit.ready(() => {
 
@@ -291,21 +291,21 @@ class Canvas {
             let postData = {
                 data: this._data,
                 changed_by: {
-                    userId: this.metaMap.User.userId,
-                    userName: this.metaMap.User.fullName,
-                    userKey: this.metaMap.User.userKey,
+                    userId: this.Homunculus.User.userId,
+                    userName: this.Homunculus.User.fullName,
+                    userKey: this.Homunculus.User.userKey,
                     changeId: uuid()
                 }
             }
-            this.metaMap.MetaFire.setDataInTransaction(postData, `maps/data/${this.mapId}`).catch((err) => {
+            this.Homunculus.MetaFire.setDataInTransaction(postData, `maps/data/${this.mapId}`).catch((err) => {
                 //Only show 1 warning
                 if(this.doAutoSave) {
                     window.alert("Something went wrong. Your map is no longer be saved. Please refresh your browser and try again.")
-                    this.metaMap.error(err)
+                    this.Homunculus.error(err)
                 }
                 this.doAutoSave = false
             })
-            this.metaMap.Integrations.sendEvent('autosave', { mapId: this.mapId, mapName: this.mapName, map: postData })
+            this.Homunculus.Integrations.sendEvent('autosave', { mapId: this.mapId, mapName: this.mapName, map: postData })
         }
     }
 

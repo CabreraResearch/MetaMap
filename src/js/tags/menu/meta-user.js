@@ -22,18 +22,18 @@ const html = `<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdo
 
 riot.tag('meta-user', html, function (opts) {
 
-    const MetaMap = require('../../../MetaMap.js');
+    const Homunculus = require('../../../Homunculus.js');
 
     this.menu = [];
     this.username = '';
     this.picture = '';
 
     this.logout = () => {
-        MetaMap.logout();
+        Homunculus.logout();
     }
 
     this.linkAccount = () => {
-        MetaMap.Auth0.linkAccount();
+        Homunculus.Auth0.linkAccount();
     }
 
     this.onClick = (event, params) => {
@@ -51,9 +51,9 @@ riot.tag('meta-user', html, function (opts) {
     }
 
     this.on('mount', () => {
-        MetaMap.MetaFire.on(`metamap/user`, (data) => {
-            this.username = MetaMap.User.displayName;
-            this.picture = MetaMap.User.picture;
+        Homunculus.MetaFire.on(`Homunculus/user`, (data) => {
+            this.username = Homunculus.User.displayName;
+            this.picture = Homunculus.User.picture;
             this.menu = _.filter(_.sortBy(data, 'order'), (d) => {
                 var include = d.archive != true;
                 return include;

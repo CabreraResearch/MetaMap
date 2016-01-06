@@ -15,7 +15,7 @@ const html = `
 
 module.exports = riot.tag('page-content', html, function (opts) {
 
-    const MetaMap = require('../../MetaMap');
+    const Homunculus = require('../../Homunculus');
 
     this.on('update', () => {
         this.resize()

@@ -27,8 +27,8 @@ gulp.task('watch', function () {
     lr({start: true});
     gulp.watch(['./src/**/*.js'], watch_opts, ['browserify-dev']);
     
-    gulp.watch(['./dist/MetaMap.js']).on('change', lr.changed);
-    gulp.watch(['./dist/MetaMap.css']).on('change', lr.changed);
+    gulp.watch(['./dist/Homunculus.js']).on('change', lr.changed);
+    gulp.watch(['./dist/Homunculus.css']).on('change', lr.changed);
 
     return gulp.watch(['./src/**/*.css'], watch_opts, ['css']);
 });

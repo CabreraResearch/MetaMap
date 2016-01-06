@@ -18,8 +18,8 @@ class Sharing {
 
     constructor(user) {
         this.user = user
-        this._metaMap = require('../../MetaMap')
-        this._fb = this._metaMap.MetaFire;
+        this._Homunculus = require('../../Homunculus')
+        this._fb = this._Homunculus.MetaFire;
     }
 
     addShare(map, userData, opts = { read: true, write: false }) {

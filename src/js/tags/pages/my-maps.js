@@ -13,7 +13,7 @@ const html = `
 <div id="my_maps_page" class="portlet box grey-cascade">
     <div class="portlet-title">
         <div class="caption">
-            <i class="fa fa-icon-th-large"></i>MetaMaps
+            <i class="fa fa-icon-th-large"></i>Homunculuss
         </div>
         <div if="{ menu }" class="actions">
             <a each="{ menu.buttons }" href="{ link }" onclick="{ parent.onActionClick }" class="btn btn-default btn-sm">
@@ -99,9 +99,9 @@ const html = `
 
 module.exports = riot.tag('my-maps', html, function (opts) {
 
-    const MetaMap = require('../../../MetaMap.js');
+    const Homunculus = require('../../../Homunculus.js');
 
-    this.user = MetaMap.User;
+    this.user = Homunculus.User;
     this.data = null;
     this.menu = null;
     let tabs = [
@@ -149,7 +149,7 @@ module.exports = riot.tag('my-maps', html, function (opts) {
 
     //Events
     this.onOpen = (event, ...o) => {
-        MetaMap.Router.to(`map/${event.item.id}`);
+        Homunculus.Router.to(`map/${event.item.id}`);
     }
 
     this.onShare = (event, ...o) => {
@@ -209,7 +209,7 @@ module.exports = riot.tag('my-maps', html, function (opts) {
     //Riot bindings
     this.on('mount', () => {
         window.NProgress.start();
-        MetaMap.MetaFire.on('metamap/mymaps', (data) => {
+        Homunculus.MetaFire.on('Homunculus/mymaps', (data) => {
             if (data) {
                 this.menu = {
                     buttons: _.sortBy(data.buttons, 'order'),
@@ -289,19 +289,19 @@ module.exports = riot.tag('my-maps', html, function (opts) {
                 $(`.meta_editable_${idx}`).editable({ unsavedclass: null }).on('save', function (event, params) {
                     if (this.dataset && this.dataset.pk) {
                         var id = this.dataset.pk;
-                        MetaMap.MetaFire.setData(params.newValue, `${CONSTANTS.ROUTES.MAPS_LIST}/${id}/name`);
+                        Homunculus.MetaFire.setData(params.newValue, `${CONSTANTS.ROUTES.MAPS_LIST}/${id}/name`);
                     }
                     return true;
                 });
             } catch (e) {
-                MetaMap.error(e);
+                Homunculus.error(e);
             } finally {
                 window.NProgress.done()
             }
         };
 
         //Fetch All maps
-        MetaMap.MetaFire.getChild(CONSTANTS.ROUTES.MAPS_LIST).on('value', (val) => {
+        Homunculus.MetaFire.getChild(CONSTANTS.ROUTES.MAPS_LIST).on('value', (val) => {
             const list = val.val();
             _.each(this.tabs, (tab) => {
                 let maps = null;
@@ -309,7 +309,7 @@ module.exports = riot.tag('my-maps', html, function (opts) {
                     case 'Templates':
                     case 'My Maps':
                         maps = _.map(list, (obj, key) => {
-                            if (obj.owner.userId == MetaMap.User.userId) { //Only include my own maps
+                            if (obj.owner.userId == Homunculus.User.userId) { //Only include my own maps
                                 obj.editable = true
                                 obj.id = key;
                                 obj.created_at = moment(new Date(obj.created_at)).format('YYYY-MM-DD');
@@ -321,14 +321,14 @@ module.exports = riot.tag('my-maps', html, function (opts) {
                         break;
                     case 'Shared with Me':
                         maps = _.map(list, (obj, key) => {
-                            if (obj.owner.userId != MetaMap.User.userId && //Don't include my own maps
+                            if (obj.owner.userId != Homunculus.User.userId && //Don't include my own maps
                                 obj.shared_with && //Exclude anything that isn't shared at all
                                 (!obj.shared_with['*'] || (obj.shared_with['*'].read != true || obj.shared_with['*'].write != true)) && //Exclude public maps
-                                obj.shared_with[MetaMap.User.userId] && //Include shares wih my userId
-                                (obj.shared_with[MetaMap.User.userId].write == true || //Include anything I can write to
-                                obj.shared_with[MetaMap.User.userId].read == true) //Include anything I can read from
+                                obj.shared_with[Homunculus.User.userId] && //Include shares wih my userId
+                                (obj.shared_with[Homunculus.User.userId].write == true || //Include anything I can write to
+                                obj.shared_with[Homunculus.User.userId].read == true) //Include anything I can read from
                                 ) {
-                                obj.editable = (obj.shared_with[MetaMap.User.userId].write == true)
+                                obj.editable = (obj.shared_with[Homunculus.User.userId].write == true)
                                 obj.id = key;
                                 obj.created_at = moment(new Date(obj.created_at)).format('YYYY-MM-DD');
                                 return obj;
@@ -339,7 +339,7 @@ module.exports = riot.tag('my-maps', html, function (opts) {
                         break;
                     case 'Public':
                         maps = _.map(list, (obj, key) => {
-                            if (obj.owner.userId != MetaMap.User.userId && //Don't include my own maps
+                            if (obj.owner.userId != Homunculus.User.userId && //Don't include my own maps
                                 obj.shared_with && //Exclude anything that isn't shared at all
                                 (obj.shared_with['*'] && (obj.shared_with['*'].read == true || obj.shared_with['*'].write == true) ) //Include public maps
                                 ) {

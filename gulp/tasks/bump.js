@@ -14,13 +14,13 @@ gulp.task('bump', function() {
     var ret = gulp.src(['./package.json', './about.json']).pipe(bump()).pipe(gulp.dest('./'));
     ret.on('end', function () {
         var pkg = JSON.parse(fs.readFileSync('./package.json', 'utf8'))
-        global.MetaMapPackage = pkg
+        global.HomunculusPackage = pkg
     })
     return ret;
 });
 
 gulp.task('bumpDist', function () {
-    var pkg = global.MetaMapPackage
+    var pkg = global.HomunculusPackage
 
     var banner = `/**
 * ${pkg.title} - ${pkg.description}

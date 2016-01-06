@@ -3,7 +3,7 @@ const _ = require('lodash')
 
 class Eventer {
 
-    constructor(metaMap) {
+    constructor(Homunculus) {
         
         riot.observable(this);
 

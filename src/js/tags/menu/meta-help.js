@@ -24,11 +24,11 @@ const html = `<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdo
 
 riot.tag('meta-help', html, function (opts) {
 
-    const MetaMap = require('../../../MetaMap');
+    const Homunculus = require('../../../Homunculus');
 
     this.help = null;
     this.on('mount', () => {
-        MetaMap.MetaFire.on('metamap/help', (data) => {
+        Homunculus.MetaFire.on('Homunculus/help', (data) => {
             this.help = _.filter(_.sortBy(data, 'order'), (d) => {
                 var include = d.archive != true;
                 return include;

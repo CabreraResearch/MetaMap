@@ -14,15 +14,15 @@ var browserify_shim = require('browserify-shim')
 var config = function (app) {
     return {
         dev: {
-            entries: './src/MetaMap.js',
-            filename: 'MetaMap.js',
+            entries: './src/Homunculus.js',
+            filename: 'Homunculus.js',
             dest: './dist',
             debug: true,
             fullPaths: true
         },
         release: {
-            entries: './src/MetaMap.js',
-            filename: 'MetaMap.min.js',
+            entries: './src/Homunculus.js',
+            filename: 'Homunculus.min.js',
             debug: true,
             dest: './dist',
             fullPaths: false
@@ -33,12 +33,12 @@ var config = function (app) {
 
 
 var runbrowserify = function (name) {
-    var pkg = global.MetaMapPackage
-    var standalone = 'MetaMap';
+    var pkg = global.HomunculusPackage
+    var standalone = 'Homunculus';
 
     var module;
     var bundleLogger = new Logger(name);
-    var cfg = config('metamap')[name];
+    var cfg = config('Homunculus')[name];
     var bundleMethod = (global.isWatching ? watchify : browserify);
     var bundleCfg = {
         entries: cfg.entries,
@@ -57,7 +57,7 @@ var runbrowserify = function (name) {
     bundler.transform(browserify_shim)
 
     if(name != 'dev') {
-        bundler.plugin('minifyify', {map: 'MetaMap.map.json', output: 'dist/MetaMap.map.json'});
+        bundler.plugin('minifyify', {map: 'Homunculus.map.json', output: 'dist/Homunculus.map.json'});
     }
 
     for (module in pkg['dependencies']) {

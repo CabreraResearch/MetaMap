@@ -229,7 +229,7 @@ class CopyPaste extends _CanvasBase {
                         this.canvas.refresh()
                         resolve()
                     } catch(e) {
-                        this.metaMap.error(e)
+                        this.Homunculus.error(e)
                         reject(e)
                     }
                 })

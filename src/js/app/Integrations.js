@@ -2,15 +2,15 @@ const _ = require('lodash')
 
 class Integrations {
 
-	constructor(metaMap, user) {
-		this.config = metaMap.config;
-		this.metaMap = metaMap;
+	constructor(Homunculus, user) {
+		this.config = Homunculus.config;
+		this.Homunculus = Homunculus;
 		this.user = user;
 		this._features = {
-			google: require('../integrations/Google'),
-			usersnap: require('../integrations/UserSnap'),
-            youtube: require('../integrations/YouTube'),
-            segment : require('../integrations/Segment')
+			// google: require('../integrations/Google'),
+			// usersnap: require('../integrations/UserSnap'),
+            // youtube: require('../integrations/YouTube'),
+            // segment : require('../integrations/Segment')
 		};
 	}
 
@@ -23,7 +23,7 @@ class Integrations {
 					this[name].init();
 					this[name].setUser();
 				} catch (e) {
-					this.metaMap.error(e);
+					this.Homunculus.error(e);
 				}
 			}
         });

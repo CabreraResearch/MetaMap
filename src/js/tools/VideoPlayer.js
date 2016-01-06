@@ -4,7 +4,7 @@ class VideoPlayer {
     constructor(divId, opts = { videoId: ''}) {
         this.id = divId
         this.opts = opts
-        this.metaMap = require('../../MetaMap')
+        this.Homunculus = require('../../Homunculus')
         this.init()
     }
 

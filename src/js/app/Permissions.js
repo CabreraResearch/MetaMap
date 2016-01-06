@@ -3,7 +3,7 @@ class Permissions {
     constructor(map) {
         this.map = map || {}
         this.permitAll = this.map.isTraining || false
-        this.metaMap = require('../../MetaMap')
+        this.Homunculus = require('../../Homunculus')
     }
 
     canEdit() {
@@ -15,15 +15,15 @@ class Permissions {
     }
 
     isMapOwner() {
-        return this.permitAll || (this.map && this.map.owner.userId == this.metaMap.User.userId)
+        return this.permitAll || (this.map && this.map.owner.userId == this.Homunculus.User.userId)
     }
 
     isSharedEdit() {
         return this.permitAll ||
             (this.map &&
                 this.map.shared_with &&
-                    (this.metaMap.User.isAdmin ||
-                    (this.map.shared_with[this.metaMap.User.userId] && this.map.shared_with[this.metaMap.User.userId].write == true) ||
+                    (this.Homunculus.User.isAdmin ||
+                    (this.map.shared_with[this.Homunculus.User.userId] && this.map.shared_with[this.Homunculus.User.userId].write == true) ||
                     (this.map.shared_with['*'] && this.map.shared_with['*'].write == true)))
     }
 
@@ -31,7 +31,7 @@ class Permissions {
         return this.permitAll ||
             (this.map &&
                 this.isSharedEdit() ||
-                    (this.map.shared_with[this.metaMap.User.userId] && this.map.shared_with[this.metaMap.User.userId].read == true) ||
+                    (this.map.shared_with[this.Homunculus.User.userId] && this.map.shared_with[this.Homunculus.User.userId].read == true) ||
                     (this.map.shared_with['*'] && this.map.shared_with['*'].read == true))
     }
 }

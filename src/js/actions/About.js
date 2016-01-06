@@ -12,7 +12,7 @@ class About extends ActionBase {
         super.act(id, ...params);
         fetch('./about.json').then((ret) => { return ret.json() }).then((json) => {
             About.act(json)
-            this.metaMap.Router.back()
+            this.Homunculus.Router.back()
         });
         return true;
     }

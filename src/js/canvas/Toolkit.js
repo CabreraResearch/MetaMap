@@ -11,7 +11,7 @@ class Toolkit extends _CanvasBase {
 
         // get a new instance of the Toolkit. provide a set of methods that control who can connect to what, and when.
         this.toolkit = jsPlumbToolkit.newInstance(edgeEvents)
-        if (this.canvas.metaMap.debug) {
+        if (this.canvas.Homunculus.debug) {
             window.toolkit = this.toolkit
         }
 

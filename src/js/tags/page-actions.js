@@ -43,11 +43,11 @@ const html = `
 
 module.exports = riot.tag('page-actions', html, function (opts) {
 
-    const MetaMap = require('../../MetaMap');
+    const Homunculus = require('../../Homunculus');
 
     this.data = [];
     this.pageName = 'Home';
-    this.url = MetaMap.config.site;
+    this.url = Homunculus.config.site;
     this.loaded = false;
 
     let permissions = null;
@@ -67,7 +67,7 @@ module.exports = riot.tag('page-actions', html, function (opts) {
     this.getLinkAllowed = (obj) => {
         let ret = true == obj['allowed-on']['*'];
         if (!ret) {
-            let currentPage = MetaMap.Router.currentPath;
+            let currentPage = Homunculus.Router.currentPath;
             ret = true == obj['allowed-on'][currentPage];
         }
         if (ret && this.map && permissions) {
@@ -91,25 +91,25 @@ module.exports = riot.tag('page-actions', html, function (opts) {
         }
         if (permissions && permissions.isMapOwner()) {
             $(this.map_name).editable({ unsavedclass: null }).on('save', (event, params) => {
-                MetaMap.MetaFire.setData(params.newValue, `${CONSTANTS.ROUTES.MAPS_LIST}/${this.mapId}/name`);
+                Homunculus.MetaFire.setData(params.newValue, `${CONSTANTS.ROUTES.MAPS_LIST}/${this.mapId}/name`);
             });
             this.loaded = true;
         }
         this.update()
     }
 
-    MetaMap.Eventer.every('pageName', (opts) => {
+    Homunculus.Eventer.every('pageName', (opts) => {
         if (this.loaded) {
             $(this.map_name).editable('destroy');
         }
         if (this.mapId) {
-            MetaMap.MetaFire.off(`${CONSTANTS.ROUTES.MAPS_LIST}/${this.mapId}`);
+            Homunculus.MetaFire.off(`${CONSTANTS.ROUTES.MAPS_LIST}/${this.mapId}`);
             this.mapId = null
             this.map = null
         }
         if (opts.id) {
             this.mapId = opts.id;
-            MetaMap.MetaFire.on(`${CONSTANTS.ROUTES.MAPS_LIST}/${opts.id}`, (map) => {
+            Homunculus.MetaFire.on(`${CONSTANTS.ROUTES.MAPS_LIST}/${opts.id}`, (map) => {
                 this.updatePageName(map)
             });
         }
@@ -117,7 +117,7 @@ module.exports = riot.tag('page-actions', html, function (opts) {
         this.update();
     });
 
-    MetaMap.MetaFire.on('metamap/actions', (data) => {
+    Homunculus.MetaFire.on('Homunculus/actions', (data) => {
         this.data = _.filter(_.sortBy(data, 'order'), (d) => {
             var include = d.archive != true;
             return include;

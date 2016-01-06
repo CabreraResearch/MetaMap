@@ -19,7 +19,7 @@ class UserSnap extends IntegrationsBase {
                 mode: 'report',
                 shortcut: true,
                 beforeOpen: (obj) => {
-                    this.metaMap.Integrations.sendEvent(obj, 'feedback', 'usersnap', 'widget', window.location.href)
+                    this.Homunculus.Integrations.sendEvent(obj, 'feedback', 'usersnap', 'widget', window.location.href)
                 }
             };
             window.usersnapconfig = window._usersnapconfig = usConf;

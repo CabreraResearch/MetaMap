@@ -1,5 +1,5 @@
 {
-  "firebase": "meta-map-staging",
+  "firebase": "homunculus",
   "public": ".",
   "ignore": [
     ".gitignore",

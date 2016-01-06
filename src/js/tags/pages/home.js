@@ -45,12 +45,12 @@ const html = `
 
 module.exports = riot.tag('home', html, function(opts) {
 
-    const MetaMap = require('../../../MetaMap');
+    const Homunculus = require('../../../Homunculus');
 
     this.areas = []
     this.header = {}
 
-    MetaMap.MetaFire.on(CONSTANTS.ROUTES.HOME, (data) => {
+    Homunculus.MetaFire.on(CONSTANTS.ROUTES.HOME, (data) => {
         this.areas = _.filter(_.sortBy(data.areas, 'order'), (d) => {
             var include = d.archive != true;
             return include;
@@ -59,7 +59,7 @@ module.exports = riot.tag('home', html, function(opts) {
         this.header = data.header;
         this.vision = data.vision;
 
-        this.userName = MetaMap.User.fullName;
+        this.userName = Homunculus.User.fullName;
 
         this.update();
 

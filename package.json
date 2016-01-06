@@ -1,29 +1,29 @@
 {
-  "main": "dist/MetaMap.js",
-  "name": "metamap",
-  "title": "MetaMap",
+  "main": "dist/homunculus.js",
+  "name": "homunculus",
+  "title": "Homunculus",
   "version": "0.5.64",
   "author": {
-    "email": "christopher@crlab.us",
+    "email": "crf@luddites.me",
     "name": "Christopher Froehlich"
   },
   "bugs": {
-    "url": "https://github.com/CabreraResearch/MetaMap"
+    "url": "https://github.com/LudditeTech/homunculus/issues"
   },
   "dependencies": {
     "riot": "^2.3.11"
   },
-  "description": "Meta cognition",
+  "description": "homunculus",
   "engines": {
     "node": "4.0.x",
     "npm": "3.0.x"
   },
-  "homepage": "http://www.metamap.co",
+  "homepage": "http://www.Homunculus.co",
   "keywords": [],
-  "license": "Copyright 2015 Cabrera Research Lab",
+  "license": "CC0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/CabreraResearch/MetaMap.git"
+    "url": "https://github.com/LudditeTech/homunculus.git"
   },
   "scripts": {
     "start": "node server.js"

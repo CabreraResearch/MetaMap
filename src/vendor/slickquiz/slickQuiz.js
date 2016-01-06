@@ -61,7 +61,7 @@
 
                     }
                 },
-                _metamap: {
+                _Homunculus: {
                     currentAnswer: ''
                 }
             },
@@ -196,9 +196,9 @@
                 // when all the notches of the key are accepted (resolved) then the key turns and the engine (callback/go) starts
                 $.when.apply (null, key). then (function () {
                     if (!(ret.questionNo >= 0)) {
-                        ret.questionNo = plugin.config._metamap.nextQuestion
+                        ret.questionNo = plugin.config._Homunculus.nextQuestion
                     }
-                    go(ret, plugin.config._metamap.currentAnswer, plugin);
+                    go(ret, plugin.config._Homunculus.currentAnswer, plugin);
                 });
             },
 
@@ -517,13 +517,13 @@
                 var ret = {
                     isCorrect: correctResponse,
                     trueAnswers: trueAnswerVals,
-                    selectedAnswer: plugin.config._metamap.currentAnswer,
+                    selectedAnswer: plugin.config._Homunculus.currentAnswer,
                     questionNo: questionIndex,
                     correctAnswers: trueAnswerVals
                 }
                 results[questionIndex] = ret
 
-                plugin.config._metamap.nextQuestion = questionIndex+1
+                plugin.config._Homunculus.nextQuestion = questionIndex+1
 
                 internal.method.turnKeyAndGo (key, options && options.callback ? options.callback : function () {}, ret);
             },
@@ -749,7 +749,7 @@
 
             // Bind "next" buttons
             $(_element + ' .slickAnswerButton').on('click', function(e) {
-                plugin.config._metamap.currentAnswer = document.getElementById(this.id+'_answer').innerHTML
+                plugin.config._Homunculus.currentAnswer = document.getElementById(this.id+'_answer').innerHTML
                 return true
             });
 

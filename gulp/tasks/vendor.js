@@ -25,7 +25,7 @@ var runbrowserify = function () {
             builtins: true,
             debug: true
     });
-    var pkg = global.MetaMapPackage
+    var pkg = global.HomunculusPackage
 
     bundler.plugin('minifyify', {map: 'vendor.map.json', output: 'dist/vendor.map.json'});
 

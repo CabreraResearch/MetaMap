@@ -67,46 +67,46 @@ gulp.task('compile-test', function (cb) {
         });
 })
 
-var message = {
-    token: 'KpnhJmwZLEav6suDAG90B8bf',
-    team: 'cabreraresearch',
-    channel: '#tech',
-    icon_emoji: ':bowtie:',
-    username: 'ibid'
-};
+// var message = {
+//     token: '',
+//     team: '',
+//     channel: '#tech',
+//     icon_emoji: ':bowtie:',
+//     username: 'ibid'
+// };
 
-var sendToSlack = function(i) {
-    slack.send(i);
-    return through.obj(i);
-};
-
-var pushAndNotify = function(p, error, cb) {
-    if (error) {
-        console.log(error.message);
-        if(cb) cb(error);
-    } else {
-        var pkg = global.MetaMapPackage
-        message.text = 'Just deployed MetaMap v' + pkg.version + ' to https://www.metamap.co. ' + p;
-
-        client.deploy({
-            message: p
-        }).then(function () {
-            sendToSlack(message)
-            setTimeout(function () {
-                console.log('RELEASE FINISHED SUCCESSFULLY');
-                cb();
-                process.nextTick(function () {
-                    process.exit(0);
-                });
-            }, 5000)
-        })
-    }
-}
-
-gulp.task('pushAndNotify', function(cb) {
-    var p = argv.message;
-    pushAndNotify(p, null, cb)
-})
+// var sendToSlack = function(i) {
+//     slack.send(i);
+//     return through.obj(i);
+// };
+//
+// var pushAndNotify = function(p, error, cb) {
+//     if (error) {
+//         console.log(error.message);
+//         if(cb) cb(error);
+//     } else {
+//         var pkg = global.HomunculusPackage
+//         message.text = 'Just deployed Homunculus v' + pkg.version + ' to https://www.Homunculus.co. ' + p;
+//
+//         client.deploy({
+//             message: p
+//         }).then(function () {
+//             sendToSlack(message)
+//             setTimeout(function () {
+//                 console.log('RELEASE FINISHED SUCCESSFULLY');
+//                 cb();
+//                 process.nextTick(function () {
+//                     process.exit(0);
+//                 });
+//             }, 5000)
+//         })
+//     }
+// }
+//
+// gulp.task('pushAndNotify', function(cb) {
+//     var p = argv.message;
+//     pushAndNotify(p, null, cb)
+// })
 
 gulp.task('release', function (cb) {
     var p = argv.message;

@@ -35,10 +35,10 @@ class Renderer extends _CanvasBase {
             consumeRightClick: false,
             saveStateOnExit:true,              // setting these has no effect; investigate later
             saveStateOnDrag:true,              //
-            stateHandle: 'metaMapCanvas_' + (canvas.mapId || canvas.mapName),
+            stateHandle: 'HomunculusCanvas_' + (canvas.mapId || canvas.mapName),
             layout:{
                 // custom layout for this app. simple extension of the spring layout.
-                type:'metamap'
+                type:'Homunculus'
             },
             zoomToFit: zoomToFit,
             view: {
@@ -52,7 +52,7 @@ class Renderer extends _CanvasBase {
 			dropOptions:dragDropHandler.getDropOptions()
         });
         
-        if (this.canvas.metaMap.debug) {
+        if (this.canvas.Homunculus.debug) {
             window.renderer = renderer
         }
     }

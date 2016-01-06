@@ -4,14 +4,14 @@ const CONSTANTS = require('../constants/constants');
 const html = `
 <div class ="page-logo">
     <a id="meta_logo" href="#home">
-        <img src="src/images/metamap_cloud.png" alt="logo" class ="logo-default" />
+        <img src="src/images/Homunculus_cloud.png" alt="logo" class ="logo-default" />
     </a>
 </div>
 `;
 
 module.exports = riot.tag('page-logo', html, function(opts) {
 
-    const MetaMap = require('../../MetaMap');
+    const Homunculus = require('../../Homunculus');
 
     this.isSidebarOpen = false;
 
@@ -23,11 +23,11 @@ module.exports = riot.tag('page-logo', html, function(opts) {
     };
 
     this.onClick = () => {
-       // MetaMap.Eventer.do(CONSTANTS.EVENTS.SIDEBAR_TOGGLE);
+       // Homunculus.Eventer.do(CONSTANTS.EVENTS.SIDEBAR_TOGGLE);
     }
 
     this.getDisplay = (el) => {
-        if(MetaMap && MetaMap.Router && MetaMap.Router.currentPath == CONSTANTS.PAGES.TRAININGS) {
+        if(Homunculus && Homunculus.Router && Homunculus.Router.currentPath == CONSTANTS.PAGES.TRAININGS) {
             toggle(true)
             return 'visible'
         } else {
@@ -35,7 +35,7 @@ module.exports = riot.tag('page-logo', html, function(opts) {
         }
     }
 
-    MetaMap.Eventer.every('pageName', (opts) => {
+    Homunculus.Eventer.every('pageName', (opts) => {
         this.update()
     })
 });

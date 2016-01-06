@@ -4,9 +4,9 @@ const Promise = require('bluebird')
 
 class Auth0 {
 
-    constructor(config, metaMap) {
+    constructor(config, Homunculus) {
         this.config = config
-        this.metaMap = require('../../MetaMap')
+        this.Homunculus = require('../../Homunculus')
         this.lock = new window.Auth0Lock(config.api, config.app)
         this.lock.on('loading ready', (...e) => {
 
@@ -32,7 +32,7 @@ class Auth0 {
                         icon: 'src/images/crl_new_logo.png',
                         dict: {
                           signin: {
-                              title: 'Login to MetaMap'
+                              title: 'Login to Homunculus'
                           }
                         },
                         closable: false,
@@ -88,7 +88,7 @@ class Auth0 {
     }
 
     onFail(err, reject) {
-        this.metaMap.error(err)
+        this.Homunculus.error(err)
         if (reject) {
             reject(err)
             this.logout()
@@ -138,7 +138,7 @@ class Auth0 {
             this.refresh_token = null
             this._login = null
             this._getSession = null
-            if(this.metaMap.Router) this.metaMap.Router.to('home')
+            if(this.Homunculus.Router) this.Homunculus.Router.to('home')
             window.location.reload()
         })
     }

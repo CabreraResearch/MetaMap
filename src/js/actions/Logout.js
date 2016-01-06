@@ -5,12 +5,12 @@ const _ = require('lodash');
 class Logout extends ActionBase {
     constructor(...params) {
         super(...params);
-        this.metaMap = require('../../MetaMap.js');
+        this.Homunculus = require('../../Homunculus.js');
     }
 
     act(id, ...params) {
         super.act(id, ...params);
-        this.metaMap.logout();
+        this.Homunculus.logout();
         return true;
     }
 }
