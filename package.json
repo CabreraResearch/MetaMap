@@ -99,7 +99,7 @@
     "run-sequence": "1.2.2",
     "through2": "2.0.5",
     "tiny-lr": "0.2.1",
-    "vinyl-source-stream": "1.1.0",
+    "vinyl-source-stream": "1.1.2",
     "watchify": "3.11.1",
     "wiredep": "3.0.1",
     "yargs": "3.32.0"
