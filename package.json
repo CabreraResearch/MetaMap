@@ -16,7 +16,7 @@
   "description": "homunculus",
   "engines": {
     "node": "4.9.x",
-    "npm": "3.0.x"
+    "npm": "3.10.x"
   },
   "homepage": "http://www.Homunculus.co",
   "keywords": [],
