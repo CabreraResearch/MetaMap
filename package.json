@@ -107,7 +107,7 @@
   "optionalDependencies": {
     "babel-polyfill": "^6.2.0",
     "bluebird": "^3.0.6",
-    "bootstrap": "^3.3.6",
+    "bootstrap": "^4.0.0",
     "bootstrap-hover-dropdown": "^2.2.1",
     "bootstrap-select": "^1.7.7",
     "core-js": "^1.2.6",
