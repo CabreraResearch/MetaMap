@@ -110,7 +110,7 @@
     "bootstrap": "^3.3.6",
     "bootstrap-hover-dropdown": "^2.2.1",
     "bootstrap-select": "^1.7.7",
-    "core-js": "^1.2.6",
+    "core-js": "^3.0.0",
     "datatables": "^1.10.9",
     "datatables-bootstrap3-plugin": "^0.6.0",
     "dropzone": "^4.2.0",
