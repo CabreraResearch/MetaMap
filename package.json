@@ -77,7 +77,7 @@
     "browserify-shim": "3.8.14",
     "eslint": "1.10.3",
     "firebase-tools": "2.2.1",
-    "gulp": "3.9.1",
+    "gulp": "4.0.2",
     "gulp-bump": "1.0.0",
     "gulp-concat": "2.6.1",
     "gulp-download": "0.0.1",
